@@ -36,10 +36,9 @@ export const productionCalendarRefreshJob = defineJob({
 
 export const productionCalendarHandlerTokens = { sync: SYNC_HANDLER, refresh: REFRESH_HANDLER };
 
-/** One sync per country, year and day: repeated requests collapse into one job. */
-export function syncDeduplicationKey(countryCode: string, year: number, clock: Clock): string {
-  const day = clock.now().toString().slice(0, 10);
-  return `calendar-${countryCode}-${String(year)}-${day}`;
+/** Repeated requests for the same country and year collapse into one pending job. */
+export function syncDeduplicationKey(countryCode: string, year: number): string {
+  return `calendar-${countryCode}-${String(year)}`;
 }
 
 export class SyncProductionCalendar implements JobHandler<
@@ -76,7 +75,7 @@ export class RefreshProductionCalendars implements JobHandler<Record<string, nev
         await this.queue.enqueue(
           productionCalendarSyncJob,
           { countryCode, year },
-          { deduplicationKey: syncDeduplicationKey(countryCode, year, this.clock) },
+          { deduplicationKey: syncDeduplicationKey(countryCode, year) },
         );
       }
     }

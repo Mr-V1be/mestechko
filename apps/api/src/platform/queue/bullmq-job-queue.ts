@@ -43,7 +43,7 @@ export class BullMqJobQueue implements JobQueue {
     const generic = job as JobDefinition<unknown>;
     await this.queueFor(generic).add(job.name, job.payload.parse(payload), {
       ...jobOptions(generic),
-      jobId: options.deduplicationKey,
+      deduplication: { id: options.deduplicationKey },
     });
   }
 

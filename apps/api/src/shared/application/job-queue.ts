@@ -15,7 +15,7 @@ export interface JobHandler<P> {
 }
 
 export interface EnqueueOptions {
-  /** Jobs with the same key are processed once while the previous one is retained. */
+  /** Requests with the same key collapse into one job while it waits or runs. */
   readonly deduplicationKey: string;
 }
 

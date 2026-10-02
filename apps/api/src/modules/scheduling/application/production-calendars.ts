@@ -1,4 +1,4 @@
-import { YearlyProductionCalendar, type Clock, type ProductionCalendar } from '@mestechko/domain';
+import { YearlyProductionCalendar, type ProductionCalendar } from '@mestechko/domain';
 import type { JobQueue } from '../../../shared/application/job-queue.js';
 import { productionCalendarSyncJob, syncDeduplicationKey } from './production-calendar-jobs.js';
 import type { ProductionCalendarStore, WarningLogger } from './ports.js';
@@ -11,7 +11,6 @@ export class ProductionCalendars {
   constructor(
     private readonly store: ProductionCalendarStore,
     private readonly queue: JobQueue,
-    private readonly clock: Clock,
     private readonly logger: WarningLogger,
   ) {}
 
@@ -24,7 +23,7 @@ export class ProductionCalendars {
         .enqueue(
           productionCalendarSyncJob,
           { countryCode, year },
-          { deduplicationKey: syncDeduplicationKey(countryCode, year, this.clock) },
+          { deduplicationKey: syncDeduplicationKey(countryCode, year) },
         )
         .catch((error: unknown) => {
           this.logger.warn({ countryCode, year, err: error }, 'Could not request calendar sync');

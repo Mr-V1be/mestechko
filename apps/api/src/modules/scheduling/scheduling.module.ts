@@ -48,16 +48,11 @@ import { KyselyWorkCalendarReader } from './infrastructure/kysely-work-calendar-
     },
     {
       provide: ProductionCalendars,
-      useFactory: (
-        store: ProductionCalendarStore,
-        queue: JobQueue,
-        clock: Clock,
-        logger: PinoLogger,
-      ) => {
+      useFactory: (store: ProductionCalendarStore, queue: JobQueue, logger: PinoLogger) => {
         logger.setContext(ProductionCalendars.name);
-        return new ProductionCalendars(store, queue, clock, logger);
+        return new ProductionCalendars(store, queue, logger);
       },
-      inject: [PRODUCTION_CALENDAR_STORE, JOB_QUEUE, CLOCK, PinoLogger],
+      inject: [PRODUCTION_CALENDAR_STORE, JOB_QUEUE, PinoLogger],
     },
     {
       provide: productionCalendarHandlerTokens.sync,
