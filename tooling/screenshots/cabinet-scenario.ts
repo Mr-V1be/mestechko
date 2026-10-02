@@ -55,7 +55,7 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
   // Bookings the demo client changed in the Mini App carry their history.
   await page.getByLabel('Период').click();
   await page.getByRole('option', { name: 'Ближайшие 60 дней' }).click();
-  await page.getByLabel('Поиск').fill('916 123-45-67');
+  await page.getByLabel('Поиск').fill('Гость');
   await page.waitForTimeout(SCROLL_SETTLE_MS);
   await page.waitForLoadState('networkidle');
   // A cancelled booking: rows on wide screens, cards on phones.

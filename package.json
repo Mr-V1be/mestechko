@@ -16,6 +16,7 @@
     "db:codegen": "pnpm --filter @mestechko/api db:codegen",
     "db:seed": "pnpm --filter @mestechko/api db:seed",
     "db:setup": "pnpm db:provision && pnpm db:migrate && pnpm db:seed",
+    "demo:reset": "pnpm --filter @mestechko/api db:seed",
     "bot:setup": "pnpm --filter @mestechko/api bot:setup",
     "bot:check": "pnpm --filter @mestechko/api bot:check",
     "dev:api": "pnpm --filter @mestechko/api dev",
@@ -32,7 +33,7 @@
     "gate:limits": "node tooling/gates/source-limits.ts",
     "gate:tokens": "node tooling/gates/design-tokens.ts",
     "gate": "pnpm gate:limits && pnpm gate:tokens && pnpm format:check && pnpm lint && pnpm typecheck && pnpm contracts:check && pnpm test",
-    "screenshots": "node tooling/screenshots/capture.ts",
+    "screenshots": "node --env-file-if-exists=.env tooling/screenshots/run.ts",
     "contracts:generate": "pnpm --filter @mestechko/contracts generate"
   },
   "devDependencies": {
