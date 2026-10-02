@@ -3,6 +3,7 @@ import type { ProductionCalendar } from '../calendar/production-calendar.js';
 import { invariant } from '../shared/domain-error.js';
 import { Temporal } from '../time/temporal.js';
 import type { PlainDate } from '../time/zoned-time.js';
+import { isAbsent, type StaffAbsence } from './absences.js';
 import type { DayTemplate } from './day-template.js';
 import {
   isDateWithin,
@@ -32,6 +33,8 @@ export interface ScheduleOverride {
 export interface StaffWorkCalendar {
   readonly assignments: readonly ScheduleAssignment[];
   readonly overrides: readonly ScheduleOverride[];
+  /** Vacations, sick leave and days off: no work on these dates whatever else says. */
+  readonly absences: readonly StaffAbsence[];
 }
 
 export interface CalendarContext {
@@ -64,6 +67,9 @@ export function resolveStaffDay(
   locationId: string,
   context: CalendarContext,
 ): DayTemplate | null {
+  if (isAbsent(workCalendar.absences, date)) {
+    return null;
+  }
   const override = workCalendar.overrides.find((candidate) => candidate.date.equals(date));
   if (override) {
     return override.locationId === locationId ? override.template : null;

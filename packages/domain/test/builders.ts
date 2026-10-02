@@ -57,9 +57,10 @@ const baseRules: BookingRules = {
   maxServicesPerBooking: 4,
   staffAssignment: 'balanced',
   calendarPolicy: ignoreProductionCalendar,
-  prepayment: { depositPercent: 0 },
+  prepayment: { depositPercent: 0, holdMinutes: 15 },
   repeatVisit: { suggestAfterDays: null },
   clientChanges: { cutoffMinutes: 120 },
+  waitlist: { offerHoldMinutes: 20 },
 };
 
 export const rules = (overrides: BookingRulesOverrides = {}): BookingRules =>
@@ -100,7 +101,7 @@ export function staff(id: string, options: StaffOptions): StaffCandidate {
   return {
     id,
     rank: options.rank ?? 0,
-    workCalendar: { assignments, overrides: options.overrides ?? [] },
+    workCalendar: { assignments, overrides: options.overrides ?? [], absences: [] },
     serviceTerms: new Map(
       Object.entries(options.services).map(([serviceId, minutes]) => [
         serviceId,

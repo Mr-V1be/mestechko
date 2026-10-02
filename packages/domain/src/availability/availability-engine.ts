@@ -209,3 +209,67 @@ export function planBookingOptions(request: AvailabilityRequest, start: number):
     return plan ? [plan] : [];
   });
 }
+
+/** Why a staff member cannot take the services at a start; the front desk shows it. */
+export const unavailableReasons = [
+  'past',
+  'beyond_horizon',
+  'off_grid',
+  'not_qualified',
+  'not_working',
+  'outside_hours',
+  'staff_busy',
+  'resource_busy',
+] as const;
+export type UnavailableReason = (typeof unavailableReasons)[number];
+
+/**
+ * Explains why `planBookingOptions` finds nothing for a staff member at a start, from
+ * the most basic cause to the most specific; `null` when the start can be planned.
+ */
+export function explainUnavailable(
+  request: AvailabilityRequest,
+  staffId: string,
+  start: number,
+): UnavailableReason | null {
+  const prepared = prepare(request);
+  const date = localDateOf(start, request.location.timeZone);
+  if (start < prepared.earliestStart) {
+    return 'past';
+  }
+  if (!prepared.dates.some((candidate) => candidate.equals(date))) {
+    return 'beyond_horizon';
+  }
+  if (!candidateStarts(prepared, date).includes(start)) {
+    return 'off_grid';
+  }
+  const staff = prepared.eligible.find((candidate) => candidate.id === staffId);
+  if (!staff) {
+    return 'not_qualified';
+  }
+  const template = resolveStaffDay(staff.workCalendar, date, request.location.id, {
+    calendar: request.calendar,
+    policy: request.rules.calendarPolicy,
+  });
+  if (!template) {
+    return 'not_working';
+  }
+  const working = normalizeIntervals(
+    workingIntervals(template)
+      .map((interval) => wallIntervalToInstants(date, interval, request.location.timeZone))
+      .filter((interval): interval is InstantInterval => interval !== null),
+  );
+  // Without resources the plan depends on the staff member's time alone.
+  const staffOnly: PlanningContext = {
+    ...prepared.planning,
+    services: prepared.planning.services.map((service) => ({ ...service, resourceTypeId: null })),
+  };
+  if (!planForStaff(staff, start, working, staffOnly)) {
+    return 'outside_hours';
+  }
+  const free = freeTimeOn(prepared, staff, date);
+  if (!planForStaff(staff, start, free, staffOnly)) {
+    return 'staff_busy';
+  }
+  return planForStaff(staff, start, free, prepared.planning) ? null : 'resource_busy';
+}

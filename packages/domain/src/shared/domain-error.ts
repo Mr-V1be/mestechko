@@ -12,6 +12,11 @@ export const domainErrorCodes = [
   'invalid_service_combo',
   'invalid_money',
   'invalid_waitlist_window',
+  'invalid_ledger_entry',
+  'insufficient_balance',
+  'invalid_loyalty',
+  'invalid_pass',
+  'incompatible_services',
   'unknown_reference',
 ] as const;
 

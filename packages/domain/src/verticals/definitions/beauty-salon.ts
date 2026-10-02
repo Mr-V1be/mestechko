@@ -107,8 +107,9 @@ export const beautySalon = defineVertical({
       closeOnNonWorkingDays: false,
       preHolidayShorteningMinutes: 0,
     },
-    prepayment: { depositPercent: 0 },
+    prepayment: { depositPercent: 0, holdMinutes: 15 },
     repeatVisit: { suggestAfterDays: 35 },
     clientChanges: { cutoffMinutes: 120 },
+    waitlist: { offerHoldMinutes: 20 },
   },
 });

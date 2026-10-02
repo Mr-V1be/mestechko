@@ -79,8 +79,9 @@ export const dentalClinic = defineVertical({
       closeOnNonWorkingDays: false,
       preHolidayShorteningMinutes: 60,
     },
-    prepayment: { depositPercent: 0 },
+    prepayment: { depositPercent: 0, holdMinutes: 30 },
     repeatVisit: { suggestAfterDays: 180 },
     clientChanges: { cutoffMinutes: 1440 },
+    waitlist: { offerHoldMinutes: 60 },
   },
 });

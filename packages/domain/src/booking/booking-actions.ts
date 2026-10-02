@@ -1,4 +1,5 @@
 import type { ClientChangesRule } from './booking-rules.js';
+import { bookingStatuses } from './booking-status.js';
 import {
   canConfirmAttendance,
   clientChangeVerdict,
@@ -23,7 +24,9 @@ export const bookingActions = {
     isAvailable: (booking, now, rule) => clientChangeVerdict(booking, now, rule) === 'allowed',
   },
   cancel: {
-    isAvailable: (booking, now, rule) => clientChangeVerdict(booking, now, rule) === 'allowed',
+    isAvailable: (booking, now, rule) =>
+      bookingStatuses[booking.status].clientMayRelease ||
+      clientChangeVerdict(booking, now, rule) === 'allowed',
   },
 } as const satisfies Record<string, BookingActionDefinition>;
 

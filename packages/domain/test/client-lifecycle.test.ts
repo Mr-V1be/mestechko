@@ -129,6 +129,14 @@ describe('waitlist windows', () => {
     ).toBeNull();
   });
 
+  it('passes a time the client let go to the next start, not back to them', () => {
+    const starts = [Date.UTC(2026, 9, 10, 10, 0), Date.UTC(2026, 9, 10, 11, 0)];
+    const offered = new Set([Date.UTC(2026, 9, 10, 10, 0)]);
+    expect(firstStartInWindow(starts, waitlistWindowOf(null), localMinute, offered)).toBe(
+      Date.UTC(2026, 9, 10, 11, 0),
+    );
+  });
+
   it('places every minute of the day in exactly one part', () => {
     expect(dayPartOfMinute(0)).toBe('morning');
     expect(dayPartOfMinute(12 * 60)).toBe('afternoon');

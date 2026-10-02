@@ -1,5 +1,6 @@
 {
   "status": {
+    "held": "Ожидает",
     "confirmed": "Подтверждена",
     "completed": "Состоялась",
     "no_show": "Неявка",
@@ -12,5 +13,9 @@
     "max_bot": "Бот в MAX",
     "cabinet": "Администратор",
     "widget": "Сайт"
+  },
+  "holdReason": {
+    "payment": "Ждёт предоплату",
+    "waitlist_offer": "Предложена из листа ожидания"
   }
 }

@@ -22,7 +22,7 @@ interface NotificationKindDefinition {
  */
 export const notificationKinds = {
   booking_created: {
-    schedule: { kind: 'on_event', events: ['created'] },
+    schedule: { kind: 'on_event', events: ['created', 'confirmed'] },
     actions: ['reschedule', 'cancel'],
     staleAfterMinutes: 12 * 60,
   },
@@ -64,7 +64,11 @@ export const notificationKindIds = Object.keys(notificationKinds) as Notificatio
 export const REMINDER_MIN_LEAD_MINUTES = 60;
 
 /** Lifecycle events after which the visit is still ahead and reminders apply. */
-const ACTIVE_EVENTS: ReadonlySet<BookingLifecycleEvent> = new Set(['created', 'rescheduled']);
+const ACTIVE_EVENTS: ReadonlySet<BookingLifecycleEvent> = new Set([
+  'created',
+  'confirmed',
+  'rescheduled',
+]);
 
 export interface PlannedNotification {
   readonly kind: NotificationKind;

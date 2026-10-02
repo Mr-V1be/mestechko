@@ -1,5 +1,13 @@
 /** Changes in a booking's life after it was made; the booking keeps its current state. */
-export const bookingEventKinds = ['rescheduled', 'cancelled', 'attendance_confirmed'] as const;
+export const bookingEventKinds = [
+  'rescheduled',
+  'cancelled',
+  'attendance_confirmed',
+  /** A held booking became firm: the prepayment arrived or the offer was accepted. */
+  'confirmed',
+  'completed',
+  'no_show',
+] as const;
 export type BookingEventKind = (typeof bookingEventKinds)[number];
 
 /** Who changed the booking. */

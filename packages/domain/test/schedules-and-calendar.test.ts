@@ -57,6 +57,7 @@ describe('schedule patterns', () => {
         },
       ],
       overrides: [],
+      absences: [],
     };
     expect(resolve(workCalendar, '2026-03-02')?.work).toEqual([hours('09:00', '18:00')]);
     expect(resolve(workCalendar, '2026-03-03')).toBeNull();
@@ -75,6 +76,7 @@ describe('schedule patterns', () => {
         { locationId: LOCATION_ID, pattern, validFrom: date('2026-01-01'), validUntil: null },
       ],
       overrides: [],
+      absences: [],
     };
     const working = ['2026-02-26', '2026-02-27', '2026-03-02', '2026-03-03', '2026-03-06'];
     const off = ['2026-02-28', '2026-03-01', '2026-03-04', '2026-03-05'];
@@ -103,6 +105,7 @@ describe('schedule patterns', () => {
         },
       ],
       overrides: [],
+      absences: [],
     };
     expect(resolve(workCalendar, '2026-03-02')).toBeNull();
     expect(resolve(workCalendar, '2026-03-04')).not.toBeNull();
@@ -124,6 +127,7 @@ describe('schedule patterns', () => {
         { date: date('2026-03-04'), locationId: LOCATION_ID, template: day('12:00', '15:00') },
         { date: date('2026-03-05'), locationId: 'other-branch', template: day('12:00', '15:00') },
       ],
+      absences: [],
     };
     expect(resolve(workCalendar, '2026-03-03')).toBeNull();
     expect(resolve(workCalendar, '2026-03-04')?.work).toEqual([hours('12:00', '15:00')]);
@@ -135,6 +139,7 @@ describe('schedule patterns', () => {
       validateWorkCalendar({
         assignments: [{ locationId: LOCATION_ID, pattern, validFrom: MONDAY, validUntil: null }],
         overrides: [],
+        absences: [],
       });
     };
     expect(withPattern({ kind: 'cycle', anchorDate: MONDAY, days: [null, null] })).toThrow(
@@ -158,6 +163,7 @@ describe('production calendar', () => {
     overrides: [
       { date: date('2026-03-10'), locationId: LOCATION_ID, template: day('10:00', '14:00') },
     ],
+    absences: [],
   };
   const calendar = calendarWith({
     '2026-03-09': 'public_holiday',

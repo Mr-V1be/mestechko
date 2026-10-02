@@ -6,6 +6,13 @@ import { staffAssignmentStrategies, type StaffAssignmentStrategyId } from './sta
 export interface PrepaymentRule {
   /** Share of the price paid in advance, `0` means no prepayment. */
   readonly depositPercent: number;
+  /** How long the time is held for an unpaid booking before it is released. */
+  readonly holdMinutes: number;
+}
+
+export interface WaitlistRule {
+  /** How long freed time is held for the client it is offered to, before the next. */
+  readonly offerHoldMinutes: number;
 }
 
 export interface ClientChangesRule {
@@ -32,6 +39,7 @@ export interface BookingRules {
   readonly prepayment: PrepaymentRule;
   readonly repeatVisit: RepeatVisitRule;
   readonly clientChanges: ClientChangesRule;
+  readonly waitlist: WaitlistRule;
 }
 
 /** Only the differences from the vertical defaults are stored per business. */
@@ -46,6 +54,7 @@ const HORIZON_RANGE = { min: 1, max: 366 } as const;
 const SERVICES_RANGE = { min: 1, max: 10 } as const;
 const PERCENT_MAX = 100;
 const CHANGE_CUTOFF_RANGE = { min: 0, max: 7 * 24 * 60 } as const;
+const HOLD_RANGE = { min: 5, max: 24 * 60 } as const;
 
 function isWithin(value: number, range: { min: number; max: number }): boolean {
   return Number.isInteger(value) && value >= range.min && value <= range.max;
@@ -89,6 +98,12 @@ export function validateBookingRules(rules: BookingRules): void {
     'invalid_booking_rules',
     'Change cutoff must be between 0 minutes and 7 days',
   );
+  invariant(
+    isWithin(rules.prepayment.holdMinutes, HOLD_RANGE) &&
+      isWithin(rules.waitlist.offerHoldMinutes, HOLD_RANGE),
+    'invalid_booking_rules',
+    'Holds last between 5 minutes and a day',
+  );
   validateCalendarPolicy(rules.calendarPolicy);
 }
 
@@ -106,7 +121,25 @@ export function resolveBookingRules(
     prepayment: { ...defaults.prepayment, ...overrides.prepayment },
     repeatVisit: { ...defaults.repeatVisit, ...overrides.repeatVisit },
     clientChanges: { ...defaults.clientChanges, ...overrides.clientChanges },
+    waitlist: { ...defaults.waitlist, ...overrides.waitlist },
   };
   validateBookingRules(rules);
   return rules;
+}
+
+/** Start precision of bookings the front desk places by hand. */
+export const FRONT_DESK_STEP_MINUTES = SLOT_STEP_RANGE.min;
+
+/**
+ * Rules for bookings the business makes or moves itself. The engine still checks
+ * schedules, breaks, buffers, resources and other bookings; only the limits meant for
+ * online clients fall away: a walk-in may start now, far ahead, at any five minutes.
+ */
+export function frontDeskRules(rules: BookingRules): BookingRules {
+  return {
+    ...rules,
+    slotStepMinutes: FRONT_DESK_STEP_MINUTES,
+    minLeadMinutes: 0,
+    horizonDays: HORIZON_RANGE.max,
+  };
 }

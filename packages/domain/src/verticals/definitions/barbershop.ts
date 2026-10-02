@@ -76,8 +76,9 @@ export const barbershop = defineVertical({
       closeOnNonWorkingDays: false,
       preHolidayShorteningMinutes: 0,
     },
-    prepayment: { depositPercent: 0 },
+    prepayment: { depositPercent: 0, holdMinutes: 15 },
     repeatVisit: { suggestAfterDays: 28 },
     clientChanges: { cutoffMinutes: 60 },
+    waitlist: { offerHoldMinutes: 15 },
   },
 });

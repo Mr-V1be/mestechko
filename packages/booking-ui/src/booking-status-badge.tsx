@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 /** How each booking status reads at a glance. */
 export const bookingStatusTones: Readonly<Record<BookingStatus, BadgeTone>> = {
+  held: 'outline',
   confirmed: 'accent',
   completed: 'success',
   no_show: 'danger',

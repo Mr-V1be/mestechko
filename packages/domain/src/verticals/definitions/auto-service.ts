@@ -79,8 +79,9 @@ export const autoService = defineVertical({
       closeOnNonWorkingDays: false,
       preHolidayShorteningMinutes: 60,
     },
-    prepayment: { depositPercent: 0 },
+    prepayment: { depositPercent: 0, holdMinutes: 30 },
     repeatVisit: { suggestAfterDays: 180 },
     clientChanges: { cutoffMinutes: 240 },
+    waitlist: { offerHoldMinutes: 30 },
   },
 });
