@@ -3,8 +3,13 @@ import {
   planBookingNotifications,
   type BookingLifecycleEvent,
   type BookingSource,
+  type MessengerChannel,
 } from '@mestechko/domain';
-import type { NotificationOutbox } from '../../../notifications/application/ports.js';
+import type { MessengerContacts } from '../../../clients/application/ports.js';
+import type {
+  NotificationOutbox,
+  NotificationRecipient,
+} from '../../../notifications/application/ports.js';
 
 export interface NotifiedBooking {
   readonly id: string;
@@ -18,10 +23,15 @@ export interface NotifiedBooking {
 
 /**
  * Turns a booking event into outbox messages: the notice and the reminders of the
- * booking's current version replace whatever was pending for it.
+ * booking's current version replace whatever was pending for it. Messages go to the
+ * messenger the client booked through, or, for bookings made by the business or on a
+ * website, to the messenger the client allowed to write to them.
  */
 export class BookingNotifier {
-  constructor(private readonly outbox: NotificationOutbox) {}
+  constructor(
+    private readonly outbox: NotificationOutbox,
+    private readonly contacts: MessengerContacts,
+  ) {}
 
   async plan(input: {
     readonly businessId: string;
@@ -31,15 +41,11 @@ export class BookingNotifier {
     readonly seenByClient: boolean;
     readonly now: Date;
   }): Promise<void> {
-    const channel = bookingSources[input.booking.source].channel;
     await this.outbox.replaceForBooking({
       businessId: input.businessId,
       bookingId: input.booking.id,
       bookingVersion: input.booking.version,
-      recipient:
-        channel && input.booking.customerId
-          ? { customerId: input.booking.customerId, channel }
-          : null,
+      recipient: await this.recipientOf(input.booking),
       planned: planBookingNotifications({
         event: input.event,
         startsAt: input.booking.startsAt.getTime(),
@@ -48,5 +54,15 @@ export class BookingNotifier {
       }),
       now: input.now,
     });
+  }
+
+  private async recipientOf(booking: NotifiedBooking): Promise<NotificationRecipient | null> {
+    const customerId = booking.customerId;
+    if (!customerId) {
+      return null;
+    }
+    const channel: MessengerChannel | null =
+      bookingSources[booking.source].channel ?? (await this.contacts.preferredChannel(customerId));
+    return channel ? { customerId, channel } : null;
   }
 }

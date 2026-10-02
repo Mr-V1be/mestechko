@@ -17,6 +17,8 @@ export const apiErrors = {
   booking_changed: 409,
   /** Online changes are closed for this booking: too close to the visit, or it is final. */
   change_not_allowed: 409,
+  /** A schedule change now affects other visits than the ones confirmed; review again. */
+  impact_changed: 409,
   rate_limited: 429,
   internal: 500,
   dependency_unavailable: 503,

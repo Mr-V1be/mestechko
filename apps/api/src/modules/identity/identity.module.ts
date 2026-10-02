@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import type { Clock, VerticalRegistry } from '@mestechko/domain';
 import { sharedResources } from '@mestechko/i18n';
-import type { Redis } from 'ioredis';
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import type { AuthKind } from '@mestechko/contracts';
@@ -10,7 +9,7 @@ import {
   type Authenticator,
   type AuthenticatorRegistry,
 } from '../../platform/http/principal.js';
-import { REDIS } from '../../platform/redis/redis.js';
+import { RATE_LIMITER, type RateLimiter } from '../../shared/application/rate-limits.js';
 import { CLOCK, ID_GENERATOR, type IdGenerator } from '../../shared/application/ports.js';
 import {
   BUSINESS_DIRECTORY,
@@ -25,14 +24,12 @@ import { DemoLaunchController } from './api/demo-launch.controller.js';
 import { CreateDemoTelegramLaunch } from './application/demo-telegram-launch.js';
 import { GetMe } from './application/me.js';
 import {
-  LOGIN_THROTTLE,
   PASSWORD_HASHER,
   SESSION_STORE,
   SESSION_TOKENS,
   TELEGRAM_LAUNCH_SIGNER,
   TELEGRAM_LAUNCH_VERIFIER,
   USER_ACCOUNTS,
-  type LoginThrottle,
   type PasswordHasher,
   type SessionStore,
   type SessionTokens,
@@ -43,7 +40,6 @@ import {
 import { CabinetSessions } from './application/sessions.js';
 import { RandomSessionTokens, ScryptPasswordHasher } from './infrastructure/crypto-adapters.js';
 import { KyselyIdentityStore } from './infrastructure/kysely-identity-store.js';
-import { RedisLoginThrottle } from './infrastructure/redis-login-throttle.js';
 import { TmaTelegramLaunch } from './infrastructure/tma-telegram-launch.js';
 
 @Module({
@@ -59,11 +55,6 @@ import { TmaTelegramLaunch } from './infrastructure/tma-telegram-launch.js';
     { provide: SESSION_STORE, useExisting: KyselyIdentityStore },
     { provide: PASSWORD_HASHER, useFactory: () => new ScryptPasswordHasher() },
     { provide: SESSION_TOKENS, useFactory: () => new RandomSessionTokens() },
-    {
-      provide: LOGIN_THROTTLE,
-      useFactory: (redis: Redis) => new RedisLoginThrottle(redis),
-      inject: [REDIS],
-    },
     {
       provide: TmaTelegramLaunch,
       useFactory: (config: AppConfig, clock: Clock) =>
@@ -85,7 +76,7 @@ import { TmaTelegramLaunch } from './infrastructure/tma-telegram-launch.js';
         accounts: UserAccounts,
         store: SessionStore,
         hasher: PasswordHasher,
-        throttle: LoginThrottle,
+        limits: RateLimiter,
         tokens: SessionTokens,
         memberships: MembershipDirectory,
         businesses: BusinessDirectory,
@@ -97,7 +88,7 @@ import { TmaTelegramLaunch } from './infrastructure/tma-telegram-launch.js';
           accounts,
           store,
           hasher,
-          throttle,
+          limits,
           tokens,
           memberships,
           businesses,
@@ -112,7 +103,7 @@ import { TmaTelegramLaunch } from './infrastructure/tma-telegram-launch.js';
         USER_ACCOUNTS,
         SESSION_STORE,
         PASSWORD_HASHER,
-        LOGIN_THROTTLE,
+        RATE_LIMITER,
         SESSION_TOKENS,
         MEMBERSHIP_DIRECTORY,
         BUSINESS_DIRECTORY,

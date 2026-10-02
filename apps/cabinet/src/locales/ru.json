@@ -139,14 +139,18 @@
     "history": {
       "rescheduled": "Перенесена",
       "cancelled": "Отменена",
-      "attendance_confirmed": "Клиент подтвердил визит"
+      "attendance_confirmed": "Клиент подтвердил визит",
+      "confirmed": "Подтверждена",
+      "completed": "Визит состоялся",
+      "no_show": "Клиент не пришёл"
     },
     "actor": {
       "client": "Клиент",
       "business": "Заведение",
       "system": "Автоматически"
     },
-    "previousStart": "Было: {{when}}"
+    "previousStart": "Было: {{when}}",
+    "previousStaff": "Был специалист: {{name}}"
   },
   "access": {
     "title": "Нет доступа к разделу",

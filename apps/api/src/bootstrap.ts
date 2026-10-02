@@ -5,6 +5,7 @@ import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fa
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module.js';
 import type { AppConfig } from './platform/config/app-config.js';
+import { registerBodyParsers } from './platform/http/body-parsers.js';
 import { REQUEST_ID_HEADER, requestIdOf } from './platform/observability/logging.js';
 import type { Telemetry } from './platform/observability/telemetry.js';
 
@@ -30,9 +31,11 @@ export async function bootstrap(
       requestIdHeader: false,
       genReqId: requestIdOf,
     }),
-    { bufferLogs: true },
+    // Raw bodies let payment notifications be checked against the provider's signature.
+    { bufferLogs: true, rawBody: true },
   );
   app.useLogger(app.get(Logger));
+  registerBodyParsers(app.getHttpAdapter().getInstance());
   app
     .getHttpAdapter()
     .getInstance()

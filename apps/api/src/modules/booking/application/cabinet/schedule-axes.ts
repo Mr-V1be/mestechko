@@ -1,5 +1,5 @@
 import type { ScheduleAxis, ScheduleBooking, ScheduleColumn } from '@mestechko/contracts';
-import { normalizeIntervals, type InstantInterval } from '@mestechko/domain';
+import { bookingStatuses, normalizeIntervals, type InstantInterval } from '@mestechko/domain';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { ResourceView, StaffView } from '../../../catalog/application/catalog-reader.js';
 import type { ScheduleItemView } from './ports.js';
@@ -38,8 +38,14 @@ function blockOf(columnId: string, items: readonly ScheduleItemView[]): Schedule
   }
   return {
     id: first.bookingId,
+    version: first.version,
     columnId,
+    staffId: first.staffId,
     status: first.status,
+    hold: first.hold
+      ? { reason: first.hold.reason, expiresAt: first.hold.expiresAt.toISOString() }
+      : null,
+    movable: bookingStatuses[first.status].movable,
     start: iso(Math.min(...items.map((item) => item.startsAt.getTime()))),
     end: iso(Math.max(...items.map((item) => item.endsAt.getTime()))),
     occupied: {

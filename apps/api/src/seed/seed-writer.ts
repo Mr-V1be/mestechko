@@ -250,7 +250,7 @@ async function writeClients(
       customerId,
       displayName: person.displayName,
       phone: person.phone,
-      notes: null,
+      tags: [],
       createdAt,
       updatedAt: createdAt,
     };
@@ -294,6 +294,9 @@ async function writeBookings(
           clientId: required(clientIds.get(booking.clientIndex), 'client'),
           staffId: booking.staff.id,
           status: booking.status,
+          holdReason: null,
+          holdExpiresAt: null,
+          depositMinor: 0,
           source: booking.source,
           startsAt: new Date(booking.plan.start),
           endsAt: new Date(booking.plan.end),

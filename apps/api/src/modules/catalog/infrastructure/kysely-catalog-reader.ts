@@ -1,3 +1,4 @@
+import type { IncompatiblePair } from '@mestechko/domain';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import type {
   CatalogReader,
@@ -50,6 +51,7 @@ export class KyselyCatalogReader implements CatalogReader {
         'services.bufferAfterMinutes',
         'services.priceMinor',
         'services.resourceTypeId',
+        'services.depositPercent',
       ])
       .where('services.isActive', '=', true)
       .orderBy('serviceCategories.sortOrder')
@@ -108,5 +110,21 @@ export class KyselyCatalogReader implements CatalogReader {
       .where('staffMembers.isActive', '=', true)
       .where('staffServices.serviceId', 'in', serviceIds)
       .execute();
+  }
+
+  async listIncompatibilities(serviceIds?: readonly string[]): Promise<IncompatiblePair[]> {
+    if (serviceIds?.length === 0) {
+      return [];
+    }
+    let query = this.unitOfWork
+      .tenant()
+      .selectFrom('serviceIncompatibilities')
+      .select(['serviceId', 'otherServiceId']);
+    if (serviceIds) {
+      query = query.where((eb) =>
+        eb.or([eb('serviceId', 'in', serviceIds), eb('otherServiceId', 'in', serviceIds)]),
+      );
+    }
+    return query.execute();
   }
 }

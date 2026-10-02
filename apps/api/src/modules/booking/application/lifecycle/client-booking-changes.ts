@@ -1,9 +1,11 @@
 import type { ClientBooking } from '@mestechko/contracts';
 import {
+  bookingStatuses,
   canConfirmAttendance,
   clientChangeDeadline,
   clientChangeVerdict,
   localDateOf,
+  refundsDeposit,
   planBookingOptions,
   priceRange,
   withinAgreedPrice,
@@ -12,7 +14,6 @@ import {
   type MessengerChannel,
 } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
-import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { ClientDirectory, CustomerIdentities } from '../../../clients/application/ports.js';
@@ -24,13 +25,9 @@ import type { AvailabilityAssembler } from '../availability/availability-assembl
 import { pricePlans } from '../availability/plan-pricing.js';
 import { bookingItemsOf } from '../booking-items.js';
 import type { ClientIdentity } from '../client/client-bookings.js';
-import { toClientBooking } from '../client/client-booking-view.js';
-import {
-  SlotConflictError,
-  type BookingFollowUps,
-  type ClientBookingQueries,
-  type CommittedBookingChange,
-} from '../ports.js';
+import type { ClientBookingPresenter } from '../client/client-booking-presenter.js';
+import { SlotConflictError, type BookingFollowUps, type CommittedBookingChange } from '../ports.js';
+import type { BookingCancellation } from './booking-cancellation.js';
 import type { BookingNotifier } from './booking-notifier.js';
 import type { BookingLifecycleStore, LockedBooking } from './ports.js';
 
@@ -48,8 +45,10 @@ const MAX_ATTEMPTS = 4;
 
 interface ChangeOutcome {
   readonly clientId: string;
-  readonly freedTime: CommittedBookingChange['freedTime'];
+  readonly change: Omit<CommittedBookingChange, 'businessId'>;
 }
+
+const NO_FOLLOW_UP: Omit<CommittedBookingChange, 'businessId'> = { freedTime: null };
 
 /** Reschedule, cancel and attendance by the client, under the business's change rules. */
 export class ClientBookingChanges {
@@ -60,29 +59,33 @@ export class ClientBookingChanges {
     private readonly clients: ClientDirectory,
     private readonly store: BookingLifecycleStore,
     private readonly assembler: AvailabilityAssembler,
-    private readonly queries: ClientBookingQueries,
     private readonly notifier: BookingNotifier,
+    private readonly cancellation: BookingCancellation,
     private readonly followUps: BookingFollowUps,
-    private readonly avatars: AvatarUrls,
+    private readonly presenter: ClientBookingPresenter,
     private readonly ids: IdGenerator,
     private readonly clock: Clock,
   ) {}
 
+  /** Cancels a confirmed visit while changes are open, or gives up a held time. */
   cancel(identity: ClientIdentity, bookingId: string, origin: ChangeOrigin) {
     return this.change(identity, bookingId, async (context, booking, now) => {
-      this.assertChangeOpen(context, booking, now);
-      await this.store.cancel(booking, now);
-      await this.record(booking, 'cancelled', origin, null, now);
-      await this.notify(
-        context,
-        booking,
-        booking.version + 1,
-        booking.startsAt,
-        'cancelled',
-        origin,
+      if (!bookingStatuses[booking.status].clientMayRelease) {
+        this.assertChangeOpen(context, booking, now);
+      }
+      const outcome = await this.cancellation.cancel(booking, {
+        businessId: context.business.id,
+        actor: 'client',
+        channel: origin.channel,
+        actorUserId: null,
+        refundsDeposit: refundsDeposit('client', 'allowed'),
+        seenByClient: origin.surface === 'chat',
         now,
-      );
-      return this.freed(booking);
+      });
+      return {
+        freedTime: outcome.freedTime,
+        refunds: outcome.refundPaymentId ? [outcome.refundPaymentId] : [],
+      };
     });
   }
 
@@ -91,12 +94,12 @@ export class ClientBookingChanges {
       this.assertChangeOpen(context, booking, now);
       const startsAt = Date.parse(start);
       if (startsAt === booking.startsAt.getTime()) {
-        return null;
+        return NO_FOLLOW_UP;
       }
       const moved = await this.move(context, booking, startsAt, now);
       await this.record(booking, 'rescheduled', origin, booking.startsAt, now);
       await this.notify(context, booking, booking.version + 1, moved, 'rescheduled', origin, now);
-      return this.freed(booking);
+      return { freedTime: this.freed(booking) };
     });
   }
 
@@ -109,13 +112,13 @@ export class ClientBookingChanges {
       };
       if (!canConfirmAttendance(state, now.getTime())) {
         if (booking.attendanceConfirmedAt) {
-          return null;
+          return NO_FOLLOW_UP;
         }
         throw new ApplicationError('change_not_allowed', 'The visit can no longer be confirmed');
       }
       await this.store.confirmAttendance(booking, now);
       await this.record(booking, 'attendance_confirmed', origin, null, now);
-      return null;
+      return NO_FOLLOW_UP;
     });
   }
 
@@ -127,7 +130,7 @@ export class ClientBookingChanges {
       context: BusinessContext,
       booking: LockedBooking,
       now: Date,
-    ) => Promise<ChangeOutcome['freedTime']>,
+    ) => Promise<ChangeOutcome['change']>,
   ): Promise<ClientBooking> {
     const context = await this.businesses.resolve(identity.business);
     const businessId = context.business.id;
@@ -139,22 +142,13 @@ export class ClientBookingChanges {
       if (!client || booking?.clientId !== client.id) {
         throw notFound('Booking');
       }
-      return { clientId: client.id, freedTime: await apply(context, booking, now) };
+      return { clientId: client.id, change: await apply(context, booking, now) };
     });
-    await this.followUps.afterCommit({ businessId, freedTime: outcome.freedTime });
-    const view = await this.unitOfWork.inTenant(
+    await this.followUps.afterCommit({ businessId, ...outcome.change });
+    return this.unitOfWork.inTenant(
       businessId,
-      () => this.queries.get(outcome.clientId, bookingId),
+      () => this.presenter.present(context, outcome.clientId, bookingId),
       { readOnly: true },
-    );
-    if (!view) {
-      throw notFound('Booking');
-    }
-    return toClientBooking(
-      view,
-      this.avatars,
-      context.rules.clientChanges,
-      this.clock.now().epochMilliseconds,
     );
   }
 
@@ -221,6 +215,7 @@ export class ClientBookingChanges {
         await this.store.move(
           booking,
           {
+            staffId: booking.staffId,
             startsAt: new Date(option.plan.start),
             endsAt: new Date(option.plan.end),
             totalPriceMinor: option.total.amountMinor,
@@ -252,6 +247,8 @@ export class ClientBookingChanges {
       actor: 'client',
       channel: origin.channel,
       previousStartsAt,
+      previousStaffId: null,
+      actorUserId: null,
       occurredAt: now,
     });
   }
@@ -280,7 +277,7 @@ export class ClientBookingChanges {
     });
   }
 
-  private freed(booking: LockedBooking): ChangeOutcome['freedTime'] {
+  private freed(booking: LockedBooking): CommittedBookingChange['freedTime'] {
     return {
       locationId: booking.locationId,
       date: localDateOf(booking.startsAt.getTime(), booking.timeZone).toString(),

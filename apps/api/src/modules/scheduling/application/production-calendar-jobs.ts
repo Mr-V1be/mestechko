@@ -32,6 +32,8 @@ export const productionCalendarRefreshJob = defineJob({
   backoffMs: MINUTE_MS,
   concurrency: 1,
   handler: REFRESH_HANDLER,
+  /** Daily at 03:00 UTC, before the business day in Russia. */
+  every: '0 3 * * *',
 });
 
 export const productionCalendarHandlerTokens = { sync: SYNC_HANDLER, refresh: REFRESH_HANDLER };

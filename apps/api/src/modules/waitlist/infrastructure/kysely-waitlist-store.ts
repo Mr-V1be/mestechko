@@ -1,4 +1,4 @@
-import type { WaitlistStatus } from '@mestechko/domain';
+import type { WaitlistOfferStatus, WaitlistStatus } from '@mestechko/domain';
 import { sql } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
@@ -6,8 +6,11 @@ import type {
   NewWaitlistEntry,
   WaitlistEntryRecord,
   WaitlistEntryView,
+  WaitlistOfferRecord,
   WaitlistStore,
 } from '../application/ports.js';
+
+const offerColumns = ['o.id', 'o.entryId', 'o.bookingId', 'o.startsAt', 'o.status'] as const;
 
 interface EntryRow {
   id: string;
@@ -148,6 +151,81 @@ export class KyselyWaitlistStore implements WaitlistStore {
       .set({ status: 'booked', bookingId, updatedAt: now })
       .where('id', '=', entryId)
       .where('status', '=', 'active')
+      .execute();
+  }
+
+  async offeredStarts(entryIds: readonly string[]): Promise<Map<string, Set<number>>> {
+    if (entryIds.length === 0) {
+      return new Map();
+    }
+    const rows = await this.unitOfWork
+      .tenant()
+      .selectFrom('waitlistOffers')
+      .select(['entryId', 'startsAt'])
+      .where('entryId', 'in', entryIds)
+      .execute();
+    const offered = new Map<string, Set<number>>();
+    for (const row of rows) {
+      offered.set(row.entryId, (offered.get(row.entryId) ?? new Set()).add(row.startsAt.getTime()));
+    }
+    return offered;
+  }
+
+  pendingOffers(locationId: string, date: string): Promise<WaitlistOfferRecord[]> {
+    return this.unitOfWork
+      .tenant()
+      .selectFrom('waitlistOffers as o')
+      .innerJoin('waitlistEntries as w', 'w.id', 'o.entryId')
+      .select(offerColumns)
+      .where('w.locationId', '=', locationId)
+      .where('w.desiredDate', '=', date)
+      .where('o.status', '=', 'pending')
+      .execute();
+  }
+
+  async pendingOfferOf(entryId: string): Promise<WaitlistOfferRecord | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('waitlistOffers as o')
+      .select(offerColumns)
+      .where('o.entryId', '=', entryId)
+      .where('o.status', '=', 'pending')
+      .executeTakeFirst();
+    return row ?? null;
+  }
+
+  async findOffer(entryId: string, startsAt: Date): Promise<WaitlistOfferRecord | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('waitlistOffers as o')
+      .select(offerColumns)
+      .where('o.entryId', '=', entryId)
+      .where('o.startsAt', '=', startsAt)
+      .executeTakeFirst();
+    return row ?? null;
+  }
+
+  async insertOffer(offer: Omit<WaitlistOfferRecord, 'status'>, now: Date): Promise<void> {
+    await this.unitOfWork
+      .tenant()
+      .insertInto('waitlistOffers')
+      .values({
+        ...offer,
+        businessId: this.unitOfWork.currentBusinessId(),
+        status: 'pending',
+        createdAt: now,
+        respondedAt: null,
+      })
+      .execute();
+  }
+
+  async closeOffer(offerId: string, status: WaitlistOfferStatus, now: Date): Promise<void> {
+    await this.unitOfWork
+      .tenant()
+      .updateTable('waitlistOffers')
+      .set({ status, respondedAt: now })
+      .where('id', '=', offerId)
+      .where('status', '=', 'pending')
       .execute();
   }
 

@@ -8,6 +8,7 @@ import type {
   ClientRecord,
   CustomerIdentities,
   MessengerClient,
+  NewClient,
 } from '../application/ports.js';
 
 export class KyselyCustomerIdentities implements CustomerIdentities {
@@ -63,6 +64,46 @@ export class KyselyClientDirectory implements ClientDirectory {
     return row ?? null;
   }
 
+  async findById(clientId: string): Promise<ClientRecord | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('clients')
+      .select(['id', 'customerId', 'displayName', 'phone'])
+      .where('id', '=', clientId)
+      .executeTakeFirst();
+    return row ?? null;
+  }
+
+  async findByPhone(phone: string): Promise<ClientRecord | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('clients')
+      .select(['id', 'customerId', 'displayName', 'phone'])
+      .where('phone', '=', phone)
+      .orderBy('updatedAt', 'desc')
+      .executeTakeFirst();
+    return row ?? null;
+  }
+
+  create(client: NewClient): Promise<ClientRecord> {
+    return this.unitOfWork
+      .tenant()
+      .insertInto('clients')
+      .values({
+        id: client.id,
+        businessId: this.unitOfWork.currentBusinessId(),
+        customerId: null,
+        displayName: client.displayName,
+        phone: client.phone,
+        email: client.email,
+        tags: [...client.tags],
+        createdAt: client.now,
+        updatedAt: client.now,
+      })
+      .returning(['id', 'customerId', 'displayName', 'phone'])
+      .executeTakeFirstOrThrow();
+  }
+
   async listByChannel(channel: MessengerChannel): Promise<MessengerClient[]> {
     return this.unitOfWork
       .tenant()
@@ -88,6 +129,7 @@ export class KyselyClientDirectory implements ClientDirectory {
         customerId,
         displayName: contact.displayName,
         phone: contact.phone,
+        tags: [],
         createdAt: ids.now,
         updatedAt: ids.now,
       })

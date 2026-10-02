@@ -26,6 +26,7 @@ export const dispatchNotificationsJob = defineJob({
   backoffMs: 10 * SECOND_MS,
   concurrency: 1,
   handler: DISPATCH_HANDLER,
+  every: '* * * * *',
 });
 
 export const deliverNotificationJob = defineJob({

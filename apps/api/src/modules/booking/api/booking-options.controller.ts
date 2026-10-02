@@ -18,7 +18,7 @@ export class BookingOptionsController {
   async services(
     @ContractInput() input: RouteInput<typeof listPublicServices>,
   ): Promise<RouteResult<typeof listPublicServices>> {
-    return { categories: await this.options.services(input.params.slug, input.query.locationId) };
+    return this.options.services(input.params.slug, input.query.locationId);
   }
 
   @ContractRoute(listPublicStaff)

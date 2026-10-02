@@ -69,7 +69,7 @@ try {
     throw new Error(`${slug} has no locations`);
   }
   const options = app.get(BookingOptions);
-  const service = (await options.services(slug, location.id))[0]?.services[0];
+  const service = (await options.services(slug, location.id)).categories[0]?.services[0];
   if (!service) {
     throw new Error(`${slug} has nothing to book`);
   }

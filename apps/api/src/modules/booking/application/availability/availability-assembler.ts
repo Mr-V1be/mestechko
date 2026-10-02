@@ -1,7 +1,9 @@
 import {
+  assertCompatible,
   BusyIndex,
   localDayBounds,
   type AvailabilityRequest,
+  type BookingRules,
   type Temporal,
   type PlainDate,
   type ServiceSpec,
@@ -34,6 +36,8 @@ export interface AvailabilityScope {
   readonly now: Temporal.Instant;
   /** A booking being rescheduled: its own time does not count as taken. */
   readonly excludeBookingId?: string;
+  /** Rules to plan by; the business's online rules unless the front desk books. */
+  readonly rules?: BookingRules;
 }
 
 export interface AssembledAvailability {
@@ -82,6 +86,7 @@ export class AvailabilityAssembler {
     if (services.length !== new Set(scope.serviceIds).size) {
       throw notFound('Service');
     }
+    assertCompatible(scope.serviceIds, await this.catalog.listIncompatibilities(scope.serviceIds));
     const window = { from: scope.from, to: scope.to };
     const terms = await this.catalog.listStaffTerms(scope.serviceIds);
     const assigned = await this.workCalendars.staffAssignedTo(location.id, window);
@@ -122,7 +127,7 @@ export class AvailabilityAssembler {
       staff: staff.map((member) => ({
         id: member.id,
         rank: member.rank,
-        workCalendar: calendars.get(member.id) ?? { assignments: [], overrides: [] },
+        workCalendar: calendars.get(member.id) ?? { assignments: [], overrides: [], absences: [] },
         serviceTerms: new Map(
           terms
             .filter((term) => term.staffId === member.id)
@@ -132,7 +137,7 @@ export class AvailabilityAssembler {
       resources: resources.map((resource) => ({ id: resource.id, typeId: resource.typeId })),
       busy: BusyIndex.from(busy),
       calendar,
-      rules: scope.context.rules,
+      rules: scope.rules ?? scope.context.rules,
       now: scope.now,
     };
     return { request, location, services, staff, terms };

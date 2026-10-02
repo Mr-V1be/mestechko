@@ -5,19 +5,24 @@
 
 import type { ColumnType } from 'kysely';
 
+export type AbsenceKind = 'day_off' | 'sick_leave' | 'vacation';
+
 export type BookingActor = 'business' | 'client' | 'system';
 
-export type BookingEventKind = 'attendance_confirmed' | 'cancelled' | 'rescheduled';
+export type BookingEventKind =
+  'attendance_confirmed' | 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'rescheduled';
 
 export type BookingSource =
   'cabinet' | 'max_bot' | 'max_mini_app' | 'telegram_bot' | 'telegram_mini_app' | 'widget';
 
-export type BookingStatus = 'cancelled' | 'completed' | 'confirmed' | 'no_show';
+export type BookingStatus = 'cancelled' | 'completed' | 'confirmed' | 'held' | 'no_show';
 
 export type Generated<T> =
   T extends ColumnType<infer S, infer I, infer U>
     ? ColumnType<S, I | undefined, U>
     : ColumnType<T, T | undefined, T>;
+
+export type HoldReason = 'payment' | 'waitlist_offer';
 
 export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
 
@@ -32,6 +37,20 @@ export type JsonObject = {
 export type JsonPrimitive = boolean | number | string | null;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
+export type LedgerAccount = 'money' | 'pass' | 'points';
+
+export type LedgerReason =
+  | 'pass_adjustment'
+  | 'pass_payment'
+  | 'pass_sale'
+  | 'pass_visit'
+  | 'points_accrual'
+  | 'points_adjustment'
+  | 'points_redemption'
+  | 'prepayment'
+  | 'prepayment_refund'
+  | 'visit_payment';
 
 export type MembershipRole = 'admin' | 'owner' | 'staff';
 
@@ -48,22 +67,28 @@ export type NotificationKind =
 export type NotificationStatus =
   'cancelled' | 'failed' | 'pending' | 'sending' | 'sent' | 'skipped';
 
+export type PaymentStatus = 'cancelled' | 'pending' | 'refunded' | 'succeeded';
+
 export type ScheduleIntervalKind = 'break' | 'work';
 
 export type SchedulePatternKind = 'cycle' | 'weekly';
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export type WaitlistOfferStatus = 'accepted' | 'declined' | 'expired' | 'pending' | 'withdrawn';
+
 export type WaitlistStatus = 'active' | 'booked' | 'cancelled';
 
 export interface BookingEvents {
   actor: BookingActor;
+  actorUserId: string | null;
   bookingId: string;
   businessId: string;
   channel: MessengerChannel | null;
   id: string;
   kind: BookingEventKind;
   occurredAt: Timestamp;
+  previousStaffId: string | null;
   previousStartsAt: Timestamp | null;
 }
 
@@ -92,7 +117,10 @@ export interface Bookings {
   clientId: string;
   createdAt: Timestamp;
   currency: string;
+  depositMinor: number;
   endsAt: Timestamp;
+  holdExpiresAt: Timestamp | null;
+  holdReason: HoldReason | null;
   id: string;
   idempotencyKey: string | null;
   locationId: string;
@@ -118,14 +146,46 @@ export interface Businesses {
   verticalId: string;
 }
 
+export interface ClientNotes {
+  authorUserId: string | null;
+  body: string;
+  businessId: string;
+  clientId: string;
+  createdAt: Timestamp;
+  id: string;
+  updatedAt: Timestamp;
+}
+
+export interface ClientPasses {
+  businessId: string;
+  clientId: string;
+  id: string;
+  idempotencyKey: string;
+  name: string;
+  planId: string | null;
+  priceMinor: number;
+  soldAt: Timestamp;
+  soldByUserId: string | null;
+  validFrom: string;
+  validUntil: string;
+  visits: number;
+}
+
+export interface ClientPassServices {
+  businessId: string;
+  passId: string;
+  serviceId: string;
+}
+
 export interface Clients {
   businessId: string;
   createdAt: Timestamp;
   customerId: string | null;
   displayName: string;
+  email: string | null;
   id: string;
-  notes: string | null;
   phone: string | null;
+  tags: string[];
   updatedAt: Timestamp;
 }
 
@@ -143,6 +203,23 @@ export interface Customers {
   id: string;
 }
 
+export interface LedgerEntries {
+  account: LedgerAccount;
+  actorUserId: string | null;
+  amount: number;
+  bookingId: string | null;
+  businessId: string;
+  clientId: string;
+  createdAt: Timestamp;
+  currency: string | null;
+  id: string;
+  idempotencyKey: string | null;
+  note: string | null;
+  passId: string | null;
+  paymentId: string | null;
+  reason: LedgerReason;
+}
+
 export interface Locations {
   address: string;
   businessId: string;
@@ -151,6 +228,14 @@ export interface Locations {
   name: string;
   sortOrder: number;
   timeZone: string;
+}
+
+export interface LoyaltyPrograms {
+  accrualPercent: number;
+  businessId: string;
+  kind: string;
+  maxRedeemPercent: number;
+  updatedAt: Timestamp;
 }
 
 export interface MaxEmulatorMessages {
@@ -216,6 +301,52 @@ export interface Notifications {
   waitlistEntryId: string | null;
 }
 
+export interface PassPlans {
+  businessId: string;
+  createdAt: Timestamp;
+  id: string;
+  isActive: boolean;
+  name: string;
+  priceMinor: number;
+  sortOrder: number;
+  updatedAt: Timestamp;
+  validityDays: number;
+  visits: number;
+}
+
+export interface PassPlanServices {
+  businessId: string;
+  planId: string;
+  serviceId: string;
+}
+
+export interface Payments {
+  amountMinor: number;
+  bookingId: string;
+  businessId: string;
+  checkoutUrl: string | null;
+  clientId: string;
+  createdAt: Timestamp;
+  currency: string;
+  id: string;
+  paidAt: Timestamp | null;
+  provider: string;
+  providerPaymentId: string | null;
+  refundedMinor: number;
+  refundRequestedMinor: number;
+  status: PaymentStatus;
+  updatedAt: Timestamp;
+}
+
+export interface PaymentWebhookEvents {
+  businessId: string;
+  eventId: string;
+  kind: string;
+  paymentId: string;
+  provider: string;
+  receivedAt: Timestamp;
+}
+
 export interface ProductionCalendarYears {
   countryCode: string;
   dayKinds: string;
@@ -243,12 +374,20 @@ export interface ServiceCategories {
   sortOrder: number;
 }
 
+export interface ServiceIncompatibilities {
+  businessId: string;
+  createdAt: Timestamp;
+  otherServiceId: string;
+  serviceId: string;
+}
+
 export interface Services {
   bufferAfterMinutes: number;
   bufferBeforeMinutes: number;
   businessId: string;
   categoryId: string;
   createdAt: Timestamp;
+  depositPercent: number | null;
   description: string | null;
   durationMinutes: number;
   id: string;
@@ -258,6 +397,16 @@ export interface Services {
   resourceTypeId: string | null;
   sortOrder: number;
   templateKey: string | null;
+}
+
+export interface StaffAbsences {
+  businessId: string;
+  createdAt: Timestamp;
+  endsOn: string;
+  id: string;
+  kind: AbsenceKind;
+  staffId: string;
+  startsOn: string;
 }
 
 export interface StaffMembers {
@@ -318,6 +467,39 @@ export interface StaffServices {
   staffId: string;
 }
 
+export interface TestPayEvents {
+  attempts: number;
+  body: string;
+  createdAt: Timestamp;
+  deliveredAt: Timestamp | null;
+  id: string;
+  paymentId: string;
+  type: string;
+}
+
+export interface TestPayPayments {
+  amountMinor: number;
+  createdAt: Timestamp;
+  currency: string;
+  description: string;
+  expiresAt: Timestamp;
+  id: string;
+  idempotencyKey: string;
+  metadata: Json;
+  refundedMinor: number;
+  returnUrl: string;
+  status: string;
+  updatedAt: Timestamp;
+}
+
+export interface TestPayRefunds {
+  amountMinor: number;
+  createdAt: Timestamp;
+  id: string;
+  idempotencyKey: string;
+  paymentId: string;
+}
+
 export interface Users {
   createdAt: Timestamp;
   displayName: string;
@@ -358,33 +540,59 @@ export interface WaitlistEntryServices {
   serviceId: string;
 }
 
+export interface WaitlistOffers {
+  bookingId: string;
+  businessId: string;
+  createdAt: Timestamp;
+  entryId: string;
+  id: string;
+  respondedAt: Timestamp | null;
+  startsAt: Timestamp;
+  status: WaitlistOfferStatus;
+}
+
 export interface DB {
   bookingEvents: BookingEvents;
   bookingItems: BookingItems;
   bookings: Bookings;
   businesses: Businesses;
+  clientNotes: ClientNotes;
+  clientPasses: ClientPasses;
+  clientPassServices: ClientPassServices;
   clients: Clients;
   customerIdentities: CustomerIdentities;
   customers: Customers;
+  ledgerEntries: LedgerEntries;
   locations: Locations;
+  loyaltyPrograms: LoyaltyPrograms;
   maxEmulatorMessages: MaxEmulatorMessages;
   maxEmulatorNotices: MaxEmulatorNotices;
   maxEmulatorUpdates: MaxEmulatorUpdates;
   maxEmulatorUsers: MaxEmulatorUsers;
   memberships: Memberships;
   notifications: Notifications;
+  passPlans: PassPlans;
+  passPlanServices: PassPlanServices;
+  payments: Payments;
+  paymentWebhookEvents: PaymentWebhookEvents;
   productionCalendarYears: ProductionCalendarYears;
   resources: Resources;
   serviceCategories: ServiceCategories;
+  serviceIncompatibilities: ServiceIncompatibilities;
   services: Services;
+  staffAbsences: StaffAbsences;
   staffMembers: StaffMembers;
   staffOverrideIntervals: StaffOverrideIntervals;
   staffScheduleIntervals: StaffScheduleIntervals;
   staffScheduleOverrides: StaffScheduleOverrides;
   staffSchedules: StaffSchedules;
   staffServices: StaffServices;
+  testPayEvents: TestPayEvents;
+  testPayPayments: TestPayPayments;
+  testPayRefunds: TestPayRefunds;
   users: Users;
   userSessions: UserSessions;
   waitlistEntries: WaitlistEntries;
   waitlistEntryServices: WaitlistEntryServices;
+  waitlistOffers: WaitlistOffers;
 }

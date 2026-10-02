@@ -9,16 +9,18 @@ import {
   getRescheduleOptions,
   listMiniAppBookings,
   rescheduleMiniAppBooking,
+  startMiniAppPayment,
   type ClientBooking,
   type RouteInput,
   type RouteResult,
 } from '@mestechko/contracts';
 import { TelegramClient } from '../../../platform/http/auth.guard.js';
-import { clientContactOf } from '../../clients/api/client-contact-policy.js';
+import { clientContactOf } from '../../clients/application/client-contact-policy.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import type { TelegramUser } from '../../../platform/http/principal.js';
 import { ClientBookings, type ClientIdentity } from '../application/client/client-bookings.js';
 import { CreateClientBooking } from '../application/client/create-client-booking.js';
+import { PrepaidBookings } from '../application/client/prepaid-bookings.js';
 import {
   ClientBookingChanges,
   type ChangeOrigin,
@@ -41,6 +43,7 @@ export class MiniAppBookingsController {
     @Inject(ClientBookings) private readonly bookings: ClientBookings,
     @Inject(ClientBookingChanges) private readonly changes: ClientBookingChanges,
     @Inject(RescheduleOptions) private readonly rescheduleOptions: RescheduleOptions,
+    @Inject(PrepaidBookings) private readonly prepaid: PrepaidBookings,
   ) {}
 
   @ContractRoute(createMiniAppBooking)
@@ -59,7 +62,7 @@ export class MiniAppBookingsController {
       staffId: input.body.staffId,
       start: input.body.start,
       agreedTotal: input.body.agreedTotal,
-      contact: clientContactOf(input.body.contact, user),
+      contact: clientContactOf(input.body.contact, { demoNumbersAllowed: user.demoLaunch }),
       comment: input.body.comment,
       surface: MINI_APP.surface,
     });
@@ -142,6 +145,18 @@ export class MiniAppBookingsController {
       identityOf(input.params.slug, user),
       input.params.bookingId,
       MINI_APP,
+    );
+  }
+
+  @ContractRoute(startMiniAppPayment)
+  startPayment(
+    @ContractInput() input: RouteInput<typeof startMiniAppPayment>,
+    @TelegramClient() user: TelegramUser,
+  ): Promise<RouteResult<typeof startMiniAppPayment>> {
+    return this.prepaid.startCheckout(
+      identityOf(input.params.slug, user),
+      input.params.bookingId,
+      input.body.returnPath,
     );
   }
 }

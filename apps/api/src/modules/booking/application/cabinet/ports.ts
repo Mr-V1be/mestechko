@@ -7,12 +7,14 @@ import type {
   InstantInterval,
   MessengerChannel,
 } from '@mestechko/domain';
-import type { Page } from '../ports.js';
+import type { BookingHold, Page } from '../ports.js';
 
 /** One booked service as the cabinet schedule draws it. */
 export interface ScheduleItemView {
   readonly bookingId: string;
+  readonly version: number;
   readonly status: BookingStatus;
+  readonly hold: BookingHold | null;
   readonly staffId: string;
   readonly staffName: string;
   readonly resourceId: string | null;
@@ -34,7 +36,10 @@ export interface CabinetBookingFilter {
 
 export interface CabinetBookingView {
   readonly id: string;
+  readonly version: number;
   readonly status: BookingStatus;
+  readonly hold: BookingHold | null;
+  readonly depositMinor: number;
   readonly source: BookingSource;
   readonly startsAt: Date;
   readonly endsAt: Date;
@@ -60,8 +65,10 @@ export interface BookingHistoryView {
   readonly kind: BookingEventKind;
   readonly actor: BookingActor;
   readonly channel: MessengerChannel | null;
+  readonly actorName: string | null;
   readonly occurredAt: Date;
   readonly previousStartsAt: Date | null;
+  readonly previousStaffName: string | null;
 }
 
 export interface CabinetBookingDetailsView extends CabinetBookingView {
@@ -70,6 +77,7 @@ export interface CabinetBookingDetailsView extends CabinetBookingView {
   readonly attendanceConfirmedAt: Date | null;
   readonly history: readonly BookingHistoryView[];
   readonly items: readonly {
+    readonly staffId: string;
     readonly serviceId: string;
     readonly serviceName: string;
     readonly startsAt: Date;

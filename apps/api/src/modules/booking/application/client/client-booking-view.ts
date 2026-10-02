@@ -8,6 +8,7 @@ import {
   type ClientChangesRule,
 } from '@mestechko/domain';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
+import type { PaymentRecord } from '../../../payments/application/ports.js';
 import type { ClientBookingView } from '../ports.js';
 
 export function clientStateOf(view: ClientBookingView): ClientBookingState {
@@ -21,14 +22,27 @@ export function clientStateOf(view: ClientBookingView): ClientBookingState {
 /** The client's view of a booking, with what they may do with it at `now`. */
 export function toClientBooking(
   view: ClientBookingView,
+  payment: PaymentRecord | null,
   avatars: AvatarUrls,
   rule: ClientChangesRule,
   now: number,
 ): ClientBooking {
   const state = clientStateOf(view);
+  const money = (amountMinor: number) => ({ amountMinor, currency: view.currency });
   return {
     id: view.id,
     status: view.status,
+    hold: view.hold
+      ? { reason: view.hold.reason, expiresAt: view.hold.expiresAt.toISOString() }
+      : null,
+    deposit: view.depositMinor > 0 ? money(view.depositMinor) : null,
+    payment: payment
+      ? {
+          status: payment.status,
+          amount: money(payment.amountMinor),
+          refunded: money(payment.refundedMinor),
+        }
+      : null,
     version: view.version,
     start: view.startsAt.toISOString(),
     end: view.endsAt.toISOString(),

@@ -1,7 +1,7 @@
 import { dayPartIds } from '@mestechko/domain';
 import { z } from 'zod';
-import { instantSchema, localDateSchema, uuidSchema } from '../primitives.js';
-import { defineRoute } from '../route.js';
+import { instantSchema, localDateSchema, uuidSchema } from '../../primitives.js';
+import { defineRoute } from '../../route.js';
 import { bookingContactSchema } from './miniapp-bookings.js';
 import { businessParamsSchema, locationSchema } from './public-catalog.js';
 

@@ -8,7 +8,7 @@ import {
   type WaitlistEntry,
 } from '@mestechko/contracts';
 import { TelegramClient } from '../../../platform/http/auth.guard.js';
-import { clientContactOf } from '../../clients/api/client-contact-policy.js';
+import { clientContactOf } from '../../clients/application/client-contact-policy.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import type { TelegramUser } from '../../../platform/http/principal.js';
 import type { ClientIdentity } from '../../booking/application/client/client-bookings.js';
@@ -36,7 +36,7 @@ export class MiniAppWaitlistController {
       staffId: input.body.staffId,
       date: input.body.date,
       dayPart: input.body.dayPart,
-      contact: clientContactOf(input.body.contact, user),
+      contact: clientContactOf(input.body.contact, { demoNumbersAllowed: user.demoLaunch }),
     });
   }
 

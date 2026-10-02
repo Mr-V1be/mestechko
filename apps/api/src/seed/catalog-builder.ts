@@ -269,6 +269,7 @@ export function buildCatalog(input: {
             locationId: null,
             template: null,
           })),
+          absences: [],
         },
         serviceTerms: new Map(
           terms.map((term) => [term.serviceId, { durationMinutes: term.durationMinutes }]),

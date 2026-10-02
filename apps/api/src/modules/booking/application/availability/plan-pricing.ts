@@ -1,6 +1,8 @@
 import {
+  depositFor,
   quoteBooking,
   type BookingPlan,
+  type BookingRules,
   type BookingQuote,
   type CurrencyCode,
   type Money,
@@ -48,4 +50,20 @@ export function pricePlans(
     );
     return { plan, quote, total: quote.total };
   });
+}
+
+/** Prepayment of a priced plan: each service's share of its price, or the business rule. */
+export function depositOf(
+  option: PricedPlan,
+  services: readonly ServiceView[],
+  rules: BookingRules,
+): Money {
+  return depositFor(
+    option.quote.items.map((item) => ({
+      priceMinor: item.price.amountMinor,
+      depositPercent: serviceOf(services, item.serviceId).depositPercent,
+    })),
+    rules.prepayment.depositPercent,
+    option.total.currency,
+  );
 }

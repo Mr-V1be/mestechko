@@ -69,6 +69,18 @@ export class KyselyMessengerContacts implements MessengerContacts {
     return row?.chatId ? { externalId: row.externalId, chatId: row.chatId } : null;
   }
 
+  async preferredChannel(customerId: string): Promise<MessengerChannel | null> {
+    const row = await this.unitOfWork
+      .platform()
+      .selectFrom('customerIdentities')
+      .select('channel')
+      .where('customerId', '=', customerId)
+      .where('messagingAllowedAt', 'is not', null)
+      .orderBy('messagingAllowedAt', 'desc')
+      .executeTakeFirst();
+    return row?.channel ?? null;
+  }
+
   async businessesOf(customerId: string): Promise<string[]> {
     const result = await sql<{ id: string }>`
       select customer_business_ids as id from customer_business_ids(${customerId})

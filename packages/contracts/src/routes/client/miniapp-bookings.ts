@@ -1,4 +1,4 @@
-import { bookingActionIds } from '@mestechko/domain';
+import { bookingActionIds, holdReasonIds, paymentStatusIds } from '@mestechko/domain';
 import { z } from 'zod';
 import {
   bookingStatusSchema,
@@ -9,18 +9,30 @@ import {
   pageOf,
   phoneSchema,
   uuidSchema,
-} from '../primitives.js';
-import { bookingScopes } from '../enums.js';
-import { defineRoute } from '../route.js';
+} from '../../primitives.js';
+import { bookingScopes } from '../../enums.js';
+import { defineRoute } from '../../route.js';
 import { availableDaySchema, businessParamsSchema, locationSchema } from './public-catalog.js';
 
 const MAX_SERVICES = 10;
 const MAX_NAME_LENGTH = 80;
 const MAX_COMMENT_LENGTH = 500;
 
+/** A prepayment as the client sees it. */
+export const clientPaymentSchema = z.object({
+  status: z.enum(paymentStatusIds),
+  amount: moneySchema,
+  refunded: moneySchema,
+});
+
 export const clientBookingSchema = z.object({
   id: uuidSchema,
   status: bookingStatusSchema,
+  /** Why the time is only held, and until when; the booking is released after that. */
+  hold: z.object({ reason: z.enum(holdReasonIds), expiresAt: instantSchema }).nullable(),
+  /** Prepayment the booking asks for; `null` when none. */
+  deposit: moneySchema.nullable(),
+  payment: clientPaymentSchema.nullable(),
   /** Grows with every reschedule or cancellation. */
   version: z.number().int().positive(),
   start: instantSchema,
@@ -128,6 +140,12 @@ export const getMiniAppNotifications = defineRoute({
 
 const bookingParamsSchema = businessParamsSchema.extend({ bookingId: uuidSchema });
 
+/** A path of our own site, never another site: the payment page redirects there. */
+export const returnPathSchema = z
+  .string()
+  .max(500)
+  .regex(/^\/(?!\/)[\w\-./?=&%]*$/);
+
 export const cancelMiniAppBooking = defineRoute({
   method: 'POST',
   path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/cancel',
@@ -174,5 +192,21 @@ export const confirmMiniAppAttendance = defineRoute({
   response: clientBookingSchema,
 });
 
+export const startMiniAppPayment = defineRoute({
+  method: 'POST',
+  path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/payment',
+  summary: 'Open the payment page for a booking’s prepayment',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 200,
+  params: bookingParamsSchema,
+  body: z.object({
+    /** Where the payment page sends the client back: a path of this app. */
+    returnPath: returnPathSchema,
+  }),
+  response: z.object({ checkoutUrl: z.string(), booking: clientBookingSchema }),
+});
+
 export type ClientBooking = z.infer<typeof clientBookingSchema>;
+export type ClientPayment = z.infer<typeof clientPaymentSchema>;
 export type BookingContact = z.infer<typeof bookingContactSchema>;

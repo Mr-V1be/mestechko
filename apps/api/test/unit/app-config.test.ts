@@ -4,6 +4,8 @@ import { ConfigurationError, loadConfig } from '../../src/platform/config/app-co
 const required = {
   DATABASE_URL: 'postgres://app:secret-password@127.0.0.1:46201/mestechko',
   REDIS_URL: 'redis://127.0.0.1:46202/0',
+  TEST_PAY_SECRET_KEY: 'test-pay-secret-key-0123456789',
+  TEST_PAY_WEBHOOK_SECRET: 'test-pay-webhook-secret-0123456789',
 };
 
 describe('configuration', () => {
@@ -14,6 +16,10 @@ describe('configuration', () => {
     expect(config.roles).toEqual(['api', 'worker', 'bot']);
     expect(config.telegram.updates).toEqual({ kind: 'polling' });
     expect(config.miniApp.publicUrl).toBeNull();
+  });
+
+  it('requires the payment provider’s keys', () => {
+    expect(() => loadConfig({ ...required, TEST_PAY_SECRET_KEY: '' })).toThrow(ConfigurationError);
   });
 
   it('requires a signing key in demo mode', () => {

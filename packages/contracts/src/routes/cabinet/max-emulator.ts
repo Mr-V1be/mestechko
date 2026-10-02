@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { instantSchema } from '../primitives.js';
-import { defineRoute } from '../route.js';
-import { cabinetParamsSchema } from './cabinet.js';
+import { instantSchema } from '../../primitives.js';
+import { defineRoute } from '../../route.js';
+import { cabinetParamsSchema } from './schedule.js';
 
 const maxUserIdSchema = z.string().regex(/^[1-9]\d{0,17}$/);
 const chatParamsSchema = cabinetParamsSchema.extend({ userId: maxUserIdSchema });

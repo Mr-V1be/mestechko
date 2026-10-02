@@ -1,7 +1,15 @@
 import { useFormat } from '@mestechko/booking-ui';
 import type { CabinetBookingDetails } from '@mestechko/contracts/client';
 import { ListGroup, ListItem } from '@mestechko/ui';
-import { CalendarClock, CircleCheck, CircleX, type LucideIcon } from 'lucide-react';
+import {
+  BadgeCheck,
+  CalendarClock,
+  CircleCheck,
+  CircleCheckBig,
+  CircleX,
+  UserX,
+  type LucideIcon,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 type HistoryEntry = CabinetBookingDetails['history'][number];
@@ -10,6 +18,9 @@ const kindIcons: Readonly<Record<HistoryEntry['kind'], LucideIcon>> = {
   rescheduled: CalendarClock,
   cancelled: CircleX,
   attendance_confirmed: CircleCheck,
+  confirmed: BadgeCheck,
+  completed: CircleCheckBig,
+  no_show: UserX,
 };
 
 /** Changes after the booking was made: who did what, from where and when. */
@@ -34,8 +45,11 @@ export function BookingHistory({ booking }: { readonly booking: CabinetBookingDe
               entry.previousStart
                 ? t('details.previousStart', { when: when(entry.previousStart) })
                 : null,
+              entry.previousStaffName
+                ? t('details.previousStaff', { name: entry.previousStaffName })
+                : null,
               [
-                t(`details.actor.${entry.actor}`),
+                entry.actorName ?? t(`details.actor.${entry.actor}`),
                 entry.channel ? t(`channels.${entry.channel}`) : null,
                 when(entry.at),
               ]

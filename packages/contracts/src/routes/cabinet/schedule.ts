@@ -1,4 +1,12 @@
-import { bookingActors, bookingEventKinds, messengerChannelIds } from '@mestechko/domain';
+import {
+  bookingActors,
+  bookingEventKinds,
+  businessBookingActionIds,
+  holdReasonIds,
+  ledgerReasonIds,
+  messengerChannelIds,
+  paymentStatusIds,
+} from '@mestechko/domain';
 import { z } from 'zod';
 import {
   bookingSourceSchema,
@@ -14,10 +22,10 @@ import {
   timeRangeSchema,
   uuidSchema,
   verticalSummarySchema,
-} from '../primitives.js';
-import { scheduleAxes } from '../enums.js';
-import { defineRoute } from '../route.js';
-import { locationSchema } from './public-catalog.js';
+} from '../../primitives.js';
+import { scheduleAxes } from '../../enums.js';
+import { defineRoute } from '../../route.js';
+import { locationSchema } from '../client/public-catalog.js';
 
 const MAX_PAGE_SIZE = 100;
 
@@ -70,10 +78,22 @@ export const scheduleColumnSchema = z.object({
   typeTerm: z.string().nullable(),
 });
 
+/** Why a booking only holds its time, and until when. */
+export const bookingHoldSchema = z.object({
+  reason: z.enum(holdReasonIds),
+  expiresAt: instantSchema,
+});
+
 export const scheduleBookingSchema = z.object({
   id: uuidSchema,
+  /** Grows with every change; changes from the cabinet name the version they saw. */
+  version: z.number().int().positive(),
   columnId: uuidSchema,
+  staffId: uuidSchema,
   status: bookingStatusSchema,
+  hold: bookingHoldSchema.nullable(),
+  /** Whether the business may still move it (to another time or staff member). */
+  movable: z.boolean(),
   start: instantSchema,
   end: instantSchema,
   occupied: timeRangeSchema,
@@ -129,12 +149,41 @@ export const bookingHistoryEntrySchema = z.object({
   actor: z.enum(bookingActors),
   /** Messenger the change came from; `null` for the cabinet or the system. */
   channel: z.enum(messengerChannelIds).nullable(),
+  /** Cabinet user behind a business change. */
+  actorName: z.string().nullable(),
   at: instantSchema,
   /** Start before a reschedule. */
   previousStart: instantSchema.nullable(),
+  /** Staff member before a move to someone else. */
+  previousStaffName: z.string().nullable(),
+});
+
+export const bookingPaymentSchema = z.object({
+  status: z.enum(paymentStatusIds),
+  amount: moneySchema,
+  refunded: moneySchema,
+});
+
+/** How a completed visit was paid for, from the ledger. */
+export const visitSettlementSchema = z.object({
+  entries: z.array(
+    z.object({
+      reason: z.enum(ledgerReasonIds),
+      amount: z.number().int(),
+      passName: z.string().nullable(),
+    }),
+  ),
 });
 
 export const cabinetBookingDetailsSchema = cabinetBookingRowSchema.extend({
+  version: z.number().int().positive(),
+  hold: bookingHoldSchema.nullable(),
+  /** Prepayment the booking asks for; `null` when none. */
+  deposit: moneySchema.nullable(),
+  payment: bookingPaymentSchema.nullable(),
+  settlement: visitSettlementSchema.nullable(),
+  /** What the business can do with the booking right now. */
+  actions: z.record(z.enum(businessBookingActionIds), z.boolean()),
   comment: z.string().nullable(),
   createdAt: instantSchema,
   attendanceConfirmedAt: instantSchema.nullable(),
@@ -142,6 +191,7 @@ export const cabinetBookingDetailsSchema = cabinetBookingRowSchema.extend({
   history: z.array(bookingHistoryEntrySchema),
   items: z.array(
     z.object({
+      staffId: uuidSchema,
       serviceId: uuidSchema,
       serviceName: z.string(),
       start: instantSchema,

@@ -10,10 +10,7 @@ import {
   type ClientDirectory,
   type CustomerIdentities,
 } from '../../clients/application/ports.js';
-import {
-  NOTIFICATION_OUTBOX,
-  type NotificationOutbox,
-} from '../../notifications/application/ports.js';
+import { Prepayments } from '../../payments/application/prepayments.js';
 import {
   WORK_CALENDAR_READER,
   type WorkCalendarReader,
@@ -22,14 +19,11 @@ import { ProductionCalendars } from '../../scheduling/application/production-cal
 import { BusinessContextResolver } from '../../tenancy/application/business-context.js';
 import { AvailabilityAssembler } from '../application/availability/availability-assembler.js';
 import { BookingOptions } from '../application/availability/booking-options.js';
+import { BookingPlacement } from '../application/client/booking-placement.js';
+import { ClientBookingPresenter } from '../application/client/client-booking-presenter.js';
 import { ClientBookings } from '../application/client/client-bookings.js';
 import { CreateClientBooking } from '../application/client/create-client-booking.js';
 import { BookingNotifier } from '../application/lifecycle/booking-notifier.js';
-import { ClientBookingChanges } from '../application/lifecycle/client-booking-changes.js';
-import {
-  BOOKING_LIFECYCLE_STORE,
-  type BookingLifecycleStore,
-} from '../application/lifecycle/ports.js';
 import { RescheduleOptions } from '../application/lifecycle/reschedule-options.js';
 import {
   BOOKING_FOLLOW_UPS,
@@ -44,7 +38,7 @@ import {
   type OccupancyReader,
 } from '../application/ports.js';
 
-/** Use cases of clients: what is bookable, booking, and changing their own bookings. */
+/** What clients can book, booking it, and reading their own bookings. */
 export const clientBookingProviders: Provider[] = [
   {
     provide: AvailabilityAssembler,
@@ -79,57 +73,74 @@ export const clientBookingProviders: Provider[] = [
     ],
   },
   {
-    provide: BookingNotifier,
-    useFactory: (outbox: NotificationOutbox) => new BookingNotifier(outbox),
-    inject: [NOTIFICATION_OUTBOX],
+    provide: BookingPlacement,
+    useFactory: (
+      catalog: CatalogReader,
+      assembler: AvailabilityAssembler,
+      writer: BookingWriter,
+      queries: ClientBookingQueries,
+      prepayments: Prepayments,
+      telemetry: BookingTelemetry,
+      ids: IdGenerator,
+      clock: Clock,
+    ) =>
+      new BookingPlacement(catalog, assembler, writer, queries, prepayments, telemetry, ids, clock),
+    inject: [
+      CATALOG_READER,
+      AvailabilityAssembler,
+      BOOKING_WRITER,
+      CLIENT_BOOKING_QUERIES,
+      Prepayments,
+      BOOKING_TELEMETRY,
+      ID_GENERATOR,
+      CLOCK,
+    ],
+  },
+  {
+    provide: ClientBookingPresenter,
+    useFactory: (
+      queries: ClientBookingQueries,
+      prepayments: Prepayments,
+      avatars: AvatarUrls,
+      clock: Clock,
+    ) => new ClientBookingPresenter(queries, prepayments, avatars, clock),
+    inject: [CLIENT_BOOKING_QUERIES, Prepayments, AVATAR_URLS, CLOCK],
   },
   {
     provide: CreateClientBooking,
     useFactory: (
       businesses: BusinessContextResolver,
       unitOfWork: UnitOfWork,
-      catalog: CatalogReader,
       customers: CustomerIdentities,
       clients: ClientDirectory,
-      assembler: AvailabilityAssembler,
-      writer: BookingWriter,
-      queries: ClientBookingQueries,
-      telemetry: BookingTelemetry,
+      placement: BookingPlacement,
       notifier: BookingNotifier,
       followUps: BookingFollowUps,
-      avatars: AvatarUrls,
+      presenter: ClientBookingPresenter,
       ids: IdGenerator,
       clock: Clock,
     ) =>
       new CreateClientBooking(
         businesses,
         unitOfWork,
-        catalog,
         customers,
         clients,
-        assembler,
-        writer,
-        queries,
-        telemetry,
+        placement,
         notifier,
         followUps,
-        avatars,
+        presenter,
         ids,
         clock,
       ),
     inject: [
       BusinessContextResolver,
       UNIT_OF_WORK,
-      CATALOG_READER,
       CUSTOMER_IDENTITIES,
       CLIENT_DIRECTORY,
-      AvailabilityAssembler,
-      BOOKING_WRITER,
-      CLIENT_BOOKING_QUERIES,
-      BOOKING_TELEMETRY,
+      BookingPlacement,
       BookingNotifier,
       BOOKING_FOLLOW_UPS,
-      AVATAR_URLS,
+      ClientBookingPresenter,
       ID_GENERATOR,
       CLOCK,
     ],
@@ -142,61 +153,16 @@ export const clientBookingProviders: Provider[] = [
       customers: CustomerIdentities,
       clients: ClientDirectory,
       queries: ClientBookingQueries,
-      avatars: AvatarUrls,
+      presenter: ClientBookingPresenter,
       clock: Clock,
-    ) => new ClientBookings(businesses, unitOfWork, customers, clients, queries, avatars, clock),
+    ) => new ClientBookings(businesses, unitOfWork, customers, clients, queries, presenter, clock),
     inject: [
       BusinessContextResolver,
       UNIT_OF_WORK,
       CUSTOMER_IDENTITIES,
       CLIENT_DIRECTORY,
       CLIENT_BOOKING_QUERIES,
-      AVATAR_URLS,
-      CLOCK,
-    ],
-  },
-  {
-    provide: ClientBookingChanges,
-    useFactory: (
-      businesses: BusinessContextResolver,
-      unitOfWork: UnitOfWork,
-      customers: CustomerIdentities,
-      clients: ClientDirectory,
-      store: BookingLifecycleStore,
-      assembler: AvailabilityAssembler,
-      queries: ClientBookingQueries,
-      notifier: BookingNotifier,
-      followUps: BookingFollowUps,
-      avatars: AvatarUrls,
-      ids: IdGenerator,
-      clock: Clock,
-    ) =>
-      new ClientBookingChanges(
-        businesses,
-        unitOfWork,
-        customers,
-        clients,
-        store,
-        assembler,
-        queries,
-        notifier,
-        followUps,
-        avatars,
-        ids,
-        clock,
-      ),
-    inject: [
-      BusinessContextResolver,
-      UNIT_OF_WORK,
-      CUSTOMER_IDENTITIES,
-      CLIENT_DIRECTORY,
-      BOOKING_LIFECYCLE_STORE,
-      AvailabilityAssembler,
-      CLIENT_BOOKING_QUERIES,
-      BookingNotifier,
-      BOOKING_FOLLOW_UPS,
-      AVATAR_URLS,
-      ID_GENERATOR,
+      ClientBookingPresenter,
       CLOCK,
     ],
   },

@@ -4,9 +4,7 @@ import { APP_CONFIG, type AppConfig } from '../../../platform/config/app-config.
 import { JOB_QUEUE, type JobQueue } from '../../../shared/application/job-queue.js';
 import { productionCalendarRefreshJob } from '../application/production-calendar-jobs.js';
 
-const DAILY_AT_03_UTC = '0 3 * * *';
-
-/** Worker processes keep calendars fresh: a daily refresh plus one right after start. */
+/** Calendars are refreshed daily (see the job) and once right after a worker starts. */
 @Injectable()
 export class CalendarSyncBootstrap implements OnApplicationBootstrap {
   constructor(
@@ -21,19 +19,11 @@ export class CalendarSyncBootstrap implements OnApplicationBootstrap {
     if (!this.config.roles.includes('worker')) {
       return;
     }
-    await this.queue.schedule(
-      productionCalendarRefreshJob,
-      {},
-      {
-        schedulerId: 'production-calendar-daily',
-        cron: DAILY_AT_03_UTC,
-      },
-    );
     await this.queue.enqueue(
       productionCalendarRefreshJob,
       {},
       { deduplicationKey: 'calendar-refresh' },
     );
-    this.logger.info('Production calendar refresh scheduled');
+    this.logger.info('Production calendar refresh requested');
   }
 }

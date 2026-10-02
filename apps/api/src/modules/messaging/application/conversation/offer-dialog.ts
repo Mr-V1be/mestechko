@@ -27,21 +27,36 @@ export class OfferDialog {
       target.entryId,
       new Date(target.start),
     );
-    return {
-      replace: this.messages.notification('booking_created', businessCardOf(context), booking),
-      notice: this.messages.notice('booked'),
-    };
+    const card = businessCardOf(context);
+    return booking.hold
+      ? {
+          replace: this.messages.booking(card, booking, this.messages.text('offer.kept'), []),
+          notice: null,
+        }
+      : {
+          replace: this.messages.notification('booking_created', card, booking),
+          notice: this.messages.notice('booked'),
+        };
   }
 
-  decline(): Promise<ActionReply> {
-    return Promise.resolve({
+  async decline(
+    channel: MessengerChannel,
+    person: InboundPerson,
+    target: OfferTarget,
+  ): Promise<ActionReply> {
+    await this.offers.decline(
+      identityIn(target.businessId, channel, person),
+      target.entryId,
+      new Date(target.start),
+    );
+    return {
       replace: {
         title: this.messages.text('notice.waitlist_offer'),
         lines: [this.messages.text('offer.declined')],
         buttons: [],
       },
       notice: null,
-    });
+    };
   }
 
   /** The offer can no longer be taken: someone was faster or the wish was withdrawn. */

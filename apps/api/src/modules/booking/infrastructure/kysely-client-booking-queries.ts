@@ -1,4 +1,9 @@
-import { bookingStatuses, bookingStatusIds, type BookingStatus } from '@mestechko/domain';
+import {
+  bookingStatuses,
+  bookingStatusIds,
+  type BookingStatus,
+  type HoldReason,
+} from '@mestechko/domain';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
@@ -36,6 +41,16 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
       .where('idempotencyKey', '=', key)
       .executeTakeFirst();
     return row?.id ?? null;
+  }
+
+  async clientOf(bookingId: string): Promise<string | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('bookings')
+      .select('clientId')
+      .where('id', '=', bookingId)
+      .executeTakeFirst();
+    return row?.clientId ?? null;
   }
 
   async get(clientId: string, bookingId: string): Promise<ClientBookingView | null> {
@@ -83,6 +98,9 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
       .select([
         'b.id',
         'b.status',
+        'b.holdReason',
+        'b.holdExpiresAt',
+        'b.depositMinor',
         'b.version',
         'b.startsAt',
         'b.endsAt',
@@ -120,6 +138,9 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
   private toView(row: {
     id: string;
     status: BookingStatus;
+    holdReason: HoldReason | null;
+    holdExpiresAt: Date | null;
+    depositMinor: number;
     version: number;
     startsAt: Date;
     endsAt: Date;
@@ -141,6 +162,11 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
     return {
       id: row.id,
       status: row.status,
+      hold:
+        row.holdReason && row.holdExpiresAt
+          ? { reason: row.holdReason, expiresAt: row.holdExpiresAt }
+          : null,
+      depositMinor: row.depositMinor,
       version: row.version,
       startsAt: row.startsAt,
       endsAt: row.endsAt,

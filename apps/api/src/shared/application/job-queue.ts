@@ -8,6 +8,11 @@ export interface JobDefinition<P> {
   readonly backoffMs: number;
   readonly concurrency: number;
   readonly handler: symbol;
+  /**
+   * Cron pattern (UTC) of a periodic sweep: workers schedule the job with an empty
+   * payload. Sweeps catch up on whatever immediate kicks missed.
+   */
+  readonly every?: string;
 }
 
 export interface JobHandler<P> {

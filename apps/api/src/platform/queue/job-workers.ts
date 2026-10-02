@@ -10,14 +10,19 @@ import type { Redis } from 'ioredis';
 import { PinoLogger } from 'nestjs-pino';
 import {
   JOB_DEFINITIONS,
+  JOB_QUEUE,
   type JobDefinition,
   type JobHandler,
+  type JobQueue,
 } from '../../shared/application/job-queue.js';
 import { APP_CONFIG, type AppConfig } from '../config/app-config.js';
 import { REDIS } from '../redis/redis.js';
 import { QUEUE_PREFIX } from './bullmq-job-queue.js';
 
-/** Starts BullMQ workers for every registered job when the process has the worker role. */
+/**
+ * Starts BullMQ workers for every registered job when the process has the worker role,
+ * and schedules the periodic ones.
+ */
 @Injectable()
 export class JobWorkers implements OnApplicationBootstrap, OnApplicationShutdown {
   private readonly workers: Worker[] = [];
@@ -26,15 +31,21 @@ export class JobWorkers implements OnApplicationBootstrap, OnApplicationShutdown
     @Inject(APP_CONFIG) private readonly config: AppConfig,
     @Inject(REDIS) private readonly connection: Redis,
     @Inject(JOB_DEFINITIONS) private readonly jobs: readonly JobDefinition<unknown>[],
+    @Inject(JOB_QUEUE) private readonly queue: JobQueue,
     @Inject(ModuleRef) private readonly moduleRef: ModuleRef,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(JobWorkers.name);
   }
 
-  onApplicationBootstrap(): void {
+  async onApplicationBootstrap(): Promise<void> {
     if (!this.config.roles.includes('worker')) {
       return;
+    }
+    for (const job of this.jobs) {
+      if (job.every) {
+        await this.queue.schedule(job, {}, { schedulerId: `${job.name}-every`, cron: job.every });
+      }
     }
     for (const job of this.jobs) {
       const handler = this.moduleRef.get<JobHandler<unknown>>(job.handler, { strict: false });

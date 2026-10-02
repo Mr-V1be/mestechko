@@ -144,7 +144,8 @@ describe('MAX channel through the emulator', () => {
         businessId: tenant.businessId,
         customerId,
         displayName: 'Ольга Клиентова',
-        phone: '+447700900042',
+        phone: '+70004120042',
+        tags: [],
         createdAt: now,
         updatedAt: now,
       })

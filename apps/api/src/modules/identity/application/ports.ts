@@ -40,17 +40,6 @@ export interface PasswordHasher {
   verify(password: string, hash: string | null): Promise<boolean>;
 }
 
-export interface ThrottleVerdict {
-  readonly allowed: boolean;
-  readonly retryAfterSeconds: number;
-}
-
-/** Limits sign-in attempts per key (address, email) against password guessing. */
-export interface LoginThrottle {
-  consume(key: string): Promise<ThrottleVerdict>;
-  reset(key: string): Promise<void>;
-}
-
 /** Opaque session tokens: only their hash is stored. */
 export interface SessionTokens {
   issue(): { readonly token: string; readonly hash: Buffer };
@@ -75,7 +64,6 @@ export interface TelegramLaunchSigner {
 export const USER_ACCOUNTS = Symbol('USER_ACCOUNTS');
 export const SESSION_STORE = Symbol('SESSION_STORE');
 export const PASSWORD_HASHER = Symbol('PASSWORD_HASHER');
-export const LOGIN_THROTTLE = Symbol('LOGIN_THROTTLE');
 export const SESSION_TOKENS = Symbol('SESSION_TOKENS');
 export const TELEGRAM_LAUNCH_VERIFIER = Symbol('TELEGRAM_LAUNCH_VERIFIER');
 export const TELEGRAM_LAUNCH_SIGNER = Symbol('TELEGRAM_LAUNCH_SIGNER');

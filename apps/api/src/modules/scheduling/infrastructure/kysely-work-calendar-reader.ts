@@ -6,6 +6,7 @@ import {
   type ScheduleAssignment,
   type ScheduleOverride,
   type SchedulePattern,
+  type StaffAbsence,
   type StaffWorkCalendar,
   type WallInterval,
 } from '@mestechko/domain';
@@ -78,8 +79,12 @@ export class KyselyWorkCalendarReader implements WorkCalendarReader {
   ): Promise<Map<string, StaffWorkCalendar>> {
     const calendars = new Map<
       string,
-      { assignments: ScheduleAssignment[]; overrides: ScheduleOverride[] }
-    >(staffIds.map((id) => [id, { assignments: [], overrides: [] }]));
+      {
+        assignments: ScheduleAssignment[];
+        overrides: ScheduleOverride[];
+        absences: StaffAbsence[];
+      }
+    >(staffIds.map((id) => [id, { assignments: [], overrides: [], absences: [] }]));
     if (staffIds.length === 0) {
       return calendars;
     }
@@ -109,6 +114,13 @@ export class KyselyWorkCalendarReader implements WorkCalendarReader {
       .where('staffId', 'in', staffIds)
       .where('onDate', '>=', from)
       .where('onDate', '<=', to)
+      .execute();
+    const absences = await db
+      .selectFrom('staffAbsences')
+      .select(['staffId', 'kind', 'startsOn', 'endsOn'])
+      .where('staffId', 'in', staffIds)
+      .where('startsOn', '<=', to)
+      .where('endsOn', '>=', from)
       .execute();
 
     const [scheduleIntervals, overrideIntervals] = await Promise.all([
@@ -152,6 +164,13 @@ export class KyselyWorkCalendarReader implements WorkCalendarReader {
         date: Temporal.PlainDate.from(override.onDate),
         locationId: override.locationId,
         template: templateOf(overrideDays.get(override.id), 0),
+      });
+    }
+    for (const absence of absences) {
+      calendars.get(absence.staffId)?.absences.push({
+        from: Temporal.PlainDate.from(absence.startsOn),
+        to: Temporal.PlainDate.from(absence.endsOn),
+        kind: absence.kind,
       });
     }
     return calendars;

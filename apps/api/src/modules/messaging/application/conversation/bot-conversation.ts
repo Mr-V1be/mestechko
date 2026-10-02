@@ -82,7 +82,16 @@ export class BotConversation {
           throw error;
         }
       },
-      offer_decline: () => this.offers.decline(),
+      offer_decline: async (channel, person, action) => {
+        try {
+          return await this.offers.decline(channel, person, action);
+        } catch (error) {
+          if (error instanceof ApplicationError && error.code === 'change_not_allowed') {
+            return this.offers.gone('closed');
+          }
+          throw error;
+        }
+      },
     };
   }
 

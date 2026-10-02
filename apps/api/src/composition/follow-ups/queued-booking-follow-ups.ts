@@ -9,14 +9,18 @@ import {
   dispatchNotificationsJob,
 } from '../../modules/notifications/application/notification-jobs.js';
 import {
+  refundDeduplicationKey,
+  refundPaymentJob,
+} from '../../modules/payments/application/refund-jobs.js';
+import {
   matchDeduplicationKey,
   matchWaitlistJob,
 } from '../../modules/waitlist/application/waitlist-matching.js';
 
 /**
  * Wires booking changes to the modules that react to them, through the job queue:
- * messages due now are dispatched, freed time is offered to the waitlist. A failed
- * enqueue loses nothing: the outbox is swept every minute.
+ * messages due now are dispatched, freed time is offered to the waitlist, promised
+ * refunds are asked for. A failed enqueue loses nothing: sweeps run periodically.
  */
 export class QueuedBookingFollowUps implements BookingFollowUps {
   constructor(
@@ -36,6 +40,13 @@ export class QueuedBookingFollowUps implements BookingFollowUps {
         await this.queue.enqueue(matchWaitlistJob, payload, {
           deduplicationKey: matchDeduplicationKey(payload),
         });
+      }
+      for (const paymentId of change.refunds ?? []) {
+        await this.queue.enqueue(
+          refundPaymentJob,
+          { businessId: change.businessId, paymentId },
+          { deduplicationKey: refundDeduplicationKey(paymentId) },
+        );
       }
     } catch (error) {
       this.logger.warn({ err: error, businessId: change.businessId }, 'Follow-up enqueue failed');

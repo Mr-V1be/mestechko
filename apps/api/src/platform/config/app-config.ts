@@ -20,6 +20,17 @@ const list = z.string().transform((value) =>
     .filter(Boolean),
 );
 
+/** Settings each payment provider needs before the API starts. */
+const paymentProviderConfigured: Record<
+  'test',
+  (env: {
+    TEST_PAY_SECRET_KEY?: string | undefined;
+    TEST_PAY_WEBHOOK_SECRET?: string | undefined;
+  }) => boolean
+> = {
+  test: (env) => env.TEST_PAY_SECRET_KEY !== undefined && env.TEST_PAY_WEBHOOK_SECRET !== undefined,
+};
+
 const environmentSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -47,6 +58,17 @@ const environmentSchema = z
     MAX_BOT_TOKEN: z.string().min(16).optional(),
     MAX_API_BASE_URL: z.url().default('https://platform-api2.max.ru'),
     MAX_EMULATOR_ENABLED: flag.default(false),
+    PAYMENTS_PROVIDER: z.enum(['test']).default('test'),
+    TEST_PAY_API_URL: z.url().default('http://127.0.0.1:46210/test-pay/api'),
+    TEST_PAY_SECRET_KEY: z.string().min(24).optional(),
+    TEST_PAY_WEBHOOK_SECRET: z.string().min(24).optional(),
+    TEST_PAY_EMULATOR_ENABLED: flag.default(false),
+    TEST_PAY_WEBHOOK_URL: z.url().default('http://127.0.0.1:46210/v1/payments/webhooks/test'),
+    TEST_PAY_CHECKOUT_BASE_URL: z
+      .string()
+      .regex(/^(https?:\/\/[^\s]+|\/[^\s]*)$/)
+      .default('/test-pay'),
+    WIDGET_SIGNING_KEY: z.string().min(32).optional(),
     DEMO_MODE: flag.default(false),
     TELEGRAM_DEMO_SIGNING_KEY: z.string().min(32).optional(),
     ISDAYOFF_BASE_URL: z.url().default('https://isdayoff.ru'),
@@ -75,6 +97,15 @@ const environmentSchema = z
   .refine((env) => !env.MAX_EMULATOR_ENABLED || (env.DEMO_MODE && env.MAX_BOT_TOKEN), {
     message: 'The MAX emulator runs only in demo mode with MAX_BOT_TOKEN set',
     path: ['MAX_EMULATOR_ENABLED'],
+  })
+  .refine((env) => paymentProviderConfigured[env.PAYMENTS_PROVIDER](env), {
+    message:
+      'The payment provider is not configured (for test: TEST_PAY_SECRET_KEY and TEST_PAY_WEBHOOK_SECRET)',
+    path: ['PAYMENTS_PROVIDER'],
+  })
+  .refine((env) => !env.TEST_PAY_EMULATOR_ENABLED || env.DEMO_MODE, {
+    message: 'The payment provider emulator runs only in demo mode',
+    path: ['TEST_PAY_EMULATOR_ENABLED'],
   });
 
 /** How a bot receives updates: it asks for them, or the messenger pushes them. */
@@ -107,6 +138,21 @@ export interface AppConfig {
     /** Serves an emulator of the MAX Bot API for the demo. */
     readonly emulatorEnabled: boolean;
   };
+  readonly payments: {
+    /** Provider prepayments go through; adapters are registered per id. */
+    readonly provider: 'test';
+    readonly test: {
+      readonly apiUrl: string;
+      readonly secretKey: string | null;
+      readonly webhookSecret: string | null;
+      /** Serves an emulator of the test provider (API, payment page, webhooks) for the demo. */
+      readonly emulatorEnabled: boolean;
+      readonly webhookUrl: string;
+      readonly checkoutBaseUrl: string;
+    };
+  };
+  /** Signs the tokens that let a website visitor see the booking they made. */
+  readonly widget: { readonly signingKey: string | null };
   readonly demo: { readonly enabled: boolean; readonly telegramSigningKey: string | null };
   readonly calendar: { readonly isDayOffBaseUrl: string };
   readonly externalHttp: { readonly timeoutMs: number };
@@ -163,6 +209,18 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
       apiBaseUrl: env.MAX_API_BASE_URL.replace(/\/+$/, ''),
       emulatorEnabled: env.MAX_EMULATOR_ENABLED,
     },
+    payments: {
+      provider: env.PAYMENTS_PROVIDER,
+      test: {
+        apiUrl: env.TEST_PAY_API_URL.replace(/\/+$/, ''),
+        secretKey: env.TEST_PAY_SECRET_KEY ?? null,
+        webhookSecret: env.TEST_PAY_WEBHOOK_SECRET ?? null,
+        emulatorEnabled: env.TEST_PAY_EMULATOR_ENABLED,
+        webhookUrl: env.TEST_PAY_WEBHOOK_URL,
+        checkoutBaseUrl: env.TEST_PAY_CHECKOUT_BASE_URL.replace(/\/+$/, ''),
+      },
+    },
+    widget: { signingKey: env.WIDGET_SIGNING_KEY ?? null },
     demo: { enabled: env.DEMO_MODE, telegramSigningKey: env.TELEGRAM_DEMO_SIGNING_KEY ?? null },
     calendar: { isDayOffBaseUrl: env.ISDAYOFF_BASE_URL },
     externalHttp: { timeoutMs: env.EXTERNAL_HTTP_TIMEOUT_MS },

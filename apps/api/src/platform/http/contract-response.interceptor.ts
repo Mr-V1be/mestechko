@@ -4,7 +4,8 @@ import {
   type ExecutionContext,
   type NestInterceptor,
 } from '@nestjs/common';
-import type { RouteSpec } from '@mestechko/contracts';
+import { isFileSpec, type RouteSpec, type ServedFile } from '@mestechko/contracts';
+import type { FastifyReply } from 'fastify';
 import { map, type Observable } from 'rxjs';
 import { routeSpecOf } from './contract-route.js';
 
@@ -18,9 +19,15 @@ export class ContractViolationError extends Error {
   }
 }
 
+/** `filename*` per RFC 6266, so names in any script survive. */
+function attachment(fileName: string): string {
+  return `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+}
+
 /**
  * Serializes responses through the route's response schema. Unknown fields are
- * stripped, so internal data never leaks, and contract drift fails loudly.
+ * stripped, so internal data never leaks, and contract drift fails loudly. File
+ * responses are sent as they are, with their media type and name.
  */
 @Injectable()
 export class ContractResponseInterceptor implements NestInterceptor {
@@ -33,6 +40,18 @@ export class ContractResponseInterceptor implements NestInterceptor {
       map((value: unknown) => {
         if (route.response === null) {
           return undefined;
+        }
+        if (isFileSpec(route.response)) {
+          const file = value as ServedFile;
+          if (!route.response.mediaTypes.includes(file.mediaType)) {
+            throw new ContractViolationError(route, [`media type ${file.mediaType}`]);
+          }
+          void context
+            .switchToHttp()
+            .getResponse<FastifyReply>()
+            .header('content-type', file.mediaType)
+            .header('content-disposition', attachment(file.fileName));
+          return Buffer.from(file.content);
         }
         const parsed = route.response.safeParse(value);
         if (!parsed.success) {

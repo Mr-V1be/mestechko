@@ -4,7 +4,7 @@
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { apiRoutes, buildOpenApiDocument } from '../src/index.js';
+import { apiRoutes, buildOpenApiDocument, isFileSpec } from '../src/index.js';
 
 const openApiPath = fileURLToPath(new URL('../openapi/openapi.json', import.meta.url));
 const manifestPath = fileURLToPath(new URL('../src/generated/route-manifest.ts', import.meta.url));
@@ -20,7 +20,8 @@ function manifestSource(): string {
       path: route.path,
       status: route.status,
       auth: route.auth,
-      hasResponseBody: route.response !== null,
+      response: route.response === null ? 'none' : isFileSpec(route.response) ? 'file' : 'json',
+      upload: 'upload' in route,
     };
     const fields = Object.entries(meta).map(([key, value]) => `${key}: ${literal(value)}`);
     return `  ${name}: { ${fields.join(', ')} },`;

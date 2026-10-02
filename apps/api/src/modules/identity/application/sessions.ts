@@ -1,3 +1,4 @@
+import type { RateLimiter } from '../../../shared/application/rate-limits.js';
 import type { Clock, RoleId } from '@mestechko/domain';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';
@@ -5,13 +6,7 @@ import type {
   MembershipDirectory,
   BusinessDirectory,
 } from '../../tenancy/application/business-directory.js';
-import type {
-  LoginThrottle,
-  PasswordHasher,
-  SessionStore,
-  SessionTokens,
-  UserAccounts,
-} from './ports.js';
+import type { PasswordHasher, SessionStore, SessionTokens, UserAccounts } from './ports.js';
 
 const MS_PER_DAY = 86_400_000;
 /** Sliding expiry is extended at most this often to avoid a write per request. */
@@ -37,7 +32,7 @@ export class CabinetSessions {
     private readonly accounts: UserAccounts,
     private readonly store: SessionStore,
     private readonly hasher: PasswordHasher,
-    private readonly throttle: LoginThrottle,
+    private readonly limits: RateLimiter,
     private readonly tokens: SessionTokens,
     private readonly memberships: MembershipDirectory,
     private readonly businesses: BusinessDirectory,
@@ -49,7 +44,7 @@ export class CabinetSessions {
   async signIn(email: string, password: string, clientAddress: string): Promise<IssuedSession> {
     const emailKey = `email:${email.toLowerCase()}`;
     for (const key of [`address:${clientAddress}`, emailKey]) {
-      const verdict = await this.throttle.consume(key);
+      const verdict = await this.limits.consume('login', key);
       if (!verdict.allowed) {
         throw new ApplicationError('rate_limited', 'Too many sign-in attempts', {
           retryAfterSeconds: verdict.retryAfterSeconds,
@@ -61,7 +56,7 @@ export class CabinetSessions {
     if (!account || !valid) {
       throw new ApplicationError('invalid_credentials', 'Invalid email or password');
     }
-    await this.throttle.reset(emailKey);
+    await this.limits.reset('login', emailKey);
     return this.issue(account.id);
   }
 

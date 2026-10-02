@@ -1,10 +1,20 @@
 import type { CabinetBookingDetails, CabinetBookingRow } from '@mestechko/contracts';
-import { localDayBounds, Temporal, type BookingStatus } from '@mestechko/domain';
+import {
+  businessBookingActionIds,
+  businessBookingActions,
+  localDayBounds,
+  Temporal,
+  type BookingStatus,
+  type Clock,
+} from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { BusinessAccess } from '../../../../shared/application/business-access.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { CatalogReader } from '../../../catalog/application/catalog-reader.js';
+import type { LedgerStore, SettlementEntryView } from '../../../loyalty/application/ports.js';
+import type { PaymentRecord } from '../../../payments/application/ports.js';
+import type { Prepayments } from '../../../payments/application/prepayments.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
 import type {
   CabinetBookingDetailsView,
@@ -48,9 +58,43 @@ function toRow(view: CabinetBookingView, avatars: AvatarUrls): CabinetBookingRow
   };
 }
 
-function toDetails(view: CabinetBookingDetailsView, avatars: AvatarUrls): CabinetBookingDetails {
+interface DetailsExtras {
+  readonly payment: PaymentRecord | null;
+  readonly settlement: readonly SettlementEntryView[];
+  readonly now: number;
+}
+
+function toDetails(
+  view: CabinetBookingDetailsView,
+  avatars: AvatarUrls,
+  extras: DetailsExtras,
+): CabinetBookingDetails {
+  const money = (amountMinor: number) => ({ amountMinor, currency: view.currency });
+  const state = { status: view.status, startsAt: view.startsAt.getTime() };
   return {
     ...toRow(view, avatars),
+    version: view.version,
+    hold: view.hold
+      ? { reason: view.hold.reason, expiresAt: view.hold.expiresAt.toISOString() }
+      : null,
+    deposit: view.depositMinor > 0 ? money(view.depositMinor) : null,
+    payment: extras.payment
+      ? {
+          status: extras.payment.status,
+          amount: money(extras.payment.amountMinor),
+          refunded: money(extras.payment.refundedMinor),
+        }
+      : null,
+    settlement:
+      extras.settlement.length > 0
+        ? { entries: extras.settlement.map((entry) => ({ ...entry })) }
+        : null,
+    actions: Object.fromEntries(
+      businessBookingActionIds.map((action) => [
+        action,
+        businessBookingActions[action].isAvailable(state, extras.now),
+      ]),
+    ) as CabinetBookingDetails['actions'],
     comment: view.comment,
     createdAt: view.createdAt.toISOString(),
     attendanceConfirmedAt: view.attendanceConfirmedAt?.toISOString() ?? null,
@@ -58,10 +102,13 @@ function toDetails(view: CabinetBookingDetailsView, avatars: AvatarUrls): Cabine
       kind: entry.kind,
       actor: entry.actor,
       channel: entry.channel,
+      actorName: entry.actorName,
       at: entry.occurredAt.toISOString(),
       previousStart: entry.previousStartsAt?.toISOString() ?? null,
+      previousStaffName: entry.previousStaffName,
     })),
     items: view.items.map((item) => ({
+      staffId: item.staffId,
       serviceId: item.serviceId,
       serviceName: item.serviceName,
       start: item.startsAt.toISOString(),
@@ -79,7 +126,10 @@ export class CabinetBookings {
     private readonly unitOfWork: UnitOfWork,
     private readonly catalog: CatalogReader,
     private readonly queries: CabinetBookingQueries,
+    private readonly prepayments: Prepayments,
+    private readonly ledger: LedgerStore,
     private readonly avatars: AvatarUrls,
+    private readonly clock: Clock,
   ) {}
 
   async list(
@@ -126,17 +176,25 @@ export class CabinetBookings {
 
   async details(access: BusinessAccess, bookingId: string): Promise<CabinetBookingDetails> {
     const { business } = await this.businesses.byId(access.businessId);
-    const ownStaffId = staffFilterOf(access);
-    const view = await this.unitOfWork.inTenant(
-      business.id,
-      () => this.queries.details(bookingId, ownStaffId),
-      {
-        readOnly: true,
-      },
-    );
+    return this.unitOfWork.inTenant(business.id, () => this.detailsInTenant(access, bookingId), {
+      readOnly: true,
+    });
+  }
+
+  /** Details within the caller's tenant transaction, e.g. right after a change. */
+  async detailsInTenant(access: BusinessAccess, bookingId: string): Promise<CabinetBookingDetails> {
+    const view = await this.queries.details(bookingId, staffFilterOf(access));
     if (!view) {
       throw notFound('Booking');
     }
-    return toDetails(view, this.avatars);
+    const [payment, settlement] = await Promise.all([
+      this.prepayments.ofBooking(bookingId),
+      this.ledger.settlementOf(bookingId),
+    ]);
+    return toDetails(view, this.avatars, {
+      payment,
+      settlement,
+      now: this.clock.now().epochMilliseconds,
+    });
   }
 }

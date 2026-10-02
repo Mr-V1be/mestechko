@@ -97,6 +97,7 @@ export class DeliverNotification implements JobHandler<{ notificationId: string 
           address: offer.entry.location.address,
           services: offer.entry.services.map((service) => service.name),
           staffName: offer.entry.staff?.displayName ?? null,
+          holdsUntil: offer.holdsUntil,
         }),
       };
     }

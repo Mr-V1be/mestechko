@@ -21,7 +21,9 @@ import { OperationsController } from './observability/operations.controller.js';
 import { TELEMETRY, type Telemetry } from './observability/telemetry.js';
 import { BullMqJobQueue } from './queue/bullmq-job-queue.js';
 import { JobWorkers } from './queue/job-workers.js';
+import { RATE_LIMITER } from '../shared/application/rate-limits.js';
 import { createRedis, REDIS } from './redis/redis.js';
+import { RedisRateLimiter } from './redis/redis-rate-limiter.js';
 import { SystemClock, UuidV7Generator } from './system-clock.js';
 
 const STATEMENT_TIMEOUT_MS = 10_000;
@@ -84,6 +86,11 @@ export class PlatformModule {
           useFactory: (redis: Redis) => new BullMqJobQueue(redis),
           inject: [REDIS],
         },
+        {
+          provide: RATE_LIMITER,
+          useFactory: (redis: Redis) => new RedisRateLimiter(redis),
+          inject: [REDIS],
+        },
         { provide: JOB_DEFINITIONS, useValue: jobs },
         JobWorkers,
         PlatformLifecycle,
@@ -97,6 +104,7 @@ export class PlatformModule {
         CLOCK,
         ID_GENERATOR,
         REDIS,
+        RATE_LIMITER,
         JOB_QUEUE,
       ],
     };

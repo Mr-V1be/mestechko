@@ -1,3 +1,5 @@
+import type { IncompatiblePair } from '@mestechko/domain';
+
 export interface LocationView {
   readonly id: string;
   readonly name: string;
@@ -16,6 +18,8 @@ export interface ServiceView {
   readonly bufferAfterMinutes: number;
   readonly priceMinor: number;
   readonly resourceTypeId: string | null;
+  /** Share of the price paid in advance; `null` follows the business rule. */
+  readonly depositPercent: number | null;
 }
 
 export interface StaffView {
@@ -52,6 +56,8 @@ export interface CatalogReader {
   listResources(locationId?: string): Promise<ResourceView[]>;
   /** Terms of active staff for the given services. */
   listStaffTerms(serviceIds: readonly string[]): Promise<StaffServiceTerms[]>;
+  /** Pairs of services never booked together that involve any of the given services. */
+  listIncompatibilities(serviceIds?: readonly string[]): Promise<IncompatiblePair[]>;
 }
 
 export const CATALOG_READER = Symbol('CATALOG_READER');

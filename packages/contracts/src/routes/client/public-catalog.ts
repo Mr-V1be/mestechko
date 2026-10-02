@@ -9,8 +9,8 @@ import {
   slugSchema,
   uuidSchema,
   verticalSummarySchema,
-} from '../primitives.js';
-import { defineRoute } from '../route.js';
+} from '../../primitives.js';
+import { defineRoute } from '../../route.js';
 
 const MAX_SERVICES = 10;
 
@@ -93,7 +93,11 @@ export const listPublicServices = defineRoute({
   status: 200,
   params: businessParamsSchema,
   query: z.object({ locationId: uuidSchema }),
-  response: z.object({ categories: z.array(serviceCategorySchema) }),
+  response: z.object({
+    categories: z.array(serviceCategorySchema),
+    /** Pairs of services never booked together. */
+    incompatible: z.array(z.object({ serviceId: uuidSchema, otherServiceId: uuidSchema })),
+  }),
 });
 
 export const listPublicStaff = defineRoute({
@@ -146,6 +150,8 @@ export const bookingQuoteSchema = z.object({
   priceRange: z.object({ min: moneySchema, max: moneySchema }).nullable(),
   /** How "any staff" is assigned, for explaining it to the client. */
   assignmentRule: z.enum(staffAssignmentStrategyIds).nullable(),
+  /** Prepayment the booking would ask for with the assigned staff member. */
+  deposit: moneySchema.nullable(),
 });
 
 export const getBookingQuote = defineRoute({

@@ -1,6 +1,6 @@
 import type { ApiErrorCode } from './errors.js';
 import { routeManifest } from './generated/route-manifest.js';
-import { buildPath, type RouteRequest, type RouteResult } from './route.js';
+import { buildPath, type ClientResult, type RouteRequest } from './route.js';
 import type { ApiRoutes } from './routes/index.js';
 
 /** Failures that never reached a valid API response. */
@@ -63,7 +63,9 @@ export interface ApiClient {
     route: K,
     input: RouteRequest<ApiRoutes[K]>,
     options?: RequestOptions,
-  ): Promise<RouteResult<ApiRoutes[K]>>;
+  ): Promise<ClientResult<ApiRoutes[K]>>;
+  /** Address of a GET route, e.g. for a download link the browser follows itself. */
+  href<K extends RouteName>(route: K, input: RouteRequest<ApiRoutes[K]>): string;
 }
 
 const DEFAULT_TIMEOUT_MS = 15_000;
@@ -118,12 +120,21 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
   const fetchImpl = options.fetch ?? globalThis.fetch.bind(globalThis);
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
+  const urlOf = (name: RouteName, input: { params?: unknown; query?: unknown }): string => {
+    const route = routeManifest[name];
+    const params = input.params as Readonly<Record<string, string>> | undefined;
+    return `${options.baseUrl}${buildPath(route.path, params)}${queryString(input.query)}`;
+  };
+
   return {
+    href: (name, input) => urlOf(name, input),
+
     async request(name, input, requestOptions = {}) {
       const route = routeManifest[name];
-      const params = input.params as Readonly<Record<string, string>> | undefined;
-      const url = `${options.baseUrl}${buildPath(route.path, params)}${queryString(input.query)}`;
-      const headers = new Headers({ accept: 'application/json' });
+      const url = urlOf(name, input);
+      const headers = new Headers({
+        accept: route.response === 'file' ? '*/*' : 'application/json',
+      });
       const requestHeaders: Readonly<Record<string, string>> = input.headers ?? {};
       for (const [header, value] of Object.entries(requestHeaders)) {
         headers.set(header, value);
@@ -132,8 +143,11 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
       if (authorization) {
         headers.set('authorization', authorization);
       }
+      const file = route.upload ? input.file : undefined;
       const hasBody = input.body !== undefined;
-      if (hasBody) {
+      if (file) {
+        headers.set('content-type', file.type || 'application/octet-stream');
+      } else if (hasBody) {
         headers.set('content-type', 'application/json');
       }
       const timeout = AbortSignal.timeout(timeoutMs);
@@ -146,7 +160,7 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
         response = await fetchImpl(url, {
           method: route.method,
           headers,
-          body: hasBody ? JSON.stringify(input.body) : null,
+          body: file ?? (hasBody ? JSON.stringify(input.body) : null),
           credentials: options.credentials ?? 'same-origin',
           signal,
         });
@@ -164,10 +178,14 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
       if (!response.ok) {
         throw await toApiError(response);
       }
-      if (!route.hasResponseBody) {
-        return undefined as never;
+      switch (route.response) {
+        case 'none':
+          return undefined as never;
+        case 'file':
+          return (await response.blob()) as never;
+        case 'json':
+          return (await response.json()) as never;
       }
-      return (await response.json()) as never;
     },
   };
 }

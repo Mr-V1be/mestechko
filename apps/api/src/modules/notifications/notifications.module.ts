@@ -16,7 +16,6 @@ import {
   NOTIFICATION_STORE,
   type NotificationStore,
 } from './application/ports.js';
-import { DispatchBootstrap } from './infrastructure/dispatch-bootstrap.js';
 import { KyselyNotificationStore } from './infrastructure/kysely-notification-store.js';
 
 /** The outbox of client messages and its dispatcher; delivery belongs to messaging. */
@@ -36,7 +35,6 @@ import { KyselyNotificationStore } from './infrastructure/kysely-notification-st
         new DispatchNotifications(store, queue, clock),
       inject: [NOTIFICATION_STORE, JOB_QUEUE, CLOCK],
     },
-    DispatchBootstrap,
   ],
   exports: [NOTIFICATION_OUTBOX, NOTIFICATION_STORE],
 })

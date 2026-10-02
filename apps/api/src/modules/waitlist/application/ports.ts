@@ -1,4 +1,9 @@
-import type { MessengerChannel, WaitlistStatus, WaitlistWindow } from '@mestechko/domain';
+import type {
+  MessengerChannel,
+  WaitlistOfferStatus,
+  WaitlistStatus,
+  WaitlistWindow,
+} from '@mestechko/domain';
 
 export interface NewWaitlistEntry {
   readonly id: string;
@@ -40,6 +45,15 @@ export interface WaitlistEntryView extends WaitlistEntryRecord {
   readonly services: readonly { readonly id: string; readonly name: string }[];
 }
 
+/** Freed time offered to one waiting client, held for them by a booking. */
+export interface WaitlistOfferRecord {
+  readonly id: string;
+  readonly entryId: string;
+  readonly bookingId: string;
+  readonly startsAt: Date;
+  readonly status: WaitlistOfferStatus;
+}
+
 /** Waitlist of the current tenant. Every call runs inside a tenant unit of work. */
 export interface WaitlistStore {
   /** Saves the wish; it replaces the client's open wish for that day and location. */
@@ -51,6 +65,14 @@ export interface WaitlistStore {
   listOpenForDay(locationId: string, date: string): Promise<WaitlistEntryRecord[]>;
   cancel(entryId: string, clientId: string, now: Date): Promise<boolean>;
   markBooked(entryId: string, bookingId: string, now: Date): Promise<void>;
+  /** Starts already offered to each entry, whatever came of the offers. */
+  offeredStarts(entryIds: readonly string[]): Promise<Map<string, Set<number>>>;
+  /** Offers still waiting for an answer, for the open wishes of a day. */
+  pendingOffers(locationId: string, date: string): Promise<WaitlistOfferRecord[]>;
+  pendingOfferOf(entryId: string): Promise<WaitlistOfferRecord | null>;
+  findOffer(entryId: string, startsAt: Date): Promise<WaitlistOfferRecord | null>;
+  insertOffer(offer: Omit<WaitlistOfferRecord, 'status'>, now: Date): Promise<void>;
+  closeOffer(offerId: string, status: WaitlistOfferStatus, now: Date): Promise<void>;
 }
 
 export const WAITLIST_STORE = Symbol('WAITLIST_STORE');

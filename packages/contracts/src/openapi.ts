@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { apiErrorBodySchema, apiErrors } from './errors.js';
-import type { AuthKind, RouteSpec } from './route.js';
+import { isFileSpec, type AuthKind, type FileSpec, type RouteSpec } from './route.js';
 
 type JsonObject = Record<string, unknown>;
 
@@ -35,6 +35,42 @@ function parameters(schema: z.ZodType | undefined, location: 'path' | 'query' | 
   }));
 }
 
+function fileContent(file: FileSpec): JsonObject {
+  return Object.fromEntries(
+    file.mediaTypes.map((mediaType) => [
+      mediaType,
+      { schema: { type: 'string', contentMediaType: mediaType, maxLength: file.maxBytes } },
+    ]),
+  );
+}
+
+function requestBody(route: RouteSpec): JsonObject {
+  if (route.upload) {
+    return { requestBody: { required: true, content: fileContent(route.upload) } };
+  }
+  return route.body
+    ? {
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: jsonSchema(route.body, 'input') } },
+        },
+      }
+    : {};
+}
+
+function successResponse(route: RouteSpec): JsonObject {
+  if (route.response === null) {
+    return { description: 'Success, no content' };
+  }
+  if (isFileSpec(route.response)) {
+    return { description: 'File', content: fileContent(route.response) };
+  }
+  return {
+    description: 'Success',
+    content: { 'application/json': { schema: jsonSchema(route.response, 'output') } },
+  };
+}
+
 function operation(operationId: string, route: RouteSpec): JsonObject {
   const errorResponse = {
     content: { 'application/json': { schema: jsonSchema(apiErrorBodySchema, 'output') } },
@@ -49,21 +85,9 @@ function operation(operationId: string, route: RouteSpec): JsonObject {
       ...parameters(route.query, 'query'),
       ...parameters(route.headers, 'header'),
     ],
-    ...(route.body
-      ? {
-          requestBody: {
-            required: true,
-            content: { 'application/json': { schema: jsonSchema(route.body, 'input') } },
-          },
-        }
-      : {}),
+    ...requestBody(route),
     responses: {
-      [String(route.status)]: route.response
-        ? {
-            description: 'Success',
-            content: { 'application/json': { schema: jsonSchema(route.response, 'output') } },
-          }
-        : { description: 'Success, no content' },
+      [String(route.status)]: successResponse(route),
       default: { description: 'Error', ...errorResponse },
     },
   };

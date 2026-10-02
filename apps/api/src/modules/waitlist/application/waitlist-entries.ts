@@ -16,8 +16,10 @@ import type {
   ClientDirectory,
   CustomerIdentities,
 } from '../../clients/application/ports.js';
+import type { BookingFollowUps } from '../../booking/application/ports.js';
 import type { BusinessContextResolver } from '../../tenancy/application/business-context.js';
 import type { WaitlistStore } from './ports.js';
+import type { WaitlistOffers } from './waitlist-offers.js';
 import { toWaitlistEntry } from './waitlist-view.js';
 
 export interface WaitlistWish {
@@ -38,6 +40,8 @@ export class WaitlistEntries {
     private readonly clients: ClientDirectory,
     private readonly catalog: CatalogReader,
     private readonly store: WaitlistStore,
+    private readonly offers: WaitlistOffers,
+    private readonly followUps: BookingFollowUps,
     private readonly ids: IdGenerator,
     private readonly clock: Clock,
   ) {}
@@ -127,17 +131,19 @@ export class WaitlistEntries {
     );
   }
 
+  /** Gives up a wish; time held for it by an open offer goes to the next in line. */
   async leave(identity: ClientIdentity, entryId: string): Promise<void> {
     const context = await this.businesses.resolve(identity.business);
     const customerId = await this.customers.find(identity.channel, identity.externalUserId);
-    await this.unitOfWork.inTenant(context.business.id, async () => {
+    const freedTime = await this.unitOfWork.inTenant(context.business.id, async () => {
+      const now = new Date(this.clock.now().epochMilliseconds);
       const client = customerId ? await this.clients.findByCustomer(customerId) : null;
-      const left =
-        client !== null &&
-        (await this.store.cancel(entryId, client.id, new Date(this.clock.now().epochMilliseconds)));
+      const left = client !== null && (await this.store.cancel(entryId, client.id, now));
       if (!left) {
         throw notFound('Waitlist entry');
       }
+      return this.offers.withdraw(entryId, identity.channel, context, now);
     });
+    await this.followUps.afterCommit({ businessId: context.business.id, freedTime });
   }
 }

@@ -30,6 +30,8 @@ export interface OfferCard {
   readonly address: string;
   readonly services: readonly string[];
   readonly staffName: string | null;
+  /** Until when the time is kept for the client. */
+  readonly holdsUntil: Date;
 }
 
 /** How each booking action appears as a button and what pressing it starts. */
@@ -249,6 +251,7 @@ export class BotMessages {
         this.texts.text('offer.total', {
           total: formatMoney(this.texts.locale, offer.total),
         }),
+        this.texts.text('offer.holdsUntil', { time: this.time(offer.holdsUntil, offer.timeZone) }),
       ],
       buttons: [
         [
@@ -293,6 +296,14 @@ export class BotMessages {
   }
 
   private status(booking: ClientBooking): string[] {
+    if (booking.hold) {
+      return [
+        this.texts.text(`card.hold.${booking.hold.reason}`, {
+          time: this.time(booking.hold.expiresAt, booking.location.timeZone),
+          amount: booking.deposit ? formatMoney(this.texts.locale, booking.deposit) : '',
+        }),
+      ];
+    }
     if (booking.status !== 'confirmed') {
       return [
         this.texts.text('card.status', {

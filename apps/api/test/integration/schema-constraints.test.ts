@@ -33,7 +33,7 @@ describe('database invariants match the domain registries', () => {
         customerId: null,
         displayName: 'Client',
         phone: null,
-        notes: null,
+        tags: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       })
@@ -62,6 +62,9 @@ describe('database invariants match the domain registries', () => {
           clientId,
           staffId,
           status,
+          holdReason: status === 'held' ? 'payment' : null,
+          holdExpiresAt: status === 'held' ? new Date(start) : null,
+          depositMinor: 0,
           source: 'cabinet',
           startsAt: new Date(start),
           endsAt: new Date(start + HOUR_MS),

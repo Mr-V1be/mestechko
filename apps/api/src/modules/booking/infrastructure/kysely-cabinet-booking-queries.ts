@@ -1,4 +1,4 @@
-import { timeOccupyingStatuses, type InstantInterval } from '@mestechko/domain';
+import { timeOccupyingStatuses, type HoldReason, type InstantInterval } from '@mestechko/domain';
 import { sql } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
@@ -10,11 +10,15 @@ import type {
   CabinetBookingView,
   ScheduleItemView,
 } from '../application/cabinet/ports.js';
-import type { Page } from '../application/ports.js';
+import type { BookingHold, Page } from '../application/ports.js';
 import { decodeCursor, encodeCursor } from './cursor.js';
 
 const LIKE_SPECIALS = /[\\%_]/g;
 const MIN_PHONE_DIGITS = 3;
+
+function holdOf(reason: HoldReason | null, expiresAt: Date | null): BookingHold | null {
+  return reason && expiresAt ? { reason, expiresAt } : null;
+}
 
 function containsPattern(search: string): string {
   return `%${search.replace(LIKE_SPECIALS, (match) => `\\${match}`)}%`;
@@ -37,7 +41,10 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
       .innerJoin('staffMembers as s', 's.id', 'i.staffId')
       .select([
         'i.bookingId',
+        'b.version',
         'i.status',
+        'b.holdReason',
+        'b.holdExpiresAt',
         'i.staffId',
         's.displayName as staffName',
         'i.resourceId',
@@ -57,8 +64,9 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
       query = query.where('i.staffId', '=', staffId);
     }
     const rows = await query.execute();
-    return rows.map(({ occupiedStart, occupiedEnd, ...row }) => ({
+    return rows.map(({ occupiedStart, occupiedEnd, holdReason, holdExpiresAt, ...row }) => ({
       ...row,
+      hold: holdOf(holdReason, holdExpiresAt),
       occupied: { start: occupiedStart.getTime(), end: occupiedEnd.getTime() },
     }));
   }
@@ -121,7 +129,17 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
         jsonArrayFrom(
           eb
             .selectFrom('bookingEvents as e')
-            .select(['e.kind', 'e.actor', 'e.channel', 'e.occurredAt', 'e.previousStartsAt'])
+            .leftJoin('users as u', 'u.id', 'e.actorUserId')
+            .leftJoin('staffMembers as ps', 'ps.id', 'e.previousStaffId')
+            .select([
+              'e.kind',
+              'e.actor',
+              'e.channel',
+              'u.displayName as actorName',
+              'e.occurredAt',
+              'e.previousStartsAt',
+              'ps.displayName as previousStaffName',
+            ])
             .whereRef('e.bookingId', '=', 'b.id')
             .orderBy('e.occurredAt'),
         ).as('history'),
@@ -132,6 +150,7 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
             .selectFrom('bookingItems as i')
             .leftJoin('resources as r', 'r.id', 'i.resourceId')
             .select([
+              'i.staffId',
               'i.serviceId',
               'i.serviceName',
               'i.startsAt',
@@ -179,7 +198,11 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
       .innerJoin('locations as l', 'l.id', 'b.locationId')
       .select([
         'b.id',
+        'b.version',
         'b.status',
+        'b.holdReason',
+        'b.holdExpiresAt',
+        'b.depositMinor',
         'b.source',
         'b.startsAt',
         'b.endsAt',
@@ -212,7 +235,10 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
   ): CabinetBookingView {
     return {
       id: row.id,
+      version: row.version,
       status: row.status,
+      hold: holdOf(row.holdReason, row.holdExpiresAt),
+      depositMinor: row.depositMinor,
       source: row.source,
       startsAt: row.startsAt,
       endsAt: row.endsAt,

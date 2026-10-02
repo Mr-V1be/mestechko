@@ -1,8 +1,8 @@
 import { Temporal } from '@mestechko/domain';
 import { describe, expect, it } from 'vitest';
 import { ApplicationError } from '../../src/shared/application/application-error.js';
+import type { RateLimiter } from '../../src/shared/application/rate-limits.js';
 import type {
-  LoginThrottle,
   PasswordHasher,
   SessionStore,
   StoredSession,
@@ -74,7 +74,7 @@ function setup(options: { allowed?: boolean } = {}) {
       return Promise.resolve();
     },
   };
-  const throttle: LoginThrottle = {
+  const throttle: RateLimiter = {
     consume: () => Promise.resolve({ allowed: options.allowed ?? true, retryAfterSeconds: 60 }),
     reset: () => Promise.resolve(),
   };

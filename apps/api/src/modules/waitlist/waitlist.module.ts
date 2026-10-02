@@ -9,8 +9,21 @@ import {
 } from '../../shared/application/ports.js';
 import { UNIT_OF_WORK, type UnitOfWork } from '../../shared/application/unit-of-work.js';
 import { AvailabilityAssembler } from '../booking/application/availability/availability-assembler.js';
-import { CreateClientBooking } from '../booking/application/client/create-client-booking.js';
-import { BOOKING_FOLLOW_UPS, type BookingFollowUps } from '../booking/application/ports.js';
+import { ClientBookingPresenter } from '../booking/application/client/client-booking-presenter.js';
+import { BookingCancellation } from '../booking/application/lifecycle/booking-cancellation.js';
+import { BookingHolds } from '../booking/application/lifecycle/booking-holds.js';
+import {
+  BOOKING_LIFECYCLE_STORE,
+  type BookingLifecycleStore,
+} from '../booking/application/lifecycle/ports.js';
+import {
+  BOOKING_FOLLOW_UPS,
+  BOOKING_WRITER,
+  CLIENT_BOOKING_QUERIES,
+  type BookingFollowUps,
+  type BookingWriter,
+  type ClientBookingQueries,
+} from '../booking/application/ports.js';
 import { BookingModule } from '../booking/booking.module.js';
 import { CATALOG_READER, type CatalogReader } from '../catalog/application/catalog-reader.js';
 import { CatalogModule } from '../catalog/catalog.module.js';
@@ -27,11 +40,11 @@ import {
 } from '../notifications/application/notification-jobs.js';
 import {
   NOTIFICATION_OUTBOX,
-  NOTIFICATION_STORE,
   type NotificationOutbox,
-  type NotificationStore,
 } from '../notifications/application/ports.js';
 import { NotificationsModule } from '../notifications/notifications.module.js';
+import { Prepayments } from '../payments/application/prepayments.js';
+import { PaymentsModule } from '../payments/payments.module.js';
 import { BusinessContextResolver } from '../tenancy/application/business-context.js';
 import { TenancyModule } from '../tenancy/tenancy.module.js';
 import { MiniAppWaitlistController } from './api/miniapp-waitlist.controller.js';
@@ -41,15 +54,70 @@ import { MatchWaitlist, waitlistHandlerTokens } from './application/waitlist-mat
 import { WaitlistOffers } from './application/waitlist-offers.js';
 import { KyselyWaitlistStore } from './infrastructure/kysely-waitlist-store.js';
 
-/** Clients waiting for a day, and offers when time frees up on it. */
+/** Clients waiting for a day, and offers to them one at a time when time frees up. */
 @Module({
-  imports: [TenancyModule, CatalogModule, ClientsModule, NotificationsModule, BookingModule],
+  imports: [
+    TenancyModule,
+    CatalogModule,
+    ClientsModule,
+    NotificationsModule,
+    BookingModule,
+    PaymentsModule,
+  ],
   controllers: [MiniAppWaitlistController],
   providers: [
     {
       provide: WAITLIST_STORE,
       useFactory: (unitOfWork: KyselyUnitOfWork) => new KyselyWaitlistStore(unitOfWork),
       inject: [KyselyUnitOfWork],
+    },
+    {
+      provide: WaitlistOffers,
+      useFactory: (
+        businesses: BusinessContextResolver,
+        unitOfWork: UnitOfWork,
+        customers: CustomerIdentities,
+        clients: ClientDirectory,
+        store: WaitlistStore,
+        lifecycle: BookingLifecycleStore,
+        queries: ClientBookingQueries,
+        holds: BookingHolds,
+        cancellation: BookingCancellation,
+        prepayments: Prepayments,
+        presenter: ClientBookingPresenter,
+        followUps: BookingFollowUps,
+        clock: Clock,
+      ) =>
+        new WaitlistOffers(
+          businesses,
+          unitOfWork,
+          customers,
+          clients,
+          store,
+          lifecycle,
+          queries,
+          holds,
+          cancellation,
+          prepayments,
+          presenter,
+          followUps,
+          clock,
+        ),
+      inject: [
+        BusinessContextResolver,
+        UNIT_OF_WORK,
+        CUSTOMER_IDENTITIES,
+        CLIENT_DIRECTORY,
+        WAITLIST_STORE,
+        BOOKING_LIFECYCLE_STORE,
+        CLIENT_BOOKING_QUERIES,
+        BookingHolds,
+        BookingCancellation,
+        Prepayments,
+        ClientBookingPresenter,
+        BOOKING_FOLLOW_UPS,
+        CLOCK,
+      ],
     },
     {
       provide: WaitlistEntries,
@@ -60,10 +128,23 @@ import { KyselyWaitlistStore } from './infrastructure/kysely-waitlist-store.js';
         clients: ClientDirectory,
         catalog: CatalogReader,
         store: WaitlistStore,
+        offers: WaitlistOffers,
+        followUps: BookingFollowUps,
         ids: IdGenerator,
         clock: Clock,
       ) =>
-        new WaitlistEntries(businesses, unitOfWork, customers, clients, catalog, store, ids, clock),
+        new WaitlistEntries(
+          businesses,
+          unitOfWork,
+          customers,
+          clients,
+          catalog,
+          store,
+          offers,
+          followUps,
+          ids,
+          clock,
+        ),
       inject: [
         BusinessContextResolver,
         UNIT_OF_WORK,
@@ -71,6 +152,8 @@ import { KyselyWaitlistStore } from './infrastructure/kysely-waitlist-store.js';
         CLIENT_DIRECTORY,
         CATALOG_READER,
         WAITLIST_STORE,
+        WaitlistOffers,
+        BOOKING_FOLLOW_UPS,
         ID_GENERATOR,
         CLOCK,
       ],
@@ -82,8 +165,11 @@ import { KyselyWaitlistStore } from './infrastructure/kysely-waitlist-store.js';
         unitOfWork: UnitOfWork,
         store: WaitlistStore,
         assembler: AvailabilityAssembler,
+        writer: BookingWriter,
+        lifecycle: BookingLifecycleStore,
         outbox: NotificationOutbox,
         queue: JobQueue,
+        ids: IdGenerator,
         clock: Clock,
       ) =>
         new MatchWaitlist(
@@ -91,9 +177,12 @@ import { KyselyWaitlistStore } from './infrastructure/kysely-waitlist-store.js';
           unitOfWork,
           store,
           assembler,
+          writer,
+          lifecycle,
           outbox,
           () =>
             queue.enqueue(dispatchNotificationsJob, {}, { deduplicationKey: DISPATCH_KICK_KEY }),
+          ids,
           clock,
         ),
       inject: [
@@ -101,41 +190,11 @@ import { KyselyWaitlistStore } from './infrastructure/kysely-waitlist-store.js';
         UNIT_OF_WORK,
         WAITLIST_STORE,
         AvailabilityAssembler,
+        BOOKING_WRITER,
+        BOOKING_LIFECYCLE_STORE,
         NOTIFICATION_OUTBOX,
         JOB_QUEUE,
-        CLOCK,
-      ],
-    },
-    {
-      provide: WaitlistOffers,
-      useFactory: (
-        businesses: BusinessContextResolver,
-        unitOfWork: UnitOfWork,
-        customers: CustomerIdentities,
-        store: WaitlistStore,
-        notifications: NotificationStore,
-        createBooking: CreateClientBooking,
-        followUps: BookingFollowUps,
-        clock: Clock,
-      ) =>
-        new WaitlistOffers(
-          businesses,
-          unitOfWork,
-          customers,
-          store,
-          notifications,
-          createBooking,
-          followUps,
-          clock,
-        ),
-      inject: [
-        BusinessContextResolver,
-        UNIT_OF_WORK,
-        CUSTOMER_IDENTITIES,
-        WAITLIST_STORE,
-        NOTIFICATION_STORE,
-        CreateClientBooking,
-        BOOKING_FOLLOW_UPS,
+        ID_GENERATOR,
         CLOCK,
       ],
     },

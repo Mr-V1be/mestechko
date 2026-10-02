@@ -7,6 +7,7 @@ import { Test } from '@nestjs/testing';
 import { inject } from 'vitest';
 import { AppModule } from '../../../src/app.module.js';
 import { loadConfig, type AppConfig } from '../../../src/platform/config/app-config.js';
+import { registerBodyParsers } from '../../../src/platform/http/body-parsers.js';
 import { JOB_QUEUE } from '../../../src/shared/application/job-queue.js';
 import { CLOCK } from '../../../src/shared/application/ports.js';
 import type { InlineJobQueue } from './inline-job-queue.js';
@@ -15,6 +16,8 @@ import type { InlineJobQueue } from './inline-job-queue.js';
 const TEST_REDIS_DB = '15';
 
 export const TEST_DEMO_KEY = 'test-demo-signing-key-0123456789abcdef';
+export const TEST_PAY_SECRET = 'test-pay-secret-key-0123456789abcdef';
+export const TEST_PAY_WEBHOOK_SECRET = 'test-pay-webhook-secret-0123456789abcdef';
 
 export function testRedisUrl(): string {
   const redis = new URL(process.env.REDIS_URL ?? '');
@@ -30,6 +33,10 @@ function testConfig(environment: Readonly<Record<string, string>>): AppConfig {
     REDIS_URL: testRedisUrl(),
     DEMO_MODE: 'true',
     TELEGRAM_DEMO_SIGNING_KEY: TEST_DEMO_KEY,
+    TEST_PAY_SECRET_KEY: TEST_PAY_SECRET,
+    TEST_PAY_WEBHOOK_SECRET: TEST_PAY_WEBHOOK_SECRET,
+    TEST_PAY_EMULATOR_ENABLED: 'true',
+    WIDGET_SIGNING_KEY: 'test-widget-signing-key-0123456789abcdef',
     LOG_LEVEL: 'silent',
     METRICS_ENABLED: 'false',
     ...environment,
@@ -63,7 +70,9 @@ export async function createTestApp(options: TestAppOptions = {}): Promise<NestF
   const moduleRef = await builder.compile();
   const app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter(), {
     logger: false,
+    rawBody: true,
   });
+  registerBodyParsers(app.getHttpAdapter().getInstance());
   await app.register(fastifyCookie);
   await app.init();
   await app.getHttpAdapter().getInstance().ready();

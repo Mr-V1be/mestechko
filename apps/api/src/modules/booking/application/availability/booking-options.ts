@@ -14,6 +14,7 @@ import {
   Temporal,
   type Clock,
   type CurrencyCode,
+  type IncompatiblePair,
   type Money,
 } from '@mestechko/domain';
 import { notFound } from '../../../../shared/application/application-error.js';
@@ -27,12 +28,14 @@ import type {
 import type { WorkCalendarReader } from '../../../scheduling/application/ports.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
 import type { AssembledAvailability, AvailabilityAssembler } from './availability-assembler.js';
-import { pricePlans } from './plan-pricing.js';
+import { depositOf, pricePlans } from './plan-pricing.js';
 
 /** How far ahead the staff step looks for each person's nearest free time. */
 const NEAREST_SLOT_LOOKAHEAD_DAYS = 14;
 
 const toIso = (epoch: number): string => new Date(epoch).toISOString();
+
+const depositOrNull = (deposit: Money): Money | null => (deposit.amountMinor > 0 ? deposit : null);
 
 /** Free starts per day in the location's time zone, as clients receive them. */
 export function availableDaysOf(assembled: AssembledAvailability): {
@@ -75,7 +78,10 @@ export class BookingOptions {
     private readonly clock: Clock,
   ) {}
 
-  async services(slug: string, locationId: string): Promise<ServiceCategory[]> {
+  async services(
+    slug: string,
+    locationId: string,
+  ): Promise<{ categories: ServiceCategory[]; incompatible: IncompatiblePair[] }> {
     const context = await this.businesses.bySlug(slug);
     const { business, rules } = context;
     return this.unitOfWork.inTenant(
@@ -83,7 +89,7 @@ export class BookingOptions {
       async () => {
         const location = await this.catalog.findLocation(locationId);
         if (!location) {
-          return [];
+          return { categories: [], incompatible: [] };
         }
         const today = localDateOf(this.clock.now().epochMilliseconds, location.timeZone);
         const window = { from: today, to: today.add({ days: rules.horizonDays }) };
@@ -120,7 +126,12 @@ export class BookingOptions {
           });
           categories.set(service.categoryId, category);
         }
-        return [...categories.values()];
+        return {
+          categories: [...categories.values()],
+          incompatible: await this.catalog.listIncompatibilities(
+            bookable.map((service) => service.id),
+          ),
+        };
       },
       { readOnly: true },
     );
@@ -261,6 +272,9 @@ export class BookingOptions {
               : null,
           priceRange: priceRange(priced.map((option) => option.total)),
           assignmentRule: query.staffId === null ? context.rules.staffAssignment : null,
+          deposit: first
+            ? depositOrNull(depositOf(first, assembled.services, context.rules))
+            : null,
         };
       },
       { readOnly: true },

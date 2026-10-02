@@ -7,6 +7,16 @@ export interface ClientRecord {
   readonly phone: string | null;
 }
 
+/** A client card the business makes itself, without a messenger account. */
+export interface NewClient {
+  readonly id: string;
+  readonly displayName: string;
+  readonly phone: string | null;
+  readonly email: string | null;
+  readonly tags: readonly string[];
+  readonly now: Date;
+}
+
 export interface ClientContact {
   readonly displayName: string;
   readonly phone: string;
@@ -29,6 +39,10 @@ export interface MessengerClient {
 /** Client cards of the current tenant (the business's own CRM). */
 export interface ClientDirectory {
   findByCustomer(customerId: string): Promise<ClientRecord | null>;
+  findById(clientId: string): Promise<ClientRecord | null>;
+  /** The card with this phone; the most recently updated one if several share it. */
+  findByPhone(phone: string): Promise<ClientRecord | null>;
+  create(client: NewClient): Promise<ClientRecord>;
   /** Clients known through a messenger, by name. */
   listByChannel(channel: MessengerChannel): Promise<MessengerClient[]>;
   /** Client card of a customer in this business, created or updated with the contact. */
@@ -55,6 +69,8 @@ export interface MessengerContacts {
   revoke(channel: MessengerChannel, externalId: string): Promise<void>;
   isAllowed(channel: MessengerChannel, externalId: string): Promise<boolean>;
   addressOf(customerId: string, channel: MessengerChannel): Promise<MessagingAddress | null>;
+  /** The messenger the person allowed most recently; `null` when none. */
+  preferredChannel(customerId: string): Promise<MessengerChannel | null>;
   /** Businesses where the customer has a client card; the platform bot serves them all. */
   businessesOf(customerId: string): Promise<string[]>;
 }

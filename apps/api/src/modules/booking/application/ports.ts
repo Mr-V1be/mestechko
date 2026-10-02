@@ -2,6 +2,7 @@ import type {
   BookingSource,
   BookingStatus,
   CurrencyCode,
+  HoldReason,
   InstantInterval,
   Occupancy,
 } from '@mestechko/domain';
@@ -30,12 +31,22 @@ export interface NewBookingItem {
   readonly occupied: { readonly start: Date; readonly end: Date };
 }
 
+/** Why and until when a held booking keeps its time. */
+export interface BookingHold {
+  readonly reason: HoldReason;
+  readonly expiresAt: Date;
+}
+
 export interface NewBooking {
   readonly id: string;
   readonly locationId: string;
   readonly clientId: string;
   readonly staffId: string;
   readonly status: BookingStatus;
+  /** Set exactly for held bookings. */
+  readonly hold: BookingHold | null;
+  /** Prepayment the booking asks for, in minor units; `0` when none. */
+  readonly depositMinor: number;
   readonly source: BookingSource;
   readonly startsAt: Date;
   readonly endsAt: Date;
@@ -78,6 +89,8 @@ export interface BookedService {
 export interface ClientBookingView {
   readonly id: string;
   readonly status: BookingStatus;
+  readonly hold: BookingHold | null;
+  readonly depositMinor: number;
   readonly version: number;
   readonly startsAt: Date;
   readonly endsAt: Date;
@@ -110,6 +123,8 @@ export type ClientBookingScope = 'upcoming' | 'past';
 
 export interface ClientBookingQueries {
   findIdByIdempotencyKey(clientId: string, key: string): Promise<string | null>;
+  /** Client card a booking belongs to. */
+  clientOf(bookingId: string): Promise<string | null>;
   get(clientId: string, bookingId: string): Promise<ClientBookingView | null>;
   list(
     clientId: string,
@@ -129,11 +144,13 @@ export interface CommittedBookingChange {
   readonly businessId: string;
   /** Time that became free and may suit someone on the waitlist. */
   readonly freedTime: { readonly locationId: string; readonly date: string } | null;
+  /** Payments whose refund the provider should now be asked for. */
+  readonly refunds?: readonly string[];
 }
 
 /**
- * Work that follows a committed change: delivering messages due now and offering freed
- * time to the waitlist. Best effort: periodic sweeps catch up if it fails.
+ * Work that follows a committed change: delivering messages due now, offering freed
+ * time to the waitlist and asking for refunds. Best effort: periodic sweeps catch up.
  */
 export interface BookingFollowUps {
   afterCommit(change: CommittedBookingChange): Promise<void>;
@@ -144,3 +161,33 @@ export const BOOKING_WRITER = Symbol('BOOKING_WRITER');
 export const CLIENT_BOOKING_QUERIES = Symbol('CLIENT_BOOKING_QUERIES');
 export const BOOKING_TELEMETRY = Symbol('BOOKING_TELEMETRY');
 export const BOOKING_FOLLOW_UPS = Symbol('BOOKING_FOLLOW_UPS');
+
+/** Held bookings whose hold ran out, across businesses; ids only. */
+export interface ExpiredHolds {
+  list(
+    now: Date,
+    limit: number,
+  ): Promise<{ readonly businessId: string; readonly bookingId: string }[]>;
+}
+
+export const EXPIRED_HOLDS = Symbol('EXPIRED_HOLDS');
+
+/** How a prepayment is described on the payment page, in the client's language. */
+export interface PaymentDescriptions {
+  describe(input: {
+    readonly businessName: string;
+    readonly serviceNames: readonly string[];
+    readonly startsAt: Date;
+    readonly timeZone: string;
+  }): string;
+}
+
+export const PAYMENT_DESCRIPTIONS = Symbol('PAYMENT_DESCRIPTIONS');
+
+/** Proof a website visitor made a booking, without any stored state. */
+export interface BookingTokens {
+  issue(bookingId: string): string;
+  verify(bookingId: string, token: string): boolean;
+}
+
+export const BOOKING_TOKENS = Symbol('BOOKING_TOKENS');
