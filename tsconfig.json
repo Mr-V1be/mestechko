@@ -3,7 +3,8 @@
   "compilerOptions": {
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "types": ["node"]
+    "types": ["node"],
+    "lib": ["ES2024", "DOM"]
   },
   "include": ["tooling/**/*.ts", "eslint.config.js", "vitest.shared.ts"]
 }

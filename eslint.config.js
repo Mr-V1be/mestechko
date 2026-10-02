@@ -79,7 +79,16 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.browser } },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'no-restricted-imports': ['error', { patterns: [...frameworkImports, 'node:*'] }],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [...frameworkImports, 'node:*'],
+          // Browsers take the schema-free entry; schemas stay on the server.
+          paths: [
+            { name: '@mestechko/contracts', message: 'Import from @mestechko/contracts/client.' },
+          ],
+        },
+      ],
     },
   },
   {

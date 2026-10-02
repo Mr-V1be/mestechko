@@ -26,12 +26,12 @@
     "format:check": "prettier --check .",
     "test": "pnpm -r --workspace-concurrency=1 test",
     "test:integration": "pnpm --filter @mestechko/api test:integration",
-    "contracts:openapi": "pnpm --filter @mestechko/contracts openapi",
-    "contracts:check": "pnpm --filter @mestechko/contracts openapi:check",
+    "contracts:check": "pnpm --filter @mestechko/contracts generate:check",
     "gate:limits": "node tooling/gates/source-limits.ts",
     "gate:tokens": "node tooling/gates/design-tokens.ts",
     "gate": "pnpm gate:limits && pnpm gate:tokens && pnpm format:check && pnpm lint && pnpm typecheck && pnpm contracts:check && pnpm test",
-    "screenshots": "node tooling/screenshots/capture.ts"
+    "screenshots": "node tooling/screenshots/capture.ts",
+    "contracts:generate": "pnpm --filter @mestechko/contracts generate"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
