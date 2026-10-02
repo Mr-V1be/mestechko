@@ -4,6 +4,7 @@ import {
   formatInstant,
   formatLocalDate,
   formatMoney,
+  formatMoneyRange,
   type InstantStyle,
   type LocalDateStyle,
 } from '@mestechko/i18n';
@@ -12,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 export interface Formatters {
   money(value: Money): string;
+  moneyRange(min: Money, max: Money): string;
   /** Instants are shown in the time zone of the business location. */
   instant(value: string, timeZone: string, style: InstantStyle): string;
   localDate(value: string, style: LocalDateStyle): string;
@@ -24,6 +26,7 @@ export function useFormat(): Formatters {
   return useMemo(
     () => ({
       money: (value) => formatMoney(locale, value),
+      moneyRange: (min, max) => formatMoneyRange(locale, min, max),
       instant: (value, timeZone, style) => formatInstant(locale, value, timeZone, style),
       localDate: (value, style) => formatLocalDate(locale, value, style),
       duration: (minutes) => formatDuration((key, options) => t(key, options), minutes),

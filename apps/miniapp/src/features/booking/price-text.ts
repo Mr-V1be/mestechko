@@ -8,8 +8,7 @@ export function priceText(t: TFunction, format: Formatters, price: DraftPrice): 
     [K in DraftPrice['kind']]: (value: Extract<DraftPrice, { kind: K }>) => string;
   } = {
     exact: (value) => format.money(value.total),
-    range: (value) =>
-      t('summary.range', { min: format.money(value.min), max: format.money(value.max) }),
+    range: (value) => format.moneyRange(value.min, value.max),
     from: (value) => t('services.priceFrom', { price: format.money(value.min) }),
   };
   return (formats[price.kind] as (value: DraftPrice) => string)(price);

@@ -1,11 +1,24 @@
 import { describe, expect, it } from 'vitest';
 import { createI18n } from './create-i18n.js';
-import { formatDuration, formatInstant, formatLocalDate, formatMoney } from './format.js';
+import {
+  formatDuration,
+  formatInstant,
+  formatLocalDate,
+  formatMoney,
+  formatMoneyRange,
+} from './format.js';
 
 describe('formatting', () => {
   it('formats roubles without kopecks when whole', () => {
     expect(formatMoney('ru', { amountMinor: 250_000, currency: 'RUB' })).toBe('2 500 ₽');
     expect(formatMoney('ru', { amountMinor: 250_050, currency: 'RUB' })).toBe('2 500,50 ₽');
+    expect(
+      formatMoneyRange(
+        'ru',
+        { amountMinor: 470_000, currency: 'RUB' },
+        { amountMinor: 530_000, currency: 'RUB' },
+      ),
+    ).toMatch(/^4\s700\s?–\s?5\s300\s₽$/u);
   });
 
   it('shows instants in the time zone of the location', () => {

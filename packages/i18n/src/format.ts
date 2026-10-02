@@ -78,6 +78,27 @@ export function formatMoney(locale: string, value: Money): string {
   return formatter.format(amount);
 }
 
+/** `4 700–5 300 ₽`: one currency sign for the whole range. */
+export function formatMoneyRange(locale: string, min: Money, max: Money): string {
+  if (min.amountMinor === max.amountMinor) {
+    return formatMoney(locale, min);
+  }
+  const digits = currencies[min.currency].minorUnitDigits;
+  const lower = min.amountMinor / 10 ** digits;
+  const upper = max.amountMinor / 10 ** digits;
+  const fractionDigits = Number.isInteger(lower) && Number.isInteger(upper) ? 0 : digits;
+  return cached(
+    `m|${locale}|${min.currency}|${String(fractionDigits)}`,
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: min.currency,
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+      }),
+  ).formatRange(lower, upper);
+}
+
 type CountTranslator = (key: string, options: { count: number }) => string;
 
 /** `90` → `1 ч 30 мин` using the `common:duration` plurals. */

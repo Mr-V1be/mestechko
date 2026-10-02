@@ -23,6 +23,7 @@ import {
   daysBetween,
   dayPartOf,
   dayParts,
+  localDateOf,
   localHourOf,
   todayIn,
 } from '../../shared/local-date';
@@ -98,7 +99,12 @@ export function TimePage() {
 
   useEffect(() => {
     if (days && selectedDate !== selection.date) {
-      update({ date: selectedDate, start: null });
+      // A start already chosen on that date survives the date catching up in the address.
+      const keepStart =
+        selection.start !== null &&
+        selectedDate !== null &&
+        localDateOf(selection.start, timeZone) === selectedDate;
+      update(keepStart ? { date: selectedDate } : { date: selectedDate, start: null });
     }
   }, [days, selectedDate, selection.date, update]);
 

@@ -207,8 +207,7 @@ export function ConfirmPage() {
                 quote.priceRange.min.amountMinor !== quote.priceRange.max.amountMinor ? (
                   <span>
                     {t('confirm.priceRange', {
-                      min: format.money(quote.priceRange.min),
-                      max: format.money(quote.priceRange.max),
+                      range: format.moneyRange(quote.priceRange.min, quote.priceRange.max),
                     })}
                   </span>
                 ) : null}

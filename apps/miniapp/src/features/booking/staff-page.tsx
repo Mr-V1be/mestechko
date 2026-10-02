@@ -98,10 +98,7 @@ export function StaffPage() {
               meta={
                 anyTotal
                   ? varies
-                    ? t('summary.range', {
-                        min: format.money(anyTotal),
-                        max: format.money(anyHighest),
-                      })
+                    ? format.moneyRange(anyTotal, anyHighest)
                     : format.money(anyTotal)
                   : null
               }
