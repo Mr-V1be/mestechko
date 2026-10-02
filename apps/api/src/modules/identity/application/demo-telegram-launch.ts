@@ -9,6 +9,11 @@ import type { TelegramLaunchSigner } from './ports.js';
  */
 const DEMO_USER_ID_RANGE = { min: 9_000_000_000_000, max: 9_999_999_999_999 } as const;
 
+function isDemoUserId(value: string): boolean {
+  const id = Number(value);
+  return Number.isSafeInteger(id) && id >= DEMO_USER_ID_RANGE.min && id <= DEMO_USER_ID_RANGE.max;
+}
+
 export interface DemoLaunch {
   readonly initData: string;
   readonly demoUserId: string;
@@ -29,7 +34,12 @@ export class CreateDemoTelegramLaunch {
     if (!business?.isDemo) {
       throw new ApplicationError('not_found', 'Demo business not found');
     }
-    const id = demoUserId ?? String(randomInt(DEMO_USER_ID_RANGE.min, DEMO_USER_ID_RANGE.max));
+    // Only ids from the demo range are reused: a demo visitor can never act as a real
+    // Telegram account, whose bot chat would then receive the visitor's bookings.
+    const id =
+      demoUserId !== null && isDemoUserId(demoUserId)
+        ? demoUserId
+        : String(randomInt(DEMO_USER_ID_RANGE.min, DEMO_USER_ID_RANGE.max));
     const initData = this.signer.sign({
       user: { id, firstName: this.guestName, lastName: null, username: null, languageCode: 'ru' },
       startParam: business.slug,

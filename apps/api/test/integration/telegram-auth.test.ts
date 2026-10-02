@@ -44,6 +44,25 @@ describe('Mini App launch data on the server', () => {
       headers: authorization ? { authorization } : {},
     });
 
+  it('never lets a demo visitor take a real Telegram account id', async () => {
+    await databases.admin
+      .updateTable('businesses')
+      .set({ isDemo: true })
+      .where('id', '=', tenant.businessId)
+      .execute();
+    const launch = (demoUserId: string) =>
+      app.inject({
+        method: 'POST',
+        url: '/v1/demo/telegram-launch',
+        payload: { businessSlug: tenant.slug, demoUserId },
+      });
+    const real = (await launch('123456789')).json<{ demoUserId: string }>();
+    expect(real.demoUserId).not.toBe('123456789');
+    expect(Number(real.demoUserId)).toBeGreaterThanOrEqual(9_000_000_000_000);
+    const returning = (await launch('9100000000123')).json<{ demoUserId: string }>();
+    expect(returning.demoUserId).toBe('9100000000123');
+  });
+
   it('accepts fresh, correctly signed launch data', async () => {
     const response = await listWith(`tma ${signedAt(Temporal.Now.instant(), TEST_DEMO_KEY)}`);
     expect(response.statusCode).toBe(200);
