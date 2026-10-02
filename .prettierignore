@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+dist/
+coverage/
+docs/screenshots/
+packages/contracts/openapi/openapi.json
+apps/api/src/platform/db/generated/

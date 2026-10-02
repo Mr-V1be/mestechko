@@ -1,0 +1,48 @@
+{
+  "name": "mestechko",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=24.11.1",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "env:init": "node tooling/env/init-env.ts",
+    "infra:up": "docker compose up -d --wait",
+    "infra:stop": "docker compose stop",
+    "db:provision": "pnpm --filter @mestechko/api db:provision",
+    "db:migrate": "pnpm --filter @mestechko/api db:migrate",
+    "db:codegen": "pnpm --filter @mestechko/api db:codegen",
+    "db:seed": "pnpm --filter @mestechko/api db:seed",
+    "db:setup": "pnpm db:provision && pnpm db:migrate && pnpm db:seed",
+    "dev:api": "pnpm --filter @mestechko/api dev",
+    "dev:miniapp": "pnpm --filter @mestechko/miniapp dev",
+    "dev:cabinet": "pnpm --filter @mestechko/cabinet dev",
+    "build": "pnpm -r --workspace-concurrency=2 build",
+    "typecheck": "pnpm -r --workspace-concurrency=2 typecheck",
+    "lint": "eslint --max-warnings=0 .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r --workspace-concurrency=1 test",
+    "test:integration": "pnpm --filter @mestechko/api test:integration",
+    "contracts:openapi": "pnpm --filter @mestechko/contracts openapi",
+    "contracts:check": "pnpm --filter @mestechko/contracts openapi:check",
+    "gate:limits": "node tooling/gates/source-limits.ts",
+    "gate:tokens": "node tooling/gates/design-tokens.ts",
+    "gate": "pnpm gate:limits && pnpm gate:tokens && pnpm format:check && pnpm lint && pnpm typecheck && pnpm contracts:check && pnpm test",
+    "screenshots": "node tooling/screenshots/capture.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.1",
+    "eslint": "10.11.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.13.0",
+    "playwright": "1.63.0",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
+    "vitest": "5.0.3"
+  }
+}
