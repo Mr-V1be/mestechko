@@ -1,54 +1,12 @@
-import { Badge, Button, Logo, Select, SpotIllustration, TextField } from '@mestechko/ui';
+import { Badge, Button, Logo, SpotIllustration, TextField } from '@mestechko/ui';
 import { useState, type SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { appConfig } from '../../app/config';
-import { useDemoBusinesses, useDemoSignIn, useMe, useSignIn } from '../../platform/api/queries';
+import { useMe, useSignIn } from '../../platform/api/queries';
 import { errorMessage } from '../common/error-message';
+import { DemoAccess } from './demo-access';
 import styles from './sign-in.module.css';
-
-function DemoAccess() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const businesses = useDemoBusinesses(true);
-  const demoSignIn = useDemoSignIn();
-  const options = (businesses.data?.businesses ?? []).map((business) => ({
-    value: business.slug,
-    label: `${business.name}, ${t(`catalog:verticals.${business.vertical.id}`)}`,
-  }));
-  const [slug, setSlug] = useState<string | null>(null);
-  const chosen = slug ?? options[0]?.value ?? '';
-  if (options.length === 0) {
-    return null;
-  }
-  return (
-    <section className={styles.demo} aria-labelledby="demo-title">
-      <h2 id="demo-title" className={styles.demoTitle}>
-        {t('signIn.demoTitle')}
-      </h2>
-      <p className={styles.demoLead}>{t('signIn.demoLead')}</p>
-      <Select
-        label={t('signIn.demoBusiness')}
-        value={chosen}
-        options={options}
-        onChange={setSlug}
-      />
-      {demoSignIn.isError ? (
-        <p className={styles.formError}>{errorMessage(t, demoSignIn.error)}</p>
-      ) : null}
-      <Button
-        variant="secondary"
-        block
-        loading={demoSignIn.isPending}
-        onClick={() => {
-          demoSignIn.mutate(chosen, { onSuccess: () => void navigate('/', { replace: true }) });
-        }}
-      >
-        {t('signIn.demoSubmit')}
-      </Button>
-    </section>
-  );
-}
 
 export function SignInPage() {
   const { t } = useTranslation();

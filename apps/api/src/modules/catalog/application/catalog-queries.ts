@@ -8,7 +8,10 @@ import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import type { AvatarUrls } from '../../../shared/application/avatar-urls.js';
 import { verticalSummaryOf } from '../../tenancy/application/vertical-summary.js';
 import type { BusinessContextResolver } from '../../tenancy/application/business-context.js';
-import type { BusinessDirectory } from '../../tenancy/application/business-directory.js';
+import type {
+  BusinessDirectory,
+  MembershipDirectory,
+} from '../../tenancy/application/business-directory.js';
 import type { CatalogReader } from './catalog-reader.js';
 
 type CabinetOverview = RouteResult<typeof getCabinetOverview>;
@@ -17,6 +20,7 @@ export class CatalogQueries {
   constructor(
     private readonly businesses: BusinessContextResolver,
     private readonly directory: BusinessDirectory,
+    private readonly memberships: MembershipDirectory,
     private readonly catalog: CatalogReader,
     private readonly unitOfWork: UnitOfWork,
     private readonly avatars: AvatarUrls,
@@ -96,18 +100,21 @@ export class CatalogQueries {
     return Promise.all(
       businesses.map(async (record) => {
         const context = this.businesses.contextOf(record);
-        const locations = await this.unitOfWork.inTenant(
-          record.id,
-          () => this.catalog.listLocations(),
-          {
+        const [locations, holders] = await Promise.all([
+          this.unitOfWork.inTenant(record.id, () => this.catalog.listLocations(), {
             readOnly: true,
-          },
-        );
+          }),
+          this.memberships.listRoleHolders(record.id),
+        ]);
         return {
           slug: record.slug,
           name: record.name,
           vertical: verticalSummaryOf(context.vertical),
           address: locations[0]?.address ?? '',
+          personas: holders.map((holder) => ({
+            role: holder.role,
+            displayName: holder.displayName,
+          })),
         };
       }),
     );

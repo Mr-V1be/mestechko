@@ -40,6 +40,8 @@ export interface DemoBusiness {
   readonly currency: CurrencyCode;
   readonly rulesOverrides?: BookingRulesOverrides;
   readonly owner: { readonly email: string; readonly displayName: string };
+  /** Staff members who sign in to the cabinet; the role sees only their own work. */
+  readonly staffAccounts: readonly { readonly staffKey: string; readonly email: string }[];
   readonly locations: readonly {
     readonly key: string;
     readonly name: string;

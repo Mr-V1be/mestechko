@@ -1,4 +1,4 @@
-import type { Clock } from '@mestechko/domain';
+import type { Clock, RoleId } from '@mestechko/domain';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type {
@@ -16,8 +16,6 @@ import type {
 const MS_PER_DAY = 86_400_000;
 /** Sliding expiry is extended at most this often to avoid a write per request. */
 const TOUCH_INTERVAL_MS = 3_600_000;
-/** Demo visitors sign in as this persona; role-based demo personas come later. */
-const DEMO_PERSONA_ROLE = 'owner' as const;
 export interface SessionSettings {
   readonly ttlDays: number;
   readonly demoEnabled: boolean;
@@ -67,15 +65,15 @@ export class CabinetSessions {
     return this.issue(account.id);
   }
 
-  /** Signs in as the persona of a demo business. Unavailable outside demo mode. */
-  async signInDemo(businessSlug: string): Promise<IssuedSession> {
+  /** Signs in as the demo persona holding the role. Unavailable outside demo mode. */
+  async signInDemo(businessSlug: string, role: RoleId): Promise<IssuedSession> {
     const business = this.settings.demoEnabled
       ? await this.businesses.findBySlug(businessSlug)
       : null;
     if (!business?.isDemo) {
       throw new ApplicationError('not_found', 'Demo business not found');
     }
-    const userId = await this.memberships.findUserWithRole(business.id, DEMO_PERSONA_ROLE);
+    const userId = await this.memberships.findUserWithRole(business.id, role);
     if (!userId) {
       throw new ApplicationError('not_found', 'Demo account not found');
     }

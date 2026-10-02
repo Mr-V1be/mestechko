@@ -46,11 +46,11 @@ export const createSession = defineRoute({
 export const createDemoSession = defineRoute({
   method: 'POST',
   path: '/v1/auth/demo-sessions',
-  summary: 'Sign in as the owner of a demo business (demo mode only)',
+  summary: 'Sign in to a demo business in one of its roles (demo mode only)',
   tag: 'auth',
   auth: 'none',
   status: 200,
-  body: z.object({ businessSlug: slugSchema }),
+  body: z.object({ businessSlug: slugSchema, role: roleSchema.default('owner') }),
   response: meSchema,
 });
 

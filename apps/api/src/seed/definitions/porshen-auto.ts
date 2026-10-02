@@ -10,6 +10,7 @@ export const porshenAuto: DemoBusiness = {
   countryCode: 'RU',
   currency: 'RUB',
   owner: { email: 'owner@porshen.example', displayName: 'Геннадий Поршнев' },
+  staffAccounts: [{ staffKey: 'sergey', email: 'sergey@porshen.example' }],
   locations: [
     {
       key: STANTSIONNAYA,

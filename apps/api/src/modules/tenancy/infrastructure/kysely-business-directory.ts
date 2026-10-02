@@ -1,4 +1,4 @@
-import { staffAssignmentStrategyIds, type RoleId } from '@mestechko/domain';
+import { roleIds, staffAssignmentStrategyIds, type RoleId } from '@mestechko/domain';
 import type { Selectable } from 'kysely';
 import { z } from 'zod';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
@@ -9,6 +9,7 @@ import type {
   BusinessRecord,
   MembershipDirectory,
   MembershipRecord,
+  RoleHolder,
 } from '../application/business-directory.js';
 
 const minutes = z.number().int().nonnegative();
@@ -106,6 +107,22 @@ export class KyselyBusinessDirectory implements BusinessDirectory, MembershipDir
       .orderBy('createdAt')
       .executeTakeFirst();
     return row?.userId ?? null;
+  }
+
+  async listRoleHolders(businessId: string): Promise<RoleHolder[]> {
+    const rows = await this.unitOfWork
+      .platform()
+      .selectFrom('memberships')
+      .innerJoin('users', 'users.id', 'memberships.userId')
+      .distinctOn('memberships.role')
+      .select(['memberships.role', 'memberships.userId', 'users.displayName'])
+      .where('memberships.businessId', '=', businessId)
+      .orderBy('memberships.role')
+      .orderBy('memberships.createdAt')
+      .execute();
+    return rows
+      .map((row) => ({ role: row.role, userId: row.userId, displayName: row.displayName }))
+      .sort((a, b) => roleIds.indexOf(a.role) - roleIds.indexOf(b.role));
   }
 
   async find(userId: string, businessId: string): Promise<MembershipRecord | null> {

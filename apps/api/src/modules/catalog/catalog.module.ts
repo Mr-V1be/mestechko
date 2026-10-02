@@ -7,7 +7,9 @@ import { MediaModule } from '../media/media.module.js';
 import { BusinessContextResolver } from '../tenancy/application/business-context.js';
 import {
   BUSINESS_DIRECTORY,
+  MEMBERSHIP_DIRECTORY,
   type BusinessDirectory,
+  type MembershipDirectory,
 } from '../tenancy/application/business-directory.js';
 import { TenancyModule } from '../tenancy/tenancy.module.js';
 import { CatalogController } from './api/catalog.controller.js';
@@ -29,15 +31,25 @@ import { KyselyCatalogReader } from './infrastructure/kysely-catalog-reader.js';
       useFactory: (
         resolver: BusinessContextResolver,
         directory: BusinessDirectory,
+        memberships: MembershipDirectory,
         catalog: CatalogReader,
         unitOfWork: UnitOfWork,
         avatars: AvatarUrls,
         config: AppConfig,
       ) =>
-        new CatalogQueries(resolver, directory, catalog, unitOfWork, avatars, config.demo.enabled),
+        new CatalogQueries(
+          resolver,
+          directory,
+          memberships,
+          catalog,
+          unitOfWork,
+          avatars,
+          config.demo.enabled,
+        ),
       inject: [
         BusinessContextResolver,
         BUSINESS_DIRECTORY,
+        MEMBERSHIP_DIRECTORY,
         CATALOG_READER,
         UNIT_OF_WORK,
         AVATAR_URLS,

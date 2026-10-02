@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { slugSchema, verticalSummarySchema } from '../primitives.js';
+import { roleSchema, slugSchema, verticalSummarySchema } from '../primitives.js';
 import { defineRoute } from '../route.js';
 
 export const demoBusinessSchema = z.object({
@@ -7,6 +7,8 @@ export const demoBusinessSchema = z.object({
   name: z.string(),
   vertical: verticalSummarySchema,
   address: z.string(),
+  /** Roles a visitor can sign in as, with the person behind each. */
+  personas: z.array(z.object({ role: roleSchema, displayName: z.string() })),
 });
 
 export const listDemoBusinesses = defineRoute({

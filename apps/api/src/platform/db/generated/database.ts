@@ -3,11 +3,11 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType } from "kysely";
+import type { ColumnType } from 'kysely';
 
-export type BookingSource = "cabinet" | "max_mini_app" | "telegram_mini_app" | "widget";
+export type BookingSource = 'cabinet' | 'max_mini_app' | 'telegram_mini_app' | 'widget';
 
-export type BookingStatus = "cancelled" | "completed" | "confirmed" | "no_show";
+export type BookingStatus = 'cancelled' | 'completed' | 'confirmed' | 'no_show';
 
 export type Json = JsonValue;
 
@@ -21,13 +21,13 @@ export type JsonPrimitive = boolean | number | string | null;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
-export type MembershipRole = "admin" | "owner" | "staff";
+export type MembershipRole = 'admin' | 'owner' | 'staff';
 
-export type MessengerChannel = "max" | "telegram";
+export type MessengerChannel = 'max' | 'telegram';
 
-export type ScheduleIntervalKind = "break" | "work";
+export type ScheduleIntervalKind = 'break' | 'work';
 
-export type SchedulePatternKind = "cycle" | "weekly";
+export type SchedulePatternKind = 'cycle' | 'weekly';
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 

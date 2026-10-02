@@ -2446,7 +2446,7 @@
     "/v1/auth/demo-sessions": {
       "post": {
         "operationId": "createDemoSession",
-        "summary": "Sign in as the owner of a demo business (demo mode only)",
+        "summary": "Sign in to a demo business in one of its roles (demo mode only)",
         "tags": [
           "auth"
         ],
@@ -2462,6 +2462,15 @@
                   "businessSlug": {
                     "type": "string",
                     "pattern": "^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$"
+                  },
+                  "role": {
+                    "default": "owner",
+                    "type": "string",
+                    "enum": [
+                      "owner",
+                      "admin",
+                      "staff"
+                    ]
                   }
                 },
                 "required": [
@@ -3067,13 +3076,38 @@
                           },
                           "address": {
                             "type": "string"
+                          },
+                          "personas": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "role": {
+                                  "type": "string",
+                                  "enum": [
+                                    "owner",
+                                    "admin",
+                                    "staff"
+                                  ]
+                                },
+                                "displayName": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "role",
+                                "displayName"
+                              ],
+                              "additionalProperties": false
+                            }
                           }
                         },
                         "required": [
                           "slug",
                           "name",
                           "vertical",
-                          "address"
+                          "address",
+                          "personas"
                         ],
                         "additionalProperties": false
                       }

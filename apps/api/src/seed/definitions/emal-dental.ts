@@ -9,6 +9,7 @@ export const emalDental: DemoBusiness = {
   countryCode: 'RU',
   currency: 'RUB',
   owner: { email: 'owner@emal.example', displayName: 'Ольга Эмалиева' },
+  staffAccounts: [{ staffKey: 'elena', email: 'elena@emal.example' }],
   locations: [
     {
       key: MALYSHEVA,

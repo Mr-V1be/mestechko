@@ -1,4 +1,4 @@
-import { type ScheduleAxis } from '@mestechko/contracts/client';
+import type { Membership, ScheduleAxis } from '@mestechko/contracts/client';
 import type { BookingStatus } from '@mestechko/domain';
 import {
   keepPreviousData,
@@ -57,8 +57,8 @@ export function useDemoSignIn() {
   const api = useApi();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (businessSlug: string) =>
-      api.request('createDemoSession', { body: { businessSlug } }),
+    mutationFn: (body: { businessSlug: string; role: Membership['role'] }) =>
+      api.request('createDemoSession', { body }),
     onSuccess: (me) => {
       queryClient.setQueryData(queryKeys.me, me);
     },

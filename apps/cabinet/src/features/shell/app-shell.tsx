@@ -27,6 +27,7 @@ import {
   useActiveMembership,
 } from '../../platform/session/active-business';
 import { useSession } from '../../platform/session/session-context';
+import { useRoleLabel } from '../common/role-label';
 import { navigationSections } from './navigation';
 import styles from './shell.module.css';
 
@@ -54,14 +55,17 @@ function BusinessSwitcher({ membership }: { readonly membership: Membership }) {
 }
 
 function AccountSheet({
+  membership,
   open,
   onOpenChange,
 }: {
+  readonly membership: Membership;
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
 }) {
   const { t } = useTranslation();
   const me = useSession();
+  const roleLabel = useRoleLabel(membership.business.vertical);
   const navigate = useNavigate();
   const { preference, setPreference } = useTheme();
   const signOut = useSignOut();
@@ -70,7 +74,7 @@ function AccountSheet({
       open={open}
       onOpenChange={onOpenChange}
       title={me.user.displayName}
-      description={me.user.email}
+      description={`${roleLabel(membership.role)} · ${me.user.email}`}
       closeLabel={t('common:actions.close')}
       footer={
         <Button
@@ -127,6 +131,7 @@ export function AppShell() {
   const me = useSession();
   const membership = useActiveMembership(me);
   const [accountOpen, setAccountOpen] = useState(false);
+  const roleLabel = useRoleLabel(membership?.business.vertical);
 
   useEffect(() => {
     if (membership) {
@@ -169,7 +174,7 @@ export function AppShell() {
             <Avatar name={me.user.displayName} size="sm" />
             <div className={styles.accountText}>
               <p className={styles.accountName}>{me.user.displayName}</p>
-              <p className={styles.accountEmail}>{me.user.email}</p>
+              <p className={styles.accountEmail}>{roleLabel(membership.role)}</p>
             </div>
           </div>
           <IconButton label={t('nav.account')} icon={<Ellipsis />} onClick={openAccount} />
@@ -188,7 +193,7 @@ export function AppShell() {
       <nav className={styles.bottomNav} aria-label={t('nav.label')}>
         <NavigationLinks membership={membership} />
       </nav>
-      <AccountSheet open={accountOpen} onOpenChange={setAccountOpen} />
+      <AccountSheet membership={membership} open={accountOpen} onOpenChange={setAccountOpen} />
     </div>
   );
 }

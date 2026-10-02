@@ -1,74 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { DEMO_USER_BASE, book, firstSlotTomorrow, launchAs } from './support/booking-client.js';
 import { createTestApp } from './support/test-app.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
+import { createTenant } from './support/tenant-fixture.js';
 import { openTestDatabases, type TestDatabases } from './support/test-database.js';
-
-const DEMO_USER_BASE = 9_100_000_000_000;
-
-async function launchAs(
-  app: NestFastifyApplication,
-  slug: string,
-  userId: number,
-): Promise<string> {
-  const response = await app.inject({
-    method: 'POST',
-    url: '/v1/demo/telegram-launch',
-    payload: { businessSlug: slug, demoUserId: String(userId) },
-  });
-  return response.json<{ initData: string }>().initData;
-}
-
-/** First offered start tomorrow for the fixture's service. */
-async function firstSlotTomorrow(
-  app: NestFastifyApplication,
-  tenant: TenantFixture,
-): Promise<string> {
-  const tomorrow = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
-  const response = await app.inject({
-    method: 'GET',
-    url: `/v1/public/businesses/${tenant.slug}/availability?locationId=${tenant.locationId}&serviceIds=${tenant.serviceId}&from=${tomorrow}&to=${tomorrow}`,
-  });
-  const start = response.json<{ days: { slots: { start: string }[] }[] }>().days[0]?.slots[0]
-    ?.start;
-  if (!start) {
-    throw new Error('Fixture has no free slot tomorrow');
-  }
-  return start;
-}
-
-const FIXTURE_PRICE = { amountMinor: 250_000, currency: 'RUB' } as const;
-
-function book(
-  app: NestFastifyApplication,
-  tenant: TenantFixture,
-  input: {
-    initData: string;
-    start: string;
-    staffId: string | null;
-    key?: string;
-    agreedTotal?: { amountMinor: number; currency: 'RUB' };
-  },
-) {
-  return app.inject({
-    method: 'POST',
-    url: `/v1/miniapp/businesses/${tenant.slug}/bookings`,
-    headers: {
-      authorization: `tma ${input.initData}`,
-      'idempotency-key': input.key ?? randomUUID(),
-    },
-    payload: {
-      locationId: tenant.locationId,
-      serviceIds: [tenant.serviceId],
-      staffId: input.staffId,
-      start: input.start,
-      agreedTotal: input.agreedTotal ?? FIXTURE_PRICE,
-      contact: { name: 'Клиент', phone: '+79161234567' },
-      comment: null,
-    },
-  });
-}
 
 describe('concurrent booking', () => {
   let app: NestFastifyApplication;

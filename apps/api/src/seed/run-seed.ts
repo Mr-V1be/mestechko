@@ -14,6 +14,7 @@ import { ScryptPasswordHasher } from '../modules/identity/infrastructure/crypto-
 import { IsDayOffCalendarSource } from '../modules/scheduling/infrastructure/isdayoff-calendar-source.js';
 import { KyselyProductionCalendarStore } from '../modules/scheduling/infrastructure/kysely-production-calendar-store.js';
 import type { IdGenerator } from '../shared/application/ports.js';
+import { demoAccountEmails, demoAccountsOf, writeDemoAccounts } from './accounts.js';
 import { buildCatalog } from './catalog-builder.js';
 import { DEMO_PASSWORD, demoBusinesses } from './definitions/index.js';
 import { generateHistory } from './history-generator.js';
@@ -40,11 +41,11 @@ export interface SeedDependencies {
 }
 
 /**
- * Removes demo tenants, their owners and customers known only to them. Booking history
+ * Removes demo tenants, their accounts and customers known only to them. Booking history
  * protects staff and services from deletion, so bookings go first.
  */
 async function removeDemoData(db: Kysely<Database>): Promise<void> {
-  const emails = demoBusinesses.map((business) => business.owner.email);
+  const emails = demoAccountEmails(demoBusinesses);
   await sql`
     delete from customers c
     where exists (select 1 from clients cl join businesses b on b.id = cl.business_id
@@ -136,29 +137,16 @@ export async function runSeed(deps: SeedDependencies): Promise<void> {
       now: nowDate,
       telegramIds,
     });
-    const userId = deps.ids.next();
-    await deps.db
-      .insertInto('users')
-      .values({
-        id: userId,
-        email: definition.owner.email,
-        displayName: definition.owner.displayName,
-        passwordHash,
-        createdAt: nowDate,
-      })
-      .execute();
-    await deps.db
-      .insertInto('memberships')
-      .values({
-        businessId: catalog.businessId,
-        userId,
-        role: 'owner',
-        staffId: null,
-        createdAt: nowDate,
-      })
-      .execute();
+    const accounts = demoAccountsOf(definition, catalog);
+    await writeDemoAccounts(deps.db, {
+      businessId: catalog.businessId,
+      accounts,
+      passwordHash,
+      ids: deps.ids,
+      now: nowDate,
+    });
     deps.logger.info(
-      `${definition.name} (${definition.slug}): ${String(written.bookings)} bookings, ${String(written.clients)} clients, owner ${definition.owner.email}`,
+      `${definition.name} (${definition.slug}): ${String(written.bookings)} bookings, ${String(written.clients)} clients, accounts ${accounts.map((account) => account.email).join(', ')}`,
     );
   }
 }

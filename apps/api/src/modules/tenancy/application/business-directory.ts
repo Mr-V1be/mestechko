@@ -11,6 +11,12 @@ export interface BusinessRecord {
   readonly isDemo: boolean;
 }
 
+export interface RoleHolder {
+  readonly role: RoleId;
+  readonly userId: string;
+  readonly displayName: string;
+}
+
 export interface MembershipRecord {
   readonly business: BusinessRecord;
   readonly role: RoleId;
@@ -31,6 +37,8 @@ export interface MembershipDirectory {
   find(userId: string, businessId: string): Promise<MembershipRecord | null>;
   /** First user holding the role in the business, e.g. the owner for demo sign-in. */
   findUserWithRole(businessId: string, role: RoleId): Promise<string | null>;
+  /** The first member of each role in the business, in registry order of roles. */
+  listRoleHolders(businessId: string): Promise<RoleHolder[]>;
 }
 
 export const BUSINESS_DIRECTORY = Symbol('BUSINESS_DIRECTORY');

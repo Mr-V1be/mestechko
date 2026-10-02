@@ -83,4 +83,24 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
     await page.waitForLoadState('networkidle');
   }
   await shot('12-schedule-dental');
+
+  // A staff member sees only their own column and visits.
+  await page.getByRole('button', { name: 'Аккаунт' }).filter({ visible: true }).first().click();
+  await page.getByRole('button', { name: 'Выйти' }).click();
+  await page.waitForURL(/\/sign-in/);
+  await page.getByRole('combobox').click();
+  await page.getByRole('option', { name: /Сирень/ }).click();
+  await page.getByRole('button', { name: 'Мастер', exact: true }).click();
+  await shot('13-sign-in-staff');
+  await page.getByRole('button', { name: 'Войти в демо' }).click();
+  await page.waitForURL(/\/schedule/);
+  await page.waitForLoadState('networkidle');
+  for (let day = 0; day < MAX_DAYS_AHEAD && (await visits.count()) === 0; day += 1) {
+    await page.getByRole('button', { name: 'Вперёд' }).click();
+    await page.waitForLoadState('networkidle');
+  }
+  await shot('14-staff-schedule');
+  await page.getByRole('link', { name: 'Записи' }).first().click();
+  await page.waitForURL(/\/bookings/);
+  await shot('15-staff-bookings');
 }

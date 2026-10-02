@@ -10,6 +10,7 @@ export const chubBarbershop: DemoBusiness = {
   countryCode: 'RU',
   currency: 'RUB',
   owner: { email: 'owner@chub.example', displayName: 'Ильдар Чубаров' },
+  staffAccounts: [{ staffKey: 'artem', email: 'artem@chub.example' }],
   locations: [
     {
       key: BAUMANA,

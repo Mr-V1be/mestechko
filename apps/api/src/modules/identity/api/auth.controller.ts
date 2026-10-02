@@ -43,7 +43,7 @@ export class AuthController {
     @ContractInput() input: RouteInput<typeof createDemoSession>,
     @Res({ passthrough: true }) reply: FastifyReply,
   ): Promise<Me> {
-    const issued = await this.sessions.signInDemo(input.body.businessSlug);
+    const issued = await this.sessions.signInDemo(input.body.businessSlug, input.body.role);
     return this.respondWithSession(issued, reply);
   }
 

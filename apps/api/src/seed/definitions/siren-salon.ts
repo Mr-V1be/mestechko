@@ -10,6 +10,7 @@ export const sirenSalon: DemoBusiness = {
   countryCode: 'RU',
   currency: 'RUB',
   owner: { email: 'owner@siren.example', displayName: 'Вера Сиренева' },
+  staffAccounts: [{ staffKey: 'maria', email: 'maria@siren.example' }],
   locations: [
     {
       key: PYATNITSKAYA,

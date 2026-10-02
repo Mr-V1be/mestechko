@@ -22,6 +22,7 @@ const memberships: MembershipDirectory = {
   listForUser: unused,
   find: unused,
   findUserWithRole: unused,
+  listRoleHolders: unused,
 };
 const businesses: BusinessDirectory = {
   findBySlug: unused,
