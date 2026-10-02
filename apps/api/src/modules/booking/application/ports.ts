@@ -8,10 +8,12 @@ import type {
 
 /** Time blocked by existing bookings of the current tenant. */
 export interface OccupancyReader {
+  /** `excludeBookingId` leaves out a booking being moved, so it does not block itself. */
   load(
     staffIds: readonly string[],
     resourceIds: readonly string[],
     window: InstantInterval,
+    excludeBookingId: string | null,
   ): Promise<{ staff: Occupancy[]; resources: Occupancy[] }>;
 }
 
@@ -76,8 +78,10 @@ export interface BookedService {
 export interface ClientBookingView {
   readonly id: string;
   readonly status: BookingStatus;
+  readonly version: number;
   readonly startsAt: Date;
   readonly endsAt: Date;
+  readonly attendanceConfirmedAt: Date | null;
   readonly location: {
     readonly id: string;
     readonly name: string;
@@ -120,7 +124,23 @@ export interface BookingTelemetry {
   slotConflict(): void;
 }
 
+/** What a committed booking change leaves for after the transaction. */
+export interface CommittedBookingChange {
+  readonly businessId: string;
+  /** Time that became free and may suit someone on the waitlist. */
+  readonly freedTime: { readonly locationId: string; readonly date: string } | null;
+}
+
+/**
+ * Work that follows a committed change: delivering messages due now and offering freed
+ * time to the waitlist. Best effort: periodic sweeps catch up if it fails.
+ */
+export interface BookingFollowUps {
+  afterCommit(change: CommittedBookingChange): Promise<void>;
+}
+
 export const OCCUPANCY_READER = Symbol('OCCUPANCY_READER');
 export const BOOKING_WRITER = Symbol('BOOKING_WRITER');
 export const CLIENT_BOOKING_QUERIES = Symbol('CLIENT_BOOKING_QUERIES');
 export const BOOKING_TELEMETRY = Symbol('BOOKING_TELEMETRY');
+export const BOOKING_FOLLOW_UPS = Symbol('BOOKING_FOLLOW_UPS');

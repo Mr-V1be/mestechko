@@ -39,4 +39,10 @@ export async function provisionApplicationRole(
   await sql`alter default privileges in schema public grant usage, select on sequences to ${roleId}`.execute(
     admin,
   );
+  // Narrow security-definer helpers (e.g. a customer's businesses) are revoked from
+  // PUBLIC and granted to the application role only.
+  await sql`grant execute on all functions in schema public to ${roleId}`.execute(admin);
+  await sql`alter default privileges in schema public grant execute on functions to ${roleId}`.execute(
+    admin,
+  );
 }

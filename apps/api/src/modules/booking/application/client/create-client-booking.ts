@@ -15,16 +15,25 @@ import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { CatalogReader, ServiceView } from '../../../catalog/application/catalog-reader.js';
-import type { ClientDirectory, CustomerIdentities } from '../../../clients/application/ports.js';
+import type {
+  ClientContact,
+  ClientDirectory,
+  ClientRecord,
+  CustomerIdentities,
+} from '../../../clients/application/ports.js';
 import type {
   BusinessContext,
   BusinessContextResolver,
+  BusinessKey,
 } from '../../../tenancy/application/business-context.js';
 import type { AvailabilityAssembler } from '../availability/availability-assembler.js';
-import { pricePlans, serviceOf, type PricedPlan } from '../availability/plan-pricing.js';
+import { pricePlans, type PricedPlan } from '../availability/plan-pricing.js';
+import { bookingItemsOf } from '../booking-items.js';
+import type { BookingNotifier } from '../lifecycle/booking-notifier.js';
 import {
   DuplicateRequestError,
   SlotConflictError,
+  type BookingFollowUps,
   type BookingTelemetry,
   type BookingWriter,
   type ClientBookingQueries,
@@ -33,7 +42,7 @@ import {
 import { toClientBooking } from './client-booking-view.js';
 
 export interface CreateClientBookingCommand {
-  readonly businessSlug: string;
+  readonly business: BusinessKey;
   readonly channel: MessengerChannel;
   readonly source: BookingSource;
   readonly externalUserId: string;
@@ -42,13 +51,14 @@ export interface CreateClientBookingCommand {
   readonly serviceIds: readonly string[];
   readonly staffId: string | null;
   readonly start: string;
-  readonly contact: { readonly name: string; readonly phone: string };
+  /** Contact to save on the client card; `null` books with the card the client already has. */
+  readonly contact: ClientContact | null;
   readonly comment: string | null;
   /** Total the client confirmed; the booking never costs more. */
   readonly agreedTotal: Money;
+  /** In a chat the client sees the booking in the message they pressed; no notice follows. */
+  readonly surface: 'web_app' | 'chat';
 }
-
-const MS_PER_MINUTE = 60_000;
 /** Bounded retries after concurrent conflicts; each one re-plans on fresh data. */
 const MAX_ATTEMPTS = 4;
 
@@ -68,28 +78,70 @@ export class CreateClientBooking {
     private readonly writer: BookingWriter,
     private readonly queries: ClientBookingQueries,
     private readonly telemetry: BookingTelemetry,
+    private readonly notifier: BookingNotifier,
+    private readonly followUps: BookingFollowUps,
     private readonly avatars: AvatarUrls,
     private readonly ids: IdGenerator,
     private readonly clock: Clock,
   ) {}
 
   async execute(command: CreateClientBookingCommand): Promise<ClientBooking> {
-    const context = await this.businesses.bySlug(command.businessSlug);
-    return this.unitOfWork.inTenant(context.business.id, async () => {
-      const now = new Date(this.clock.now().epochMilliseconds);
-      const customerId = await this.customers.ensure(command.channel, command.externalUserId, now);
-      const client = await this.clients.upsertForCustomer(
+    const context = await this.businesses.resolve(command.business);
+    const booking = await this.unitOfWork.inTenant(context.business.id, () =>
+      this.bookInTenant(context, command),
+    );
+    await this.followUps.afterCommit({ businessId: context.business.id, freedTime: null });
+    return booking;
+  }
+
+  /**
+   * Books inside the caller's tenant transaction, so the caller can commit more with
+   * it; the caller runs the follow-ups once it commits.
+   */
+  async bookInTenant(
+    context: BusinessContext,
+    command: CreateClientBookingCommand,
+  ): Promise<ClientBooking> {
+    const now = new Date(this.clock.now().epochMilliseconds);
+    const customerId = await this.customers.ensure(command.channel, command.externalUserId, now);
+    const client = await this.clientCard(customerId, command.contact, now);
+    const repeated = await this.queries.findIdByIdempotencyKey(client.id, command.idempotencyKey);
+    if (repeated) {
+      return this.load(context, client.id, repeated);
+    }
+    const created = await this.book(context, command, client.id, now);
+    if (!created.isNew) {
+      return this.load(context, client.id, created.id);
+    }
+    await this.notifier.plan({
+      businessId: context.business.id,
+      booking: {
+        id: created.id,
+        version: 1,
+        startsAt: created.startsAt,
+        source: command.source,
         customerId,
-        { displayName: command.contact.name, phone: command.contact.phone },
-        { newId: this.ids.next(), now },
-      );
-      const repeated = await this.queries.findIdByIdempotencyKey(client.id, command.idempotencyKey);
-      if (repeated) {
-        return this.load(client.id, repeated);
-      }
-      const bookingId = await this.book(context, command, client.id, now);
-      return this.load(client.id, bookingId);
+      },
+      event: 'created',
+      seenByClient: command.surface === 'chat',
+      now,
     });
+    return this.load(context, client.id, created.id);
+  }
+
+  private async clientCard(
+    customerId: string,
+    contact: ClientContact | null,
+    now: Date,
+  ): Promise<ClientRecord> {
+    if (contact) {
+      return this.clients.upsertForCustomer(customerId, contact, { newId: this.ids.next(), now });
+    }
+    const existing = await this.clients.findByCustomer(customerId);
+    if (!existing) {
+      throw notFound('Client');
+    }
+    return existing;
   }
 
   private async book(
@@ -97,7 +149,7 @@ export class CreateClientBooking {
     command: CreateClientBookingCommand,
     clientId: string,
     now: Date,
-  ): Promise<string> {
+  ): Promise<{ id: string; startsAt: Date; isNew: boolean }> {
     const location = await this.catalog.findLocation(command.locationId);
     if (!location) {
       throw notFound('Location');
@@ -141,7 +193,7 @@ export class CreateClientBooking {
       try {
         await this.writer.insert(booking);
         this.telemetry.bookingCreated(command.source);
-        return booking.id;
+        return { id: booking.id, startsAt: booking.startsAt, isNew: true };
       } catch (error) {
         if (error instanceof DuplicateRequestError) {
           const existing = await this.queries.findIdByIdempotencyKey(
@@ -149,7 +201,7 @@ export class CreateClientBooking {
             command.idempotencyKey,
           );
           if (existing) {
-            return existing;
+            return { id: existing, startsAt: booking.startsAt, isNew: false };
           }
         }
         if (!(error instanceof SlotConflictError)) {
@@ -184,28 +236,24 @@ export class CreateClientBooking {
       comment: command.comment,
       idempotencyKey: command.idempotencyKey,
       createdAt: now,
-      items: plan.items.map((item, position) => ({
-        id: this.ids.next(),
-        position,
-        serviceId: item.serviceId,
-        serviceName: serviceOf(services, item.serviceId).name,
-        durationMinutes: (item.end - item.start) / MS_PER_MINUTE,
-        priceMinor:
-          quote.items[position]?.price.amountMinor ??
-          serviceOf(services, item.serviceId).priceMinor,
-        resourceId: item.resourceId,
-        startsAt: new Date(item.start),
-        endsAt: new Date(item.end),
-        occupied: { start: new Date(item.occupied.start), end: new Date(item.occupied.end) },
-      })),
+      items: bookingItemsOf(option, services, this.ids),
     };
   }
 
-  private async load(clientId: string, bookingId: string): Promise<ClientBooking> {
+  private async load(
+    context: BusinessContext,
+    clientId: string,
+    bookingId: string,
+  ): Promise<ClientBooking> {
     const view = await this.queries.get(clientId, bookingId);
     if (!view) {
       throw new Error(`Booking ${bookingId} vanished inside its transaction`);
     }
-    return toClientBooking(view, this.avatars);
+    return toClientBooking(
+      view,
+      this.avatars,
+      context.rules.clientChanges,
+      this.clock.now().epochMilliseconds,
+    );
   }
 }

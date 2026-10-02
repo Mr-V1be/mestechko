@@ -32,6 +32,8 @@ export interface AvailabilityScope {
   readonly from: PlainDate;
   readonly to: PlainDate;
   readonly now: Temporal.Instant;
+  /** A booking being rescheduled: its own time does not count as taken. */
+  readonly excludeBookingId?: string;
 }
 
 export interface AssembledAvailability {
@@ -104,6 +106,7 @@ export class AvailabilityAssembler {
       staff.map((member) => member.id),
       resources.map((resource) => resource.id),
       occupancyWindow,
+      scope.excludeBookingId ?? null,
     );
     const years = [...new Set([scope.from.year, scope.to.year])];
     const calendar = await this.productionCalendars.calendarFor(

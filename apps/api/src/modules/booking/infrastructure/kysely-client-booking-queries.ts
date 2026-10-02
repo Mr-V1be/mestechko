@@ -83,8 +83,10 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
       .select([
         'b.id',
         'b.status',
+        'b.version',
         'b.startsAt',
         'b.endsAt',
+        'b.attendanceConfirmedAt',
         'b.totalPriceMinor',
         'b.currency',
         'b.clientComment',
@@ -118,8 +120,10 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
   private toView(row: {
     id: string;
     status: BookingStatus;
+    version: number;
     startsAt: Date;
     endsAt: Date;
+    attendanceConfirmedAt: Date | null;
     totalPriceMinor: number;
     currency: string;
     clientComment: string | null;
@@ -137,8 +141,10 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
     return {
       id: row.id,
       status: row.status,
+      version: row.version,
       startsAt: row.startsAt,
       endsAt: row.endsAt,
+      attendanceConfirmedAt: row.attendanceConfirmedAt,
       location: {
         id: row.locationId,
         name: row.locationName,

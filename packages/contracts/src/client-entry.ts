@@ -6,6 +6,7 @@ export * from './client.js';
 export * from './enums.js';
 export type * from './routes/public-catalog.js';
 export type * from './routes/miniapp-bookings.js';
+export type * from './routes/miniapp-waitlist.js';
 export type * from './routes/auth.js';
 export type * from './routes/demo.js';
 export type * from './routes/cabinet.js';

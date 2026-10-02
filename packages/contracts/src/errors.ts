@@ -13,6 +13,10 @@ export const apiErrors = {
   /** The time is free but now costs more than the client agreed to. */
   price_changed: 409,
   idempotency_conflict: 409,
+  /** The booking changed meanwhile (another device, the business); reload and retry. */
+  booking_changed: 409,
+  /** Online changes are closed for this booking: too close to the visit, or it is final. */
+  change_not_allowed: 409,
   rate_limited: 429,
   internal: 500,
   dependency_unavailable: 503,

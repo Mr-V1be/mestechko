@@ -69,6 +69,8 @@ describe('database invariants match the domain registries', () => {
           currency: 'RUB',
           clientComment: null,
           idempotencyKey: null,
+          version: 1,
+          cancelledAt: status === 'cancelled' ? new Date() : null,
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -135,7 +137,7 @@ describe('database invariants match the domain registries', () => {
       .executeTakeFirstOrThrow();
     await databases.admin
       .updateTable('bookings')
-      .set({ status: 'cancelled' })
+      .set({ status: 'cancelled', cancelledAt: new Date() })
       .where('id', '=', booking.id)
       .execute();
     const item = await databases.admin

@@ -8,6 +8,7 @@ export * from './openapi.js';
 export * from './routes/index.js';
 export * from './routes/public-catalog.js';
 export * from './routes/miniapp-bookings.js';
+export * from './routes/miniapp-waitlist.js';
 export * from './routes/auth.js';
 export * from './routes/demo.js';
 export * from './routes/cabinet.js';

@@ -1,9 +1,14 @@
 import { Controller, Inject } from '@nestjs/common';
+import { messengerBookingSource } from '@mestechko/domain';
 import {
+  cancelMiniAppBooking,
+  confirmMiniAppAttendance,
   createMiniAppBooking,
   getMiniAppBooking,
   getMiniAppProfile,
+  getRescheduleOptions,
   listMiniAppBookings,
+  rescheduleMiniAppBooking,
   type ClientBooking,
   type RouteInput,
   type RouteResult,
@@ -13,19 +18,28 @@ import { ContractInput, ContractRoute } from '../../../platform/http/contract-ro
 import type { TelegramUser } from '../../../platform/http/principal.js';
 import { ClientBookings, type ClientIdentity } from '../application/client/client-bookings.js';
 import { CreateClientBooking } from '../application/client/create-client-booking.js';
+import {
+  ClientBookingChanges,
+  type ChangeOrigin,
+} from '../application/lifecycle/client-booking-changes.js';
+import { RescheduleOptions } from '../application/lifecycle/reschedule-options.js';
 
 const identityOf = (slug: string, user: TelegramUser): ClientIdentity => ({
-  businessSlug: slug,
+  business: { slug },
   channel: 'telegram',
   externalUserId: user.id,
 });
 
-/** Client bookings made from the Telegram Mini App. */
+const MINI_APP: ChangeOrigin = { channel: 'telegram', surface: 'web_app' };
+
+/** Client bookings made and managed from the Telegram Mini App. */
 @Controller()
 export class MiniAppBookingsController {
   constructor(
     @Inject(CreateClientBooking) private readonly createBooking: CreateClientBooking,
     @Inject(ClientBookings) private readonly bookings: ClientBookings,
+    @Inject(ClientBookingChanges) private readonly changes: ClientBookingChanges,
+    @Inject(RescheduleOptions) private readonly rescheduleOptions: RescheduleOptions,
   ) {}
 
   @ContractRoute(createMiniAppBooking)
@@ -34,9 +48,9 @@ export class MiniAppBookingsController {
     @TelegramClient() user: TelegramUser,
   ): Promise<ClientBooking> {
     return this.createBooking.execute({
-      businessSlug: input.params.slug,
-      channel: 'telegram',
-      source: 'telegram_mini_app',
+      business: { slug: input.params.slug },
+      channel: MINI_APP.channel,
+      source: messengerBookingSource(MINI_APP.channel, MINI_APP.surface),
       externalUserId: user.id,
       idempotencyKey: input.headers['idempotency-key'],
       locationId: input.body.locationId,
@@ -44,8 +58,9 @@ export class MiniAppBookingsController {
       staffId: input.body.staffId,
       start: input.body.start,
       agreedTotal: input.body.agreedTotal,
-      contact: input.body.contact,
+      contact: { displayName: input.body.contact.name, phone: input.body.contact.phone },
       comment: input.body.comment,
+      surface: MINI_APP.surface,
     });
   }
 
@@ -75,5 +90,57 @@ export class MiniAppBookingsController {
     @TelegramClient() user: TelegramUser,
   ): Promise<RouteResult<typeof getMiniAppProfile>> {
     return this.bookings.profile(identityOf(input.params.slug, user));
+  }
+
+  @ContractRoute(cancelMiniAppBooking)
+  cancel(
+    @ContractInput() input: RouteInput<typeof cancelMiniAppBooking>,
+    @TelegramClient() user: TelegramUser,
+  ): Promise<ClientBooking> {
+    return this.changes.cancel(
+      identityOf(input.params.slug, user),
+      input.params.bookingId,
+      MINI_APP,
+    );
+  }
+
+  @ContractRoute(getRescheduleOptions)
+  rescheduleDays(
+    @ContractInput() input: RouteInput<typeof getRescheduleOptions>,
+    @TelegramClient() user: TelegramUser,
+  ): Promise<RouteResult<typeof getRescheduleOptions>> {
+    return this.rescheduleOptions.days(
+      identityOf(input.params.slug, user),
+      input.params.bookingId,
+      {
+        from: input.query.from,
+        to: input.query.to,
+      },
+    );
+  }
+
+  @ContractRoute(rescheduleMiniAppBooking)
+  reschedule(
+    @ContractInput() input: RouteInput<typeof rescheduleMiniAppBooking>,
+    @TelegramClient() user: TelegramUser,
+  ): Promise<ClientBooking> {
+    return this.changes.reschedule(
+      identityOf(input.params.slug, user),
+      input.params.bookingId,
+      input.body.start,
+      MINI_APP,
+    );
+  }
+
+  @ContractRoute(confirmMiniAppAttendance)
+  confirmAttendance(
+    @ContractInput() input: RouteInput<typeof confirmMiniAppAttendance>,
+    @TelegramClient() user: TelegramUser,
+  ): Promise<ClientBooking> {
+    return this.changes.confirmAttendance(
+      identityOf(input.params.slug, user),
+      input.params.bookingId,
+      MINI_APP,
+    );
   }
 }

@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import { ID_GENERATOR, type IdGenerator } from '../../shared/application/ports.js';
-import { CLIENT_DIRECTORY, CUSTOMER_IDENTITIES } from './application/ports.js';
+import {
+  CLIENT_DIRECTORY,
+  CUSTOMER_IDENTITIES,
+  MESSENGER_CONTACTS,
+  type CustomerIdentities,
+} from './application/ports.js';
 import {
   KyselyClientDirectory,
   KyselyCustomerIdentities,
 } from './infrastructure/kysely-clients.js';
+import { KyselyMessengerContacts } from './infrastructure/kysely-messenger-contacts.js';
 
 @Module({
   providers: [
@@ -20,7 +26,13 @@ import {
       useFactory: (unitOfWork: KyselyUnitOfWork) => new KyselyClientDirectory(unitOfWork),
       inject: [KyselyUnitOfWork],
     },
+    {
+      provide: MESSENGER_CONTACTS,
+      useFactory: (unitOfWork: KyselyUnitOfWork, identities: CustomerIdentities) =>
+        new KyselyMessengerContacts(unitOfWork, identities),
+      inject: [KyselyUnitOfWork, CUSTOMER_IDENTITIES],
+    },
   ],
-  exports: [CUSTOMER_IDENTITIES, CLIENT_DIRECTORY],
+  exports: [CUSTOMER_IDENTITIES, CLIENT_DIRECTORY, MESSENGER_CONTACTS],
 })
 export class ClientsModule {}

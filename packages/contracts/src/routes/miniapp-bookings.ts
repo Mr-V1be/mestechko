@@ -1,7 +1,9 @@
+import { bookingActionIds } from '@mestechko/domain';
 import { z } from 'zod';
 import {
   bookingStatusSchema,
   instantSchema,
+  localDateSchema,
   moneySchema,
   pageCursorSchema,
   pageOf,
@@ -10,7 +12,7 @@ import {
 } from '../primitives.js';
 import { bookingScopes } from '../enums.js';
 import { defineRoute } from '../route.js';
-import { businessParamsSchema, locationSchema } from './public-catalog.js';
+import { availableDaySchema, businessParamsSchema, locationSchema } from './public-catalog.js';
 
 const MAX_SERVICES = 10;
 const MAX_NAME_LENGTH = 80;
@@ -19,8 +21,15 @@ const MAX_COMMENT_LENGTH = 500;
 export const clientBookingSchema = z.object({
   id: uuidSchema,
   status: bookingStatusSchema,
+  /** Grows with every reschedule or cancellation. */
+  version: z.number().int().positive(),
   start: instantSchema,
   end: instantSchema,
+  attendanceConfirmed: z.boolean(),
+  /** Until when the client may reschedule or cancel online; `null` once the booking is final. */
+  changeDeadline: instantSchema.nullable(),
+  /** What the client can do with the booking right now. */
+  actions: z.record(z.enum(bookingActionIds), z.boolean()),
   location: locationSchema,
   staff: z.object({
     id: uuidSchema,
@@ -105,6 +114,64 @@ export const getMiniAppProfile = defineRoute({
   status: 200,
   params: businessParamsSchema,
   response: z.object({ displayName: z.string().nullable(), phone: z.string().nullable() }),
+});
+
+export const getMiniAppNotifications = defineRoute({
+  method: 'GET',
+  path: '/v1/miniapp/notifications',
+  summary: 'Whether the bot may message the client, and where to allow it if not',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 200,
+  response: z.object({ enabled: z.boolean(), connectUrl: z.url().nullable() }),
+});
+
+const bookingParamsSchema = businessParamsSchema.extend({ bookingId: uuidSchema });
+
+export const cancelMiniAppBooking = defineRoute({
+  method: 'POST',
+  path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/cancel',
+  summary: 'Cancel one of the client’s own bookings while online changes are open',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 200,
+  params: bookingParamsSchema,
+  response: clientBookingSchema,
+});
+
+export const getRescheduleOptions = defineRoute({
+  method: 'GET',
+  path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/reschedule-options',
+  summary: 'Free start times to move a booking to, with the same staff member',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 200,
+  params: bookingParamsSchema,
+  query: z.object({ from: localDateSchema, to: localDateSchema }),
+  response: z.object({ timeZone: z.string(), days: z.array(availableDaySchema) }),
+});
+
+export const rescheduleMiniAppBooking = defineRoute({
+  method: 'POST',
+  path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/reschedule',
+  summary: 'Move a booking to another free start; the price never grows',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 200,
+  params: bookingParamsSchema,
+  body: z.object({ start: instantSchema }),
+  response: clientBookingSchema,
+});
+
+export const confirmMiniAppAttendance = defineRoute({
+  method: 'POST',
+  path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/attendance',
+  summary: 'Confirm the client will come',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 200,
+  params: bookingParamsSchema,
+  response: clientBookingSchema,
 });
 
 export type ClientBooking = z.infer<typeof clientBookingSchema>;

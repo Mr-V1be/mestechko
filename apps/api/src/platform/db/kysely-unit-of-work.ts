@@ -3,8 +3,9 @@ import { sql, type Kysely, type Transaction } from 'kysely';
 import type { UnitOfWork, UnitOfWorkOptions } from '../../shared/application/unit-of-work.js';
 import type { Database } from './database.js';
 
-interface TenantTransaction {
-  readonly businessId: string;
+interface ScopedTransaction {
+  /** `null` for platform transactions, which see no tenant rows. */
+  readonly businessId: string | null;
   readonly transaction: Transaction<Database>;
 }
 
@@ -21,7 +22,7 @@ export class TenantContextMissingError extends Error {
  * tenant-scoped query outside of `inTenant` fails instead of leaking data.
  */
 export class KyselyUnitOfWork implements UnitOfWork {
-  private readonly storage = new AsyncLocalStorage<TenantTransaction>();
+  private readonly storage = new AsyncLocalStorage<ScopedTransaction>();
   private readonly db: Kysely<Database>;
 
   constructor(db: Kysely<Database>) {
@@ -36,7 +37,7 @@ export class KyselyUnitOfWork implements UnitOfWork {
     const current = this.storage.getStore();
     if (current) {
       if (current.businessId !== businessId) {
-        throw new Error('A tenant transaction cannot be nested inside another tenant');
+        throw new Error('A tenant transaction cannot be nested inside another scope');
       }
       return work();
     }
@@ -49,21 +50,35 @@ export class KyselyUnitOfWork implements UnitOfWork {
     });
   }
 
+  /**
+   * One transaction over platform tables only, e.g. creating a customer with their
+   * identity. Joins an enclosing transaction if there is one.
+   */
+  async inPlatform<T>(work: () => Promise<T>): Promise<T> {
+    if (this.storage.getStore()) {
+      return work();
+    }
+    return this.db
+      .transaction()
+      .execute((transaction) => this.storage.run({ businessId: null, transaction }, work));
+  }
+
   /** Transaction of the current tenant; throws outside of `inTenant`. */
   tenant(): Transaction<Database> {
-    const current = this.storage.getStore();
-    if (!current) {
-      throw new TenantContextMissingError();
-    }
-    return current.transaction;
+    return this.currentTenant().transaction;
   }
 
   currentBusinessId(): string {
+    return this.currentTenant().businessId;
+  }
+
+  private currentTenant(): { businessId: string; transaction: Transaction<Database> } {
     const current = this.storage.getStore();
-    if (!current) {
+    const businessId = current?.businessId ?? null;
+    if (current === undefined || businessId === null) {
       throw new TenantContextMissingError();
     }
-    return current.businessId;
+    return { businessId, transaction: current.transaction };
   }
 
   /** Executor for platform tables: joins the current transaction when there is one. */

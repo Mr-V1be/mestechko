@@ -14,6 +14,8 @@ const frameworkImports = [
   'ioredis',
   'bullmq',
   'nestjs-pino',
+  'grammy',
+  'grammy/*',
 ];
 
 export default tseslint.config(

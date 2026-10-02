@@ -1,11 +1,18 @@
 import { z } from 'zod';
 
-export const appRoles = ['api', 'worker'] as const;
+/**
+ * Roles of a process: `api` serves HTTP, `worker` runs queued jobs, `bot` consumes
+ * messenger updates by long polling (one such process per bot).
+ */
+export const appRoles = ['api', 'worker', 'bot'] as const;
 export type AppRole = (typeof appRoles)[number];
 
 const logLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'] as const;
 
 const flag = z.enum(['true', 'false']).transform((value) => value === 'true');
+const httpsUrl = z.url().refine((value) => value.startsWith('https://'), {
+  message: 'Must be an https:// address',
+});
 const list = z.string().transform((value) =>
   value
     .split(',')
@@ -16,7 +23,7 @@ const list = z.string().transform((value) =>
 const environmentSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-    APP_ROLES: list.pipe(z.array(z.enum(appRoles)).min(1)).default(['api', 'worker']),
+    APP_ROLES: list.pipe(z.array(z.enum(appRoles)).min(1)).default(['api', 'worker', 'bot']),
     API_HOST: z.string().default('127.0.0.1'),
     API_PORT: z.coerce.number().int().min(1).max(65_535).default(46_210),
     CORS_ORIGINS: list.pipe(z.array(z.url())).default([]),
@@ -24,7 +31,22 @@ const environmentSchema = z
     DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
     REDIS_URL: z.url(),
     TELEGRAM_BOT_TOKEN: z.string().min(20).optional(),
+    TELEGRAM_BOT_USERNAME: z
+      .string()
+      .regex(/^[A-Za-z][A-Za-z0-9_]{3,31}$/)
+      .optional(),
+    TELEGRAM_API_ROOT: z.url().default('https://api.telegram.org'),
+    TELEGRAM_UPDATES_MODE: z.enum(['polling', 'webhook']).default('polling'),
+    TELEGRAM_WEBHOOK_URL: httpsUrl.optional(),
+    TELEGRAM_WEBHOOK_SECRET: z
+      .string()
+      .regex(/^[A-Za-z0-9_-]{32,256}$/)
+      .optional(),
     TELEGRAM_INIT_DATA_TTL_SECONDS: z.coerce.number().int().positive().default(86_400),
+    MINIAPP_PUBLIC_URL: httpsUrl.optional(),
+    MAX_BOT_TOKEN: z.string().min(16).optional(),
+    MAX_API_BASE_URL: z.url().default('https://platform-api2.max.ru'),
+    MAX_EMULATOR_ENABLED: flag.default(false),
     DEMO_MODE: flag.default(false),
     TELEGRAM_DEMO_SIGNING_KEY: z.string().min(32).optional(),
     ISDAYOFF_BASE_URL: z.url().default('https://isdayoff.ru'),
@@ -39,7 +61,26 @@ const environmentSchema = z
   .refine((env) => !env.DEMO_MODE || env.TELEGRAM_DEMO_SIGNING_KEY !== undefined, {
     message: 'TELEGRAM_DEMO_SIGNING_KEY is required when DEMO_MODE=true',
     path: ['TELEGRAM_DEMO_SIGNING_KEY'],
+  })
+  .refine(
+    (env) =>
+      env.TELEGRAM_UPDATES_MODE !== 'webhook' ||
+      env.TELEGRAM_BOT_TOKEN === undefined ||
+      (env.TELEGRAM_WEBHOOK_URL !== undefined && env.TELEGRAM_WEBHOOK_SECRET !== undefined),
+    {
+      message: 'Webhook mode needs TELEGRAM_WEBHOOK_URL and TELEGRAM_WEBHOOK_SECRET',
+      path: ['TELEGRAM_UPDATES_MODE'],
+    },
+  )
+  .refine((env) => !env.MAX_EMULATOR_ENABLED || (env.DEMO_MODE && env.MAX_BOT_TOKEN), {
+    message: 'The MAX emulator runs only in demo mode with MAX_BOT_TOKEN set',
+    path: ['MAX_EMULATOR_ENABLED'],
   });
+
+/** How a bot receives updates: it asks for them, or the messenger pushes them. */
+export type UpdatesMode =
+  | { readonly kind: 'polling' }
+  | { readonly kind: 'webhook'; readonly url: string; readonly secret: string };
 
 export interface AppConfig {
   readonly environment: 'development' | 'test' | 'production';
@@ -51,7 +92,21 @@ export interface AppConfig {
   };
   readonly database: { readonly url: string; readonly poolMax: number };
   readonly redis: { readonly url: string };
-  readonly telegram: { readonly botToken: string | null; readonly initDataTtlSeconds: number };
+  readonly telegram: {
+    readonly botToken: string | null;
+    readonly botUsername: string | null;
+    readonly apiRoot: string;
+    readonly updates: UpdatesMode;
+    readonly initDataTtlSeconds: number;
+  };
+  /** Public https address of the client app; buttons that open it exist only with it. */
+  readonly miniApp: { readonly publicUrl: string | null };
+  readonly max: {
+    readonly botToken: string | null;
+    readonly apiBaseUrl: string;
+    /** Serves an emulator of the MAX Bot API for the demo. */
+    readonly emulatorEnabled: boolean;
+  };
   readonly demo: { readonly enabled: boolean; readonly telegramSigningKey: string | null };
   readonly calendar: { readonly isDayOffBaseUrl: string };
   readonly externalHttp: { readonly timeoutMs: number };
@@ -92,7 +147,21 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
     redis: { url: env.REDIS_URL },
     telegram: {
       botToken: env.TELEGRAM_BOT_TOKEN ?? null,
+      botUsername: env.TELEGRAM_BOT_USERNAME ?? null,
+      apiRoot: env.TELEGRAM_API_ROOT,
+      updates:
+        env.TELEGRAM_UPDATES_MODE === 'webhook' &&
+        env.TELEGRAM_WEBHOOK_URL !== undefined &&
+        env.TELEGRAM_WEBHOOK_SECRET !== undefined
+          ? { kind: 'webhook', url: env.TELEGRAM_WEBHOOK_URL, secret: env.TELEGRAM_WEBHOOK_SECRET }
+          : { kind: 'polling' },
       initDataTtlSeconds: env.TELEGRAM_INIT_DATA_TTL_SECONDS,
+    },
+    miniApp: { publicUrl: env.MINIAPP_PUBLIC_URL?.replace(/\/+$/, '') ?? null },
+    max: {
+      botToken: env.MAX_BOT_TOKEN ?? null,
+      apiBaseUrl: env.MAX_API_BASE_URL.replace(/\/+$/, ''),
+      emulatorEnabled: env.MAX_EMULATOR_ENABLED,
     },
     demo: { enabled: env.DEMO_MODE, telegramSigningKey: env.TELEGRAM_DEMO_SIGNING_KEY ?? null },
     calendar: { isDayOffBaseUrl: env.ISDAYOFF_BASE_URL },

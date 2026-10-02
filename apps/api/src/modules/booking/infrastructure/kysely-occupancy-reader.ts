@@ -11,12 +11,13 @@ export class KyselyOccupancyReader implements OccupancyReader {
     staffIds: readonly string[],
     resourceIds: readonly string[],
     window: InstantInterval,
+    excludeBookingId: string | null,
   ): Promise<{ staff: Occupancy[]; resources: Occupancy[] }> {
     if (staffIds.length === 0 && resourceIds.length === 0) {
       return { staff: [], resources: [] };
     }
     const range = sql`tstzrange(${new Date(window.start)}, ${new Date(window.end)}, '[)')`;
-    const rows = await this.unitOfWork
+    let query = this.unitOfWork
       .tenant()
       .selectFrom('bookingItems')
       .select([
@@ -32,8 +33,11 @@ export class KyselyOccupancyReader implements OccupancyReader {
           ...(staffIds.length > 0 ? [eb('staffId', 'in', staffIds)] : []),
           ...(resourceIds.length > 0 ? [eb('resourceId', 'in', resourceIds)] : []),
         ]),
-      )
-      .execute();
+      );
+    if (excludeBookingId) {
+      query = query.where('bookingId', '!=', excludeBookingId);
+    }
+    const rows = await query.execute();
     const staffSet = new Set(staffIds);
     const toInterval = (row: { start: Date; end: Date }): InstantInterval => ({
       start: row.start.getTime(),

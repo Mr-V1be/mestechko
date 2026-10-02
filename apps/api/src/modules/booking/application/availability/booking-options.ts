@@ -26,13 +26,27 @@ import type {
 } from '../../../catalog/application/catalog-reader.js';
 import type { WorkCalendarReader } from '../../../scheduling/application/ports.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
-import type { AvailabilityAssembler } from './availability-assembler.js';
+import type { AssembledAvailability, AvailabilityAssembler } from './availability-assembler.js';
 import { pricePlans } from './plan-pricing.js';
 
 /** How far ahead the staff step looks for each person's nearest free time. */
 const NEAREST_SLOT_LOOKAHEAD_DAYS = 14;
 
 const toIso = (epoch: number): string => new Date(epoch).toISOString();
+
+/** Free starts per day in the location's time zone, as clients receive them. */
+export function availableDaysOf(assembled: AssembledAvailability): {
+  timeZone: string;
+  days: AvailableDay[];
+} {
+  return {
+    timeZone: assembled.location.timeZone,
+    days: findAvailability(assembled.request).map((day) => ({
+      date: day.date.toString(),
+      slots: day.slots.map((slot) => ({ start: toIso(slot.start) })),
+    })),
+  };
+}
 
 function priceOf(
   service: ServiceView,
@@ -186,13 +200,7 @@ export class BookingOptions {
           to: Temporal.PlainDate.from(query.to),
           now: this.clock.now(),
         });
-        return {
-          timeZone: assembled.location.timeZone,
-          days: findAvailability(assembled.request).map((day) => ({
-            date: day.date.toString(),
-            slots: day.slots.map((slot) => ({ start: toIso(slot.start) })),
-          })),
-        };
+        return availableDaysOf(assembled);
       },
       { readOnly: true },
     );

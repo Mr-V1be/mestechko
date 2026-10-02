@@ -38,6 +38,8 @@ export class KyselyBookingWriter implements BookingWriter {
           currency: booking.currency,
           clientComment: booking.comment,
           idempotencyKey: booking.idempotencyKey,
+          version: 1,
+          cancelledAt: null,
           createdAt: booking.createdAt,
           updatedAt: booking.createdAt,
         })

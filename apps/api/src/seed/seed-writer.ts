@@ -212,12 +212,19 @@ async function writeClients(
   return clientIds;
 }
 
+/** Cancellations happened somewhere between booking and the visit, never in the future. */
+function cancellationTime(booking: GeneratedBooking, now: Date): Date {
+  const midpoint = (booking.createdAt.getTime() + booking.plan.start) / 2;
+  return new Date(Math.max(booking.createdAt.getTime(), Math.min(midpoint, now.getTime())));
+}
+
 async function writeBookings(
   tx: Tx,
   catalog: BuiltCatalog,
   bookings: readonly GeneratedBooking[],
   clientIds: ReadonlyMap<number, string>,
   ids: IdGenerator,
+  now: Date,
 ): Promise<number> {
   const businessId = catalog.businessId;
   const rows = bookings.map((booking) => ({ booking, id: ids.next() }));
@@ -239,6 +246,8 @@ async function writeBookings(
           currency: catalog.definition.currency,
           clientComment: booking.comment,
           idempotencyKey: null,
+          version: 1,
+          cancelledAt: booking.status === 'cancelled' ? cancellationTime(booking, now) : null,
           createdAt: booking.createdAt,
           updatedAt: booking.createdAt,
         })),
@@ -290,7 +299,14 @@ export async function writeDemoBusiness(
       input.ids,
       input.telegramIds,
     );
-    const bookings = await writeBookings(tx, input.catalog, input.bookings, clientIds, input.ids);
+    const bookings = await writeBookings(
+      tx,
+      input.catalog,
+      input.bookings,
+      clientIds,
+      input.ids,
+      input.now,
+    );
     return { clients: clientIds.size, bookings };
   });
 }

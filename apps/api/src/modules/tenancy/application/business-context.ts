@@ -26,6 +26,9 @@ export function businessContextOf(
   };
 }
 
+/** How a request names a business: clients use the public slug, internals the id. */
+export type BusinessKey = { readonly slug: string } | { readonly id: string };
+
 /** Resolves the business a public or client request addresses. */
 export class BusinessContextResolver {
   constructor(
@@ -35,6 +38,10 @@ export class BusinessContextResolver {
 
   contextOf(business: BusinessRecord): BusinessContext {
     return businessContextOf(business, this.verticals);
+  }
+
+  resolve(key: BusinessKey): Promise<BusinessContext> {
+    return 'slug' in key ? this.bySlug(key.slug) : this.byId(key.id);
   }
 
   async bySlug(slug: string): Promise<BusinessContext> {

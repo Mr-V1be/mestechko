@@ -5,9 +5,21 @@
 
 import type { ColumnType } from 'kysely';
 
-export type BookingSource = 'cabinet' | 'max_mini_app' | 'telegram_mini_app' | 'widget';
+export type BookingActor = 'business' | 'client' | 'system';
+
+export type BookingEventKind = 'attendance_confirmed' | 'cancelled' | 'rescheduled';
+
+export type BookingSource =
+  'cabinet' | 'max_bot' | 'max_mini_app' | 'telegram_bot' | 'telegram_mini_app' | 'widget';
 
 export type BookingStatus = 'cancelled' | 'completed' | 'confirmed' | 'no_show';
+
+export type Generated<T> =
+  T extends ColumnType<infer S, infer I, infer U>
+    ? ColumnType<S, I | undefined, U>
+    : ColumnType<T, T | undefined, T>;
+
+export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
 
 export type Json = JsonValue;
 
@@ -25,11 +37,35 @@ export type MembershipRole = 'admin' | 'owner' | 'staff';
 
 export type MessengerChannel = 'max' | 'telegram';
 
+export type NotificationKind =
+  | 'booking_cancelled'
+  | 'booking_created'
+  | 'booking_rescheduled'
+  | 'reminder_24h'
+  | 'reminder_2h'
+  | 'waitlist_offer';
+
+export type NotificationStatus =
+  'cancelled' | 'failed' | 'pending' | 'sending' | 'sent' | 'skipped';
+
 export type ScheduleIntervalKind = 'break' | 'work';
 
 export type SchedulePatternKind = 'cycle' | 'weekly';
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
+
+export type WaitlistStatus = 'active' | 'booked' | 'cancelled';
+
+export interface BookingEvents {
+  actor: BookingActor;
+  bookingId: string;
+  businessId: string;
+  channel: MessengerChannel | null;
+  id: string;
+  kind: BookingEventKind;
+  occurredAt: Timestamp;
+  previousStartsAt: Timestamp | null;
+}
 
 export interface BookingItems {
   bookingId: string;
@@ -49,7 +85,9 @@ export interface BookingItems {
 }
 
 export interface Bookings {
+  attendanceConfirmedAt: Timestamp | null;
   businessId: string;
+  cancelledAt: Timestamp | null;
   clientComment: string | null;
   clientId: string;
   createdAt: Timestamp;
@@ -64,6 +102,7 @@ export interface Bookings {
   status: BookingStatus;
   totalPriceMinor: number;
   updatedAt: Timestamp;
+  version: number;
 }
 
 export interface Businesses {
@@ -92,9 +131,11 @@ export interface Clients {
 
 export interface CustomerIdentities {
   channel: MessengerChannel;
+  chatId: string | null;
   createdAt: Timestamp;
   customerId: string;
   externalId: string;
+  messagingAllowedAt: Timestamp | null;
 }
 
 export interface Customers {
@@ -112,12 +153,67 @@ export interface Locations {
   timeZone: string;
 }
 
+export interface MaxEmulatorMessages {
+  attachments: Json;
+  editedAt: Timestamp | null;
+  format: string | null;
+  fromBot: boolean;
+  mid: string;
+  sentAt: Timestamp;
+  seq: Generated<Int8>;
+  text: string | null;
+  userId: Int8;
+}
+
+export interface MaxEmulatorNotices {
+  createdAt: Timestamp;
+  id: Generated<Int8>;
+  text: string;
+  userId: Int8;
+}
+
+export interface MaxEmulatorUpdates {
+  createdAt: Timestamp;
+  marker: Generated<Int8>;
+  update: Json;
+}
+
+export interface MaxEmulatorUsers {
+  botStartedAt: Timestamp | null;
+  createdAt: Timestamp;
+  firstName: string;
+  lastName: string | null;
+  userId: Int8;
+}
+
 export interface Memberships {
   businessId: string;
   createdAt: Timestamp;
   role: MembershipRole;
   staffId: string | null;
   userId: string;
+}
+
+export interface Notifications {
+  attempts: number;
+  bookingId: string | null;
+  bookingVersion: number | null;
+  businessId: string;
+  channel: MessengerChannel;
+  claimedUntil: Timestamp | null;
+  createdAt: Timestamp;
+  customerId: string;
+  dueAt: Timestamp;
+  id: string;
+  kind: NotificationKind;
+  offerStartsAt: Timestamp | null;
+  offerTotalMinor: number | null;
+  outcome: string | null;
+  providerMessageId: string | null;
+  sentAt: Timestamp | null;
+  status: NotificationStatus;
+  updatedAt: Timestamp;
+  waitlistEntryId: string | null;
 }
 
 export interface ProductionCalendarYears {
@@ -239,7 +335,31 @@ export interface UserSessions {
   userId: string;
 }
 
+export interface WaitlistEntries {
+  bookingId: string | null;
+  businessId: string;
+  channel: MessengerChannel;
+  clientId: string;
+  createdAt: Timestamp;
+  desiredDate: string;
+  id: string;
+  locationId: string;
+  staffId: string | null;
+  status: WaitlistStatus;
+  updatedAt: Timestamp;
+  windowEndMinute: number;
+  windowStartMinute: number;
+}
+
+export interface WaitlistEntryServices {
+  businessId: string;
+  entryId: string;
+  position: number;
+  serviceId: string;
+}
+
 export interface DB {
+  bookingEvents: BookingEvents;
   bookingItems: BookingItems;
   bookings: Bookings;
   businesses: Businesses;
@@ -247,7 +367,12 @@ export interface DB {
   customerIdentities: CustomerIdentities;
   customers: Customers;
   locations: Locations;
+  maxEmulatorMessages: MaxEmulatorMessages;
+  maxEmulatorNotices: MaxEmulatorNotices;
+  maxEmulatorUpdates: MaxEmulatorUpdates;
+  maxEmulatorUsers: MaxEmulatorUsers;
   memberships: Memberships;
+  notifications: Notifications;
   productionCalendarYears: ProductionCalendarYears;
   resources: Resources;
   serviceCategories: ServiceCategories;
@@ -260,4 +385,6 @@ export interface DB {
   staffServices: StaffServices;
   users: Users;
   userSessions: UserSessions;
+  waitlistEntries: WaitlistEntries;
+  waitlistEntryServices: WaitlistEntryServices;
 }

@@ -29,6 +29,7 @@ const rulesOverridesSchema = z
       .partial(),
     prepayment: z.object({ depositPercent: minutes }).partial(),
     repeatVisit: z.object({ suggestAfterDays: minutes.nullable() }).partial(),
+    clientChanges: z.object({ cutoffMinutes: minutes }).partial(),
   })
   .partial()
   .strict();
