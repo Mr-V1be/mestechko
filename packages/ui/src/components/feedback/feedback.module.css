@@ -1,0 +1,52 @@
+.spinner {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+  border: var(--size-focus-ring) solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-pill);
+  animation: spin var(--duration-celebrate) linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.skeleton {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton) 0%,
+    var(--color-skeleton-shine) 50%,
+    var(--color-skeleton) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer calc(var(--duration-celebrate) * 2) var(--ease-standard) infinite;
+}
+
+.circle {
+  border-radius: var(--radius-pill);
+}
+
+.text {
+  height: 1em;
+  border-radius: var(--radius-xs);
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .spinner {
+    animation: none;
+  }
+}

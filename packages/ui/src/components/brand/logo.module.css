@@ -1,0 +1,39 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.mark {
+  flex: none;
+  width: var(--size-avatar-sm);
+  height: var(--size-avatar-sm);
+}
+
+.seat {
+  fill: var(--color-accent);
+}
+
+.dot {
+  fill: var(--color-on-accent);
+}
+
+.inverse {
+  color: var(--color-on-accent);
+}
+
+.inverse .seat {
+  fill: var(--color-on-accent);
+}
+
+.inverse .dot {
+  fill: var(--color-accent);
+}
+
+.wordmark {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-heavy);
+  letter-spacing: var(--letter-spacing-tight);
+}

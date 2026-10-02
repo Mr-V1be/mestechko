@@ -1,0 +1,170 @@
+.timeGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.groupTitle {
+  margin-bottom: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--size-slot-min), 1fr));
+  gap: var(--space-2);
+}
+
+/* An "местечко": a soft seat that a dot drops into when it is taken by you. */
+.slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: var(--size-control-md);
+  padding: 0 var(--space-2);
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.slot:hover:not([data-checked]) {
+  border-color: var(--color-accent);
+}
+
+.slot[data-checked] {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  animation: seat-squash var(--duration-slow) var(--ease-standard);
+}
+
+.slot[data-checked]::after {
+  content: '';
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  width: var(--size-dot);
+  height: var(--size-dot);
+  border-radius: var(--radius-pill);
+  background: var(--color-on-accent);
+  animation: seat-dot var(--duration-slow) var(--ease-spring);
+}
+
+@keyframes seat-squash {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.06, 0.92);
+  }
+  65% {
+    transform: scale(0.97, 1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes seat-dot {
+  0% {
+    opacity: 0;
+    transform: translateY(-140%) scale(0.4);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(15%) scale(1.15);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.dateStrip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-1-5);
+}
+
+.day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-0-5);
+  min-height: calc(var(--size-control-lg) + var(--space-4));
+  min-width: 0;
+  padding: var(--space-1) 0 var(--space-2);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.day:hover:not([data-disabled]):not([data-checked]) {
+  background: var(--color-surface-hover);
+}
+
+.weekday {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.dayNumber {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+}
+
+.day::after {
+  content: '';
+  width: var(--space-1-5);
+  height: var(--space-1-5);
+  border-radius: var(--radius-pill);
+  background: transparent;
+}
+
+.marked::after {
+  background: var(--color-accent);
+}
+
+.day[data-disabled] {
+  cursor: default;
+}
+
+.day[data-disabled] .dayNumber {
+  color: var(--color-text-tertiary);
+}
+
+.day[data-checked] {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+
+.day[data-checked] .weekday {
+  color: inherit;
+}
+
+.today .dayNumber {
+  text-decoration: underline;
+  text-decoration-thickness: var(--size-focus-ring);
+  text-underline-offset: var(--space-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot[data-checked],
+  .slot[data-checked]::after {
+    animation: none;
+  }
+}

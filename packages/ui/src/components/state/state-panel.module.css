@@ -1,0 +1,38 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: var(--size-text-max);
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-4);
+  text-align: center;
+}
+
+.compact {
+  padding: var(--space-6) var(--space-4);
+}
+
+.illustration {
+  width: var(--size-illustration);
+  height: var(--size-illustration);
+  margin-bottom: var(--space-2);
+}
+
+.compact .illustration {
+  width: var(--size-illustration-sm);
+  height: var(--size-illustration-sm);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+}
+
+.description {
+  max-width: var(--size-text-max);
+  color: var(--color-text-secondary);
+}
+
+.action {
+  margin-top: var(--space-2);
+}

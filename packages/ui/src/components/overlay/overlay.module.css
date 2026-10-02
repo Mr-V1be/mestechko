@@ -1,0 +1,178 @@
+.tooltip {
+  padding: var(--space-1-5) var(--space-2);
+  border-radius: var(--radius-xs);
+  background: var(--color-text);
+  color: var(--color-surface);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.tooltip[data-starting-style],
+.tooltip[data-ending-style] {
+  opacity: 0;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-overlay);
+  background: var(--color-overlay);
+  transition: opacity var(--duration-base) var(--ease-standard);
+}
+
+.backdrop[data-starting-style],
+.backdrop[data-ending-style] {
+  opacity: 0;
+}
+
+/* Phones: a sheet rising from the bottom, within thumb reach. */
+.sheet {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: var(--layer-sheet);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - var(--space-10));
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  padding-bottom: env(safe-area-inset-bottom);
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.sheet[data-starting-style],
+.sheet[data-ending-style] {
+  transform: translateY(100%);
+}
+
+/* Tablets and desktops: a side panel that keeps the page in view. */
+@media (min-width: 768px) {
+  .sheet {
+    inset: var(--space-3) var(--space-3) var(--space-3) auto;
+    width: min(var(--size-sheet-max), calc(100vw - var(--space-6)));
+    max-height: none;
+    border-radius: var(--radius-xl);
+    padding-bottom: 0;
+  }
+
+  .sheet[data-starting-style],
+  .sheet[data-ending-style] {
+    transform: translateX(calc(100% + var(--space-6)));
+  }
+}
+
+.sheetHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-3);
+}
+
+.sheetTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-xl);
+}
+
+.sheetDescription {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: normal;
+}
+
+.sheetBody {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-2) var(--space-5) var(--space-5);
+}
+
+.sheetFooter {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: var(--size-hairline) solid var(--color-border);
+}
+
+.handle {
+  align-self: center;
+  width: var(--space-10);
+  height: var(--space-1);
+  margin-top: var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .handle {
+    display: none;
+  }
+}
+
+.toastViewport {
+  position: fixed;
+  inset: auto var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom)) var(--space-4);
+  z-index: var(--layer-toast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .toastViewport {
+    inset: auto var(--space-6) var(--space-6) auto;
+    align-items: flex-end;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: min(100%, var(--size-sheet-max));
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-text);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    opacity var(--duration-base) var(--ease-standard);
+}
+
+.toast[data-starting-style],
+.toast[data-ending-style] {
+  opacity: 0;
+  transform: translateY(var(--space-4));
+}
+
+.toastIcon {
+  flex: none;
+  color: var(--color-accent);
+}
+
+.toastIcon svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.toastText {
+  flex: 1;
+  min-width: 0;
+}
+
+.toastTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.toastDescription {
+  font-size: var(--font-size-sm);
+  opacity: 0.8;
+}

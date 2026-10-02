@@ -1,0 +1,76 @@
+/*
+ * Color tokens. One juicy accent ("mandarin") on neutral surfaces. Text on the accent
+ * is ink, not white: white on mandarin is below WCAG AA, ink on it is 5.4:1.
+ * The resolved theme is always set as `data-theme` on <html> (see theme/), so each
+ * palette is declared once.
+ */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --color-canvas: #f4f5f7;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #eceef1;
+  --color-surface-hover: #f0f1f4;
+  --color-surface-pressed: #e6e8ec;
+  --color-border: #e2e4e9;
+  --color-border-control: #8b919c;
+  --color-text: #22242a;
+  --color-text-secondary: #5d6370;
+  --color-text-tertiary: #80868f;
+  --color-accent: #ff6a13;
+  --color-accent-hover: #f45f08;
+  --color-accent-pressed: #e05400;
+  --color-on-accent: #22242a;
+  --color-accent-text: #c2410c;
+  --color-accent-soft: #ffeadc;
+  --color-accent-soft-text: #a3360a;
+  --color-success: #18794e;
+  --color-success-soft: #e3f5eb;
+  --color-danger: #c5221f;
+  --color-danger-soft: #fde7e6;
+  --color-focus: #c2410c;
+  --color-overlay: rgb(20 22 28 / 0.42);
+  --color-skeleton: #e8eaee;
+  --color-skeleton-shine: #f6f7f9;
+  --color-illustration-line: #22242a;
+  --color-illustration-fill: #ffffff;
+  --color-illustration-muted: #e2e4e9;
+  --shadow-sm: 0 1px 2px rgb(20 22 28 / 0.06);
+  --shadow-md: 0 4px 16px rgb(20 22 28 / 0.08), 0 1px 3px rgb(20 22 28 / 0.06);
+  --shadow-lg: 0 18px 48px rgb(20 22 28 / 0.16), 0 4px 12px rgb(20 22 28 / 0.08);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-canvas: #111215;
+  --color-surface: #1a1c20;
+  --color-surface-sunken: #141518;
+  --color-surface-hover: #22252a;
+  --color-surface-pressed: #2a2d33;
+  --color-border: #2b2e34;
+  --color-border-control: #6e747f;
+  --color-text: #f1f2f4;
+  --color-text-secondary: #a6abb5;
+  --color-text-tertiary: #7d828c;
+  --color-accent: #ff7a2b;
+  --color-accent-hover: #ff8a45;
+  --color-accent-pressed: #ff9a5c;
+  --color-on-accent: #1a1208;
+  --color-accent-text: #ff9f66;
+  --color-accent-soft: #3a2316;
+  --color-accent-soft-text: #ffb88a;
+  --color-success: #5dd39e;
+  --color-success-soft: #12301f;
+  --color-danger: #ff7b72;
+  --color-danger-soft: #3b1715;
+  --color-focus: #ff9f66;
+  --color-overlay: rgb(0 0 0 / 0.6);
+  --color-skeleton: #24272c;
+  --color-skeleton-shine: #2e3137;
+  --color-illustration-line: #f1f2f4;
+  --color-illustration-fill: #1a1c20;
+  --color-illustration-muted: #2f3238;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 18px 48px rgb(0 0 0 / 0.55);
+}
