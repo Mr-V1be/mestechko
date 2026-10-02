@@ -1,3 +1,4 @@
+import { bookingActors, bookingEventKinds, messengerChannelIds } from '@mestechko/domain';
 import { z } from 'zod';
 import {
   bookingSourceSchema,
@@ -20,7 +21,7 @@ import { locationSchema } from './public-catalog.js';
 
 const MAX_PAGE_SIZE = 100;
 
-const cabinetParamsSchema = z.object({ businessId: uuidSchema });
+export const cabinetParamsSchema = z.object({ businessId: uuidSchema });
 
 export const cabinetStaffSchema = z.object({
   id: uuidSchema,
@@ -123,9 +124,22 @@ export const cabinetBookingRowSchema = z.object({
   total: moneySchema,
 });
 
+export const bookingHistoryEntrySchema = z.object({
+  kind: z.enum(bookingEventKinds),
+  actor: z.enum(bookingActors),
+  /** Messenger the change came from; `null` for the cabinet or the system. */
+  channel: z.enum(messengerChannelIds).nullable(),
+  at: instantSchema,
+  /** Start before a reschedule. */
+  previousStart: instantSchema.nullable(),
+});
+
 export const cabinetBookingDetailsSchema = cabinetBookingRowSchema.extend({
   comment: z.string().nullable(),
   createdAt: instantSchema,
+  attendanceConfirmedAt: instantSchema.nullable(),
+  /** Changes after the booking was made, oldest first. */
+  history: z.array(bookingHistoryEntrySchema),
   items: z.array(
     z.object({
       serviceId: uuidSchema,

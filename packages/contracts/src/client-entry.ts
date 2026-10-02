@@ -10,6 +10,7 @@ export type * from './routes/miniapp-waitlist.js';
 export type * from './routes/auth.js';
 export type * from './routes/demo.js';
 export type * from './routes/cabinet.js';
+export type * from './routes/max-emulator.js';
 export type * from './primitives.js';
 export type { ApiErrorCode } from './errors.js';
 export type { RouteRequest, RouteResult } from './route.js';

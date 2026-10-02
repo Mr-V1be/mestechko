@@ -53,6 +53,14 @@ function toDetails(view: CabinetBookingDetailsView, avatars: AvatarUrls): Cabine
     ...toRow(view, avatars),
     comment: view.comment,
     createdAt: view.createdAt.toISOString(),
+    attendanceConfirmedAt: view.attendanceConfirmedAt?.toISOString() ?? null,
+    history: view.history.map((entry) => ({
+      kind: entry.kind,
+      actor: entry.actor,
+      channel: entry.channel,
+      at: entry.occurredAt.toISOString(),
+      previousStart: entry.previousStartsAt?.toISOString() ?? null,
+    })),
     items: view.items.map((item) => ({
       serviceId: item.serviceId,
       serviceName: item.serviceName,

@@ -12,3 +12,4 @@ export * from './routes/miniapp-waitlist.js';
 export * from './routes/auth.js';
 export * from './routes/demo.js';
 export * from './routes/cabinet.js';
+export * from './routes/max-emulator.js';

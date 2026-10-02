@@ -40,7 +40,7 @@ const redisPassword = pick('REDIS_PASSWORD', () => secret(24));
 
 const defaults: Record<string, () => string> = {
   NODE_ENV: () => 'development',
-  APP_ROLES: () => 'api,worker',
+  APP_ROLES: () => 'api,worker,bot',
   API_HOST: () => '127.0.0.1',
   API_PORT: () => '46210',
   LOG_LEVEL: () => 'info',
@@ -54,6 +54,10 @@ const defaults: Record<string, () => string> = {
   REDIS_URL: () => `redis://:${encodeURIComponent(redisPassword)}@127.0.0.1:46202/0`,
   DEMO_MODE: () => 'true',
   TELEGRAM_DEMO_SIGNING_KEY: () => secret(32),
+  TELEGRAM_UPDATES_MODE: () => 'polling',
+  MAX_BOT_TOKEN: () => secret(24),
+  MAX_API_BASE_URL: () => 'http://127.0.0.1:46210/max-emulator',
+  MAX_EMULATOR_ENABLED: () => 'true',
   SESSION_TTL_DAYS: () => '30',
   COOKIE_SECURE: () => 'false',
   ISDAYOFF_BASE_URL: () => 'https://isdayoff.ru',

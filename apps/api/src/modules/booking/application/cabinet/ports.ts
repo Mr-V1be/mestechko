@@ -1,8 +1,11 @@
 import type {
+  BookingActor,
+  BookingEventKind,
   BookingSource,
   BookingStatus,
   CurrencyCode,
   InstantInterval,
+  MessengerChannel,
 } from '@mestechko/domain';
 import type { Page } from '../ports.js';
 
@@ -53,9 +56,19 @@ export interface CabinetBookingView {
   readonly currency: CurrencyCode;
 }
 
+export interface BookingHistoryView {
+  readonly kind: BookingEventKind;
+  readonly actor: BookingActor;
+  readonly channel: MessengerChannel | null;
+  readonly occurredAt: Date;
+  readonly previousStartsAt: Date | null;
+}
+
 export interface CabinetBookingDetailsView extends CabinetBookingView {
   readonly comment: string | null;
   readonly createdAt: Date;
+  readonly attendanceConfirmedAt: Date | null;
+  readonly history: readonly BookingHistoryView[];
   readonly items: readonly {
     readonly serviceId: string;
     readonly serviceName: string;

@@ -1,5 +1,5 @@
 /** Areas of the business cabinet guarded by role permissions. */
-export const accessAreas = ['schedule', 'bookings'] as const;
+export const accessAreas = ['schedule', 'bookings', 'messengers'] as const;
 export type AccessArea = (typeof accessAreas)[number];
 
 /** `own` limits access to the staff member's own records. */
@@ -13,9 +13,18 @@ interface RoleDefinition {
 }
 
 export const roles = {
-  owner: { areas: { schedule: 'all', bookings: 'all' }, requiresStaffProfile: false },
-  admin: { areas: { schedule: 'all', bookings: 'all' }, requiresStaffProfile: false },
-  staff: { areas: { schedule: 'own', bookings: 'own' }, requiresStaffProfile: true },
+  owner: {
+    areas: { schedule: 'all', bookings: 'all', messengers: 'all' },
+    requiresStaffProfile: false,
+  },
+  admin: {
+    areas: { schedule: 'all', bookings: 'all', messengers: 'all' },
+    requiresStaffProfile: false,
+  },
+  staff: {
+    areas: { schedule: 'own', bookings: 'own', messengers: 'none' },
+    requiresStaffProfile: true,
+  },
 } as const satisfies Record<string, RoleDefinition>;
 
 export type RoleId = keyof typeof roles;

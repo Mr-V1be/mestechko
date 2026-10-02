@@ -19,9 +19,18 @@ export interface CustomerIdentities {
   find(channel: MessengerChannel, externalId: string): Promise<string | null>;
 }
 
+/** A client card with the messenger account the client uses. */
+export interface MessengerClient {
+  readonly clientId: string;
+  readonly displayName: string;
+  readonly externalId: string;
+}
+
 /** Client cards of the current tenant (the business's own CRM). */
 export interface ClientDirectory {
   findByCustomer(customerId: string): Promise<ClientRecord | null>;
+  /** Clients known through a messenger, by name. */
+  listByChannel(channel: MessengerChannel): Promise<MessengerClient[]>;
   /** Client card of a customer in this business, created or updated with the contact. */
   upsertForCustomer(
     customerId: string,

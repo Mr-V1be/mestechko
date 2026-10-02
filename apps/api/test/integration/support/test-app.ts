@@ -16,14 +16,18 @@ const TEST_REDIS_DB = '15';
 
 export const TEST_DEMO_KEY = 'test-demo-signing-key-0123456789abcdef';
 
-function testConfig(environment: Readonly<Record<string, string>>): AppConfig {
+export function testRedisUrl(): string {
   const redis = new URL(process.env.REDIS_URL ?? '');
   redis.pathname = `/${TEST_REDIS_DB}`;
+  return redis.toString();
+}
+
+function testConfig(environment: Readonly<Record<string, string>>): AppConfig {
   return loadConfig({
     NODE_ENV: 'test',
     APP_ROLES: 'api',
     DATABASE_URL: inject('testAppUrl'),
-    REDIS_URL: redis.toString(),
+    REDIS_URL: testRedisUrl(),
     DEMO_MODE: 'true',
     TELEGRAM_DEMO_SIGNING_KEY: TEST_DEMO_KEY,
     LOG_LEVEL: 'silent',

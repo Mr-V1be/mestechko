@@ -3,12 +3,24 @@ import type { Database } from '../platform/db/database.js';
 import type { IdGenerator } from '../shared/application/ports.js';
 import type { BuiltCatalog } from './catalog-builder.js';
 import type { GeneratedBooking } from './history-generator.js';
+import {
+  SEED_MAX_ID_BASE,
+  SEED_TELEGRAM_ID_BASE,
+  pickMaxClients,
+  planMaxNotifications,
+  withMaxSources,
+  type WrittenBooking,
+} from './messenger-clients.js';
 import type { DemoPerson } from './people.js';
 
 const BATCH_SIZE = 400;
 const MS_PER_MINUTE = 60_000;
-/** Synthetic Telegram ids of seeded clients, far from real and demo-visitor ids. */
-const SEED_TELEGRAM_ID_BASE = 7_000_000_000;
+
+/** Next synthetic messenger account number, shared across demo businesses. */
+export interface MessengerIdCounters {
+  telegram: number;
+  max: number;
+}
 
 type Tx = Transaction<Database>;
 
@@ -155,12 +167,16 @@ async function writeClients(
   bookings: readonly GeneratedBooking[],
   people: readonly DemoPerson[],
   ids: IdGenerator,
-  telegramIds: { next: number },
-): Promise<Map<number, string>> {
+  messengerIds: MessengerIdCounters,
+  maxClients: ReadonlySet<number>,
+): Promise<{ clientIds: Map<number, string>; customerIds: Map<number, string> }> {
   const clientIds = new Map<number, string>();
+  const customerIds = new Map<number, string>();
   const telegramClients = new Set(
     bookings
-      .filter((booking) => booking.source === 'telegram_mini_app')
+      .filter(
+        (booking) => booking.source === 'telegram_mini_app' || booking.source === 'max_mini_app',
+      )
       .map((booking) => booking.clientIndex),
   );
   const firstVisit = new Map<number, Date>();
@@ -172,9 +188,18 @@ async function writeClients(
   }
   const customers: { id: string; createdAt: Date }[] = [];
   const identities: {
-    channel: 'telegram';
+    channel: 'telegram' | 'max';
     externalId: string;
     customerId: string;
+    chatId: string | null;
+    messagingAllowedAt: Date | null;
+    createdAt: Date;
+  }[] = [];
+  const emulatedUsers: {
+    userId: string;
+    firstName: string;
+    lastName: null;
+    botStartedAt: Date;
     createdAt: Date;
   }[] = [];
   const clients = [...firstVisit.entries()].map(([index, createdAt]) => {
@@ -182,16 +207,42 @@ async function writeClients(
     const id = ids.next();
     clientIds.set(index, id);
     let customerId: string | null = null;
-    if (telegramClients.has(index)) {
+    if (maxClients.has(index)) {
+      // They started the MAX bot, so it may write to them; the emulator knows them.
+      customerId = ids.next();
+      const externalId = String(SEED_MAX_ID_BASE + messengerIds.max);
+      messengerIds.max += 1;
+      customers.push({ id: customerId, createdAt });
+      identities.push({
+        channel: 'max',
+        externalId,
+        customerId,
+        chatId: externalId,
+        messagingAllowedAt: createdAt,
+        createdAt,
+      });
+      emulatedUsers.push({
+        userId: externalId,
+        firstName: person.displayName.split(' ')[0] ?? person.displayName,
+        lastName: null,
+        botStartedAt: createdAt,
+        createdAt,
+      });
+    } else if (telegramClients.has(index)) {
       customerId = ids.next();
       customers.push({ id: customerId, createdAt });
       identities.push({
         channel: 'telegram',
-        externalId: String(SEED_TELEGRAM_ID_BASE + telegramIds.next),
+        externalId: String(SEED_TELEGRAM_ID_BASE + messengerIds.telegram),
         customerId,
+        chatId: null,
+        messagingAllowedAt: null,
         createdAt,
       });
-      telegramIds.next += 1;
+      messengerIds.telegram += 1;
+    }
+    if (customerId) {
+      customerIds.set(index, customerId);
     }
     return {
       id,
@@ -209,7 +260,10 @@ async function writeClients(
     tx.insertInto('customerIdentities').values(batch).execute(),
   );
   await inBatches(clients, (batch) => tx.insertInto('clients').values(batch).execute());
-  return clientIds;
+  await inBatches(emulatedUsers, (batch) =>
+    tx.insertInto('maxEmulatorUsers').values(batch).execute(),
+  );
+  return { clientIds, customerIds };
 }
 
 /** Cancellations happened somewhere between booking and the visit, never in the future. */
@@ -223,9 +277,10 @@ async function writeBookings(
   catalog: BuiltCatalog,
   bookings: readonly GeneratedBooking[],
   clientIds: ReadonlyMap<number, string>,
+  customerIds: ReadonlyMap<number, string>,
   ids: IdGenerator,
   now: Date,
-): Promise<number> {
+): Promise<WrittenBooking[]> {
   const businessId = catalog.businessId;
   const rows = bookings.map((booking) => ({ booking, id: ids.next() }));
   await inBatches(rows, (batch) =>
@@ -273,7 +328,11 @@ async function writeBookings(
     })),
   );
   await inBatches(items, (batch) => tx.insertInto('bookingItems').values(batch).execute());
-  return rows.length;
+  return rows.map(({ booking, id }) => ({
+    id,
+    customerId: customerIds.get(booking.clientIndex) ?? null,
+    booking,
+  }));
 }
 
 /** Writes one demo business with its catalog, clients and booking history atomically. */
@@ -285,28 +344,43 @@ export async function writeDemoBusiness(
     readonly people: readonly DemoPerson[];
     readonly ids: IdGenerator;
     readonly now: Date;
-    readonly telegramIds: { next: number };
+    readonly messengerIds: MessengerIdCounters;
   },
-): Promise<{ clients: number; bookings: number }> {
+): Promise<{ clients: number; bookings: number; maxClients: number; notifications: number }> {
+  const maxClients = pickMaxClients(input.bookings, input.now);
+  const bookings = withMaxSources(input.bookings, maxClients);
   return db.transaction().execute(async (tx) => {
     await sql`select set_config('app.business_id', ${input.catalog.businessId}, true)`.execute(tx);
     await writeCatalog(tx, input.catalog, input.now);
-    const clientIds = await writeClients(
+    const { clientIds, customerIds } = await writeClients(
       tx,
       input.catalog,
-      input.bookings,
+      bookings,
       input.people,
       input.ids,
-      input.telegramIds,
+      input.messengerIds,
+      maxClients,
     );
-    const bookings = await writeBookings(
+    const written = await writeBookings(
       tx,
       input.catalog,
-      input.bookings,
+      bookings,
       clientIds,
+      customerIds,
       input.ids,
       input.now,
     );
-    return { clients: clientIds.size, bookings };
+    const notifications = await planMaxNotifications(tx, {
+      businessId: input.catalog.businessId,
+      written,
+      ids: input.ids,
+      now: input.now,
+    });
+    return {
+      clients: clientIds.size,
+      bookings: written.length,
+      maxClients: maxClients.size,
+      notifications,
+    };
   });
 }

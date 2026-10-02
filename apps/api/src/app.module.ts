@@ -11,6 +11,7 @@ import { BookingModule } from './modules/booking/booking.module.js';
 import { CatalogModule } from './modules/catalog/catalog.module.js';
 import { ClientsModule } from './modules/clients/clients.module.js';
 import { IdentityModule } from './modules/identity/identity.module.js';
+import { MaxEmulatorModule } from './modules/max-emulator/max-emulator.module.js';
 import { MediaModule } from './modules/media/media.module.js';
 import { MessagingModule } from './modules/messaging/messaging.module.js';
 import {
@@ -56,6 +57,7 @@ export class AppModule {
         BookingModule,
         WaitlistModule,
         MessagingModule,
+        MaxEmulatorModule,
       ],
       providers: [
         { provide: APP_GUARD, useClass: AuthGuard },

@@ -1,6 +1,7 @@
 import * as auth from './auth.js';
 import * as cabinet from './cabinet.js';
 import * as demo from './demo.js';
+import * as maxEmulator from './max-emulator.js';
 import * as miniapp from './miniapp-bookings.js';
 import * as waitlist from './miniapp-waitlist.js';
 import * as catalog from './public-catalog.js';
@@ -34,6 +35,11 @@ export const apiRoutes = {
   getSchedule: cabinet.getSchedule,
   listCabinetBookings: cabinet.listCabinetBookings,
   getCabinetBooking: cabinet.getCabinetBooking,
+  listMaxEmulatorChats: maxEmulator.listMaxEmulatorChats,
+  getMaxEmulatorChat: maxEmulator.getMaxEmulatorChat,
+  startMaxEmulatorChat: maxEmulator.startMaxEmulatorChat,
+  sendMaxEmulatorText: maxEmulator.sendMaxEmulatorText,
+  pressMaxEmulatorButton: maxEmulator.pressMaxEmulatorButton,
 } as const;
 
 export type ApiRoutes = typeof apiRoutes;

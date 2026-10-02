@@ -116,7 +116,16 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
     staffId: string | null,
   ): Promise<CabinetBookingDetailsView | null> {
     let query = this.rowQuery()
-      .select(['b.clientComment', 'b.createdAt'])
+      .select(['b.clientComment', 'b.createdAt', 'b.attendanceConfirmedAt'])
+      .select((eb) =>
+        jsonArrayFrom(
+          eb
+            .selectFrom('bookingEvents as e')
+            .select(['e.kind', 'e.actor', 'e.channel', 'e.occurredAt', 'e.previousStartsAt'])
+            .whereRef('e.bookingId', '=', 'b.id')
+            .orderBy('e.occurredAt'),
+        ).as('history'),
+      )
       .select((eb) =>
         jsonArrayFrom(
           eb
@@ -146,6 +155,13 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
       ...this.toView(row),
       comment: row.clientComment,
       createdAt: row.createdAt,
+      attendanceConfirmedAt: row.attendanceConfirmedAt,
+      // JSON aggregation returns timestamps as strings.
+      history: row.history.map((entry) => ({
+        ...entry,
+        occurredAt: new Date(entry.occurredAt),
+        previousStartsAt: entry.previousStartsAt ? new Date(entry.previousStartsAt) : null,
+      })),
       items: row.items.map((item) => ({
         ...item,
         startsAt: new Date(item.startsAt),

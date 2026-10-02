@@ -1,4 +1,8 @@
-import type { OnApplicationBootstrap, OnApplicationShutdown } from '@nestjs/common';
+import type {
+  BeforeApplicationShutdown,
+  OnApplicationBootstrap,
+  OnApplicationShutdown,
+} from '@nestjs/common';
 import type { Redis } from 'ioredis';
 import type { PinoLogger } from 'nestjs-pino';
 import type { MessengerChannel } from '@mestechko/domain';
@@ -77,7 +81,9 @@ export function inboundOf(update: MaxUpdate): InboundEvent | null {
  * Long-polls MAX for updates in the `bot` process. The marker lives in Redis, so a
  * restart continues where the previous run stopped.
  */
-export class MaxUpdatesPoller implements OnApplicationBootstrap, OnApplicationShutdown {
+export class MaxUpdatesPoller
+  implements OnApplicationBootstrap, BeforeApplicationShutdown, OnApplicationShutdown
+{
   private readonly stop = new AbortController();
   private loop: Promise<void> | null = null;
 
@@ -96,8 +102,12 @@ export class MaxUpdatesPoller implements OnApplicationBootstrap, OnApplicationSh
     }
   }
 
-  async onApplicationShutdown(): Promise<void> {
+  /** The pending long poll ends before the HTTP server waits for open requests. */
+  beforeApplicationShutdown(): void {
     this.stop.abort();
+  }
+
+  async onApplicationShutdown(): Promise<void> {
     await this.loop;
   }
 

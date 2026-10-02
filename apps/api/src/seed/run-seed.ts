@@ -54,6 +54,9 @@ async function removeDemoData(db: Kysely<Database>): Promise<void> {
                       where cl.customer_id = c.id and not b.is_demo)
   `.execute(db);
   const demoIds = db.selectFrom('businesses').select('id').where('isDemo', '=', true);
+  // The MAX emulator only ever holds demo chats.
+  await db.deleteFrom('maxEmulatorUpdates').execute();
+  await db.deleteFrom('maxEmulatorUsers').execute();
   await db.deleteFrom('bookings').where('businessId', 'in', demoIds).execute();
   await db.deleteFrom('businesses').where('isDemo', '=', true).execute();
   await db
@@ -107,7 +110,7 @@ export async function runSeed(deps: SeedDependencies): Promise<void> {
   const calendar = new YearlyProductionCalendar(await syncCalendars(deps, years));
   const hasher = new ScryptPasswordHasher();
   const passwordHash = await hasher.hash(DEMO_PASSWORD);
-  const telegramIds = { next: 1 };
+  const messengerIds = { telegram: 1, max: 1 };
 
   for (const definition of demoBusinesses) {
     const catalog = buildCatalog({
@@ -135,7 +138,7 @@ export async function runSeed(deps: SeedDependencies): Promise<void> {
       people,
       ids: deps.ids,
       now: nowDate,
-      telegramIds,
+      messengerIds,
     });
     const accounts = demoAccountsOf(definition, catalog);
     await writeDemoAccounts(deps.db, {
@@ -146,7 +149,7 @@ export async function runSeed(deps: SeedDependencies): Promise<void> {
       now: nowDate,
     });
     deps.logger.info(
-      `${definition.name} (${definition.slug}): ${String(written.bookings)} bookings, ${String(written.clients)} clients, accounts ${accounts.map((account) => account.email).join(', ')}`,
+      `${definition.name} (${definition.slug}): ${String(written.bookings)} bookings, ${String(written.clients)} clients (${String(written.maxClients)} on MAX, ${String(written.notifications)} messages planned), accounts ${accounts.map((account) => account.email).join(', ')}`,
     );
   }
 }

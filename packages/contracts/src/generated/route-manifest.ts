@@ -31,4 +31,9 @@ export const routeManifest = {
   getSchedule: { method: 'GET', path: '/v1/cabinet/businesses/:businessId/schedule', status: 200, auth: 'session', hasResponseBody: true },
   listCabinetBookings: { method: 'GET', path: '/v1/cabinet/businesses/:businessId/bookings', status: 200, auth: 'session', hasResponseBody: true },
   getCabinetBooking: { method: 'GET', path: '/v1/cabinet/businesses/:businessId/bookings/:bookingId', status: 200, auth: 'session', hasResponseBody: true },
+  listMaxEmulatorChats: { method: 'GET', path: '/v1/cabinet/businesses/:businessId/max-emulator/chats', status: 200, auth: 'session', hasResponseBody: true },
+  getMaxEmulatorChat: { method: 'GET', path: '/v1/cabinet/businesses/:businessId/max-emulator/chats/:userId', status: 200, auth: 'session', hasResponseBody: true },
+  startMaxEmulatorChat: { method: 'POST', path: '/v1/cabinet/businesses/:businessId/max-emulator/chats/:userId/start', status: 204, auth: 'session', hasResponseBody: false },
+  sendMaxEmulatorText: { method: 'POST', path: '/v1/cabinet/businesses/:businessId/max-emulator/chats/:userId/messages', status: 204, auth: 'session', hasResponseBody: false },
+  pressMaxEmulatorButton: { method: 'POST', path: '/v1/cabinet/businesses/:businessId/max-emulator/chats/:userId/press', status: 204, auth: 'session', hasResponseBody: false },
 } as const satisfies Record<keyof ApiRoutes, RouteMeta>;

@@ -7,6 +7,7 @@ import type {
   ClientDirectory,
   ClientRecord,
   CustomerIdentities,
+  MessengerClient,
 } from '../application/ports.js';
 
 export class KyselyCustomerIdentities implements CustomerIdentities {
@@ -60,6 +61,17 @@ export class KyselyClientDirectory implements ClientDirectory {
       .where('customerId', '=', customerId)
       .executeTakeFirst();
     return row ?? null;
+  }
+
+  async listByChannel(channel: MessengerChannel): Promise<MessengerClient[]> {
+    return this.unitOfWork
+      .tenant()
+      .selectFrom('clients as c')
+      .innerJoin('customerIdentities as i', 'i.customerId', 'c.customerId')
+      .select(['c.id as clientId', 'c.displayName', 'i.externalId'])
+      .where('i.channel', '=', channel)
+      .orderBy('c.displayName')
+      .execute();
   }
 
   async upsertForCustomer(
