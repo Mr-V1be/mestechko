@@ -14,7 +14,8 @@
     "db:seed": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/seed.ts",
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
-    "bot:setup": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/setup-telegram-bot.ts"
+    "bot:setup": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/setup-telegram-bot.ts",
+    "bot:check": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/bot-check.ts"
   },
   "dependencies": {
     "@dicebear/core": "10.7.0",

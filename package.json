@@ -17,6 +17,7 @@
     "db:seed": "pnpm --filter @mestechko/api db:seed",
     "db:setup": "pnpm db:provision && pnpm db:migrate && pnpm db:seed",
     "bot:setup": "pnpm --filter @mestechko/api bot:setup",
+    "bot:check": "pnpm --filter @mestechko/api bot:check",
     "dev:api": "pnpm --filter @mestechko/api dev",
     "dev:miniapp": "pnpm --filter @mestechko/miniapp dev",
     "dev:cabinet": "pnpm --filter @mestechko/cabinet dev",
