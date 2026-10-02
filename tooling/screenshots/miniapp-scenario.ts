@@ -70,6 +70,54 @@ export async function captureMiniApp(session: Session, base: string): Promise<vo
   await page.waitForURL(/\/bookings\/[0-9a-f-]+$/);
   await shot('12-booking-details');
 
+  // Moving the booking: same services and staff member, another free start.
+  await page.getByRole('button', { name: 'Перенести' }).click();
+  await page.waitForURL(/\/reschedule$/);
+  // Another start than the current one, looking a few weeks ahead if needed.
+  const moveSlots = page.getByRole('radio', { checked: false }).filter({ hasText: /^\d\d:\d\d$/ });
+  await page
+    .getByRole('radio')
+    .filter({ hasText: /^\d\d:\d\d$/ })
+    .first()
+    .waitFor();
+  await shot('15-reschedule');
+  for (let week = 0; week < MAX_WEEKS_AHEAD && (await moveSlots.count()) === 0; week += 1) {
+    await page.getByRole('button', { name: 'Следующая неделя' }).first().click();
+    await page.waitForLoadState('networkidle');
+  }
+  await moveSlots.last().click();
+  await shot('16-reschedule-selected');
+  await page.getByRole('button', { name: /^Перенести на/ }).click();
+  await page.waitForURL(/\/bookings\/[0-9a-f-]+$/);
+  await page.getByText('Запись перенесена').first().waitFor();
+  await shot('17-rescheduled');
+
+  await page.getByRole('button', { name: 'Отменить', exact: true }).click();
+  const cancelSheet = page.getByRole('dialog', { name: 'Отменить запись?' });
+  await cancelSheet.waitFor();
+  await shot('18-cancel-sheet');
+  await cancelSheet.getByRole('button', { name: 'Отменить запись' }).click();
+  await page.getByText('Запись отменена').first().waitFor();
+  await cancelSheet.waitFor({ state: 'detached' });
+  await shot('19-cancelled');
+
+  // Waiting for a full day: the waitlist sheet on the time step.
+  await page.goto(`${base}/b/siren`);
+  await page.getByText('Сирень на Пятницкой').click();
+  await page.getByText('Женская стрижка').click();
+  await page.getByRole('button', { name: 'Выбрать мастера' }).click();
+  await page.getByText('Любой мастер').click();
+  await page.waitForURL(/\/time/);
+  await page.getByRole('button', { name: 'Встать в лист ожидания' }).click();
+  const waitlistSheet = page.getByRole('dialog', { name: 'Лист ожидания' });
+  await waitlistSheet.waitFor();
+  await shot('20-waitlist-sheet');
+  await waitlistSheet.getByRole('button', { name: 'Встать в лист ожидания' }).click();
+  await waitlistSheet.waitFor({ state: 'detached' });
+  await page.goto(`${base}/b/siren/bookings`);
+  await page.getByText('Лист ожидания').waitFor();
+  await shot('21-my-bookings-waitlist');
+
   await page.goto(`${base}/b/no-such-business`);
   await shot('13-business-not-found');
 

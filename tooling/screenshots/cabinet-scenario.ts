@@ -52,6 +52,23 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
   await page.getByText('Записей не нашлось').waitFor();
   await shot('08-bookings-empty');
 
+  // Bookings the demo client changed in the Mini App carry their history.
+  await page.getByLabel('Период').click();
+  await page.getByRole('option', { name: 'Ближайшие 60 дней' }).click();
+  await page.getByLabel('Поиск').fill('916 123-45-67');
+  await page.waitForTimeout(SCROLL_SETTLE_MS);
+  await page.waitForLoadState('networkidle');
+  // A cancelled booking: rows on wide screens, cards on phones.
+  await page
+    .getByRole('row')
+    .filter({ hasText: 'Отменена' })
+    .or(page.getByRole('button').filter({ hasText: 'Отменена' }))
+    .first()
+    .click();
+  await page.getByRole('dialog').getByText('Изменения').waitFor();
+  await shot('16-booking-history');
+  await page.keyboard.press('Escape');
+
   const url = page.url();
   await fail(page, /\/api\/v1\/cabinet\/businesses\/[^/]+\/bookings/, 500, 'internal');
   await page.goto(url);
@@ -83,6 +100,28 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
     await page.waitForLoadState('networkidle');
   }
   await shot('12-schedule-dental');
+
+  // The MAX emulator: a client's chat with the bot, buttons pressed as the client.
+  await page.getByRole('link', { name: 'Эмулятор MAX' }).first().click();
+  await page.waitForURL(/\/max-emulator/);
+  await page.getByText('Клиенты в MAX').waitFor();
+  await shot('17-max-chats');
+  await page.getByText('Клиенты в MAX').locator('xpath=..').getByRole('button').first().click();
+  await page.waitForURL(/\/max-emulator\/\d+/);
+  const cancelButton = page.getByRole('button', { name: 'Отменить', exact: true }).last();
+  await cancelButton.waitFor();
+  await shot('18-max-chat');
+  await cancelButton.click();
+  await page.getByText('Отменить запись?').last().waitFor({ timeout: 15_000 });
+  await shot('19-max-cancel-question');
+  await page.getByRole('button', { name: 'Не отменять' }).last().click();
+  await page.getByRole('button', { name: 'Да, отменить' }).waitFor({ state: 'detached' });
+  const answers = page.getByText('Ваши записи');
+  const answered = await answers.count();
+  await page.getByLabel('Сообщение боту').fill('/bookings');
+  await page.getByRole('button', { name: 'Отправить' }).click();
+  await answers.nth(answered).waitFor({ timeout: 15_000 });
+  await shot('20-max-bookings-command');
 
   // A staff member sees only their own column and visits.
   await page.getByRole('button', { name: 'Аккаунт' }).filter({ visible: true }).first().click();

@@ -1,6 +1,8 @@
 import { addDays, todayIn, weekStart } from '../schedule/timeline-model';
 
 const WEEK_DAYS = 7;
+/** Days ahead the upcoming period covers. */
+const UPCOMING_DAYS = 60;
 const MONTH_DAYS = 30;
 
 interface PeriodDefinition {
@@ -20,6 +22,8 @@ export const periods = {
       to: addDays(weekStart(today), WEEK_DAYS * 2 - 1),
     }),
   },
+  /** Everything clients can still book: the booking horizon of every vertical fits. */
+  upcoming: { range: (today) => ({ from: today, to: addDays(today, UPCOMING_DAYS - 1) }) },
   lastWeek: {
     range: (today) => ({
       from: addDays(weekStart(today), -WEEK_DAYS),

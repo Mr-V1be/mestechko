@@ -12,3 +12,7 @@ export function isUnauthenticated(error: unknown): boolean {
 export function isForbidden(error: unknown): boolean {
   return error instanceof ApiError && error.status === 403;
 }
+
+export function isNotFound(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 404;
+}

@@ -1,0 +1,188 @@
+.lead {
+  max-width: var(--size-text-max);
+  color: var(--color-text-secondary);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: var(--size-aside) minmax(0, 1fr);
+  }
+}
+
+.list {
+  min-width: 0;
+}
+
+.preview {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: calc(var(--size-control-lg) * 8);
+  border: var(--size-hairline) dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.placeholder svg {
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+}
+
+/* The chat fills the screen height so the composer stays in reach. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--size-top-bar) - var(--size-bottom-bar) - var(--space-8));
+  min-height: calc(var(--size-control-lg) * 8);
+  overflow: hidden;
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+@media (min-width: 1024px) {
+  .panel {
+    position: sticky;
+    top: var(--space-8);
+    height: calc(100dvh - var(--space-16));
+  }
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--size-hairline) solid var(--color-border);
+}
+
+.panelTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.panelName {
+  overflow: hidden;
+  font-weight: var(--font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panelBot {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.stream {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--color-canvas);
+  overscroll-behavior: contain;
+}
+
+.streamSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1-5);
+  max-width: min(100%, var(--size-dialog-max));
+}
+
+.rowOwn {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.bubble {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border-top-left-radius: var(--radius-xs);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.bubbleOwn {
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-xs);
+  background: var(--color-accent-soft);
+}
+
+.text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  overflow-wrap: anywhere;
+}
+
+.time {
+  align-self: flex-end;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  width: 100%;
+}
+
+.keyboardRow {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-1-5);
+}
+
+.notice {
+  align-self: center;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+.composer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: var(--size-hairline) solid var(--color-border);
+}
+
+.composerField {
+  flex: 1;
+  min-width: 0;
+}

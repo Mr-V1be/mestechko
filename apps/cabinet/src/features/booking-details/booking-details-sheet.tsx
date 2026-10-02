@@ -1,10 +1,11 @@
 import { apiAssetUrl, BookingStatusBadge, formatPhone, useFormat } from '@mestechko/booking-ui';
-import { Avatar, Button, ListGroup, ListItem, Sheet, Skeleton } from '@mestechko/ui';
+import { Avatar, Badge, Button, ListGroup, ListItem, Sheet, Skeleton } from '@mestechko/ui';
 import { CalendarClock, MapPin, MessageSquareText, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';
 import { useCabinetBooking } from '../../platform/api/queries';
 import { QueryErrorState } from '../common/states';
+import { BookingHistory } from './booking-history';
 import styles from './booking-details.module.css';
 
 export interface BookingDetailsSheetProps {
@@ -29,7 +30,16 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
         }
       }}
       title={data?.client.displayName ?? t('details.title')}
-      description={data ? <BookingStatusBadge status={data.status} /> : undefined}
+      description={
+        data ? (
+          <span className={styles.badges}>
+            <BookingStatusBadge status={data.status} />
+            {data.attendanceConfirmedAt && data.status === 'confirmed' ? (
+              <Badge tone="success">{t('details.attendanceConfirmed')}</Badge>
+            ) : null}
+          </span>
+        ) : undefined
+      }
       closeLabel={t('common:actions.close')}
       footer={
         data?.client.phone ? (
@@ -94,6 +104,7 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
             ))}
             <ListItem title={t('details.total')} meta={format.money(data.total)} />
           </ListGroup>
+          <BookingHistory booking={data} />
           {data.comment ? (
             <ListGroup title={t('details.comment')}>
               <ListItem leading={<MessageSquareText aria-hidden="true" />} title={data.comment} />

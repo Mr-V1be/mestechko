@@ -42,6 +42,13 @@ const router = createBrowserRouter([
                   Component: (await import('../features/bookings/bookings-page')).BookingsPage,
                 }),
               },
+              {
+                path: 'max-emulator/:userId?',
+                lazy: async () => ({
+                  Component: (await import('../features/max-emulator/max-emulator-page'))
+                    .MaxEmulatorPage,
+                }),
+              },
             ],
           },
           { path: '*', element: <HomeRedirect /> },

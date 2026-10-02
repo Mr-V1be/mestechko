@@ -25,9 +25,18 @@
       "afternoon": "День",
       "book": "Записаться · {{price}}",
       "staff": {
-        "anna": { "name": "Анна", "title": "Стилист" },
-        "maria": { "name": "Мария", "title": "Колорист" },
-        "olga": { "name": "Ольга", "title": "Маникюр" }
+        "anna": {
+          "name": "Анна",
+          "title": "Стилист"
+        },
+        "maria": {
+          "name": "Мария",
+          "title": "Колорист"
+        },
+        "olga": {
+          "name": "Ольга",
+          "title": "Маникюр"
+        }
       },
       "clients": {
         "alina": "Алина М.",
@@ -51,7 +60,8 @@
     "bookings": "Записи",
     "business": "Заведение",
     "account": "Аккаунт",
-    "menu": "Меню"
+    "menu": "Меню",
+    "maxEmulator": "Эмулятор MAX"
   },
   "account": {
     "theme": "Тема",
@@ -107,7 +117,8 @@
       "thisWeek": "Эта неделя",
       "nextWeek": "Следующая неделя",
       "lastWeek": "Прошлая неделя",
-      "last30": "Последние 30 дней"
+      "last30": "Последние 30 дней",
+      "upcoming": "Ближайшие 60 дней"
     },
     "filters": "Фильтры",
     "filtersActive": "Фильтры: {{count}}",
@@ -122,7 +133,20 @@
     "total": "Итого",
     "source": "Источник",
     "created": "Создана {{when}}",
-    "comment": "Комментарий клиента"
+    "comment": "Комментарий клиента",
+    "attendanceConfirmed": "Придёт",
+    "historyTitle": "Изменения",
+    "history": {
+      "rescheduled": "Перенесена",
+      "cancelled": "Отменена",
+      "attendance_confirmed": "Клиент подтвердил визит"
+    },
+    "actor": {
+      "client": "Клиент",
+      "business": "Заведение",
+      "system": "Автоматически"
+    },
+    "previousStart": "Было: {{when}}"
   },
   "access": {
     "title": "Нет доступа к разделу",
@@ -132,5 +156,29 @@
     "title": "Что-то пошло не так",
     "description": "Обновите страницу. Если не поможет — мы уже видим ошибку в журнале.",
     "reload": "Обновить"
+  },
+  "channels": {
+    "telegram": "Telegram",
+    "max": "MAX"
+  },
+  "maxEmulator": {
+    "title": "Эмулятор MAX",
+    "lead": "Так клиенты видят сообщения бота в MAX. Можно нажимать кнопки и писать боту от имени клиента.",
+    "chatsTitle": "Клиенты в MAX",
+    "emptyTitle": "Никто из клиентов пока не пишет через MAX",
+    "emptyDescription": "Когда клиент запишется через MAX, его переписка с ботом появится здесь.",
+    "notStarted": "Клиент ещё не запускал бота",
+    "notStartedDescription": "Бот пишет только тем, кто его запустил. Нажмите «Начать» за клиента.",
+    "start": "Начать",
+    "noMessages": "Сообщений пока нет",
+    "messagePlaceholder": "Сообщение боту",
+    "send": "Отправить",
+    "botName": "Местечко",
+    "edited": "изменено",
+    "openLink": "Открыть ссылку",
+    "chooseChat": "Выберите клиента слева, чтобы открыть переписку",
+    "back": "К списку клиентов",
+    "unavailableTitle": "Эмулятор MAX выключен",
+    "unavailableDescription": "Он работает только в демо-режиме."
   }
 }

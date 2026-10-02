@@ -112,7 +112,9 @@ function AccountSheet({
 function NavigationLinks({ membership }: { readonly membership: Membership }) {
   const { t } = useTranslation();
   return navigationSections
-    .filter((section) => canOpen(membership, section.area))
+    .filter(
+      (section) => canOpen(membership, section.area) && (!section.demoOnly || appConfig.demoMode),
+    )
     .map((section) => (
       <NavLink
         key={section.path}
