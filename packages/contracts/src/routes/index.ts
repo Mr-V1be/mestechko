@@ -1,0 +1,29 @@
+import * as auth from './auth.js';
+import * as cabinet from './cabinet.js';
+import * as demo from './demo.js';
+import * as miniapp from './miniapp-bookings.js';
+import * as catalog from './public-catalog.js';
+
+/** Every route of the API, keyed by operation id. */
+export const apiRoutes = {
+  getPublicBusiness: catalog.getPublicBusiness,
+  listPublicServices: catalog.listPublicServices,
+  listPublicStaff: catalog.listPublicStaff,
+  getAvailability: catalog.getAvailability,
+  createMiniAppBooking: miniapp.createMiniAppBooking,
+  listMiniAppBookings: miniapp.listMiniAppBookings,
+  getMiniAppBooking: miniapp.getMiniAppBooking,
+  getMiniAppProfile: miniapp.getMiniAppProfile,
+  createSession: auth.createSession,
+  createDemoSession: auth.createDemoSession,
+  deleteCurrentSession: auth.deleteCurrentSession,
+  getMe: auth.getMe,
+  listDemoBusinesses: demo.listDemoBusinesses,
+  createTelegramLaunch: demo.createTelegramLaunch,
+  getCabinetOverview: cabinet.getCabinetOverview,
+  getSchedule: cabinet.getSchedule,
+  listCabinetBookings: cabinet.listCabinetBookings,
+  getCabinetBooking: cabinet.getCabinetBooking,
+} as const;
+
+export type ApiRoutes = typeof apiRoutes;
