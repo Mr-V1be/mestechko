@@ -1,0 +1,71 @@
+{
+  "brand": {
+    "name": "Местечко",
+    "tagline": "Есть местечко?",
+    "demo": "Демо-версия"
+  },
+  "actions": {
+    "back": "Назад",
+    "close": "Закрыть",
+    "retry": "Повторить",
+    "continue": "Продолжить",
+    "more": "Ещё",
+    "showMore": "Показать ещё",
+    "signOut": "Выйти",
+    "today": "Сегодня",
+    "previous": "Назад",
+    "next": "Вперёд"
+  },
+  "theme": {
+    "label": "Тема",
+    "system": "Как в системе",
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "telegramLight": "Telegram, светлая",
+    "telegramDark": "Telegram, тёмная"
+  },
+  "duration": {
+    "hours_one": "{{count}} ч",
+    "hours_few": "{{count}} ч",
+    "hours_many": "{{count}} ч",
+    "hours_other": "{{count}} ч",
+    "minutes_one": "{{count}} мин",
+    "minutes_few": "{{count}} мин",
+    "minutes_many": "{{count}} мин",
+    "minutes_other": "{{count}} мин"
+  },
+  "dayParts": {
+    "morning": "Утро",
+    "afternoon": "День",
+    "evening": "Вечер"
+  },
+  "states": {
+    "loading": "Загружаем…",
+    "errorTitle": "Не получилось загрузить",
+    "offlineTitle": "Нет связи с сервером",
+    "offlineHint": "Проверьте интернет и попробуйте ещё раз.",
+    "forbiddenTitle": "Нет доступа",
+    "forbiddenHint": "Этот раздел недоступен для вашей роли.",
+    "notFoundTitle": "Ничего не нашлось"
+  },
+  "errors": {
+    "validation_failed": "Проверьте введённые данные.",
+    "unauthenticated": "Нужно войти заново.",
+    "invalid_credentials": "Неверная почта или пароль.",
+    "telegram_auth_invalid": "Не удалось подтвердить вход через Telegram.",
+    "telegram_auth_expired": "Сессия Telegram устарела. Откройте приложение заново.",
+    "forbidden": "Недостаточно прав.",
+    "not_found": "Не нашли то, что вы ищете.",
+    "slot_unavailable": "Это время только что заняли. Выберите другое.",
+    "idempotency_conflict": "Запрос уже обрабатывается.",
+    "rate_limited": "Слишком много попыток. Подождите немного.",
+    "internal": "Что-то пошло не так. Мы уже разбираемся.",
+    "dependency_unavailable": "Сервис временно недоступен.",
+    "network_error": "Нет связи с сервером.",
+    "timeout": "Сервер долго не отвечает.",
+    "unexpected_response": "Сервер ответил неожиданно."
+  },
+  "demo": {
+    "guestName": "Гость"
+  }
+}

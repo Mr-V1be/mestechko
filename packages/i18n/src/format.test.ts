@@ -1,0 +1,23 @@
+import { describe, expect, it } from 'vitest';
+import { createI18n } from './create-i18n.js';
+import { formatDuration, formatInstant, formatLocalDate, formatMoney } from './format.js';
+
+describe('formatting', () => {
+  it('formats roubles without kopecks when whole', () => {
+    expect(formatMoney('ru', { amountMinor: 250_000, currency: 'RUB' })).toBe('2 500 ₽');
+    expect(formatMoney('ru', { amountMinor: 250_050, currency: 'RUB' })).toBe('2 500,50 ₽');
+  });
+
+  it('shows instants in the time zone of the location', () => {
+    expect(formatInstant('ru', '2026-03-02T03:00:00Z', 'Asia/Novosibirsk', 'time')).toBe('10:00');
+    expect(formatLocalDate('ru', '2026-03-02', 'dayMonth')).toBe('2 марта');
+  });
+
+  it('spells durations with Russian plurals', async () => {
+    const i18n = await createI18n({ defaultNamespace: 'common' });
+    const t = i18n.t.bind(i18n) as (key: string, options: { count: number }) => string;
+    expect(formatDuration(t, 90)).toBe('1 ч 30 мин');
+    expect(formatDuration(t, 45)).toBe('45 мин');
+    expect(formatDuration(t, 120)).toBe('2 ч');
+  });
+});

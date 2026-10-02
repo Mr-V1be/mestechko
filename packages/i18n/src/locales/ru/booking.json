@@ -1,0 +1,14 @@
+{
+  "status": {
+    "confirmed": "Подтверждена",
+    "completed": "Состоялась",
+    "no_show": "Неявка",
+    "cancelled": "Отменена"
+  },
+  "source": {
+    "telegram_mini_app": "Telegram",
+    "max_mini_app": "MAX",
+    "cabinet": "Администратор",
+    "widget": "Сайт"
+  }
+}

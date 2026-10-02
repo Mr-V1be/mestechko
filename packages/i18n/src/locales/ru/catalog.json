@@ -1,0 +1,108 @@
+{
+  "verticals": {
+    "beauty_salon": "Салон красоты",
+    "barbershop": "Барбершоп",
+    "dental_clinic": "Стоматология",
+    "auto_service": "Автосервис"
+  },
+  "categories": {
+    "beauty_salon": { "hair": "Волосы", "nails": "Ногти", "brows": "Брови" },
+    "barbershop": { "haircuts": "Стрижки", "beard": "Борода и бритьё", "combo": "Комплексы" },
+    "dental_clinic": {
+      "diagnostics": "Диагностика",
+      "therapy": "Лечение",
+      "hygiene": "Гигиена и эстетика",
+      "surgery": "Хирургия"
+    },
+    "auto_service": {
+      "maintenance": "Обслуживание",
+      "tires": "Шины и колёса",
+      "diagnostics": "Диагностика"
+    }
+  },
+  "services": {
+    "beauty_salon": {
+      "women_haircut": {
+        "name": "Женская стрижка",
+        "description": "Мытьё, стрижка и укладка по форме"
+      },
+      "men_haircut": {
+        "name": "Мужская стрижка",
+        "description": "Стрижка ножницами и машинкой, мытьё"
+      },
+      "hair_coloring": {
+        "name": "Окрашивание в один тон",
+        "description": "Краска премиум-класса, уход после окрашивания"
+      },
+      "blowout": { "name": "Укладка", "description": "Брашинг или локоны на выбор" },
+      "gel_manicure": {
+        "name": "Маникюр с покрытием гель-лак",
+        "description": "Аппаратный маникюр, снятие и покрытие"
+      },
+      "classic_manicure": {
+        "name": "Классический маникюр",
+        "description": "Обрезной маникюр без покрытия"
+      },
+      "pedicure": { "name": "Педикюр", "description": "Аппаратный педикюр с обработкой стоп" },
+      "brow_shaping": { "name": "Коррекция бровей", "description": "Форма воском или пинцетом" },
+      "brow_tint": { "name": "Окрашивание бровей", "description": "Краска или хна" }
+    },
+    "barbershop": {
+      "mens_haircut": {
+        "name": "Мужская стрижка",
+        "description": "Консультация, мытьё, стрижка и укладка"
+      },
+      "clipper_cut": { "name": "Стрижка машинкой", "description": "Одна насадка по всей голове" },
+      "kids_haircut": { "name": "Детская стрижка", "description": "Для ребят до 12 лет" },
+      "beard_trim": { "name": "Оформление бороды", "description": "Форма, контур и уход маслом" },
+      "royal_shave": {
+        "name": "Королевское бритьё",
+        "description": "Опасная бритва, горячие полотенца"
+      },
+      "haircut_and_beard": {
+        "name": "Стрижка и борода",
+        "description": "Полный комплекс со скидкой"
+      }
+    },
+    "dental_clinic": {
+      "consultation": {
+        "name": "Консультация стоматолога",
+        "description": "Осмотр, план лечения и смета"
+      },
+      "dental_xray": { "name": "Прицельный снимок", "description": "Цифровой рентген одного зуба" },
+      "caries_treatment": {
+        "name": "Лечение кариеса",
+        "description": "Анестезия и светоотверждаемая пломба"
+      },
+      "professional_hygiene": {
+        "name": "Профессиональная гигиена",
+        "description": "Ультразвук, Air Flow и полировка"
+      },
+      "whitening": { "name": "Отбеливание", "description": "Кабинетное отбеливание за один визит" },
+      "tooth_extraction": {
+        "name": "Удаление зуба",
+        "description": "Простое удаление под анестезией"
+      }
+    },
+    "auto_service": {
+      "oil_change": { "name": "Замена масла", "description": "Масло и фильтр, проверка уровней" },
+      "brake_pads": {
+        "name": "Замена тормозных колодок",
+        "description": "Передняя или задняя ось"
+      },
+      "ac_service": {
+        "name": "Заправка кондиционера",
+        "description": "Проверка герметичности и заправка"
+      },
+      "tire_change": { "name": "Шиномонтаж", "description": "Четыре колеса с балансировкой" },
+      "wheel_alignment": {
+        "name": "Развал-схождение",
+        "description": "3D-стенд, распечатка до и после"
+      },
+      "computer_diagnostics": {
+        "name": "Компьютерная диагностика",
+        "description": "Чтение ошибок всех блоков"
+      }
+    }
+  }
+}

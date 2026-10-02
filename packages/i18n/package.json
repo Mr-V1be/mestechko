@@ -1,0 +1,26 @@
+{
+  "name": "@mestechko/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "@mestechko/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@mestechko/domain": "workspace:*",
+    "i18next": "26.4.2"
+  },
+  "devDependencies": {
+    "vitest": "5.0.3"
+  }
+}
