@@ -1,0 +1,32 @@
+{
+  "name": "@mestechko/booking-ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@mestechko/contracts": "workspace:*",
+    "@mestechko/domain": "workspace:*",
+    "@mestechko/i18n": "workspace:*",
+    "@mestechko/ui": "workspace:*",
+    "lucide-react": "1.50.0"
+  },
+  "peerDependencies": {
+    "react": "19.3.0",
+    "react-i18next": "17.0.15"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "react": "19.3.0",
+    "react-i18next": "17.0.15",
+    "i18next": "26.4.2"
+  }
+}
