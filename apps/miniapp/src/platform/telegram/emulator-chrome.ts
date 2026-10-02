@@ -51,6 +51,13 @@ const eventHandlers: Readonly<Record<string, (params: unknown) => void>> = {
   web_app_setup_back_button: (params) => {
     update({ ...state, backButtonVisible: record(params).is_visible === true });
   },
+  // Outside Telegram a t.me link opens in a new tab, as the web version of Telegram does.
+  web_app_open_tg_link: (params) => {
+    const path = record(params).path_full;
+    if (typeof path === 'string') {
+      window.open(`https://t.me${path}`, '_blank', 'noopener,noreferrer');
+    }
+  },
 };
 
 /** Receives Mini Apps method calls that the mocked environment intercepts. */

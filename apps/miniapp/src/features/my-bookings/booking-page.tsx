@@ -1,15 +1,19 @@
 import { apiAssetUrl, BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
-import { Avatar, CelebrationIllustration, ListGroup, ListItem } from '@mestechko/ui';
+import { Avatar, CelebrationIllustration, ListGroup, ListItem, useToast } from '@mestechko/ui';
 import { CalendarClock, MapPin, MessageSquareText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { appConfig } from '../../app/config';
+import { useConfirmAttendance } from '../../platform/api/lifecycle-queries';
 import { useClientBooking } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
-import { isNotFound } from '../../shared/error-message';
+import { haptics } from '../../platform/telegram/telegram-host';
+import { errorMessage, isNotFound } from '../../shared/error-message';
 import { useCurrentBusiness } from '../business/business-context';
 import { Page } from '../layout/page';
 import { ListSkeleton, NotFoundState, QueryErrorState } from '../layout/states';
+import { NotificationsPrompt } from '../notifications/notifications-prompt';
+import { BookingActions } from './booking-actions';
 import styles from './bookings.module.css';
 
 /** One booking; right after booking it opens with a small celebration. */
@@ -21,14 +25,32 @@ export function BookingPage() {
   const { bookingId = '' } = useParams();
   const [params] = useSearchParams();
   const created = params.get('created') === '1';
+  const toast = useToast();
   const booking = useClientBooking(business.slug, bookingId);
+  const confirmAttendance = useConfirmAttendance(business.slug);
   const listPath = `/b/${encodeURIComponent(business.slug)}/bookings`;
+  const canConfirm = booking.data?.actions.confirm_attendance === true;
 
+  // One primary action: finish after booking, otherwise confirm the visit while possible.
   useMainButton({
-    text: t('booking.done'),
-    visible: created,
+    text: created ? t('booking.done') : t('booking.confirmAttendance'),
+    visible: created || canConfirm,
+    loading: confirmAttendance.isPending,
     onClick: () => {
-      void navigate(listPath, { replace: true });
+      if (created) {
+        void navigate(listPath, { replace: true });
+        return;
+      }
+      confirmAttendance.mutate(bookingId, {
+        onSuccess: () => {
+          haptics.success();
+          toast.show({ title: t('booking.attendanceThanks') });
+        },
+        onError: (error) => {
+          haptics.error();
+          toast.show({ title: errorMessage(t, error), tone: 'error' });
+        },
+      });
     },
   });
 
@@ -89,6 +111,7 @@ export function BookingPage() {
               description={data.location.address}
             />
           </ListGroup>
+          <BookingActions slug={business.slug} booking={data} />
           <ListGroup title={t('booking.services')}>
             {data.services.map((service) => (
               <ListItem
@@ -100,6 +123,7 @@ export function BookingPage() {
             ))}
             <ListItem title={t('booking.total')} meta={format.money(data.total)} />
           </ListGroup>
+          <NotificationsPrompt />
           {data.comment ? (
             <ListGroup title={t('booking.comment')}>
               <ListItem leading={<MessageSquareText aria-hidden="true" />} title={data.comment} />

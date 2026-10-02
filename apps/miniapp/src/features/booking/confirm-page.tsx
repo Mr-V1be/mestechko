@@ -1,4 +1,4 @@
-import { apiAssetUrl, formatPhone, useFormat, useVocabulary } from '@mestechko/booking-ui';
+import { apiAssetUrl, useFormat, useVocabulary } from '@mestechko/booking-ui';
 import {
   Avatar,
   Button,
@@ -10,13 +10,12 @@ import {
   TextField,
   useToast,
 } from '@mestechko/ui';
-import { retrieveLaunchParams } from '@tma.js/sdk-react';
 import { Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router';
 import { appConfig } from '../../app/config';
-import { useCreateBooking, useProfile, useQuote } from '../../platform/api/queries';
+import { useCreateBooking, useQuote } from '../../platform/api/queries';
 import { haptics } from '../../platform/telegram/telegram-host';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { errorMessage, hasCode } from '../../shared/error-message';
@@ -24,23 +23,15 @@ import { useCurrentBusiness, useLocation } from '../business/business-context';
 import { Page } from '../layout/page';
 import { useBookingDraft } from './booking-details';
 import { BookingSummary } from './booking-summary';
-import { idempotencyKeyFor, useContactDraft } from './contact-draft';
-import { formatPhoneInput, normalizePhone } from './phone';
+import {
+  checkContact,
+  ContactFields,
+  useClientContact,
+  type ContactErrors,
+} from './client-contact';
+import { idempotencyKeyFor } from './contact-draft';
 import { ANY_STAFF, useBookingSelection } from './selection';
 import styles from './booking.module.css';
-
-interface FieldErrors {
-  readonly name?: string;
-  readonly phone?: string;
-}
-
-function telegramFirstName(): string {
-  try {
-    return retrieveLaunchParams().tgWebAppData?.user?.first_name ?? '';
-  } catch {
-    return '';
-  }
-}
 
 export function ConfirmPage() {
   const { t } = useTranslation();
@@ -63,32 +54,17 @@ export function ConfirmPage() {
         }
       : null,
   );
-  const profile = useProfile(selection.slug);
   const createBooking = useCreateBooking(selection.slug);
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [contact, setContact] = useContactDraft(`mst-contact:${selection.slug}`, () => null);
+  const [errors, setErrors] = useState<ContactErrors>({});
+  const [contact, setContact] = useClientContact(selection.slug);
   const selectionKey = `${selection.slug}:${selection.serviceIds.join(',')}:${selection.staff ?? ''}:${selection.start ?? ''}`;
   const idempotencyKey = useMemo(() => idempotencyKeyFor(selectionKey), [selectionKey]);
 
-  useEffect(() => {
-    if (profile.data && !contact.name && !contact.phone) {
-      setContact({
-        name: profile.data.displayName ?? telegramFirstName(),
-        phone: profile.data.phone ? formatPhone(profile.data.phone) : '',
-        comment: contact.comment,
-      });
-    }
-  }, [profile.data, contact, setContact]);
-
   const submit = () => {
-    const phone = normalizePhone(contact.phone, business.countryCode);
-    const nextErrors: FieldErrors = {
-      ...(contact.name.trim() ? {} : { name: t('confirm.nameRequired') }),
-      ...(phone ? {} : { phone: t('confirm.phoneInvalid') }),
-    };
-    setErrors(nextErrors);
+    const checked = checkContact(t, contact, business.countryCode);
+    setErrors(checked.errors);
     const agreedTotal = draftBooking.quote?.assigned?.total;
-    if (!phone || Object.keys(nextErrors).length > 0 || !selection.start || !agreedTotal) {
+    if (!checked.contact || !selection.start || !agreedTotal) {
       haptics.error();
       return;
     }
@@ -100,7 +76,7 @@ export function ConfirmPage() {
         staffId: selection.staff === ANY_STAFF ? null : selection.staff,
         start: selection.start,
         agreedTotal,
-        contact: { name: contact.name.trim(), phone },
+        contact: checked.contact,
         comment: contact.comment.trim() || null,
       },
       {
@@ -246,33 +222,11 @@ export function ConfirmPage() {
         }}
       >
         <h2 className={styles.formTitle}>{t('confirm.contactTitle')}</h2>
-        <TextField
-          label={t('confirm.name')}
-          autoComplete="given-name"
-          value={contact.name}
-          error={errors.name ?? null}
-          onChange={(event) => {
-            setContact({ ...contact, name: event.target.value });
-          }}
-        />
-        <TextField
-          label={t('confirm.phone')}
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          placeholder={t('confirm.phonePlaceholder')}
-          description={t('confirm.phoneHint')}
-          value={contact.phone}
-          error={errors.phone ?? null}
-          onChange={(event) => {
-            setContact({ ...contact, phone: event.target.value });
-          }}
-          onBlur={() => {
-            setContact({
-              ...contact,
-              phone: formatPhoneInput(contact.phone, business.countryCode),
-            });
-          }}
+        <ContactFields
+          contact={contact}
+          errors={errors}
+          countryCode={business.countryCode}
+          onChange={setContact}
         />
         <TextField
           label={t('confirm.comment')}

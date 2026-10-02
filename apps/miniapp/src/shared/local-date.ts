@@ -25,24 +25,14 @@ export function localDateOf(instant: string, timeZone: string): string {
   return todayIn(timeZone, new Date(instant));
 }
 
-export function localHourOf(instant: string, timeZone: string): number {
-  const hour = new Intl.DateTimeFormat('en-GB', {
+/** Minutes since local midnight, for placing a start in a part of the day. */
+export function localMinuteOf(instant: string, timeZone: string): number {
+  const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone,
     hour: '2-digit',
+    minute: '2-digit',
     hourCycle: 'h23',
-  }).format(new Date(instant));
-  return Number(hour);
-}
-
-/** Parts of the day the slot grid is grouped by, with the hour each one starts at. */
-export const dayParts = [
-  { key: 'morning', fromHour: 0 },
-  { key: 'afternoon', fromHour: 12 },
-  { key: 'evening', fromHour: 17 },
-] as const;
-
-export type DayPart = (typeof dayParts)[number]['key'];
-
-export function dayPartOf(hour: number): DayPart {
-  return [...dayParts].reverse().find((part) => hour >= part.fromHour)?.key ?? 'morning';
+  }).formatToParts(new Date(instant));
+  const value = (type: string) => Number(parts.find((part) => part.type === type)?.value ?? 0);
+  return value('hour') * 60 + value('minute');
 }

@@ -1,0 +1,57 @@
+.prompt {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.prompt > button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+@media (min-width: 768px) {
+  .prompt {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .prompt > button {
+    grid-column: auto;
+  }
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: var(--size-avatar-md);
+  height: var(--size-avatar-md);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.icon svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+}
+
+.description {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}

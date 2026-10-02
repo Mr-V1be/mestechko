@@ -19,6 +19,8 @@ import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { useCurrentBusiness } from '../business/business-context';
 import { Page } from '../layout/page';
 import { ListSkeleton, QueryErrorState } from '../layout/states';
+import { NotificationsPrompt } from '../notifications/notifications-prompt';
+import { WaitlistList } from '../waitlist/waitlist-list';
 import styles from './bookings.module.css';
 
 function DateTile({
@@ -125,6 +127,12 @@ export function BookingsPage() {
         >
           {t('common:actions.showMore')}
         </Button>
+      ) : null}
+      {scope === 'upcoming' ? (
+        <>
+          <WaitlistList slug={business.slug} />
+          <NotificationsPrompt />
+        </>
       ) : null}
     </Page>
   );

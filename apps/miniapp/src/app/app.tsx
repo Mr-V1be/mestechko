@@ -58,6 +58,12 @@ const router = createBrowserRouter([
               Component: (await import('../features/my-bookings/booking-page')).BookingPage,
             }),
           },
+          {
+            path: 'bookings/:bookingId/reschedule',
+            lazy: async () => ({
+              Component: (await import('../features/my-bookings/reschedule-page')).ReschedulePage,
+            }),
+          },
         ],
       },
       { path: '*', element: <NotFoundPage /> },
