@@ -10,7 +10,3 @@ export function normalizePhone(value: string, country: string): string | null {
   const parsed = parsePhoneNumberFromString(value, country as CountryCode);
   return parsed?.isValid() ? parsed.number : null;
 }
-
-export function displayPhone(e164: string): string {
-  return parsePhoneNumberFromString(e164)?.formatInternational() ?? e164;
-}

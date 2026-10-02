@@ -8,5 +8,5 @@
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": []
   },
-  "include": ["src", "../ui/src/css-modules.d.ts"]
+  "include": ["src", "vitest.config.ts", "../ui/src/css-modules.d.ts"]
 }

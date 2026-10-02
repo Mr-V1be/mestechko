@@ -1,4 +1,4 @@
-import { apiAssetUrl, BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
+import { apiAssetUrl, BookingStatusBadge, formatPhone, useFormat } from '@mestechko/booking-ui';
 import type { CabinetBookingRow } from '@mestechko/contracts/client';
 import { Avatar, ListGroup, ListItem } from '@mestechko/ui';
 import { clsx } from 'clsx';
@@ -67,7 +67,7 @@ export function BookingsTable({ rows, staffLabel, onOpen }: BookingsViewProps) {
                   {row.client.displayName}
                 </button>
                 {row.client.phone ? (
-                  <div className={styles.secondary}>{row.client.phone}</div>
+                  <div className={styles.secondary}>{formatPhone(row.client.phone)}</div>
                 ) : null}
               </td>
               <td className={styles.fill}>

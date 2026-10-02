@@ -1,4 +1,4 @@
-import { apiAssetUrl, BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
+import { apiAssetUrl, BookingStatusBadge, formatPhone, useFormat } from '@mestechko/booking-ui';
 import { Avatar, Button, ListGroup, ListItem, Sheet, Skeleton } from '@mestechko/ui';
 import { CalendarClock, MapPin, MessageSquareText, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +75,10 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
             />
             <ListItem leading={<MapPin aria-hidden="true" />} title={data.location.name} />
             {data.client.phone ? (
-              <ListItem leading={<Phone aria-hidden="true" />} title={data.client.phone} />
+              <ListItem
+                leading={<Phone aria-hidden="true" />}
+                title={formatPhone(data.client.phone)}
+              />
             ) : null}
           </ListGroup>
           <ListGroup title={t('details.services')}>

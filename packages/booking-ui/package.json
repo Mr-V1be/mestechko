@@ -10,13 +10,15 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@mestechko/contracts": "workspace:*",
     "@mestechko/domain": "workspace:*",
     "@mestechko/i18n": "workspace:*",
     "@mestechko/ui": "workspace:*",
+    "libphonenumber-js": "1.13.14",
     "lucide-react": "1.50.0"
   },
   "peerDependencies": {
@@ -27,6 +29,7 @@
     "@types/react": "19.3.0",
     "react": "19.3.0",
     "react-i18next": "17.0.15",
-    "i18next": "26.4.2"
+    "i18next": "26.4.2",
+    "vitest": "5.0.3"
   }
 }

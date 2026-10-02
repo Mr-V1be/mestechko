@@ -1,4 +1,4 @@
-import { apiAssetUrl, useFormat, useVocabulary } from '@mestechko/booking-ui';
+import { apiAssetUrl, formatPhone, useFormat, useVocabulary } from '@mestechko/booking-ui';
 import {
   Avatar,
   Button,
@@ -25,7 +25,7 @@ import { Page } from '../layout/page';
 import { useBookingDraft } from './booking-details';
 import { BookingSummary } from './booking-summary';
 import { idempotencyKeyFor, useContactDraft } from './contact-draft';
-import { displayPhone, formatPhoneInput, normalizePhone } from './phone';
+import { formatPhoneInput, normalizePhone } from './phone';
 import { ANY_STAFF, useBookingSelection } from './selection';
 import styles from './booking.module.css';
 
@@ -74,7 +74,7 @@ export function ConfirmPage() {
     if (profile.data && !contact.name && !contact.phone) {
       setContact({
         name: profile.data.displayName ?? telegramFirstName(),
-        phone: profile.data.phone ? displayPhone(profile.data.phone) : '',
+        phone: profile.data.phone ? formatPhone(profile.data.phone) : '',
         comment: contact.comment,
       });
     }

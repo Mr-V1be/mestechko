@@ -14,6 +14,7 @@ import type { Page } from '../application/ports.js';
 import { decodeCursor, encodeCursor } from './cursor.js';
 
 const LIKE_SPECIALS = /[\\%_]/g;
+const MIN_PHONE_DIGITS = 3;
 
 function containsPattern(search: string): string {
   return `%${search.replace(LIKE_SPECIALS, (match) => `\\${match}`)}%`;
@@ -84,8 +85,15 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
     }
     if (filter.search) {
       const pattern = containsPattern(filter.search);
+      // Phones are stored as E.164 digits; people type them with spaces and dashes.
+      const digits = filter.search.replace(/\D/g, '');
       query = query.where((eb) =>
-        eb.or([eb('c.displayName', 'ilike', pattern), eb('c.phone', 'like', pattern)]),
+        eb.or([
+          eb('c.displayName', 'ilike', pattern),
+          ...(digits.length >= MIN_PHONE_DIGITS
+            ? [eb('c.phone', 'like', containsPattern(digits))]
+            : []),
+        ]),
       );
     }
     if (keyset) {

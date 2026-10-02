@@ -71,20 +71,13 @@ const surnames: readonly (readonly [string, string])[] = [
   ['Никитин', 'Никитина'],
   ['Захаров', 'Захарова'],
 ];
-const mobilePrefixes = [
-  '903',
-  '905',
-  '909',
-  '915',
-  '916',
-  '917',
-  '919',
-  '925',
-  '926',
-  '977',
-  '985',
-  '999',
-];
+/**
+ * Ofcom reserves +44 7700 900000–900999 for fiction and demonstrations: these numbers
+ * are never assigned to subscribers, so the public demo cannot show a real person's
+ * phone. See docs/demo-data.md.
+ */
+const FICTIONAL_PHONE_PREFIX = '+447700900';
+const FICTIONAL_PHONE_COUNT = 1000;
 
 /** Occasional notes clients leave when booking. */
 export const clientComments = [
@@ -102,7 +95,11 @@ export interface DemoPerson {
 }
 
 export function generatePeople(random: Random, count: number, femaleShare: number): DemoPerson[] {
+  if (count > FICTIONAL_PHONE_COUNT) {
+    throw new Error('Not enough fictional phone numbers for this many demo people');
+  }
   const used = new Set<string>();
+  const phones = random.shuffle(Array.from({ length: FICTIONAL_PHONE_COUNT }, (_, index) => index));
   const people: DemoPerson[] = [];
   while (people.length < count) {
     const female = random.chance(femaleShare);
@@ -112,8 +109,14 @@ export function generatePeople(random: Random, count: number, femaleShare: numbe
       continue;
     }
     used.add(displayName);
-    const digits = String(random.int(0, 9_999_999)).padStart(7, '0');
-    people.push({ displayName, phone: `+7${random.pick(mobilePrefixes)}${digits}` });
+    const suffix = phones[people.length];
+    if (suffix === undefined) {
+      throw new Error('Fictional phone numbers ran out');
+    }
+    people.push({
+      displayName,
+      phone: `${FICTIONAL_PHONE_PREFIX}${String(suffix).padStart(3, '0')}`,
+    });
   }
   return people;
 }

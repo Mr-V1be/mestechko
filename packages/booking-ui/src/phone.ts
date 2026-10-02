@@ -1,0 +1,31 @@
+import { parsePhoneNumberFromString } from 'libphonenumber-js/min';
+
+const DIGITS = /\D/g;
+
+/**
+ * A stored E.164 number in the international form people read, keeping the dashes
+ * the country uses at home: `+79161046686` → `+7 916 104-66-86`.
+ */
+export function formatPhone(e164: string): string {
+  const parsed = parsePhoneNumberFromString(e164);
+  if (!parsed) {
+    return e164;
+  }
+  const international = parsed.formatInternational();
+  if (!parsed.isValid()) {
+    return international;
+  }
+  // The national form carries the local habit of joining the tail with dashes
+  // («104-66-86»); international formatting uses spaces only.
+  const nationalTail = parsed.formatNational().split(' ').at(-1) ?? '';
+  const joined = nationalTail.split('-');
+  if (joined.length < 2) {
+    return international;
+  }
+  const groups = international.split(' ');
+  const tail = groups.slice(-joined.length);
+  if (tail.join('').replace(DIGITS, '') !== nationalTail.replace(DIGITS, '')) {
+    return international;
+  }
+  return [...groups.slice(0, -joined.length), tail.join('-')].join(' ');
+}
