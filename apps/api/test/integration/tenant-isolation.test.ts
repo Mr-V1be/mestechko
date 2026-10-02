@@ -29,6 +29,23 @@ describe('tenant isolation', () => {
     await databases.destroy();
   });
 
+  it('guards every table of a business with forced row-level security', async () => {
+    // Platform tables serve every business by design: how members, the bot's outbox
+    // and the payment provider find their business.
+    const platformTables = ['memberships', 'notifications', 'payment_webhook_events'];
+    const unguarded = await sql<{ table: string }>`
+      select c.relname as table
+      from pg_class c
+      join pg_namespace n on n.oid = c.relnamespace
+      join pg_attribute a on a.attrelid = c.oid and a.attname = 'business_id' and not a.attisdropped
+      where n.nspname = 'public' and c.relkind = 'r'
+        and not (c.relrowsecurity and c.relforcerowsecurity
+                 and exists (select 1 from pg_policy p where p.polrelid = c.oid))
+      order by c.relname
+    `.execute(databases.admin);
+    expect(unguarded.rows.map((row) => row.table)).toEqual(platformTables);
+  });
+
   it('shows a tenant transaction only its own rows', async () => {
     const visible = await databases.unitOfWork.inTenant(alpha.businessId, () =>
       databases.unitOfWork.tenant().selectFrom('staffMembers').select('businessId').execute(),

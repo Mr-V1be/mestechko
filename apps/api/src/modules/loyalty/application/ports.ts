@@ -42,19 +42,6 @@ export interface SettlementEntryView {
   readonly passName: string | null;
 }
 
-/** A period of instants and the time zone whose days split it. */
-export interface MoneyWindow {
-  readonly start: Date;
-  readonly end: Date;
-  readonly timeZone: string;
-}
-
-/** Money received per local day, net of refunds, in minor units. */
-export interface DailyMoney {
-  readonly date: string;
-  readonly amountMinor: number;
-}
-
 /** The ledger of the current tenant. Entries are only ever added. */
 export interface LedgerStore {
   /** Serializes ledger changes of one client until the transaction ends. */
@@ -71,7 +58,6 @@ export interface LedgerStore {
   settlementOf(bookingId: string): Promise<SettlementEntryView[]>;
   /** Points balances of many clients at once. */
   pointsBalances(clientIds: readonly string[]): Promise<Map<string, number>>;
-  dailyMoney(window: MoneyWindow): Promise<DailyMoney[]>;
 }
 
 export interface PassPlanRecord extends PassPlan {

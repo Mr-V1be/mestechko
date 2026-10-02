@@ -5,10 +5,8 @@ import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.
 import { isUniqueViolation } from '../../../platform/db/pg-errors.js';
 import {
   DuplicateLedgerRequestError,
-  type DailyMoney,
   type LedgerEntryView,
   type LedgerStore,
-  type MoneyWindow,
   type NewLedgerEntry,
   type SettlementEntryView,
 } from '../application/ports.js';
@@ -146,19 +144,5 @@ export class KyselyLedgerStore implements LedgerStore {
       .groupBy('clientId')
       .execute();
     return new Map(rows.map((row) => [row.clientId, Number(row.total)]));
-  }
-
-  async dailyMoney(window: MoneyWindow): Promise<DailyMoney[]> {
-    const day = sql<string>`(created_at at time zone ${window.timeZone})::date::text`;
-    const rows = await this.unitOfWork
-      .tenant()
-      .selectFrom('ledgerEntries')
-      .select((eb) => [day.as('date'), eb.fn.sum<string>('amount').as('total')])
-      .where('account', '=', 'money')
-      .where('createdAt', '>=', window.start)
-      .where('createdAt', '<', window.end)
-      .groupBy(day)
-      .execute();
-    return rows.map((row) => ({ date: row.date, amountMinor: Number(row.total) }));
   }
 }

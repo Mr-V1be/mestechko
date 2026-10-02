@@ -11,11 +11,18 @@ import type {
 
 const MINUTE_SECONDS = 60;
 
+/**
+ * Local date of a timestamp column. The zone is inlined as a literal, so the same
+ * expression in SELECT and GROUP BY is recognised as one.
+ */
+const localDay = (column: 'b.starts_at' | 'e.created_at', timeZone: string) =>
+  sql<string>`(${sql.ref(column)} at time zone ${sql.lit(timeZone)})::date::text`;
+
 export class KyselyReportFacts implements ReportFactsSource {
   constructor(private readonly unitOfWork: KyselyUnitOfWork) {}
 
   async visits(window: ReportWindow, filter: ReportFilter): Promise<DailyVisitFacts[]> {
-    const day = sql<string>`(b.starts_at at time zone ${window.timeZone})::date::text`;
+    const day = localDay('b.starts_at', window.timeZone);
     let query = this.unitOfWork
       .tenant()
       .selectFrom('bookings as b')
@@ -64,7 +71,7 @@ export class KyselyReportFacts implements ReportFactsSource {
   }
 
   async revenue(window: ReportWindow, filter: ReportFilter): Promise<DailyRevenue[]> {
-    const day = sql<string>`(e.created_at at time zone ${window.timeZone})::date::text`;
+    const day = localDay('e.created_at', window.timeZone);
     let query = this.unitOfWork
       .tenant()
       .selectFrom('ledgerEntries as e')

@@ -80,6 +80,7 @@ export interface PaymentRecord {
 /** Prepayments of the current tenant. */
 export interface PaymentStore {
   insert(payment: PaymentRecord, now: Date): Promise<void>;
+  find(paymentId: string): Promise<PaymentRecord | null>;
   /** The payment with a row lock until the transaction ends. */
   lock(paymentId: string): Promise<PaymentRecord | null>;
   /** The booking's latest payment, whatever its state. */

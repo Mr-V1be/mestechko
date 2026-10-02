@@ -29,7 +29,7 @@ export class PaymentCheckout {
     }
     const payment = await this.unitOfWork.inTenant(
       input.businessId,
-      () => this.store.lock(input.paymentId),
+      () => this.store.find(input.paymentId),
       { readOnly: true },
     );
     if (!payment) {

@@ -310,7 +310,7 @@ export class BusinessBookingChanges {
           })),
         };
       },
-      { readOnly: true },
+      // The booking is read under its row lock, as the visit is about to be settled.
     );
   }
 

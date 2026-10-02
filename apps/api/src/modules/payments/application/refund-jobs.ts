@@ -56,7 +56,7 @@ export class RefundPayment implements JobHandler<z.infer<typeof refundPaymentJob
   async handle(payload: z.infer<typeof refundPaymentJob.payload>): Promise<void> {
     const payment = await this.unitOfWork.inTenant(
       payload.businessId,
-      () => this.store.lock(payload.paymentId),
+      () => this.store.find(payload.paymentId),
       { readOnly: true },
     );
     if (!payment?.providerPaymentId || payment.refundRequestedMinor <= payment.refundedMinor) {

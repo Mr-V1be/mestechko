@@ -45,6 +45,16 @@ export class KyselyPaymentStore implements PaymentStore {
       .execute();
   }
 
+  async find(paymentId: string): Promise<PaymentRecord | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('payments')
+      .select(columns)
+      .where('id', '=', paymentId)
+      .executeTakeFirst();
+    return row ? toRecord(row) : null;
+  }
+
   async lock(paymentId: string): Promise<PaymentRecord | null> {
     const row = await this.unitOfWork
       .tenant()
