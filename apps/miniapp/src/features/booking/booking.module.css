@@ -1,0 +1,209 @@
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.summaryTitle {
+  font-size: var(--font-size-lg);
+}
+
+.summaryRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.summaryRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.summaryRow svg {
+  flex: none;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+  margin-top: var(--space-0-5);
+  color: var(--color-accent-text);
+}
+
+.summaryValue {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.summaryHint {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.summaryTotal {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--size-hairline) solid var(--color-border);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-text);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.barText {
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+}
+
+.barStrong {
+  display: block;
+  font-weight: var(--font-weight-bold);
+}
+
+.barPrice {
+  flex: none;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-0-5);
+}
+
+.priceDuration {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+}
+
+.limit {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.anyIcon {
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-avatar-md);
+  height: var(--size-avatar-md);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-soft-text);
+}
+
+.anyIcon svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.staffLines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+
+.nearest {
+  color: var(--color-accent-text);
+  font-weight: var(--font-weight-bold);
+}
+
+.weekHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.month {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-heavy);
+}
+
+.month::first-letter {
+  text-transform: uppercase;
+}
+
+.weekNav {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+@media (min-width: 768px) {
+  .picker {
+    padding: var(--space-5);
+  }
+}
+
+.slotsSkeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--size-slot-min), 1fr));
+  gap: var(--space-2);
+}
+
+.when {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.whenDate {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.whenDate::first-letter {
+  text-transform: uppercase;
+}
+
+.whenTime {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.formTitle {
+  font-size: var(--font-size-lg);
+}

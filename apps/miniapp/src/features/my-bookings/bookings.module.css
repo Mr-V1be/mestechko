@@ -1,0 +1,65 @@
+.tile {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-control-lg);
+  height: var(--size-control-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  line-height: var(--line-height-tight);
+}
+
+.tileUpcoming {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.tileDay {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+}
+
+.tileMonth {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.more {
+  align-self: center;
+}
+
+.celebration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4) var(--space-2);
+  text-align: center;
+}
+
+.celebrationArt {
+  width: var(--size-illustration);
+  height: var(--size-illustration);
+}
+
+.celebrationTitle {
+  font-size: var(--font-size-3xl);
+}
+
+.celebrationLead {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.celebrationLead::first-letter {
+  text-transform: uppercase;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
