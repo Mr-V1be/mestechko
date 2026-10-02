@@ -1,0 +1,158 @@
+.filters {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .filters {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(calc(var(--size-schedule-column) + var(--space-6)), 1fr)
+    );
+    align-items: end;
+  }
+}
+
+.filtersCompact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.filtersRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-2);
+}
+
+.sheetFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  padding: var(--space-3);
+  border-bottom: var(--size-hairline) solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--space-3);
+  border-bottom: var(--size-hairline) solid var(--color-border);
+  vertical-align: middle;
+}
+
+.table tbody tr {
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.table tbody tr:hover {
+  background: var(--color-surface-hover);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table th.numeric {
+  text-align: right;
+}
+
+.when {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.whenDate {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+}
+
+.rowButton {
+  padding: 0;
+  border: none;
+  background: none;
+  font-weight: var(--font-weight-bold);
+  text-align: left;
+}
+
+.secondary {
+  color: var(--color-text-secondary);
+}
+
+.staffCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+/* Every column takes what it needs; services take the rest and truncate. */
+.fit {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.fill {
+  max-width: 0;
+}
+
+.services {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.more {
+  align-self: center;
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}

@@ -1,0 +1,99 @@
+{
+  "signIn": {
+    "title": "Вход в кабинет",
+    "lead": "Расписание, записи и клиенты заведения в одном месте.",
+    "email": "Почта",
+    "password": "Пароль",
+    "submit": "Войти",
+    "demoTitle": "Демо-доступ",
+    "demoLead": "Войдите как владелец одного из заведений — без пароля.",
+    "demoBusiness": "Заведение",
+    "demoSubmit": "Войти в демо",
+    "emailRequired": "Укажите почту",
+    "passwordRequired": "Введите пароль"
+  },
+  "nav": {
+    "label": "Разделы",
+    "schedule": "Расписание",
+    "bookings": "Записи",
+    "business": "Заведение",
+    "account": "Аккаунт",
+    "menu": "Меню"
+  },
+  "account": {
+    "theme": "Тема",
+    "signOut": "Выйти"
+  },
+  "schedule": {
+    "title": "Расписание",
+    "view": "Вид",
+    "day": "День",
+    "week": "Неделя",
+    "axis": "Показывать",
+    "location": "Филиал",
+    "column": "Чьё расписание",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "today": "Сегодня",
+    "now": "Сейчас",
+    "dayOff": "Выходной",
+    "emptyTitle": "Свободный день",
+    "emptyDescription": "Записей нет. Клиенты могут записаться через Telegram.",
+    "noColumnsTitle": "Здесь никто не работает",
+    "noColumnsDescription": "В этом филиале пока нет графиков на выбранные даты.",
+    "bookingLabel": "{{time}}, {{client}}: {{services}}"
+  },
+  "bookings": {
+    "title": "Записи",
+    "period": "Период",
+    "status": "Статус",
+    "allStatuses": "Все статусы",
+    "staff": "Специалист",
+    "allStaff": "Все",
+    "location": "Филиал",
+    "allLocations": "Все филиалы",
+    "search": "Поиск",
+    "searchPlaceholder": "Имя или телефон клиента",
+    "columns": {
+      "when": "Дата и время",
+      "client": "Клиент",
+      "services": "Услуги",
+      "status": "Статус",
+      "total": "Сумма"
+    },
+    "emptyTitle": "Записей не нашлось",
+    "emptyDescription": "Попробуйте другой период или сбросьте фильтры.",
+    "resetFilters": "Сбросить фильтры",
+    "periods": {
+      "today": "Сегодня",
+      "tomorrow": "Завтра",
+      "thisWeek": "Эта неделя",
+      "nextWeek": "Следующая неделя",
+      "lastWeek": "Прошлая неделя",
+      "last30": "Последние 30 дней"
+    },
+    "filters": "Фильтры",
+    "filtersActive": "Фильтры: {{count}}",
+    "apply": "Показать"
+  },
+  "details": {
+    "title": "Запись",
+    "client": "Клиент",
+    "call": "Позвонить",
+    "when": "Когда",
+    "services": "Услуги",
+    "total": "Итого",
+    "source": "Источник",
+    "created": "Создана {{when}}",
+    "comment": "Комментарий клиента"
+  },
+  "access": {
+    "title": "Нет доступа к разделу",
+    "description": "Попросите владельца заведения открыть доступ."
+  },
+  "crash": {
+    "title": "Что-то пошло не так",
+    "description": "Обновите страницу. Если не поможет — мы уже видим ошибку в журнале.",
+    "reload": "Обновить"
+  }
+}

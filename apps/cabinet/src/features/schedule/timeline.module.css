@@ -1,0 +1,225 @@
+.scroller {
+  overflow: auto;
+  max-height: calc(100dvh - var(--size-top-bar) - var(--size-bottom-bar) - var(--space-12));
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 1024px) {
+  .scroller {
+    max-height: calc(100dvh - var(--space-20) * 2);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: var(--size-time-axis) repeat(
+      var(--columns),
+      minmax(var(--size-schedule-column-min), 1fr)
+    );
+  min-width: min-content;
+}
+
+.corner,
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: calc(var(--size-control-lg) + var(--space-3));
+  border-bottom: var(--size-hairline) solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.corner {
+  left: 0;
+  z-index: 3;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: var(--size-hairline) solid var(--color-border);
+}
+
+.axis {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  height: calc(var(--hours) * var(--size-hour));
+  background: var(--color-surface);
+}
+
+.hourLabel {
+  position: absolute;
+  top: calc(var(--offset) * var(--size-hour));
+  right: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-50%);
+}
+
+.hourLabel:first-child {
+  transform: none;
+}
+
+/* Off-hours stay hatched; working time is a clean surface laid over it. */
+.column {
+  position: relative;
+  height: calc(var(--hours) * var(--size-hour));
+  border-left: var(--size-hairline) solid var(--color-border);
+  background:
+    linear-gradient(
+        to bottom,
+        var(--color-border) var(--size-hairline),
+        transparent var(--size-hairline)
+      )
+      0 0 / 100% var(--size-hour),
+    repeating-linear-gradient(
+      -45deg,
+      var(--color-surface-sunken) 0 var(--space-1-5),
+      var(--color-surface) var(--space-1-5) var(--space-3)
+    );
+}
+
+.working {
+  position: absolute;
+  inset-inline: 0;
+  top: calc((var(--start) - var(--from)) * var(--size-hour) / 60);
+  height: calc((var(--end) - var(--start)) * var(--size-hour) / 60);
+  background:
+    linear-gradient(
+        to bottom,
+        var(--color-border) var(--size-hairline),
+        transparent var(--size-hairline)
+      )
+      0 calc((var(--start) - var(--from)) * var(--size-hour) / -60) / 100% var(--size-hour),
+    var(--color-surface);
+}
+
+.occupied {
+  position: absolute;
+  inset-inline: var(--space-1);
+  top: calc((var(--start) - var(--from)) * var(--size-hour) / 60);
+  height: calc((var(--end) - var(--start)) * var(--size-hour) / 60);
+  border-radius: var(--radius-sm);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-surface-sunken) 0 var(--space-1),
+    transparent var(--space-1) var(--space-2)
+  );
+}
+
+.block {
+  position: absolute;
+  inset-inline: var(--space-1);
+  top: calc((var(--start) - var(--from)) * var(--size-hour) / 60);
+  height: calc((var(--end) - var(--start)) * var(--size-hour) / 60 - var(--space-0-5));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  overflow: hidden;
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  border-left: var(--space-1) solid var(--block-edge);
+  border-radius: var(--radius-sm);
+  background: var(--block-fill);
+  color: var(--color-text);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-snug);
+  transition:
+    box-shadow var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.block:hover {
+  box-shadow: var(--shadow-md);
+  z-index: 1;
+}
+
+.confirmed {
+  --block-fill: var(--color-accent-soft);
+  --block-edge: var(--color-accent);
+}
+
+.completed {
+  --block-fill: var(--color-surface-sunken);
+  --block-edge: var(--color-success);
+}
+
+.no_show {
+  --block-fill: var(--color-danger-soft);
+  --block-edge: var(--color-danger);
+}
+
+.cancelled {
+  --block-fill: var(--color-surface-sunken);
+  --block-edge: var(--color-border);
+}
+
+/* Short visits keep only what fits: time and client on one line. */
+.compact {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--space-1-5);
+  padding-block: var(--space-0-5);
+}
+
+.compact .blockServices,
+.medium .blockServices {
+  display: none;
+}
+
+.compact .blockClient {
+  font-size: var(--font-size-xs);
+}
+
+.blockTime {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.blockClient {
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blockServices {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.now {
+  position: absolute;
+  inset-inline: 0;
+  top: calc((var(--start) - var(--from)) * var(--size-hour) / 60);
+  z-index: 1;
+  height: var(--size-focus-ring);
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+.now::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-1) * -1);
+  top: 50%;
+  width: var(--size-dot);
+  height: var(--size-dot);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transform: translateY(-50%);
+}
