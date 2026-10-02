@@ -31,6 +31,7 @@
   --color-focus: #c2410c;
   --color-overlay: rgb(20 22 28 / 0.42);
   --color-edge-shade: rgb(20 22 28 / 0.14);
+  --color-device: #1b1c21;
   --color-skeleton: #e8eaee;
   --color-skeleton-shine: #f6f7f9;
   --color-illustration-line: #22242a;
@@ -67,6 +68,7 @@
   --color-focus: #ff9f66;
   --color-overlay: rgb(0 0 0 / 0.6);
   --color-edge-shade: rgb(0 0 0 / 0.55);
+  --color-device: #08090b;
   --color-skeleton: #24272c;
   --color-skeleton-shine: #2e3137;
   --color-illustration-line: #f1f2f4;

@@ -1,0 +1,118 @@
+/* A layered composition: the salon's day behind, the client's phone in front. */
+.showcase {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.board {
+  position: absolute;
+  z-index: 0;
+  isolation: isolate;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, var(--size-showcase-board));
+  max-height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text);
+}
+
+.boardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+
+.boardTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-heavy);
+}
+
+.boardDate {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.boardDate::first-letter {
+  text-transform: uppercase;
+}
+
+/* The real Mini App screen at phone size, scaled down as a whole. */
+.phone {
+  position: absolute;
+  z-index: 1;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  zoom: var(--showcase-phone-zoom);
+  width: var(--size-device-width);
+  height: var(--size-device-height);
+  padding: var(--space-3);
+  border-radius: var(--radius-device);
+  background: var(--color-device);
+  box-shadow: var(--shadow-lg);
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100%;
+  overflow: hidden;
+  padding: var(--space-5) var(--space-4);
+  border-radius: calc(var(--radius-device) - var(--space-3));
+  background: var(--color-canvas);
+  color: var(--color-text);
+}
+
+.appBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.appBar svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.screenHeading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.screenTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-heavy);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.screenSummary {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.mainButton {
+  margin-top: auto;
+}
+
+.showcase {
+  --showcase-phone-zoom: 0.58;
+}
+
+@media (min-width: 1280px) {
+  .showcase {
+    --showcase-phone-zoom: 0.62;
+  }
+}

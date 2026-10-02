@@ -15,6 +15,29 @@
       "staff": "Видит только своё расписание и свои записи."
     },
     "demoSubmit": "Войти в демо",
+    "showcase": {
+      "caption": "Клиенты записываются в Telegram, а запись сразу появляется в расписании.",
+      "scheduleTitle": "Расписание",
+      "business": "Сирень",
+      "chooseTime": "Выберите время",
+      "summary": "{{staff}} · {{service}}",
+      "morning": "Утро",
+      "afternoon": "День",
+      "book": "Записаться · {{price}}",
+      "staff": {
+        "anna": { "name": "Анна", "title": "Стилист" },
+        "maria": { "name": "Мария", "title": "Колорист" },
+        "olga": { "name": "Ольга", "title": "Маникюр" }
+      },
+      "clients": {
+        "alina": "Алина М.",
+        "polina": "Полина К.",
+        "kirill": "Кирилл А.",
+        "sofia": "София О.",
+        "vera": "Вера И.",
+        "daria": "Дарья В."
+      }
+    },
     "emailRequired": "Укажите почту",
     "passwordRequired": "Введите пароль"
   },

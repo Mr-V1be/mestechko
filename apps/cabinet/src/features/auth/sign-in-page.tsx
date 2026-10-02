@@ -1,4 +1,4 @@
-import { Badge, Button, Logo, SpotIllustration, TextField } from '@mestechko/ui';
+import { Badge, Button, Logo, TextField } from '@mestechko/ui';
 import { useState, type SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useLocation, useNavigate } from 'react-router';
@@ -6,6 +6,7 @@ import { appConfig } from '../../app/config';
 import { useMe, useSignIn } from '../../platform/api/queries';
 import { errorMessage } from '../common/error-message';
 import { DemoAccess } from './demo-access';
+import { ProductShowcase } from './product-showcase';
 import styles from './sign-in.module.css';
 
 export function SignInPage() {
@@ -41,10 +42,11 @@ export function SignInPage() {
     <div className={styles.page}>
       <aside className={styles.brandPanel}>
         <Logo name={t('common:brand.name')} tone="inverse" />
-        <div className={styles.brandArt}>
-          <SpotIllustration />
+        <ProductShowcase />
+        <div className={styles.brandText}>
+          <p className={styles.brandTitle}>{t('common:brand.tagline')}</p>
+          <p className={styles.brandCaption}>{t('signIn.showcase.caption')}</p>
         </div>
-        <p className={styles.brandTitle}>{t('common:brand.tagline')}</p>
       </aside>
       <main className={styles.formPanel}>
         <div className={styles.formColumn}>
