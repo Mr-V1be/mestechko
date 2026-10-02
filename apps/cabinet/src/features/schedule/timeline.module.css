@@ -2,7 +2,7 @@
 @property --timeline-column-min {
   syntax: '<length>';
   inherits: true;
-  initial-value: 0px;
+  initial-value: 0;
 }
 
 .board {
