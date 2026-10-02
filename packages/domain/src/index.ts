@@ -53,3 +53,4 @@ export * from './scheduling/schedule-impact.js';
 export * from './loyalty/visit-settlement.js';
 export * from './reports/report-metrics.js';
 export * from './payments/payment-status.js';
+export * from './scheduling/schedule-changes.js';

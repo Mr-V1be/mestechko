@@ -7,6 +7,8 @@ import {
   MESSENGER_CONTACTS,
   type CustomerIdentities,
 } from './application/ports.js';
+import { CLIENT_CRM_STORE } from './application/crm-ports.js';
+import { KyselyClientCrmStore } from './infrastructure/kysely-client-crm-store.js';
 import {
   KyselyClientDirectory,
   KyselyCustomerIdentities,
@@ -27,12 +29,17 @@ import { KyselyMessengerContacts } from './infrastructure/kysely-messenger-conta
       inject: [KyselyUnitOfWork],
     },
     {
+      provide: CLIENT_CRM_STORE,
+      useFactory: (unitOfWork: KyselyUnitOfWork) => new KyselyClientCrmStore(unitOfWork),
+      inject: [KyselyUnitOfWork],
+    },
+    {
       provide: MESSENGER_CONTACTS,
       useFactory: (unitOfWork: KyselyUnitOfWork, identities: CustomerIdentities) =>
         new KyselyMessengerContacts(unitOfWork, identities),
       inject: [KyselyUnitOfWork, CUSTOMER_IDENTITIES],
     },
   ],
-  exports: [CUSTOMER_IDENTITIES, CLIENT_DIRECTORY, MESSENGER_CONTACTS],
+  exports: [CUSTOMER_IDENTITIES, CLIENT_DIRECTORY, CLIENT_CRM_STORE, MESSENGER_CONTACTS],
 })
 export class ClientsModule {}

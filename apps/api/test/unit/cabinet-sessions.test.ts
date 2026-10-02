@@ -27,6 +27,7 @@ const memberships: MembershipDirectory = {
 const businesses: BusinessDirectory = {
   findBySlug: unused,
   findById: unused,
+  updateSettings: unused,
   listDemo: unused,
   listCountryCodes: unused,
 };

@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { verticalRegistry } from '@mestechko/domain';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
+import { CLOCK, type Clock } from '../../shared/application/ports.js';
+import { CabinetSettingsController } from './api/cabinet-settings.controller.js';
 import { BusinessContextResolver } from './application/business-context.js';
+import { BusinessSettings } from './application/business-settings.js';
 import {
   BUSINESS_DIRECTORY,
   MEMBERSHIP_DIRECTORY,
@@ -13,6 +16,7 @@ import { KyselyBusinessDirectory } from './infrastructure/kysely-business-direct
 export const VERTICAL_REGISTRY = Symbol('VERTICAL_REGISTRY');
 
 @Module({
+  controllers: [CabinetSettingsController],
   providers: [
     { provide: VERTICAL_REGISTRY, useValue: verticalRegistry },
     {
@@ -27,6 +31,12 @@ export const VERTICAL_REGISTRY = Symbol('VERTICAL_REGISTRY');
       useFactory: (directory: BusinessDirectory) =>
         new BusinessContextResolver(directory, verticalRegistry),
       inject: [BUSINESS_DIRECTORY],
+    },
+    {
+      provide: BusinessSettings,
+      useFactory: (resolver: BusinessContextResolver, directory: BusinessDirectory, clock: Clock) =>
+        new BusinessSettings(resolver, directory, clock),
+      inject: [BusinessContextResolver, BUSINESS_DIRECTORY, CLOCK],
     },
     BusinessAccessGuard,
   ],

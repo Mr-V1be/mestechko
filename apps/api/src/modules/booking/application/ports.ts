@@ -191,3 +191,26 @@ export interface BookingTokens {
 }
 
 export const BOOKING_TOKENS = Symbol('BOOKING_TOKENS');
+
+/** A visit ahead of a staff member, as a schedule change sees it. */
+export interface StaffVisitView {
+  readonly bookingId: string;
+  readonly status: BookingStatus;
+  readonly locationId: string;
+  readonly timeZone: string;
+  readonly startsAt: Date;
+  readonly endsAt: Date;
+  /** Time the visit occupies, buffers included. */
+  readonly occupied: InstantInterval;
+  readonly clientName: string;
+  readonly serviceNames: readonly string[];
+}
+
+/** Visits of staff members that are still ahead and not final. */
+export interface StaffVisits {
+  upcoming(staffId: string, from: Date): Promise<StaffVisitView[]>;
+  /** How many visits each staff member has ahead. */
+  countUpcoming(from: Date): Promise<Map<string, number>>;
+}
+
+export const STAFF_VISITS = Symbol('STAFF_VISITS');

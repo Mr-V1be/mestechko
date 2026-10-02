@@ -20,6 +20,7 @@ import type {
   CabinetBookingDetailsView,
   CabinetBookingQueries,
   CabinetBookingView,
+  ClientVisitStats,
 } from './ports.js';
 import { staffFilterOf } from './staff-scope.js';
 
@@ -196,5 +197,26 @@ export class CabinetBookings {
       settlement,
       now: this.clock.now().epochMilliseconds,
     });
+  }
+
+  /** A client's visits ahead and the latest behind, for their card. Tenant-scoped. */
+  async ofClient(
+    clientId: string,
+    limit: number,
+  ): Promise<{ upcoming: CabinetBookingRow[]; history: CabinetBookingRow[] }> {
+    const now = new Date(this.clock.now().epochMilliseconds);
+    const [upcoming, history] = await Promise.all([
+      this.queries.forClient(clientId, 'upcoming', now, limit),
+      this.queries.forClient(clientId, 'past', now, limit),
+    ]);
+    return {
+      upcoming: upcoming.map((view) => toRow(view, this.avatars)),
+      history: history.map((view) => toRow(view, this.avatars)),
+    };
+  }
+
+  /** What each client's visits add up to. Tenant-scoped. */
+  statsOf(clientIds: readonly string[]): Promise<Map<string, ClientVisitStats>> {
+    return this.queries.clientStats(clientIds, new Date(this.clock.now().epochMilliseconds));
   }
 }

@@ -1,29 +1,18 @@
 import { z } from 'zod';
-
-const keysetSchema = z.object({ at: z.iso.datetime(), id: z.uuid() });
+import { decodeKeyset, encodeKeyset } from '../../../platform/db/keyset-cursor.js';
 
 export interface Keyset {
   readonly at: Date;
   readonly id: string;
 }
 
-/** Opaque keyset cursor: position after the last row of the previous page. */
+/** Position after the last booking of the previous page: its start and id. */
 export function encodeCursor(keyset: Keyset): string {
-  return Buffer.from(JSON.stringify({ at: keyset.at.toISOString(), id: keyset.id })).toString(
-    'base64url',
-  );
+  return encodeKeyset([keyset.at.toISOString(), keyset.id]);
 }
 
 export function decodeCursor(cursor: string | null): Keyset | null {
-  if (cursor === null) {
-    return null;
-  }
-  try {
-    const parsed = keysetSchema.parse(
-      JSON.parse(Buffer.from(cursor, 'base64url').toString('utf8')),
-    );
-    return { at: new Date(parsed.at), id: parsed.id };
-  } catch {
-    return null;
-  }
+  const [at, id] = decodeKeyset(cursor, 2) ?? [];
+  const parsed = z.object({ at: z.iso.datetime(), id: z.uuid() }).safeParse({ at, id });
+  return parsed.success ? { at: new Date(parsed.data.at), id: parsed.data.id } : null;
 }

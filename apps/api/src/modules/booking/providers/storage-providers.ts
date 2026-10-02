@@ -11,10 +11,12 @@ import {
   EXPIRED_HOLDS,
   OCCUPANCY_READER,
   PAYMENT_DESCRIPTIONS,
+  STAFF_VISITS,
 } from '../application/ports.js';
 import { HmacBookingTokens } from '../infrastructure/hmac-booking-tokens.js';
 import { loadPaymentDescriptions } from '../infrastructure/i18n-payment-descriptions.js';
 import { KyselyExpiredHolds } from '../infrastructure/kysely-expired-holds.js';
+import { KyselyStaffVisits } from '../infrastructure/kysely-staff-visits.js';
 import { KyselyBookingLifecycleStore } from '../infrastructure/kysely-booking-lifecycle-store.js';
 import { KyselyBookingWriter } from '../infrastructure/kysely-booking-writer.js';
 import { KyselyCabinetBookingQueries } from '../infrastructure/kysely-cabinet-booking-queries.js';
@@ -44,6 +46,7 @@ export const bookingStorageProviders: Provider[] = [
     ...kysely((unitOfWork) => new KyselyCabinetBookingQueries(unitOfWork)),
   },
   { provide: EXPIRED_HOLDS, ...kysely((unitOfWork) => new KyselyExpiredHolds(unitOfWork)) },
+  { provide: STAFF_VISITS, ...kysely((unitOfWork) => new KyselyStaffVisits(unitOfWork)) },
   { provide: BOOKING_TELEMETRY, useFactory: () => new OtelBookingTelemetry() },
   {
     provide: BOOKING_TOKENS,

@@ -28,6 +28,18 @@ import { TenancyModule } from './modules/tenancy/tenancy.module.js';
 import { matchWaitlistJob } from './modules/waitlist/application/waitlist-matching.js';
 import { WaitlistModule } from './modules/waitlist/waitlist.module.js';
 import { FollowUpsModule } from './composition/follow-ups/follow-ups.module.js';
+import { releaseExpiredHoldsJob } from './modules/booking/application/lifecycle/booking-holds.js';
+import { CrmModule } from './modules/crm/crm.module.js';
+import { LoyaltyModule } from './modules/loyalty/loyalty.module.js';
+import { refundPaymentJob, sweepRefundsJob } from './modules/payments/application/refund-jobs.js';
+import { PaymentsModule } from './modules/payments/payments.module.js';
+import { ReportsModule } from './modules/reports/reports.module.js';
+import { TeamModule } from './modules/team/team.module.js';
+import {
+  deliverTestPayEventJob,
+  sweepTestPayJob,
+} from './modules/test-pay/application/test-pay-emulator.js';
+import { TestPayModule } from './modules/test-pay/test-pay.module.js';
 
 /** Background jobs of the application; workers are started for each of them. */
 const jobs = [
@@ -36,6 +48,11 @@ const jobs = [
   dispatchNotificationsJob,
   deliverNotificationJob,
   matchWaitlistJob,
+  releaseExpiredHoldsJob,
+  refundPaymentJob,
+  sweepRefundsJob,
+  deliverTestPayEventJob,
+  sweepTestPayJob,
 ];
 
 /** Composition root: platform services, feature modules and global HTTP policies. */
@@ -54,10 +71,16 @@ export class AppModule {
         SchedulingModule,
         ClientsModule,
         NotificationsModule,
+        LoyaltyModule,
+        PaymentsModule,
         BookingModule,
         WaitlistModule,
         MessagingModule,
         MaxEmulatorModule,
+        TestPayModule,
+        TeamModule,
+        CrmModule,
+        ReportsModule,
       ],
       providers: [
         { provide: APP_GUARD, useClass: AuthGuard },

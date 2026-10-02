@@ -97,6 +97,8 @@ export const staffServiceTermsSchema = z.object({
 });
 
 export const teamMemberSchema = teamMemberSummarySchema.extend({
+  /** Visits ahead, which stay booked whatever happens to the schedule. */
+  upcomingVisits: z.number().int(),
   services: z.array(staffServiceTermsSchema),
   assignments: z.array(staffAssignmentSchema),
   /** Date exceptions from today on. */

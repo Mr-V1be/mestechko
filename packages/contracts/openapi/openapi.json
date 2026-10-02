@@ -4527,6 +4527,26 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "returnPath": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "pattern": "^\\/(?!\\/)[\\w\\-./?=&%]*$"
+                  }
+                },
+                "required": [
+                  "returnPath"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -5693,6 +5713,11 @@
                   "consent": {
                     "type": "boolean",
                     "const": true
+                  },
+                  "returnPath": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "pattern": "^\\/(?!\\/)[\\w\\-./?=&%]*$"
                   }
                 },
                 "required": [
@@ -5703,7 +5728,8 @@
                   "agreedTotal",
                   "contact",
                   "comment",
-                  "consent"
+                  "consent",
+                  "returnPath"
                 ]
               }
             }
@@ -13224,6 +13250,11 @@
                         }
                       ]
                     },
+                    "upcomingVisits": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
                     "services": {
                       "type": "array",
                       "items": {
@@ -13599,6 +13630,7 @@
                     "isActive",
                     "serviceCount",
                     "nextAbsence",
+                    "upcomingVisits",
                     "services",
                     "assignments",
                     "exceptions",
@@ -13769,6 +13801,11 @@
                         }
                       ]
                     },
+                    "upcomingVisits": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
                     "services": {
                       "type": "array",
                       "items": {
@@ -14144,6 +14181,7 @@
                     "isActive",
                     "serviceCount",
                     "nextAbsence",
+                    "upcomingVisits",
                     "services",
                     "assignments",
                     "exceptions",
@@ -14343,6 +14381,11 @@
                         }
                       ]
                     },
+                    "upcomingVisits": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
                     "services": {
                       "type": "array",
                       "items": {
@@ -14718,6 +14761,7 @@
                     "isActive",
                     "serviceCount",
                     "nextAbsence",
+                    "upcomingVisits",
                     "services",
                     "assignments",
                     "exceptions",
@@ -14946,6 +14990,11 @@
                         }
                       ]
                     },
+                    "upcomingVisits": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
                     "services": {
                       "type": "array",
                       "items": {
@@ -15321,6 +15370,7 @@
                     "isActive",
                     "serviceCount",
                     "nextAbsence",
+                    "upcomingVisits",
                     "services",
                     "assignments",
                     "exceptions",
@@ -16503,6 +16553,11 @@
                             }
                           ]
                         },
+                        "upcomingVisits": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
                         "services": {
                           "type": "array",
                           "items": {
@@ -16878,6 +16933,7 @@
                         "isActive",
                         "serviceCount",
                         "nextAbsence",
+                        "upcomingVisits",
                         "services",
                         "assignments",
                         "exceptions",

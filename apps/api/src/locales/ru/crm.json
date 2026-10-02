@@ -1,0 +1,21 @@
+{
+  "fileName": "Клиенты",
+  "columns": {
+    "name": "Имя",
+    "phone": "Телефон",
+    "email": "E-mail",
+    "tags": "Теги",
+    "visits": "Визитов",
+    "noShows": "Неявок",
+    "lastVisit": "Последний визит",
+    "points": "Баллы",
+    "note": "Заметка"
+  },
+  "aliases": {
+    "name": ["Имя", "ФИО", "Клиент", "Name", "Full name"],
+    "phone": ["Телефон", "Тел", "Тел.", "Мобильный", "Phone", "Mobile"],
+    "email": ["E-mail", "Email", "Почта", "Эл. почта"],
+    "tags": ["Теги", "Метки", "Tags", "Labels"],
+    "note": ["Заметка", "Комментарий", "Примечание", "Note", "Comment"]
+  }
+}

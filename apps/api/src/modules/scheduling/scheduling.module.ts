@@ -3,7 +3,12 @@ import { PinoLogger } from 'nestjs-pino';
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import { JOB_QUEUE, type JobQueue } from '../../shared/application/job-queue.js';
-import { CLOCK, type Clock } from '../../shared/application/ports.js';
+import {
+  CLOCK,
+  ID_GENERATOR,
+  type Clock,
+  type IdGenerator,
+} from '../../shared/application/ports.js';
 import {
   BUSINESS_DIRECTORY,
   type BusinessDirectory,
@@ -18,6 +23,7 @@ import { ProductionCalendars } from './application/production-calendars.js';
 import {
   PRODUCTION_CALENDAR_SOURCE,
   PRODUCTION_CALENDAR_STORE,
+  SCHEDULE_STORE,
   WORK_CALENDAR_READER,
   type ProductionCalendarSource,
   type ProductionCalendarStore,
@@ -25,15 +31,26 @@ import {
 import { CalendarSyncBootstrap } from './infrastructure/calendar-sync-bootstrap.js';
 import { IsDayOffCalendarSource } from './infrastructure/isdayoff-calendar-source.js';
 import { KyselyProductionCalendarStore } from './infrastructure/kysely-production-calendar-store.js';
+import { KyselyScheduleStore } from './infrastructure/kysely-schedule-store.js';
 import { KyselyWorkCalendarReader } from './infrastructure/kysely-work-calendar-reader.js';
 
 @Module({
   imports: [TenancyModule],
   providers: [
     {
-      provide: WORK_CALENDAR_READER,
+      provide: KyselyWorkCalendarReader,
       useFactory: (unitOfWork: KyselyUnitOfWork) => new KyselyWorkCalendarReader(unitOfWork),
       inject: [KyselyUnitOfWork],
+    },
+    { provide: WORK_CALENDAR_READER, useExisting: KyselyWorkCalendarReader },
+    {
+      provide: SCHEDULE_STORE,
+      useFactory: (
+        unitOfWork: KyselyUnitOfWork,
+        reader: KyselyWorkCalendarReader,
+        ids: IdGenerator,
+      ) => new KyselyScheduleStore(unitOfWork, reader, ids),
+      inject: [KyselyUnitOfWork, KyselyWorkCalendarReader, ID_GENERATOR],
     },
     {
       provide: PRODUCTION_CALENDAR_STORE,
@@ -73,6 +90,7 @@ import { KyselyWorkCalendarReader } from './infrastructure/kysely-work-calendar-
   ],
   exports: [
     WORK_CALENDAR_READER,
+    SCHEDULE_STORE,
     ProductionCalendars,
     PRODUCTION_CALENDAR_SOURCE,
     PRODUCTION_CALENDAR_STORE,

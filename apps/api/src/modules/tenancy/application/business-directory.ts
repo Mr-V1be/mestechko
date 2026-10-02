@@ -27,6 +27,12 @@ export interface MembershipRecord {
 export interface BusinessDirectory {
   findBySlug(slug: string): Promise<BusinessRecord | null>;
   findById(id: string): Promise<BusinessRecord | null>;
+  /** Saves the name and the rules that differ from the vertical's defaults. */
+  updateSettings(
+    id: string,
+    settings: { readonly name: string; readonly rulesOverrides: BookingRulesOverrides },
+    now: Date,
+  ): Promise<void>;
   listDemo(): Promise<BusinessRecord[]>;
   listCountryCodes(): Promise<string[]>;
 }

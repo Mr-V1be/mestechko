@@ -5,6 +5,7 @@
 export * from './client.js';
 export * from './enums.js';
 export * from './demo-phones.js';
+export * from './phone-input.js';
 export { clientFileFormats, clientFileFormatIds, clientSorts } from './routes/cabinet/clients.js';
 export type * from './routes/client/public-catalog.js';
 export type * from './routes/client/miniapp-bookings.js';

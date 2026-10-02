@@ -87,6 +87,16 @@ export interface CabinetBookingDetailsView extends CabinetBookingView {
   }[];
 }
 
+/** What a client's visits add up to. */
+export interface ClientVisitStats {
+  readonly visits: number;
+  readonly noShows: number;
+  readonly cancellations: number;
+  readonly spentMinor: number;
+  readonly lastVisitAt: Date | null;
+  readonly nextVisitAt: Date | null;
+}
+
 export interface CabinetBookingQueries {
   /** Booked services occupying time at the location within the window. */
   scheduleItems(
@@ -99,6 +109,14 @@ export interface CabinetBookingQueries {
     page: { readonly cursor: string | null; readonly limit: number },
   ): Promise<Page<CabinetBookingView>>;
   details(bookingId: string, staffId: string | null): Promise<CabinetBookingDetailsView | null>;
+  /** A client's bookings ahead (soonest first) or behind (latest first). */
+  forClient(
+    clientId: string,
+    scope: 'upcoming' | 'past',
+    now: Date,
+    limit: number,
+  ): Promise<CabinetBookingView[]>;
+  clientStats(clientIds: readonly string[], now: Date): Promise<Map<string, ClientVisitStats>>;
 }
 
 export const CABINET_BOOKING_QUERIES = Symbol('CABINET_BOOKING_QUERIES');

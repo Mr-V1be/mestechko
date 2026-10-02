@@ -48,6 +48,8 @@ export interface StaffServiceTerms {
 /** Catalog of the current tenant. Every call must run inside a tenant unit of work. */
 export interface CatalogReader {
   listLocations(): Promise<LocationView[]>;
+  /** Time zone of the main location, which business-wide dates (reports, sales) follow. */
+  homeTimeZone(): Promise<string>;
   findLocation(id: string): Promise<LocationView | null>;
   /** Active services in display order; all of them when `ids` is omitted. */
   listServices(ids?: readonly string[]): Promise<ServiceView[]>;

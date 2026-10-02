@@ -22,6 +22,14 @@ export class KyselyCatalogReader implements CatalogReader {
       .execute();
   }
 
+  async homeTimeZone(): Promise<string> {
+    const [main] = await this.listLocations();
+    if (!main) {
+      throw new Error(`Business ${this.unitOfWork.currentBusinessId()} has no location`);
+    }
+    return main.timeZone;
+  }
+
   async findLocation(id: string): Promise<LocationView | null> {
     const row = await this.unitOfWork
       .tenant()

@@ -1,5 +1,5 @@
 import { formatPhone } from '@mestechko/booking-ui';
-import { demoPhoneFor, type BookingContact } from '@mestechko/contracts/client';
+import { demoPhoneFor, normalizePhone, type BookingContact } from '@mestechko/contracts/client';
 import { TextField } from '@mestechko/ui';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
 import type { TFunction } from 'i18next';
@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useProfile } from '../../platform/api/queries';
 import { useHost } from '../../platform/telegram/host-context';
 import { useContactDraft, type ContactDraft } from './contact-draft';
-import { formatPhoneInput, normalizePhone } from './phone';
+import { formatPhoneInput } from './phone';
 
 export interface ContactErrors {
   readonly name?: string;

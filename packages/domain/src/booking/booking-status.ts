@@ -7,6 +7,8 @@ interface BookingStatusDefinition {
   readonly acceptsClientChanges: boolean;
   /** The client may give the time up at any moment, whatever the change cutoff. */
   readonly clientMayRelease: boolean;
+  /** A visit the client agreed to; reports count its time as booked. */
+  readonly countsAsBooked: boolean;
   /** The business may move the booking to another time or staff member. */
   readonly movable: boolean;
   /** Statuses the booking may move to; the database guards the rest. */
@@ -20,6 +22,7 @@ export const bookingStatuses = {
     isFinal: false,
     acceptsClientChanges: false,
     clientMayRelease: true,
+    countsAsBooked: false,
     movable: false,
     next: ['confirmed', 'cancelled'],
   },
@@ -28,6 +31,7 @@ export const bookingStatuses = {
     isFinal: false,
     acceptsClientChanges: true,
     clientMayRelease: false,
+    countsAsBooked: true,
     movable: true,
     next: ['completed', 'no_show', 'cancelled'],
   },
@@ -36,6 +40,7 @@ export const bookingStatuses = {
     isFinal: true,
     acceptsClientChanges: false,
     clientMayRelease: false,
+    countsAsBooked: true,
     movable: false,
     next: [],
   },
@@ -44,6 +49,7 @@ export const bookingStatuses = {
     isFinal: true,
     acceptsClientChanges: false,
     clientMayRelease: false,
+    countsAsBooked: true,
     movable: false,
     next: [],
   },
@@ -52,6 +58,7 @@ export const bookingStatuses = {
     isFinal: true,
     acceptsClientChanges: false,
     clientMayRelease: false,
+    countsAsBooked: false,
     movable: false,
     next: [],
   },
@@ -63,6 +70,16 @@ export const bookingStatusIds = Object.keys(bookingStatuses) as BookingStatus[];
 
 export const timeOccupyingStatuses = bookingStatusIds.filter(
   (status) => bookingStatuses[status].occupiesTime,
+);
+
+/** Statuses of visits the client agreed to, which reports count. */
+export const bookedStatuses = bookingStatusIds.filter(
+  (status) => bookingStatuses[status].countsAsBooked,
+);
+
+/** Statuses that can still change; with a future end they make a visit upcoming. */
+export const openBookingStatuses = bookingStatusIds.filter(
+  (status) => !bookingStatuses[status].isFinal,
 );
 
 /** Status of a booking created by a client. */

@@ -1,9 +1,4 @@
-import {
-  bookingStatuses,
-  bookingStatusIds,
-  type BookingStatus,
-  type HoldReason,
-} from '@mestechko/domain';
+import { openBookingStatuses, type BookingStatus, type HoldReason } from '@mestechko/domain';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
@@ -14,9 +9,6 @@ import type {
   Page,
 } from '../application/ports.js';
 import { decodeCursor, encodeCursor } from './cursor.js';
-
-/** Statuses that can still change; together with a future end they make a visit upcoming. */
-const openStatuses = bookingStatusIds.filter((status) => !bookingStatuses[status].isFinal);
 
 interface ScopeDefinition {
   readonly upcoming: boolean;
@@ -68,7 +60,10 @@ export class KyselyClientBookingQueries implements ClientBookingQueries {
     const keyset = decodeCursor(page.cursor);
     let query = this.query(clientId)
       .where((eb) => {
-        const upcoming = eb.and([eb('b.status', 'in', openStatuses), eb('b.endsAt', '>', now)]);
+        const upcoming = eb.and([
+          eb('b.status', 'in', openBookingStatuses),
+          eb('b.endsAt', '>', now),
+        ]);
         return definition.upcoming ? upcoming : eb.not(upcoming);
       })
       .orderBy('b.startsAt', definition.direction)

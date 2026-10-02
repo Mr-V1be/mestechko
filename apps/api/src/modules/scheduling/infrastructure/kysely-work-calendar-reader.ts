@@ -70,21 +70,30 @@ const patternBuilders: Record<
   }),
 };
 
+/** A work calendar whose assignments and absences keep their stored ids. */
+export interface IdentifiedWorkCalendar extends StaffWorkCalendar {
+  readonly assignments: (ScheduleAssignment & { readonly id: string })[];
+  readonly overrides: ScheduleOverride[];
+  readonly absences: (StaffAbsence & { readonly id: string })[];
+}
+
 export class KyselyWorkCalendarReader implements WorkCalendarReader {
   constructor(private readonly unitOfWork: KyselyUnitOfWork) {}
 
-  async forStaff(
+  forStaff(
     staffIds: readonly string[],
     window: DateWindow,
   ): Promise<Map<string, StaffWorkCalendar>> {
-    const calendars = new Map<
-      string,
-      {
-        assignments: ScheduleAssignment[];
-        overrides: ScheduleOverride[];
-        absences: StaffAbsence[];
-      }
-    >(staffIds.map((id) => [id, { assignments: [], overrides: [], absences: [] }]));
+    return this.identified(staffIds, window);
+  }
+
+  async identified(
+    staffIds: readonly string[],
+    window: DateWindow,
+  ): Promise<Map<string, IdentifiedWorkCalendar>> {
+    const calendars = new Map<string, IdentifiedWorkCalendar>(
+      staffIds.map((id) => [id, { assignments: [], overrides: [], absences: [] }]),
+    );
     if (staffIds.length === 0) {
       return calendars;
     }
@@ -117,7 +126,7 @@ export class KyselyWorkCalendarReader implements WorkCalendarReader {
       .execute();
     const absences = await db
       .selectFrom('staffAbsences')
-      .select(['staffId', 'kind', 'startsOn', 'endsOn'])
+      .select(['id', 'staffId', 'kind', 'startsOn', 'endsOn'])
       .where('staffId', 'in', staffIds)
       .where('startsOn', '<=', to)
       .where('endsOn', '>=', from)
@@ -153,6 +162,7 @@ export class KyselyWorkCalendarReader implements WorkCalendarReader {
 
     for (const schedule of schedules) {
       calendars.get(schedule.staffId)?.assignments.push({
+        id: schedule.id,
         locationId: schedule.locationId,
         pattern: patternBuilders[schedule.patternKind](schedule, scheduleDays.get(schedule.id)),
         validFrom: Temporal.PlainDate.from(schedule.validFrom),
@@ -168,6 +178,7 @@ export class KyselyWorkCalendarReader implements WorkCalendarReader {
     }
     for (const absence of absences) {
       calendars.get(absence.staffId)?.absences.push({
+        id: absence.id,
         from: Temporal.PlainDate.from(absence.startsOn),
         to: Temporal.PlainDate.from(absence.endsOn),
         kind: absence.kind,

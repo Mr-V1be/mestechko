@@ -12,19 +12,40 @@ import {
   type MembershipDirectory,
 } from '../tenancy/application/business-directory.js';
 import { TenancyModule } from '../tenancy/tenancy.module.js';
+import {
+  CLOCK,
+  ID_GENERATOR,
+  type Clock,
+  type IdGenerator,
+} from '../../shared/application/ports.js';
+import { CabinetCatalogController } from './api/cabinet-catalog.controller.js';
 import { CatalogController } from './api/catalog.controller.js';
+import { CatalogAdmin } from './application/catalog-admin.js';
 import { CatalogQueries } from './application/catalog-queries.js';
 import { CATALOG_READER, type CatalogReader } from './application/catalog-reader.js';
+import { CATALOG_STORE, type CatalogStore } from './application/catalog-store.js';
 import { KyselyCatalogReader } from './infrastructure/kysely-catalog-reader.js';
+import { KyselyCatalogStore } from './infrastructure/kysely-catalog-store.js';
 
 @Module({
   imports: [TenancyModule, MediaModule],
-  controllers: [CatalogController],
+  controllers: [CatalogController, CabinetCatalogController],
   providers: [
     {
       provide: CATALOG_READER,
       useFactory: (unitOfWork: KyselyUnitOfWork) => new KyselyCatalogReader(unitOfWork),
       inject: [KyselyUnitOfWork],
+    },
+    {
+      provide: CATALOG_STORE,
+      useFactory: (unitOfWork: KyselyUnitOfWork) => new KyselyCatalogStore(unitOfWork),
+      inject: [KyselyUnitOfWork],
+    },
+    {
+      provide: CatalogAdmin,
+      useFactory: (store: CatalogStore, ids: IdGenerator, clock: Clock) =>
+        new CatalogAdmin(store, ids, clock),
+      inject: [CATALOG_STORE, ID_GENERATOR, CLOCK],
     },
     {
       provide: CatalogQueries,
@@ -57,6 +78,6 @@ import { KyselyCatalogReader } from './infrastructure/kysely-catalog-reader.js';
       ],
     },
   ],
-  exports: [CATALOG_READER],
+  exports: [CATALOG_READER, CATALOG_STORE],
 })
 export class CatalogModule {}

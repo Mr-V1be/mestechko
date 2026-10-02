@@ -1,4 +1,9 @@
-import { roleIds, staffAssignmentStrategyIds, type RoleId } from '@mestechko/domain';
+import {
+  roleIds,
+  staffAssignmentStrategyIds,
+  type BookingRulesOverrides,
+  type RoleId,
+} from '@mestechko/domain';
 import type { Selectable } from 'kysely';
 import { z } from 'zod';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
@@ -27,9 +32,10 @@ const rulesOverridesSchema = z
         preHolidayShorteningMinutes: minutes,
       })
       .partial(),
-    prepayment: z.object({ depositPercent: minutes }).partial(),
+    prepayment: z.object({ depositPercent: minutes, holdMinutes: minutes }).partial(),
     repeatVisit: z.object({ suggestAfterDays: minutes.nullable() }).partial(),
     clientChanges: z.object({ cutoffMinutes: minutes }).partial(),
+    waitlist: z.object({ offerHoldMinutes: minutes }).partial(),
   })
   .partial()
   .strict();
@@ -70,6 +76,23 @@ export class KyselyBusinessDirectory implements BusinessDirectory, MembershipDir
       .where('id', '=', id)
       .executeTakeFirst();
     return row ? toRecord(row) : null;
+  }
+
+  async updateSettings(
+    id: string,
+    settings: { readonly name: string; readonly rulesOverrides: BookingRulesOverrides },
+    now: Date,
+  ): Promise<void> {
+    await this.unitOfWork
+      .platform()
+      .updateTable('businesses')
+      .set({
+        name: settings.name,
+        rulesOverrides: JSON.stringify(settings.rulesOverrides),
+        updatedAt: now,
+      })
+      .where('id', '=', id)
+      .execute();
   }
 
   async listDemo(): Promise<BusinessRecord[]> {

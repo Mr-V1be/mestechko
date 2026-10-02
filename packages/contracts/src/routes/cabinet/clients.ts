@@ -15,8 +15,8 @@ import { cabinetBookingRowSchema, cabinetParamsSchema } from './schedule.js';
 
 const MAX_PAGE_SIZE = 100;
 const MAX_NAME_LENGTH = 120;
-const MAX_TAG_LENGTH = 32;
-const MAX_TAGS = 20;
+/** Limits of a client's tags, the same as the database keeps. */
+export const clientTagLimits = { maxLength: 32, maxCount: 20 } as const;
 const MAX_NOTE_LENGTH = 2000;
 const MAX_IMPORT_BYTES = 5 * 1024 * 1024;
 
@@ -40,7 +40,7 @@ const clientFileMediaTypes = [
 
 const clientParamsSchema = cabinetParamsSchema.extend({ clientId: uuidSchema });
 
-export const clientTagSchema = z.string().trim().min(1).max(MAX_TAG_LENGTH);
+export const clientTagSchema = z.string().trim().min(1).max(clientTagLimits.maxLength);
 
 export const clientSummarySchema = z.object({
   id: uuidSchema,
@@ -153,7 +153,7 @@ const clientFieldsSchema = z.object({
   displayName: z.string().trim().min(1).max(MAX_NAME_LENGTH),
   phone: phoneSchema.nullable(),
   email: z.email().max(254).nullable(),
-  tags: z.array(clientTagSchema).max(MAX_TAGS),
+  tags: z.array(clientTagSchema).max(clientTagLimits.maxCount),
 });
 
 export const createClient = defineRoute({

@@ -1,4 +1,11 @@
-import type { CalendarYear, PlainDate, StaffWorkCalendar } from '@mestechko/domain';
+import type {
+  CalendarYear,
+  PlainDate,
+  ScheduleAssignment,
+  ScheduleChange,
+  StaffAbsence,
+  StaffWorkCalendar,
+} from '@mestechko/domain';
 
 export interface DateWindow {
   readonly from: PlainDate;
@@ -40,3 +47,23 @@ export interface WarningLogger {
 export const WORK_CALENDAR_READER = Symbol('WORK_CALENDAR_READER');
 export const PRODUCTION_CALENDAR_STORE = Symbol('PRODUCTION_CALENDAR_STORE');
 export const PRODUCTION_CALENDAR_SOURCE = Symbol('PRODUCTION_CALENDAR_SOURCE');
+
+/** Someone's working time as the cabinet edits it, with the ids of what it stores. */
+export interface StaffScheduleSnapshot extends StaffWorkCalendar {
+  readonly assignments: readonly (ScheduleAssignment & { readonly id: string })[];
+  readonly absences: readonly (StaffAbsence & { readonly id: string })[];
+}
+
+/** Schedules of the current tenant as the team page reads and changes them. */
+export interface ScheduleStore {
+  /** Serializes schedule changes of one person until the transaction ends. */
+  lockStaff(staffId: string): Promise<void>;
+  /** Assignments still in effect on or after `from`, exceptions and absences from it on. */
+  snapshots(
+    staffIds: readonly string[],
+    from: PlainDate,
+  ): Promise<Map<string, StaffScheduleSnapshot>>;
+  save(staffId: string, change: ScheduleChange, now: Date): Promise<void>;
+}
+
+export const SCHEDULE_STORE = Symbol('SCHEDULE_STORE');

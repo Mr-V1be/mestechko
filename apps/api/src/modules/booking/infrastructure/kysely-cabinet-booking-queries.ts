@@ -1,4 +1,9 @@
-import { timeOccupyingStatuses, type HoldReason, type InstantInterval } from '@mestechko/domain';
+import {
+  openBookingStatuses,
+  timeOccupyingStatuses,
+  type HoldReason,
+  type InstantInterval,
+} from '@mestechko/domain';
 import { sql } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
@@ -8,6 +13,7 @@ import type {
   CabinetBookingFilter,
   CabinetBookingQueries,
   CabinetBookingView,
+  ClientVisitStats,
   ScheduleItemView,
 } from '../application/cabinet/ports.js';
 import type { BookingHold, Page } from '../application/ports.js';
@@ -187,6 +193,75 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
         endsAt: new Date(item.endsAt),
       })),
     };
+  }
+
+  async forClient(
+    clientId: string,
+    scope: 'upcoming' | 'past',
+    now: Date,
+    limit: number,
+  ): Promise<CabinetBookingView[]> {
+    const upcoming = scope === 'upcoming';
+    const rows = await this.rowQuery()
+      .where('b.clientId', '=', clientId)
+      .where((eb) =>
+        upcoming
+          ? eb.and([eb('b.status', 'in', openBookingStatuses), eb('b.endsAt', '>', now)])
+          : eb.or([eb('b.status', 'not in', openBookingStatuses), eb('b.endsAt', '<=', now)]),
+      )
+      .orderBy('b.startsAt', upcoming ? 'asc' : 'desc')
+      .orderBy('b.id', upcoming ? 'asc' : 'desc')
+      .limit(limit)
+      .execute();
+    return rows.map((row) => this.toView(row));
+  }
+
+  async clientStats(
+    clientIds: readonly string[],
+    now: Date,
+  ): Promise<Map<string, ClientVisitStats>> {
+    if (clientIds.length === 0) {
+      return new Map();
+    }
+    const rows = await this.unitOfWork
+      .tenant()
+      .selectFrom('bookings')
+      .select((eb) => [
+        'clientId',
+        eb.fn.countAll<string>().filterWhere('status', '=', 'completed').as('visits'),
+        eb.fn.countAll<string>().filterWhere('status', '=', 'no_show').as('noShows'),
+        eb.fn.countAll<string>().filterWhere('status', '=', 'cancelled').as('cancellations'),
+        eb.fn
+          .sum<string | null>('totalPriceMinor')
+          .filterWhere('status', '=', 'completed')
+          .as('spentMinor'),
+        eb.fn
+          .max<Date | null>('startsAt')
+          .filterWhere('status', '=', 'completed')
+          .as('lastVisitAt'),
+        eb.fn
+          .min<Date | null>('startsAt')
+          .filterWhere((inner) =>
+            inner.and([inner('status', 'in', openBookingStatuses), inner('endsAt', '>', now)]),
+          )
+          .as('nextVisitAt'),
+      ])
+      .where('clientId', 'in', clientIds)
+      .groupBy('clientId')
+      .execute();
+    return new Map(
+      rows.map((row) => [
+        row.clientId,
+        {
+          visits: Number(row.visits),
+          noShows: Number(row.noShows),
+          cancellations: Number(row.cancellations),
+          spentMinor: Number(row.spentMinor ?? 0),
+          lastVisitAt: row.lastVisitAt,
+          nextVisitAt: row.nextVisitAt,
+        },
+      ]),
+    );
   }
 
   private rowQuery() {

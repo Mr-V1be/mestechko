@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  applyScheduleChange,
   DomainError,
   ignoreProductionCalendar,
   patternFromTemplate,
@@ -106,5 +107,55 @@ describe('schedule impact', () => {
       'absent',
       'weekend',
     ]);
+  });
+});
+
+describe('schedule changes', () => {
+  const base = calendarOf('five_two');
+
+  it('applies a new pattern from a date and keeps the old one before it', () => {
+    const changed = applyScheduleChange(base, {
+      kind: 'pattern',
+      locationId: LOCATION_ID,
+      pattern: patternFromTemplate('two_two', {
+        hours,
+        weekdays: [],
+        anchorDate: date('2026-03-09'),
+      }),
+      validFrom: date('2026-03-09'),
+    });
+    expect(
+      changed.assignments.map((assignment) => assignment.validUntil?.toString() ?? null),
+    ).toEqual(['2026-03-08', null]);
+    expect(worksOn(changed, '2026-03-07')).toBe(false);
+    expect(worksOn(changed, '2026-03-14')).toBe(true);
+  });
+
+  it('sets, then clears, a date exception', () => {
+    const off = applyScheduleChange(base, {
+      kind: 'day',
+      date: date('2026-03-04'),
+      day: { kind: 'off' },
+    });
+    expect(worksOn(off, '2026-03-04')).toBe(false);
+    const back = applyScheduleChange(off, {
+      kind: 'day',
+      date: date('2026-03-04'),
+      day: { kind: 'regular' },
+    });
+    expect(worksOn(back, '2026-03-04')).toBe(true);
+  });
+
+  it('refuses an absence overlapping another one', () => {
+    const away = applyScheduleChange(base, {
+      kind: 'absence',
+      absence: { from: date('2026-03-02'), to: date('2026-03-06'), kind: 'vacation' },
+    });
+    expect(() =>
+      applyScheduleChange(away, {
+        kind: 'absence',
+        absence: { from: date('2026-03-06'), to: date('2026-03-07'), kind: 'day_off' },
+      }),
+    ).toThrow(DomainError);
   });
 });
