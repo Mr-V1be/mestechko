@@ -92,6 +92,9 @@ export class BookingOptions {
             description: service.description,
             durationMinutes: service.durationMinutes,
             ...priceOf(service, terms, business.currency),
+            providerIds: terms
+              .filter((term) => term.serviceId === service.id)
+              .map((term) => term.staffId),
           });
           categories.set(service.categoryId, category);
         }

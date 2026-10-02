@@ -21,10 +21,13 @@ function dateFormatter(locale: string, options: Intl.DateTimeFormatOptions): Int
 }
 
 /** Instants are always shown in the time zone of the business location. */
-export type InstantStyle = 'time' | 'dayMonth' | 'weekdayShort' | 'weekdayDayMonth' | 'full';
+export type InstantStyle =
+  'time' | 'dayNumber' | 'monthShort' | 'dayMonth' | 'weekdayShort' | 'weekdayDayMonth' | 'full';
 
 const instantStyles: Record<InstantStyle, Intl.DateTimeFormatOptions> = {
   time: { hour: '2-digit', minute: '2-digit' },
+  dayNumber: { day: 'numeric' },
+  monthShort: { month: 'short' },
   dayMonth: { day: 'numeric', month: 'long' },
   weekdayShort: { weekday: 'short' },
   weekdayDayMonth: { weekday: 'short', day: 'numeric', month: 'long' },

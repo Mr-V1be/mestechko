@@ -112,8 +112,14 @@ const resourceAxis: AxisStrategy = {
           intervals: [...day.intervals],
         })),
       ),
-      bookings: items.flatMap((item) => {
-        const block = item.resourceId ? blockOf(item.resourceId, [item]) : null;
+      // Services of one booking on the same resource read as one visit.
+      bookings: [
+        ...Map.groupBy(
+          items.filter((item) => item.resourceId !== null),
+          (item) => `${item.bookingId}:${item.resourceId ?? ''}`,
+        ).values(),
+      ].flatMap((visitItems) => {
+        const block = blockOf(visitItems[0]?.resourceId ?? '', visitItems);
         return block ? [block] : [];
       }),
     };

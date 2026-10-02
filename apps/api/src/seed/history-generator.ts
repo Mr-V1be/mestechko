@@ -81,14 +81,17 @@ function workingMinutes(context: DayContext, staff: BuiltStaff): number {
     : 0;
 }
 
+/** Mostly one service; sometimes a natural pair from two categories (haircut and brows). */
 function pickServices(context: DayContext, staff: BuiltStaff): BuiltService[] {
   const offered = context.catalog.services.filter((service) =>
     staff.terms.some((term) => term.serviceId === service.id),
   );
+  const first = context.random.pick(offered);
+  const companions = offered.filter((service) => service.categoryId !== first.categoryId);
   const chosen =
-    context.random.chance(COMBO_PROBABILITY) && offered.length > 1
-      ? context.random.shuffle(offered).slice(0, 2)
-      : [context.random.pick(offered)];
+    context.random.chance(COMBO_PROBABILITY) && companions.length > 0
+      ? [first, context.random.pick(companions)]
+      : [first];
   return offered.filter((service) => chosen.includes(service));
 }
 

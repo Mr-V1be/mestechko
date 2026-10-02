@@ -37,6 +37,7 @@ export class CatalogQueries {
       slug: business.slug,
       name: business.name,
       vertical: verticalSummaryOf(vertical),
+      countryCode: business.countryCode,
       currency: business.currency,
       locations,
       booking: {

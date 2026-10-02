@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "dev": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx --watch src/main.ts",
+    "dev": "tsx watch --env-file-if-exists=../../.env --conditions=@mestechko/source src/main.ts",
     "start": "node --env-file-if-exists=../../.env dist/main.js",
     "db:provision": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/provision-database.ts",
     "db:migrate": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/migrate.ts",
