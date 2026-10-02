@@ -77,8 +77,20 @@
 
 .footer {
   position: sticky;
-  bottom: calc(var(--inset-chrome-bottom) + var(--space-3));
+  bottom: var(--inset-chrome-bottom);
   z-index: var(--layer-sticky);
+  /* A solid band across the whole zone: nothing scrolls through around the summary. */
+  margin-inline: calc(var(--space-4) * -1);
+  padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+  background: var(--color-canvas);
+  box-shadow: 0 calc(var(--size-hairline) * -1) 0 var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .footer {
+    margin-inline: calc(var(--space-8) * -1);
+    padding-inline: var(--space-8);
+  }
 }
 
 @media (min-width: 1024px) {

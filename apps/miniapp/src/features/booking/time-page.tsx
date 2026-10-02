@@ -106,7 +106,7 @@ export function TimePage() {
         localDateOf(selection.start, timeZone) === selectedDate;
       update(keepStart ? { date: selectedDate } : { date: selectedDate, start: null });
     }
-  }, [days, selectedDate, selection.date, update]);
+  }, [days, selectedDate, selection.date, selection.start, timeZone, update]);
 
   useMainButton({
     text: t('time.continue'),
