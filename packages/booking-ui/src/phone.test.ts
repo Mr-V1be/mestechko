@@ -11,8 +11,8 @@ describe('formatPhone', () => {
     expect(formatPhone('+77011234567')).toBe('+7 701 123 4567');
   });
 
-  it('keeps fictional demo numbers readable', () => {
-    expect(formatPhone('+447700900123')).toBe('+44 7700 900123');
+  it('writes demo numbers like Russian ones', () => {
+    expect(formatPhone('+70004123785')).toBe('+7 000 412-37-85');
   });
 
   it('returns unparseable input unchanged', () => {

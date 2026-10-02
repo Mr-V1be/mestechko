@@ -50,7 +50,10 @@ export async function captureMiniApp(session: Session, base: string): Promise<vo
   await page.getByRole('button', { name: 'Продолжить' }).click();
   await page.waitForURL(/\/confirm/);
   await shot('08-confirm');
-  await page.getByLabel('Телефон').fill('+7 916 123-45-67');
+  // The demo visitor's number is a demo one (+7 0XX …), filled in by the app.
+  await page.waitForFunction(() =>
+    document.querySelector<HTMLInputElement>('input[type="tel"]')?.value.startsWith('+7 0'),
+  );
   await page.getByRole('button', { name: 'Записаться' }).click();
   await page.waitForURL(/created=1/);
   await shot('09-success');

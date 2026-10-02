@@ -81,7 +81,7 @@ export function book(
       staffId: input.staffId,
       start: input.start,
       agreedTotal: input.agreedTotal ?? FIXTURE_PRICE,
-      contact: { name: 'Клиент', phone: '+79161234567' },
+      contact: { name: 'Клиент', phone: '+70001234567' },
       comment: null,
     },
   });

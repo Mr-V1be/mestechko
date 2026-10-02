@@ -1,4 +1,7 @@
-import type { TelegramUser } from '../../../shared/application/messenger-user.js';
+import type {
+  TelegramClientUser,
+  TelegramUser,
+} from '../../../shared/application/messenger-user.js';
 
 export interface UserAccount {
   readonly id: string;
@@ -55,7 +58,7 @@ export interface SessionTokens {
 }
 
 export interface TelegramLaunch {
-  readonly user: TelegramUser;
+  readonly user: TelegramClientUser;
   readonly startParam: string | null;
 }
 

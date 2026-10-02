@@ -1,3 +1,4 @@
+import { formatDemoPhone, isDemoPhone } from '@mestechko/contracts/client';
 import { parsePhoneNumberFromString } from 'libphonenumber-js/min';
 
 const DIGITS = /\D/g;
@@ -7,6 +8,10 @@ const DIGITS = /\D/g;
  * the country uses at home: `+79161046686` → `+7 916 104-66-86`.
  */
 export function formatPhone(e164: string): string {
+  // Demo numbers are deliberately outside the numbering plan; they read like Russian ones.
+  if (isDemoPhone(e164)) {
+    return formatDemoPhone(e164);
+  }
   const parsed = parsePhoneNumberFromString(e164);
   if (!parsed) {
     return e164;

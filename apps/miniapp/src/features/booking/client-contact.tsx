@@ -1,11 +1,12 @@
 import { formatPhone } from '@mestechko/booking-ui';
-import type { BookingContact } from '@mestechko/contracts/client';
+import { demoPhoneFor, type BookingContact } from '@mestechko/contracts/client';
 import { TextField } from '@mestechko/ui';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
 import type { TFunction } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useProfile } from '../../platform/api/queries';
+import { useHost } from '../../platform/telegram/host-context';
 import { useContactDraft, type ContactDraft } from './contact-draft';
 import { formatPhoneInput, normalizePhone } from './phone';
 
@@ -14,12 +15,19 @@ export interface ContactErrors {
   readonly phone?: string;
 }
 
-function telegramFirstName(): string {
+function telegramUser(): { readonly id: string; readonly firstName: string } | null {
   try {
-    return retrieveLaunchParams().tgWebAppData?.user?.first_name ?? '';
+    const user = retrieveLaunchParams().tgWebAppData?.user;
+    return user ? { id: String(user.id), firstName: user.first_name } : null;
   } catch {
-    return '';
+    return null;
   }
+}
+
+/** The demo runs outside Telegram: its visitors use demo numbers, never real ones. */
+export function useDemoContacts(): boolean {
+  const { status } = useHost();
+  return status.status === 'ready' && status.host.kind === 'emulated';
 }
 
 /**
@@ -28,16 +36,19 @@ function telegramFirstName(): string {
  */
 export function useClientContact(slug: string) {
   const profile = useProfile(slug);
+  const demo = useDemoContacts();
   const [contact, setContact] = useContactDraft(`mst-contact:${slug}`, () => null);
   useEffect(() => {
     if (profile.data && !contact.name && !contact.phone) {
+      const user = telegramUser();
+      const known = profile.data.phone;
       setContact({
-        name: profile.data.displayName ?? telegramFirstName(),
-        phone: profile.data.phone ? formatPhone(profile.data.phone) : '',
+        name: profile.data.displayName ?? user?.firstName ?? '',
+        phone: known ? formatPhone(known) : demo && user ? formatPhone(demoPhoneFor(user.id)) : '',
         comment: contact.comment,
       });
     }
-  }, [profile.data, contact, setContact]);
+  }, [profile.data, contact, setContact, demo]);
   return [contact, setContact] as const;
 }
 
@@ -46,8 +57,9 @@ export function checkContact(
   t: TFunction,
   contact: ContactDraft,
   countryCode: string,
+  options: { readonly allowDemo: boolean },
 ): { readonly contact: BookingContact | null; readonly errors: ContactErrors } {
-  const phone = normalizePhone(contact.phone, countryCode);
+  const phone = normalizePhone(contact.phone, countryCode, options);
   const name = contact.name.trim();
   const errors: ContactErrors = {
     ...(name ? {} : { name: t('confirm.nameRequired') }),

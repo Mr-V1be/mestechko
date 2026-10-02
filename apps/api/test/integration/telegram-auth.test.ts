@@ -63,6 +63,15 @@ describe('Mini App launch data on the server', () => {
     expect(returning.demoUserId).toBe('9100000000123');
   });
 
+  it('takes demo phone numbers only from demo launches', async () => {
+    const real = new TmaTelegramLaunch(
+      { botToken: '987654:REAL-BOT-TOKEN-abcdefghijklmnopqr', demoKey: TEST_DEMO_KEY },
+      86_400,
+      { now: () => Temporal.Now.instant() },
+    );
+    expect(real.verify(signedAt(Temporal.Now.instant(), TEST_DEMO_KEY)).user.demoLaunch).toBe(true);
+  });
+
   it('accepts fresh, correctly signed launch data', async () => {
     const response = await listWith(`tma ${signedAt(Temporal.Now.instant(), TEST_DEMO_KEY)}`);
     expect(response.statusCode).toBe(200);

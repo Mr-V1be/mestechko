@@ -188,7 +188,7 @@ describe('Telegram bot', () => {
         staffId: null,
         date,
         dayPart: null,
-        contact: { name: 'Ждущий клиент', phone: '+79161112233' },
+        contact: { name: 'Ждущий клиент', phone: '+70001112233' },
       },
     });
     expect(join.statusCode).toBe(201);

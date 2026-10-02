@@ -9,6 +9,7 @@ import {
 } from '@mestechko/domain';
 import { isValidPhoneNumber } from 'libphonenumber-js/min';
 import { z } from 'zod';
+import { isDemoPhone } from './demo-phones.js';
 
 export const uuidSchema = z.uuid();
 export const slugSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/);
@@ -16,11 +17,16 @@ export const slugSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/);
 export const localDateSchema = z.iso.date();
 /** Absolute time, ISO 8601 with offset. */
 export const instantSchema = z.iso.datetime({ offset: true });
-/** Phone in E.164 form, e.g. `+79161234567`, checked against numbering plans. */
+/**
+ * Phone in E.164 form, e.g. `+79161234567`, checked against numbering plans. Demo
+ * numbers pass the schema; the API accepts them only from demo launches.
+ */
 export const phoneSchema = z
   .string()
   .regex(/^\+[1-9]\d{6,14}$/)
-  .refine((value) => isValidPhoneNumber(value), { message: 'Invalid phone number' });
+  .refine((value) => isValidPhoneNumber(value) || isDemoPhone(value), {
+    message: 'Invalid phone number',
+  });
 
 export const currencySchema = z.enum(Object.keys(currencies) as [CurrencyCode, ...CurrencyCode[]]);
 export const moneySchema = z.object({

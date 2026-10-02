@@ -1,7 +1,7 @@
 import type { Clock } from '@mestechko/domain';
 import { parse, sign, validate } from '@tma.js/init-data-node';
 import { ApplicationError } from '../../../shared/application/application-error.js';
-import type { TelegramUser } from '../../../platform/http/principal.js';
+import type { TelegramUser } from '../../../shared/application/messenger-user.js';
 import type {
   TelegramLaunch,
   TelegramLaunchSigner,
@@ -35,7 +35,7 @@ export class TmaTelegramLaunch implements TelegramLaunchVerifier, TelegramLaunch
   }
 
   verify(initData: string): TelegramLaunch {
-    const signed = this.verificationKeys.some((key) => {
+    const signedWith = this.verificationKeys.find((key) => {
       try {
         validate(initData, key, { expiresIn: 0 });
         return true;
@@ -43,7 +43,7 @@ export class TmaTelegramLaunch implements TelegramLaunchVerifier, TelegramLaunch
         return false;
       }
     });
-    if (!signed) {
+    if (signedWith === undefined) {
       throw new ApplicationError('telegram_auth_invalid', 'Launch data signature is invalid');
     }
     const data = parse(initData);
@@ -62,6 +62,7 @@ export class TmaTelegramLaunch implements TelegramLaunchVerifier, TelegramLaunch
         lastName: user.last_name ?? null,
         username: user.username ?? null,
         languageCode: user.language_code ?? null,
+        demoLaunch: signedWith === this.keys.demoKey,
       },
       startParam: data.start_param ?? null,
     };

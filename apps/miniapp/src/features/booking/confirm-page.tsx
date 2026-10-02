@@ -27,6 +27,7 @@ import {
   checkContact,
   ContactFields,
   useClientContact,
+  useDemoContacts,
   type ContactErrors,
 } from './client-contact';
 import { idempotencyKeyFor } from './contact-draft';
@@ -57,11 +58,12 @@ export function ConfirmPage() {
   const createBooking = useCreateBooking(selection.slug);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [contact, setContact] = useClientContact(selection.slug);
+  const demoContacts = useDemoContacts();
   const selectionKey = `${selection.slug}:${selection.serviceIds.join(',')}:${selection.staff ?? ''}:${selection.start ?? ''}`;
   const idempotencyKey = useMemo(() => idempotencyKeyFor(selectionKey), [selectionKey]);
 
   const submit = () => {
-    const checked = checkContact(t, contact, business.countryCode);
+    const checked = checkContact(t, contact, business.countryCode, { allowDemo: demoContacts });
     setErrors(checked.errors);
     const agreedTotal = draftBooking.quote?.assigned?.total;
     if (!checked.contact || !selection.start || !agreedTotal) {

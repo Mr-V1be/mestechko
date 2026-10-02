@@ -14,6 +14,7 @@ import {
   type RouteResult,
 } from '@mestechko/contracts';
 import { TelegramClient } from '../../../platform/http/auth.guard.js';
+import { clientContactOf } from '../../clients/api/client-contact-policy.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import type { TelegramUser } from '../../../platform/http/principal.js';
 import { ClientBookings, type ClientIdentity } from '../application/client/client-bookings.js';
@@ -58,7 +59,7 @@ export class MiniAppBookingsController {
       staffId: input.body.staffId,
       start: input.body.start,
       agreedTotal: input.body.agreedTotal,
-      contact: { displayName: input.body.contact.name, phone: input.body.contact.phone },
+      contact: clientContactOf(input.body.contact, user),
       comment: input.body.comment,
       surface: MINI_APP.surface,
     });

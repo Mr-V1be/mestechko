@@ -71,13 +71,9 @@ const surnames: readonly (readonly [string, string])[] = [
   ['Никитин', 'Никитина'],
   ['Захаров', 'Захарова'],
 ];
-/**
- * Ofcom reserves +44 7700 900000–900999 for fiction and demonstrations: these numbers
- * are never assigned to subscribers, so the public demo cannot show a real person's
- * phone. See docs/demo-data.md.
- */
-const FICTIONAL_PHONE_PREFIX = '+447700900';
-const FICTIONAL_PHONE_COUNT = 1000;
+/** Demo numbers are `+7 0XX …`: no Russian code starts with 0 (docs/demo-data.md). */
+const DEMO_PHONE_PREFIX = '+70';
+const DEMO_SUBSCRIBER_NUMBERS = 1_000_000_000;
 
 /** Occasional notes clients leave when booking. */
 export const clientComments = [
@@ -95,28 +91,20 @@ export interface DemoPerson {
 }
 
 export function generatePeople(random: Random, count: number, femaleShare: number): DemoPerson[] {
-  if (count > FICTIONAL_PHONE_COUNT) {
-    throw new Error('Not enough fictional phone numbers for this many demo people');
-  }
-  const used = new Set<string>();
-  const phones = random.shuffle(Array.from({ length: FICTIONAL_PHONE_COUNT }, (_, index) => index));
+  const usedNames = new Set<string>();
+  const usedPhones = new Set<string>();
   const people: DemoPerson[] = [];
   while (people.length < count) {
     const female = random.chance(femaleShare);
     const [masculine, feminine] = random.pick(surnames);
     const displayName = `${random.pick(female ? femaleNames : maleNames)} ${female ? feminine : masculine}`;
-    if (used.has(displayName)) {
+    const phone = `${DEMO_PHONE_PREFIX}${String(random.int(0, DEMO_SUBSCRIBER_NUMBERS - 1)).padStart(9, '0')}`;
+    if (usedNames.has(displayName) || usedPhones.has(phone)) {
       continue;
     }
-    used.add(displayName);
-    const suffix = phones[people.length];
-    if (suffix === undefined) {
-      throw new Error('Fictional phone numbers ran out');
-    }
-    people.push({
-      displayName,
-      phone: `${FICTIONAL_PHONE_PREFIX}${String(suffix).padStart(3, '0')}`,
-    });
+    usedNames.add(displayName);
+    usedPhones.add(phone);
+    people.push({ displayName, phone });
   }
   return people;
 }

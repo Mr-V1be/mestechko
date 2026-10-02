@@ -1,9 +1,11 @@
 import type { AuthKind } from '@mestechko/contracts';
 import type { FastifyRequest } from 'fastify';
 import type { BusinessAccess } from '../../shared/application/business-access.js';
-import type { TelegramUser } from '../../shared/application/messenger-user.js';
+import type { TelegramClientUser } from '../../shared/application/messenger-user.js';
 
-export type { BusinessAccess, TelegramUser };
+export type { BusinessAccess };
+/** The verified Telegram user of a Mini App request. */
+export type TelegramUser = TelegramClientUser;
 
 export type Principal =
   | { readonly kind: 'session'; readonly userId: string; readonly sessionId: string }

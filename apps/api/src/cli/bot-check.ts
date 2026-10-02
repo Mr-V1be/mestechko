@@ -28,8 +28,8 @@ import type { Kysely } from 'kysely';
 
 const MS_PER_HOUR = 3_600_000;
 const MS_PER_DAY = 24 * MS_PER_HOUR;
-/** Seeded demo numbers come from a fictional range; so does the checker's contact. */
-const CHECK_CONTACT = { displayName: 'Проверка бота', phone: '+447700900999' };
+/** A demo number (`+7 0XX`, see docs/demo-data.md): the check never stores a real one. */
+const CHECK_CONTACT = { displayName: 'Проверка бота', phone: '+70000000999' };
 
 const { positionals, values } = parseArgs({
   allowPositionals: true,

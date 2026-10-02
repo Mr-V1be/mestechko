@@ -4,6 +4,7 @@
  */
 export * from './client.js';
 export * from './enums.js';
+export * from './demo-phones.js';
 export type * from './routes/public-catalog.js';
 export type * from './routes/miniapp-bookings.js';
 export type * from './routes/miniapp-waitlist.js';

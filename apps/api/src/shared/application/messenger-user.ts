@@ -6,3 +6,9 @@ export interface TelegramUser {
   readonly username: string | null;
   readonly languageCode: string | null;
 }
+
+/** A Telegram user of a request, and whether the launch was signed for the demo. */
+export interface TelegramClientUser extends TelegramUser {
+  /** Demo launches may use demo contacts; real launches are held to real data. */
+  readonly demoLaunch: boolean;
+}

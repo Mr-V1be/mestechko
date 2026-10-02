@@ -12,6 +12,7 @@ import {
   checkContact,
   ContactFields,
   useClientContact,
+  useDemoContacts,
   type ContactErrors,
 } from '../booking/client-contact';
 import styles from './waitlist.module.css';
@@ -45,6 +46,7 @@ export function WaitlistSheet({
   const business = useCurrentBusiness();
   const join = useJoinWaitlist(business.slug);
   const [contact, setContact] = useClientContact(business.slug);
+  const demoContacts = useDemoContacts();
   const [errors, setErrors] = useState<ContactErrors>({});
   const [dayPart, setDayPart] = useState<DayPart | typeof ANY_TIME>(ANY_TIME);
   const [chosenDate, setDate] = useState<string | null>(null);
@@ -52,7 +54,7 @@ export function WaitlistSheet({
   const week = Array.from({ length: WEEK_DAYS }, (_, index) => addDays(wish.weekStart, index));
 
   const submit = () => {
-    const checked = checkContact(t, contact, business.countryCode);
+    const checked = checkContact(t, contact, business.countryCode, { allowDemo: demoContacts });
     setErrors(checked.errors);
     if (!checked.contact) {
       haptics.error();
