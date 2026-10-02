@@ -64,6 +64,12 @@ export function localDateOf(epochMs: number, timeZone: string): PlainDate {
   return Temporal.Instant.fromEpochMilliseconds(epochMs).toZonedDateTimeISO(timeZone).toPlainDate();
 }
 
+/** Minutes since local midnight of the instant's day in the time zone. */
+export function localMinuteOf(epochMs: number, timeZone: string): MinuteOfDay {
+  const local = Temporal.Instant.fromEpochMilliseconds(epochMs).toZonedDateTimeISO(timeZone);
+  return local.hour * 60 + local.minute;
+}
+
 /** Absolute bounds of a local calendar day (23, 24 or 25 hours long around DST). */
 export function localDayBounds(date: PlainDate, timeZone: string): InstantInterval {
   const start = date.toZonedDateTime({ timeZone }).epochMilliseconds;

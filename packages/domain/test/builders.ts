@@ -59,6 +59,7 @@ const baseRules: BookingRules = {
   calendarPolicy: ignoreProductionCalendar,
   prepayment: { depositPercent: 0 },
   repeatVisit: { suggestAfterDays: null },
+  clientChanges: { cutoffMinutes: 120 },
 };
 
 export const rules = (overrides: BookingRulesOverrides = {}): BookingRules =>

@@ -8,6 +8,11 @@ export interface PrepaymentRule {
   readonly depositPercent: number;
 }
 
+export interface ClientChangesRule {
+  /** Clients reschedule or cancel online until this many minutes before the visit. */
+  readonly cutoffMinutes: number;
+}
+
 export interface RepeatVisitRule {
   /** Days after a visit when the client is invited back; `null` disables it. */
   readonly suggestAfterDays: number | null;
@@ -26,6 +31,7 @@ export interface BookingRules {
   readonly calendarPolicy: CalendarPolicy;
   readonly prepayment: PrepaymentRule;
   readonly repeatVisit: RepeatVisitRule;
+  readonly clientChanges: ClientChangesRule;
 }
 
 /** Only the differences from the vertical defaults are stored per business. */
@@ -39,6 +45,7 @@ const SLOT_STEP_RANGE = { min: 5, max: 240 } as const;
 const HORIZON_RANGE = { min: 1, max: 366 } as const;
 const SERVICES_RANGE = { min: 1, max: 10 } as const;
 const PERCENT_MAX = 100;
+const CHANGE_CUTOFF_RANGE = { min: 0, max: 7 * 24 * 60 } as const;
 
 function isWithin(value: number, range: { min: number; max: number }): boolean {
   return Number.isInteger(value) && value >= range.min && value <= range.max;
@@ -77,6 +84,11 @@ export function validateBookingRules(rules: BookingRules): void {
     'invalid_booking_rules',
     'Repeat visit interval must be positive',
   );
+  invariant(
+    isWithin(rules.clientChanges.cutoffMinutes, CHANGE_CUTOFF_RANGE),
+    'invalid_booking_rules',
+    'Change cutoff must be between 0 minutes and 7 days',
+  );
   validateCalendarPolicy(rules.calendarPolicy);
 }
 
@@ -93,6 +105,7 @@ export function resolveBookingRules(
     calendarPolicy: { ...defaults.calendarPolicy, ...overrides.calendarPolicy },
     prepayment: { ...defaults.prepayment, ...overrides.prepayment },
     repeatVisit: { ...defaults.repeatVisit, ...overrides.repeatVisit },
+    clientChanges: { ...defaults.clientChanges, ...overrides.clientChanges },
   };
   validateBookingRules(rules);
   return rules;

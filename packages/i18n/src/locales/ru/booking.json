@@ -8,6 +8,8 @@
   "source": {
     "telegram_mini_app": "Telegram",
     "max_mini_app": "MAX",
+    "telegram_bot": "Бот в Telegram",
+    "max_bot": "Бот в MAX",
     "cabinet": "Администратор",
     "widget": "Сайт"
   }

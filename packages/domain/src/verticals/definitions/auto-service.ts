@@ -81,5 +81,6 @@ export const autoService = defineVertical({
     },
     prepayment: { depositPercent: 0 },
     repeatVisit: { suggestAfterDays: 180 },
+    clientChanges: { cutoffMinutes: 240 },
   },
 });

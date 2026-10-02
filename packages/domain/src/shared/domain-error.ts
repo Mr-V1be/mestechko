@@ -11,6 +11,7 @@ export const domainErrorCodes = [
   'invalid_booking_rules',
   'invalid_service_combo',
   'invalid_money',
+  'invalid_waitlist_window',
   'unknown_reference',
 ] as const;
 

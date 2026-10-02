@@ -81,5 +81,6 @@ export const dentalClinic = defineVertical({
     },
     prepayment: { depositPercent: 0 },
     repeatVisit: { suggestAfterDays: 180 },
+    clientChanges: { cutoffMinutes: 1440 },
   },
 });

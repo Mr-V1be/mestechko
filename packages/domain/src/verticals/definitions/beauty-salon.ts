@@ -109,5 +109,6 @@ export const beautySalon = defineVertical({
     },
     prepayment: { depositPercent: 0 },
     repeatVisit: { suggestAfterDays: 35 },
+    clientChanges: { cutoffMinutes: 120 },
   },
 });

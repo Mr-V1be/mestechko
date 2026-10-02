@@ -78,5 +78,6 @@ export const barbershop = defineVertical({
     },
     prepayment: { depositPercent: 0 },
     repeatVisit: { suggestAfterDays: 28 },
+    clientChanges: { cutoffMinutes: 60 },
   },
 });
