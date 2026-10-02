@@ -1,5 +1,7 @@
-import { apiErrorBodySchema, type ApiErrorCode } from './errors.js';
-import { buildPath, type RouteRequest, type RouteResult, type RouteSpec } from './route.js';
+import type { ApiErrorCode } from './errors.js';
+import { routeManifest } from './generated/route-manifest.js';
+import { buildPath, type RouteRequest, type RouteResult } from './route.js';
+import type { ApiRoutes } from './routes/index.js';
 
 /** Failures that never reached a valid API response. */
 export type TransportErrorCode = 'network_error' | 'timeout' | 'unexpected_response';
@@ -26,6 +28,20 @@ export class ApiError extends Error {
   }
 }
 
+const SERVER_ERROR = 500;
+const TOO_MANY_REQUESTS = 429;
+
+/**
+ * Whether repeating the same request may succeed: transport failures and server-side
+ * errors may be transient, client errors (validation, auth, not found) never are.
+ */
+export function isRetryableError(error: unknown): boolean {
+  if (!(error instanceof ApiError)) {
+    return false;
+  }
+  return error.status === 0 || error.status === TOO_MANY_REQUESTS || error.status >= SERVER_ERROR;
+}
+
 export interface ApiClientOptions {
   /** Absolute or same-origin prefix, e.g. `/api`. */
   readonly baseUrl: string;
@@ -38,6 +54,16 @@ export interface ApiClientOptions {
 
 export interface RequestOptions {
   readonly signal?: AbortSignal;
+}
+
+export type RouteName = keyof ApiRoutes;
+
+export interface ApiClient {
+  request<K extends RouteName>(
+    route: K,
+    input: RouteRequest<ApiRoutes[K]>,
+    options?: RequestOptions,
+  ): Promise<RouteResult<ApiRoutes[K]>>;
 }
 
 const DEFAULT_TIMEOUT_MS = 15_000;
@@ -56,34 +82,36 @@ function queryString(query: unknown): string {
   for (const [key, value] of Object.entries(
     query as Record<string, QueryScalar | readonly QueryScalar[] | null | undefined>,
   )) {
-    if (value === undefined || value === null) {
-      continue;
+    if (value !== undefined && value !== null) {
+      search.set(key, queryValue(value));
     }
-    search.set(key, queryValue(value));
   }
   const encoded = search.toString();
   return encoded ? `?${encoded}` : '';
 }
 
+/** Reads the error envelope by shape; clients carry no schema library. */
 async function toApiError(response: Response): Promise<ApiError> {
-  const parsed = apiErrorBodySchema.safeParse(await response.json().catch(() => null));
-  if (!parsed.success) {
-    return new ApiError({
-      status: response.status,
-      code: 'unexpected_response',
-      message: `Unexpected response ${String(response.status)}`,
-    });
+  const body: unknown = await response.json().catch(() => null);
+  const error =
+    typeof body === 'object' && body !== null ? (body as { error?: unknown }).error : undefined;
+  if (typeof error === 'object' && error !== null) {
+    const { code, message, details, requestId } = error as Record<string, unknown>;
+    if (typeof code === 'string' && typeof message === 'string') {
+      return new ApiError({
+        status: response.status,
+        code: code as ApiErrorCode,
+        message,
+        details,
+        requestId: typeof requestId === 'string' ? requestId : undefined,
+      });
+    }
   }
-  const { code, message, details, requestId } = parsed.data.error;
-  return new ApiError({ status: response.status, code, message, details, requestId });
-}
-
-export interface ApiClient {
-  request<R extends RouteSpec>(
-    route: R,
-    input: RouteRequest<R>,
-    options?: RequestOptions,
-  ): Promise<RouteResult<R>>;
+  return new ApiError({
+    status: response.status,
+    code: 'unexpected_response',
+    message: `Unexpected response ${String(response.status)}`,
+  });
 }
 
 export function createApiClient(options: ApiClientOptions): ApiClient {
@@ -91,13 +119,14 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
   return {
-    async request(route, input, requestOptions = {}) {
+    async request(name, input, requestOptions = {}) {
+      const route = routeManifest[name];
       const params = input.params as Readonly<Record<string, string>> | undefined;
       const url = `${options.baseUrl}${buildPath(route.path, params)}${queryString(input.query)}`;
       const headers = new Headers({ accept: 'application/json' });
       const requestHeaders: Readonly<Record<string, string>> = input.headers ?? {};
-      for (const [name, value] of Object.entries(requestHeaders)) {
-        headers.set(name, value);
+      for (const [header, value] of Object.entries(requestHeaders)) {
+        headers.set(header, value);
       }
       const authorization = options.authorization?.();
       if (authorization) {
@@ -135,7 +164,7 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
       if (!response.ok) {
         throw await toApiError(response);
       }
-      if (route.response === null) {
+      if (!route.hasResponseBody) {
         return undefined as never;
       }
       return (await response.json()) as never;

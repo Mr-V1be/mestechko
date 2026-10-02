@@ -2,6 +2,8 @@ export * from './primitives.js';
 export * from './errors.js';
 export * from './route.js';
 export * from './client.js';
+export * from './enums.js';
+export * from './route-meta.js';
 export * from './openapi.js';
 export * from './routes/index.js';
 export * from './routes/public-catalog.js';

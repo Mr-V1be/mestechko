@@ -27,6 +27,8 @@ export const publicBusinessSchema = z.object({
   slug: slugSchema,
   name: z.string(),
   vertical: verticalSummarySchema,
+  /** ISO 3166-1 alpha-2; the default region for phone numbers. */
+  countryCode: z.string().regex(/^[A-Z]{2}$/),
   currency: currencySchema,
   locations: z.array(locationSchema),
   booking: z.object({
@@ -44,6 +46,8 @@ export const catalogServiceSchema = z.object({
   /** Lowest price among the staff; `priceVaries` means some charge more. */
   price: moneySchema,
   priceVaries: z.boolean(),
+  /** Staff who provide the service here; services combine only when someone does them all. */
+  providerIds: z.array(uuidSchema),
 });
 
 export const serviceCategorySchema = z.object({

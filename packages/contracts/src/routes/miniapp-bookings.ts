@@ -8,14 +8,13 @@ import {
   phoneSchema,
   uuidSchema,
 } from '../primitives.js';
+import { bookingScopes } from '../enums.js';
 import { defineRoute } from '../route.js';
 import { businessParamsSchema, locationSchema } from './public-catalog.js';
 
 const MAX_SERVICES = 10;
 const MAX_NAME_LENGTH = 80;
 const MAX_COMMENT_LENGTH = 500;
-
-export const bookingScopes = ['upcoming', 'past'] as const;
 
 export const clientBookingSchema = z.object({
   id: uuidSchema,
@@ -107,5 +106,4 @@ export const getMiniAppProfile = defineRoute({
 });
 
 export type ClientBooking = z.infer<typeof clientBookingSchema>;
-export type BookingScope = (typeof bookingScopes)[number];
 export type BookingContact = z.infer<typeof bookingContactSchema>;

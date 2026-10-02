@@ -14,10 +14,10 @@ import {
   uuidSchema,
   verticalSummarySchema,
 } from '../primitives.js';
+import { scheduleAxes } from '../enums.js';
 import { defineRoute } from '../route.js';
 import { locationSchema } from './public-catalog.js';
 
-export const scheduleAxes = ['staff', 'resource'] as const;
 const MAX_PAGE_SIZE = 100;
 
 const cabinetParamsSchema = z.object({ businessId: uuidSchema });
@@ -170,7 +170,6 @@ export const getCabinetBooking = defineRoute({
   response: cabinetBookingDetailsSchema,
 });
 
-export type ScheduleAxis = (typeof scheduleAxes)[number];
 export type ScheduleColumn = z.infer<typeof scheduleColumnSchema>;
 export type ScheduleBooking = z.infer<typeof scheduleBookingSchema>;
 export type CabinetBookingRow = z.infer<typeof cabinetBookingRowSchema>;

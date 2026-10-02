@@ -9,14 +9,19 @@
       "@mestechko/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./client": {
+      "@mestechko/source": "./src/client-entry.ts",
+      "types": "./dist/client-entry.d.ts",
+      "default": "./dist/client-entry.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",
-    "openapi": "node --conditions=@mestechko/source --import tsx scripts/generate-openapi.ts",
-    "openapi:check": "node --conditions=@mestechko/source --import tsx scripts/generate-openapi.ts --check"
+    "generate": "node --conditions=@mestechko/source --import tsx scripts/generate-artifacts.ts",
+    "generate:check": "node --conditions=@mestechko/source --import tsx scripts/generate-artifacts.ts --check"
   },
   "dependencies": {
     "@mestechko/domain": "workspace:*",

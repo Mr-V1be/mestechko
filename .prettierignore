@@ -4,3 +4,4 @@ coverage/
 docs/screenshots/
 packages/contracts/openapi/openapi.json
 apps/api/src/platform/db/generated/
+packages/contracts/src/generated/
