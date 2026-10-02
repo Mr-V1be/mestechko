@@ -1,3 +1,4 @@
+import { staffAssignmentStrategyIds } from '@mestechko/domain';
 import { z } from 'zod';
 import {
   currencySchema,
@@ -125,7 +126,47 @@ export const getAvailability = defineRoute({
   response: z.object({ timeZone: z.string(), days: z.array(availableDaySchema) }),
 });
 
+export const bookingQuoteSchema = z.object({
+  /** Whether the start is still free for these services and staff preference. */
+  available: z.boolean(),
+  /** Who would be booked right now and what it costs with them. */
+  assigned: z
+    .object({
+      staff: z.object({
+        id: uuidSchema,
+        displayName: z.string(),
+        title: z.string().nullable(),
+        avatarUrl: z.string(),
+      }),
+      total: moneySchema,
+      end: instantSchema,
+    })
+    .nullable(),
+  /** Prices across everyone free at this start; differs only for "any staff". */
+  priceRange: z.object({ min: moneySchema, max: moneySchema }).nullable(),
+  /** How "any staff" is assigned, for explaining it to the client. */
+  assignmentRule: z.enum(staffAssignmentStrategyIds).nullable(),
+});
+
+export const getBookingQuote = defineRoute({
+  method: 'GET',
+  path: '/v1/public/businesses/:slug/quote',
+  summary: 'Who would be booked at a start and the exact price',
+  tag: 'catalog',
+  auth: 'none',
+  status: 200,
+  params: businessParamsSchema,
+  query: z.object({
+    locationId: uuidSchema,
+    serviceIds: listParam(uuidSchema, MAX_SERVICES),
+    staffId: uuidSchema.optional(),
+    start: instantSchema,
+  }),
+  response: bookingQuoteSchema,
+});
+
 export type PublicBusiness = z.infer<typeof publicBusinessSchema>;
+export type BookingQuoteView = z.infer<typeof bookingQuoteSchema>;
 export type Location = z.infer<typeof locationSchema>;
 export type CatalogService = z.infer<typeof catalogServiceSchema>;
 export type ServiceCategory = z.infer<typeof serviceCategorySchema>;

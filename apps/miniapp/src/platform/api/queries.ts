@@ -1,5 +1,6 @@
 import {
   type BookingContact,
+  type Money,
   type BookingScope,
   type ClientBooking,
 } from '@mestechko/contracts/client';
@@ -25,6 +26,15 @@ export const queryKeys = {
       ...input.serviceIds,
     ] as const,
   profile: (slug: string) => ['profile', slug] as const,
+  quote: (slug: string, input: QuoteInput) =>
+    [
+      'quote',
+      slug,
+      input.locationId,
+      input.staffId ?? 'any',
+      input.start,
+      ...input.serviceIds,
+    ] as const,
   bookings: (slug: string, scope: BookingScope) => ['bookings', slug, scope] as const,
   booking: (slug: string, id: string) => ['booking', slug, id] as const,
 };
@@ -102,6 +112,37 @@ export function useAvailability(slug: string, input: AvailabilityInput) {
   });
 }
 
+export interface QuoteInput {
+  readonly locationId: string;
+  readonly serviceIds: readonly string[];
+  readonly staffId: string | null;
+  readonly start: string;
+}
+
+/** Exact price and assignee for a chosen start; refreshed so the client sees current terms. */
+export function useQuote(slug: string, input: QuoteInput | null) {
+  const api = useApi();
+  return useQuery({
+    queryKey: input ? queryKeys.quote(slug, input) : ['quote', slug, 'none'],
+    queryFn: ({ signal }) =>
+      api.request(
+        'getBookingQuote',
+        {
+          params: { slug },
+          query: {
+            locationId: input?.locationId ?? '',
+            serviceIds: [...(input?.serviceIds ?? [])],
+            ...(input?.staffId ? { staffId: input.staffId } : {}),
+            start: input?.start ?? '',
+          },
+        },
+        { signal },
+      ),
+    enabled: input !== null,
+    staleTime: 0,
+  });
+}
+
 export function useProfile(slug: string) {
   const api = useApi();
   return useQuery({
@@ -116,6 +157,7 @@ export interface CreateBookingInput {
   readonly serviceIds: readonly string[];
   readonly staffId: string | null;
   readonly start: string;
+  readonly agreedTotal: Money;
   readonly contact: BookingContact;
   readonly comment: string | null;
 }
@@ -133,6 +175,7 @@ export function useCreateBooking(slug: string) {
           serviceIds: [...input.serviceIds],
           staffId: input.staffId,
           start: input.start,
+          agreedTotal: input.agreedTotal,
           contact: input.contact,
           comment: input.comment,
         },
@@ -142,6 +185,7 @@ export function useCreateBooking(slug: string) {
       void queryClient.invalidateQueries({ queryKey: ['bookings', slug] });
       void queryClient.invalidateQueries({ queryKey: ['availability', slug] });
       void queryClient.invalidateQueries({ queryKey: ['staff', slug] });
+      void queryClient.invalidateQueries({ queryKey: ['quote', slug] });
       void queryClient.invalidateQueries({ queryKey: queryKeys.profile(slug) });
     },
   });

@@ -1,8 +1,15 @@
-import type { AvailableDay, ServiceCategory, StaffOption } from '@mestechko/contracts';
+import type {
+  AvailableDay,
+  BookingQuoteView,
+  ServiceCategory,
+  StaffOption,
+} from '@mestechko/contracts';
 import {
   earliestSlotByStaff,
   findAvailability,
   localDateOf,
+  planBookingOptions,
+  priceRange,
   quoteBooking,
   Temporal,
   type Clock,
@@ -20,6 +27,7 @@ import type {
 import type { WorkCalendarReader } from '../../../scheduling/application/ports.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
 import type { AvailabilityAssembler } from './availability-assembler.js';
+import { pricePlans } from './plan-pricing.js';
 
 /** How far ahead the staff step looks for each person's nearest free time. */
 const NEAREST_SLOT_LOOKAHEAD_DAYS = 14;
@@ -184,6 +192,67 @@ export class BookingOptions {
             date: day.date.toString(),
             slots: day.slots.map((slot) => ({ start: toIso(slot.start) })),
           })),
+        };
+      },
+      { readOnly: true },
+    );
+  }
+
+  /** Who would be booked at the start and the exact price, before the client confirms. */
+  async quote(
+    slug: string,
+    query: {
+      readonly locationId: string;
+      readonly serviceIds: readonly string[];
+      readonly staffId: string | null;
+      readonly start: string;
+    },
+  ): Promise<BookingQuoteView> {
+    const context = await this.businesses.bySlug(slug);
+    return this.unitOfWork.inTenant(
+      context.business.id,
+      async () => {
+        const location = await this.catalog.findLocation(query.locationId);
+        if (!location) {
+          throw notFound('Location');
+        }
+        const start = Date.parse(query.start);
+        const date = localDateOf(start, location.timeZone);
+        const assembled = await this.assembler.assemble({
+          context,
+          locationId: location.id,
+          serviceIds: query.serviceIds,
+          staffId: query.staffId,
+          from: date,
+          to: date,
+          now: this.clock.now(),
+        });
+        const priced = pricePlans(
+          planBookingOptions(assembled.request, start),
+          assembled,
+          context.business.currency,
+        );
+        const first = priced[0];
+        const staff = first
+          ? assembled.staff.find((member) => member.id === first.plan.staffId)
+          : undefined;
+        return {
+          available: first !== undefined,
+          assigned:
+            first && staff
+              ? {
+                  staff: {
+                    id: staff.id,
+                    displayName: staff.displayName,
+                    title: staff.title,
+                    avatarUrl: this.avatars.forSeed(staff.avatarSeed),
+                  },
+                  total: first.total,
+                  end: toIso(first.plan.end),
+                }
+              : null,
+          priceRange: priceRange(priced.map((option) => option.total)),
+          assignmentRule: query.staffId === null ? context.rules.staffAssignment : null,
         };
       },
       { readOnly: true },

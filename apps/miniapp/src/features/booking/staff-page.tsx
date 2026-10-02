@@ -44,7 +44,14 @@ export function StaffPage() {
       null,
     );
   const anyTotal = lowest(options.data?.staff.map((option) => option.total) ?? []);
-  const varies = new Set(options.data?.staff.map((option) => option.total.amountMinor)).size > 1;
+  const anyHighest =
+    options.data?.staff.reduce<Money | null>(
+      (max, option) =>
+        max === null || option.total.amountMinor > max.amountMinor ? option.total : max,
+      null,
+    ) ?? null;
+  const varies =
+    anyTotal !== null && anyHighest !== null && anyHighest.amountMinor !== anyTotal.amountMinor;
 
   return (
     <Page
@@ -91,7 +98,10 @@ export function StaffPage() {
               meta={
                 anyTotal
                   ? varies
-                    ? t('services.priceFrom', { price: format.money(anyTotal) })
+                    ? t('summary.range', {
+                        min: format.money(anyTotal),
+                        max: format.money(anyHighest),
+                      })
                     : format.money(anyTotal)
                   : null
               }

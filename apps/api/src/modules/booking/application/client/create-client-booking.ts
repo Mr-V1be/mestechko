@@ -3,27 +3,25 @@ import {
   initialBookingStatus,
   localDateOf,
   planBookingOptions,
-  quoteBooking,
-  type BookingPlan,
+  priceRange,
+  withinAgreedPrice,
   type BookingSource,
   type Clock,
   type MessengerChannel,
+  type Money,
 } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
-import type {
-  CatalogReader,
-  ServiceView,
-  StaffServiceTerms,
-} from '../../../catalog/application/catalog-reader.js';
+import type { CatalogReader, ServiceView } from '../../../catalog/application/catalog-reader.js';
 import type { ClientDirectory, CustomerIdentities } from '../../../clients/application/ports.js';
 import type {
   BusinessContext,
   BusinessContextResolver,
 } from '../../../tenancy/application/business-context.js';
 import type { AvailabilityAssembler } from '../availability/availability-assembler.js';
+import { pricePlans, serviceOf, type PricedPlan } from '../availability/plan-pricing.js';
 import {
   DuplicateRequestError,
   SlotConflictError,
@@ -46,20 +44,13 @@ export interface CreateClientBookingCommand {
   readonly start: string;
   readonly contact: { readonly name: string; readonly phone: string };
   readonly comment: string | null;
+  /** Total the client confirmed; the booking never costs more. */
+  readonly agreedTotal: Money;
 }
 
 const MS_PER_MINUTE = 60_000;
 /** Bounded retries after concurrent conflicts; each one re-plans on fresh data. */
 const MAX_ATTEMPTS = 4;
-
-/** Plans only contain services the assembler loaded; anything else is a bug. */
-function serviceOf(services: readonly ServiceView[], serviceId: string): ServiceView {
-  const service = services.find((candidate) => candidate.id === serviceId);
-  if (!service) {
-    throw new Error(`Planned service ${serviceId} was not loaded`);
-  }
-  return service;
-}
 
 /**
  * Books a free start for a client. The engine proposes conflict-free plans; the
@@ -125,17 +116,26 @@ export class CreateClientBooking {
         to: date,
         now: this.clock.now(),
       });
-      const plan = planBookingOptions(assembled.request, start)[0];
-      if (!plan) {
+      const priced = pricePlans(
+        planBookingOptions(assembled.request, start),
+        assembled,
+        context.business.currency,
+      );
+      if (priced.length === 0) {
         break;
+      }
+      const option = withinAgreedPrice(priced, command.agreedTotal)[0];
+      if (!option) {
+        throw new ApplicationError('price_changed', 'The price of this time has changed', {
+          range: priceRange(priced.map((candidate) => candidate.total)),
+        });
       }
       const booking = this.toNewBooking(
         context,
         command,
         clientId,
-        plan,
+        option,
         assembled.services,
-        assembled.terms,
         now,
       );
       try {
@@ -165,22 +165,11 @@ export class CreateClientBooking {
     context: BusinessContext,
     command: CreateClientBookingCommand,
     clientId: string,
-    plan: BookingPlan,
+    option: PricedPlan,
     services: readonly ServiceView[],
-    terms: readonly StaffServiceTerms[],
     now: Date,
   ): NewBooking {
-    const currency = context.business.currency;
-    const quote = quoteBooking(
-      plan.items.map((item) => ({
-        serviceId: item.serviceId,
-        basePriceMinor: serviceOf(services, item.serviceId).priceMinor,
-        staffPriceMinor:
-          terms.find((term) => term.staffId === plan.staffId && term.serviceId === item.serviceId)
-            ?.priceMinor ?? null,
-      })),
-      currency,
-    );
+    const { plan, quote } = option;
     return {
       id: this.ids.next(),
       locationId: command.locationId,
@@ -191,7 +180,7 @@ export class CreateClientBooking {
       startsAt: new Date(plan.start),
       endsAt: new Date(plan.end),
       totalPriceMinor: quote.total.amountMinor,
-      currency,
+      currency: context.business.currency,
       comment: command.comment,
       idempotencyKey: command.idempotencyKey,
       createdAt: now,

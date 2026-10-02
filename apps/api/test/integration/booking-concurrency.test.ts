@@ -38,10 +38,18 @@ async function firstSlotTomorrow(
   return start;
 }
 
+const FIXTURE_PRICE = { amountMinor: 250_000, currency: 'RUB' } as const;
+
 function book(
   app: NestFastifyApplication,
   tenant: TenantFixture,
-  input: { initData: string; start: string; staffId: string | null; key?: string },
+  input: {
+    initData: string;
+    start: string;
+    staffId: string | null;
+    key?: string;
+    agreedTotal?: { amountMinor: number; currency: 'RUB' };
+  },
 ) {
   return app.inject({
     method: 'POST',
@@ -55,6 +63,7 @@ function book(
       serviceIds: [tenant.serviceId],
       staffId: input.staffId,
       start: input.start,
+      agreedTotal: input.agreedTotal ?? FIXTURE_PRICE,
       contact: { name: 'Клиент', phone: '+79161234567' },
       comment: null,
     },
@@ -155,5 +164,58 @@ describe('concurrent booking', () => {
       .where('businessId', '=', tenant.businessId)
       .execute();
     expect(stored).toHaveLength(1);
+  });
+
+  it('never books above the agreed price and asks again when only pricier staff are free', async () => {
+    const tenant = await createTenant(databases.admin, { staffCount: 2, chairs: 2 });
+    await databases.admin
+      .updateTable('businesses')
+      .set({ isDemo: true })
+      .where('id', '=', tenant.businessId)
+      .execute();
+    const [senior, junior] = tenant.staffIds;
+    await databases.admin
+      .updateTable('staffServices')
+      .set({ priceMinor: 530_000 })
+      .where('staffId', '=', senior ?? '')
+      .execute();
+    const start = await firstSlotTomorrow(app, tenant);
+    const quote = await app.inject({
+      method: 'GET',
+      url: `/v1/public/businesses/${tenant.slug}/quote?locationId=${tenant.locationId}&serviceIds=${tenant.serviceId}&start=${encodeURIComponent(start)}`,
+    });
+    const terms = quote.json<{
+      priceRange: { min: { amountMinor: number }; max: { amountMinor: number } };
+    }>();
+    expect([terms.priceRange.min.amountMinor, terms.priceRange.max.amountMinor]).toEqual([
+      250_000, 530_000,
+    ]);
+
+    const first = await book(app, tenant, {
+      initData: await launchAs(app, tenant.slug, DEMO_USER_BASE + 300),
+      start,
+      staffId: null,
+    });
+    expect(first.statusCode).toBe(201);
+    expect(first.json<{ staff: { id: string }; total: { amountMinor: number } }>()).toMatchObject({
+      staff: { id: junior },
+      total: { amountMinor: 250_000 },
+    });
+
+    const secondClient = await launchAs(app, tenant.slug, DEMO_USER_BASE + 301);
+    const second = await book(app, tenant, { initData: secondClient, start, staffId: null });
+    expect(second.statusCode).toBe(409);
+    expect(second.json<{ error: { code: string } }>().error.code).toBe('price_changed');
+
+    const agreed = await book(app, tenant, {
+      initData: secondClient,
+      start,
+      staffId: null,
+      agreedTotal: { amountMinor: 530_000, currency: 'RUB' },
+    });
+    expect(agreed.json<{ staff: { id: string }; total: { amountMinor: number } }>()).toMatchObject({
+      staff: { id: senior },
+      total: { amountMinor: 530_000 },
+    });
   });
 });

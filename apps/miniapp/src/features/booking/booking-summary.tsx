@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrentBusiness, useLocation } from '../business/business-context';
 import { useBookingDraft } from './booking-details';
+import { priceText } from './price-text';
 import type { BookingSelection } from './selection';
 import styles from './booking.module.css';
 
@@ -45,7 +46,9 @@ export function BookingSummary({ selection }: { readonly selection: BookingSelec
         )}
         {draft.staff || draft.anyStaff ? (
           <Row icon={<UserRound aria-hidden="true" />}>
-            {draft.staff?.displayName ?? vocabulary.staffAny}
+            {draft.staff?.displayName ??
+              draft.quote?.assigned?.staff.displayName ??
+              vocabulary.staffAny}
           </Row>
         ) : null}
         {selection.start ? (
@@ -57,14 +60,10 @@ export function BookingSummary({ selection }: { readonly selection: BookingSelec
           </Row>
         ) : null}
       </div>
-      {draft.total && draft.services.length > 0 ? (
+      {draft.price && draft.services.length > 0 ? (
         <div className={styles.summaryTotal}>
           <span>{t('summary.total')}</span>
-          <span>
-            {draft.totalIsMinimum
-              ? t('services.priceFrom', { price: format.money(draft.total) })
-              : format.money(draft.total)}
-          </span>
+          <span>{priceText(t, format, draft.price)}</span>
         </div>
       ) : null}
     </section>
@@ -76,7 +75,7 @@ export function BookingSummaryBar({ selection }: { readonly selection: BookingSe
   const { t } = useTranslation();
   const format = useFormat();
   const draft = useBookingDraft(selection);
-  if (draft.services.length === 0 || !draft.total) {
+  if (draft.services.length === 0 || !draft.price) {
     return null;
   }
   return (
@@ -87,11 +86,7 @@ export function BookingSummaryBar({ selection }: { readonly selection: BookingSe
         </span>
         {format.duration(draft.durationMinutes)}
       </span>
-      <span className={styles.barPrice}>
-        {draft.totalIsMinimum
-          ? t('services.priceFrom', { price: format.money(draft.total) })
-          : format.money(draft.total)}
-      </span>
+      <span className={styles.barPrice}>{priceText(t, format, draft.price)}</span>
     </div>
   );
 }

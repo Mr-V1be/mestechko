@@ -8,6 +8,7 @@ export const routeManifest = {
   listPublicServices: { method: 'GET', path: '/v1/public/businesses/:slug/services', status: 200, auth: 'none', hasResponseBody: true },
   listPublicStaff: { method: 'GET', path: '/v1/public/businesses/:slug/staff', status: 200, auth: 'none', hasResponseBody: true },
   getAvailability: { method: 'GET', path: '/v1/public/businesses/:slug/availability', status: 200, auth: 'none', hasResponseBody: true },
+  getBookingQuote: { method: 'GET', path: '/v1/public/businesses/:slug/quote', status: 200, auth: 'none', hasResponseBody: true },
   createMiniAppBooking: { method: 'POST', path: '/v1/miniapp/businesses/:slug/bookings', status: 201, auth: 'telegram', hasResponseBody: true },
   listMiniAppBookings: { method: 'GET', path: '/v1/miniapp/businesses/:slug/bookings', status: 200, auth: 'telegram', hasResponseBody: true },
   getMiniAppBooking: { method: 'GET', path: '/v1/miniapp/businesses/:slug/bookings/:bookingId', status: 200, auth: 'telegram', hasResponseBody: true },

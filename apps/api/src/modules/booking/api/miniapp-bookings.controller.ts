@@ -43,6 +43,7 @@ export class MiniAppBookingsController {
       serviceIds: input.body.serviceIds,
       staffId: input.body.staffId,
       start: input.body.start,
+      agreedTotal: input.body.agreedTotal,
       contact: input.body.contact,
       comment: input.body.comment,
     });

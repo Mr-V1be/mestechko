@@ -60,6 +60,8 @@ export const createMiniAppBooking = defineRoute({
     serviceIds: z.array(uuidSchema).min(1).max(MAX_SERVICES),
     staffId: uuidSchema.nullable(),
     start: instantSchema,
+    /** Total the client saw and confirmed; the booking is never made at a higher price. */
+    agreedTotal: moneySchema,
     contact: bookingContactSchema,
     comment: z
       .string()

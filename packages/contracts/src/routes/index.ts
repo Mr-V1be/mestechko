@@ -10,6 +10,7 @@ export const apiRoutes = {
   listPublicServices: catalog.listPublicServices,
   listPublicStaff: catalog.listPublicStaff,
   getAvailability: catalog.getAvailability,
+  getBookingQuote: catalog.getBookingQuote,
   createMiniAppBooking: miniapp.createMiniAppBooking,
   listMiniAppBookings: miniapp.listMiniAppBookings,
   getMiniAppBooking: miniapp.getMiniAppBooking,

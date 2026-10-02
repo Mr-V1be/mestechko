@@ -10,6 +10,8 @@ export const apiErrors = {
   forbidden: 403,
   not_found: 404,
   slot_unavailable: 409,
+  /** The time is free but now costs more than the client agreed to. */
+  price_changed: 409,
   idempotency_conflict: 409,
   rate_limited: 429,
   internal: 500,
