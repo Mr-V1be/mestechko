@@ -14,7 +14,7 @@ import {
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useSearchParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useOverview, useSchedule } from '../../platform/api/queries';
 import { canOpen, useActiveMembership } from '../../platform/session/active-business';
 import { useSession } from '../../platform/session/session-context';
@@ -23,47 +23,22 @@ import { PageContainer, PageHeader } from '../common/page-header';
 import { NoAccessState, QueryErrorState } from '../common/states';
 import { AgendaList } from './agenda-list';
 import { dayColumns, weekColumns } from './schedule-columns';
-import { addDays, todayIn, weekStart } from './timeline-model';
+import { addDays, weekStart } from './timeline-model';
 import { TimelineGrid } from './timeline-grid';
+import {
+  DEFAULT_AXIS,
+  DEFAULT_VIEW,
+  scheduleViews,
+  useScheduleParams,
+} from './use-schedule-params';
 import styles from './schedule.module.css';
 
-const views = ['day', 'week'] as const;
-type View = (typeof views)[number];
 const WEEK_DAYS = 7;
-const DEFAULT_VIEW: View = 'day';
-const DEFAULT_AXIS: ScheduleAxis = 'staff';
 
 const axisLabels: Record<ScheduleAxis, (vocabulary: ReturnType<typeof useVocabulary>) => string> = {
   staff: (vocabulary) => vocabulary.staffMany,
   resource: (vocabulary) => vocabulary.resourceMany,
 };
-
-function useScheduleParams(defaultLocation: string, timeZone: string) {
-  const [params, setParams] = useSearchParams();
-  const view: View = views.find((candidate) => candidate === params.get('view')) ?? DEFAULT_VIEW;
-  const axis: ScheduleAxis =
-    scheduleAxes.find((candidate) => candidate === params.get('axis')) ?? DEFAULT_AXIS;
-  const date = params.get('date') ?? todayIn(timeZone);
-  const locationId = params.get('location') ?? defaultLocation;
-  const column = params.get('column');
-  const set = (patch: Record<string, string | null>) => {
-    setParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        for (const [key, value] of Object.entries(patch)) {
-          if (value === null) {
-            next.delete(key);
-          } else {
-            next.set(key, value);
-          }
-        }
-        return next;
-      },
-      { replace: true },
-    );
-  };
-  return { view, axis, date, locationId, column, set };
-}
 
 function ScheduleSkeleton() {
   return <Skeleton height="calc(var(--size-hour) * 6)" />;
@@ -187,7 +162,7 @@ function ScheduleBoard({
         <SegmentedControl
           label={t('schedule.view')}
           value={state.view}
-          segments={views.map((value) => ({ value, label: t(`schedule.${value}`) }))}
+          segments={scheduleViews.map((value) => ({ value, label: t(`schedule.${value}`) }))}
           onChange={(value) => {
             state.set({ view: value === DEFAULT_VIEW ? null : value });
           }}
@@ -248,7 +223,14 @@ function ScheduleBoard({
         />
       ) : null}
       {data && columns.length > 0 && (state.view === 'day' || wide) ? (
-        <TimelineGrid columns={columns} onOpenBooking={setOpenBooking} />
+        <TimelineGrid
+          columns={columns}
+          columnsLabel={
+            state.view === 'week' ? t('schedule.days') : axisLabels[state.axis](vocabulary)
+          }
+          density={state.view === 'week' ? 'compact' : 'regular'}
+          onOpenBooking={setOpenBooking}
+        />
       ) : null}
       <BookingDetailsSheet
         businessId={businessId}

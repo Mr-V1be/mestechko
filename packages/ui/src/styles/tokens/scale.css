@@ -45,6 +45,8 @@
   --size-time-axis: 56px;
   --size-schedule-column: 176px;
   --size-schedule-column-min: 140px;
+  --size-schedule-day-column-min: 120px;
+  --size-edge-fade: 28px;
 
   --radius-xs: 6px;
   --radius-sm: 10px;

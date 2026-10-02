@@ -1,10 +1,54 @@
-.scroller {
-  overflow: auto;
-  max-height: calc(100dvh - var(--size-top-bar) - var(--size-bottom-bar) - var(--space-12));
+/* Registered so the paging hook reads the narrowest column width in pixels. */
+@property --timeline-column-min {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.pagerRange {
+  margin-right: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.frame {
+  --timeline-column-min: var(--size-schedule-column-min);
+  position: relative;
+  overflow: hidden;
   border: var(--size-hairline) solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+}
+
+.compactColumns {
+  --timeline-column-min: var(--size-schedule-day-column-min);
+}
+
+.scroller {
+  overflow: auto;
+  max-height: calc(100dvh - var(--size-top-bar) - var(--size-bottom-bar) - var(--space-12));
   overscroll-behavior: contain;
+}
+
+/* Paged columns snap whole: the view never stops on a sliced column. */
+.paged .scroller {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: var(--size-time-axis);
 }
 
 @media (min-width: 1024px) {
@@ -17,9 +61,35 @@
   display: grid;
   grid-template-columns: var(--size-time-axis) repeat(
       var(--columns),
-      minmax(var(--size-schedule-column-min), 1fr)
+      var(--column-width, minmax(var(--timeline-column-min), 1fr))
     );
   min-width: min-content;
+}
+
+/* Shade at an edge that has more columns behind it. */
+.edge {
+  position: absolute;
+  inset-block: 0;
+  z-index: 4;
+  width: var(--size-edge-fade);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.edgeStart {
+  left: var(--size-time-axis);
+  background: linear-gradient(to right, var(--color-edge-shade), transparent);
+}
+
+.edgeEnd {
+  right: 0;
+  background: linear-gradient(to left, var(--color-edge-shade), transparent);
+}
+
+.moreBefore .edgeStart,
+.moreAfter .edgeEnd {
+  opacity: 1;
 }
 
 .corner,
@@ -44,6 +114,7 @@
   min-width: 0;
   padding: var(--space-2) var(--space-3);
   border-left: var(--size-hairline) solid var(--color-border);
+  scroll-snap-align: start;
 }
 
 .axis {

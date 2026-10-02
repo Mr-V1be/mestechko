@@ -2,6 +2,7 @@ import type { Session } from './browser.ts';
 import { fail, stall } from './browser.ts';
 
 const MAX_DAYS_AHEAD = 4;
+const SCROLL_SETTLE_MS = 600;
 
 /** Front-desk paths of the cabinet: sign-in, schedule and bookings, plus their states. */
 export async function captureCabinet(session: Session, base: string): Promise<void> {
@@ -20,6 +21,12 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
     .first()
     .waitFor();
   await shot('03-schedule-day');
+  const nextColumns = page.getByRole('button', { name: 'Следующие колонки' });
+  if (await nextColumns.isVisible()) {
+    await nextColumns.click();
+    await page.waitForTimeout(SCROLL_SETTLE_MS);
+    await shot('03-schedule-day-next-columns');
+  }
 
   await page.getByRole('button', { name: 'Рабочие места' }).click();
   await shot('04-schedule-resources');

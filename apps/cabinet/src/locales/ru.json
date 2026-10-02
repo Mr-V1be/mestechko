@@ -41,7 +41,11 @@
     "emptyDescription": "Записей нет. Клиенты могут записаться через Telegram.",
     "noColumnsTitle": "Здесь никто не работает",
     "noColumnsDescription": "В этом филиале пока нет графиков на выбранные даты.",
-    "bookingLabel": "{{time}}, {{client}}: {{services}}"
+    "bookingLabel": "{{time}}, {{client}}: {{services}}",
+    "days": "Дни",
+    "shownColumns": "{{what}}: {{from}}–{{to}} из {{total}}",
+    "previousColumns": "Предыдущие колонки",
+    "nextColumns": "Следующие колонки"
   },
   "bookings": {
     "title": "Записи",
