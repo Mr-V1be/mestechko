@@ -28,7 +28,7 @@ import {
 } from '../../platform/session/active-business';
 import { useSession } from '../../platform/session/session-context';
 import { useRoleLabel } from '../common/role-label';
-import { navigationSections } from './navigation';
+import { navigationSections, type NavigationSection } from './navigation';
 import styles from './shell.module.css';
 
 function BusinessSwitcher({ membership }: { readonly membership: Membership }) {
@@ -109,22 +109,84 @@ function AccountSheet({
   );
 }
 
-function NavigationLinks({ membership }: { readonly membership: Membership }) {
+function visibleSections(membership: Membership): NavigationSection[] {
+  return navigationSections.filter(
+    (section) => canOpen(membership, section.area) && (!section.demoOnly || appConfig.demoMode),
+  );
+}
+
+function NavigationLinks({
+  membership,
+  sections,
+}: {
+  readonly membership: Membership;
+  readonly sections: readonly NavigationSection[];
+}) {
   const { t } = useTranslation();
-  return navigationSections
-    .filter(
-      (section) => canOpen(membership, section.area) && (!section.demoOnly || appConfig.demoMode),
-    )
-    .map((section) => (
-      <NavLink
-        key={section.path}
-        to={`/b/${membership.business.id}/${section.path}`}
-        className={({ isActive }) => clsx(styles.navItem, isActive && styles.navItemActive)}
+  return sections.map((section) => (
+    <NavLink
+      key={section.path}
+      to={`/b/${membership.business.id}/${section.path}`}
+      className={({ isActive }) => clsx(styles.navItem, isActive && styles.navItemActive)}
+    >
+      <section.icon aria-hidden="true" />
+      {t(section.labelKey)}
+    </NavLink>
+  ));
+}
+
+/** The phone's bottom bar: pinned sections and «Ещё» with the rest. */
+function BottomNavigation({ membership }: { readonly membership: Membership }) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [open, setOpen] = useState(false);
+  const sections = visibleSections(membership);
+  const pinned = sections.filter((section) => section.pinned);
+  const rest = sections.filter((section) => !section.pinned);
+  const current = location.pathname.split('/')[3] ?? '';
+  return (
+    <nav className={styles.bottomNav} aria-label={t('nav.label')}>
+      <NavigationLinks membership={membership} sections={pinned} />
+      {rest.length > 0 ? (
+        <button
+          type="button"
+          className={clsx(
+            styles.navItem,
+            rest.some((section) => section.path === current) && styles.navItemActive,
+          )}
+          aria-haspopup="dialog"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          <Ellipsis aria-hidden="true" />
+          {t('nav.more')}
+        </button>
+      ) : null}
+      <Sheet
+        open={open}
+        onOpenChange={setOpen}
+        title={t('nav.more')}
+        closeLabel={t('common:actions.close')}
       >
-        <section.icon aria-hidden="true" />
-        {t(section.labelKey)}
-      </NavLink>
-    ));
+        <ListGroup>
+          {rest.map((section) => (
+            <ListItem
+              key={section.path}
+              leading={<section.icon aria-hidden="true" />}
+              title={t(section.labelKey)}
+              selected={section.path === current}
+              onClick={() => {
+                setOpen(false);
+                void navigate(`/b/${membership.business.id}/${section.path}`);
+              }}
+            />
+          ))}
+        </ListGroup>
+      </Sheet>
+    </nav>
+  );
 }
 
 /** Navigation around every cabinet screen: sidebar, rail or bottom bar by screen size. */
@@ -169,7 +231,7 @@ export function AppShell() {
           <BusinessSwitcher membership={membership} />
         </div>
         <nav className={styles.nav} aria-label={t('nav.label')}>
-          <NavigationLinks membership={membership} />
+          <NavigationLinks membership={membership} sections={visibleSections(membership)} />
         </nav>
         <div className={styles.sidebarFooter}>
           <div className={styles.account}>
@@ -192,9 +254,7 @@ export function AppShell() {
         </header>
         <Outlet />
       </div>
-      <nav className={styles.bottomNav} aria-label={t('nav.label')}>
-        <NavigationLinks membership={membership} />
-      </nav>
+      <BottomNavigation membership={membership} />
       <AccountSheet membership={membership} open={accountOpen} onOpenChange={setAccountOpen} />
     </div>
   );

@@ -90,7 +90,9 @@
   align-items: center;
   gap: var(--space-1);
   padding: var(--space-2) var(--space-1);
+  border: 0;
   border-radius: var(--radius-md);
+  background: transparent;
   color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);

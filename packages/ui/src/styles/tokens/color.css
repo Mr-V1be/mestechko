@@ -37,6 +37,12 @@
   --color-illustration-line: #22242a;
   --color-illustration-fill: #ffffff;
   --color-illustration-muted: #e2e4e9;
+  /* Data: series hold 3:1 against the surface; comparison series are cool and quieter. */
+  --color-chart-series: #e2590b;
+  --color-chart-series-hover: #c2410c;
+  --color-chart-comparison: #64748b;
+  --color-chart-grid: #e2e4e9;
+  --color-chart-axis: #5d6370;
   --shadow-sm: 0 1px 2px rgb(20 22 28 / 0.06);
   --shadow-md: 0 4px 16px rgb(20 22 28 / 0.08), 0 1px 3px rgb(20 22 28 / 0.06);
   --shadow-lg: 0 18px 48px rgb(20 22 28 / 0.16), 0 4px 12px rgb(20 22 28 / 0.08);
@@ -74,6 +80,11 @@
   --color-illustration-line: #f1f2f4;
   --color-illustration-fill: #1a1c20;
   --color-illustration-muted: #2f3238;
+  --color-chart-series: #ff7a2b;
+  --color-chart-series-hover: #ff9f66;
+  --color-chart-comparison: #8f9bb0;
+  --color-chart-grid: #2b2e34;
+  --color-chart-axis: #a6abb5;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-md: 0 4px 16px rgb(0 0 0 / 0.4);
   --shadow-lg: 0 18px 48px rgb(0 0 0 / 0.55);

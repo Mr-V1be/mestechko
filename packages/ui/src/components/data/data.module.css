@@ -1,0 +1,219 @@
+.tableFrame {
+  overflow-x: auto;
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--size-hairline) solid var(--color-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.table tbody th {
+  font-weight: var(--font-weight-medium);
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tfoot td {
+  border-top: var(--size-hairline) solid var(--color-border);
+  border-bottom: none;
+  font-weight: var(--font-weight-bold);
+}
+
+.numeric {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.sticky {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--color-surface);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover th,
+.clickable:hover td {
+  background: var(--color-surface-hover);
+}
+
+.rowButton {
+  display: block;
+  max-width: calc(var(--size-aside) - var(--space-8));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: var(--font-weight-bold);
+  text-align: left;
+}
+
+.rowButton:focus-visible {
+  outline: var(--size-focus-ring) solid var(--color-focus);
+  outline-offset: var(--size-focus-ring);
+  border-radius: var(--radius-xs);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-4);
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.tileLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.tileIcon {
+  display: inline-flex;
+  color: var(--color-accent-text);
+}
+
+.tileIcon svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.tileValue {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--letter-spacing-tight);
+  overflow-wrap: anywhere;
+}
+
+.tileDelta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.tileDelta svg {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+.good {
+  color: var(--color-success);
+}
+
+.bad {
+  color: var(--color-danger);
+}
+
+.tileHint {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.chart {
+  position: relative;
+  width: 100%;
+  height: var(--size-chart-height);
+}
+
+.chartSvg {
+  display: block;
+  overflow: visible;
+}
+
+.chartGrid {
+  stroke: var(--color-chart-grid);
+  stroke-width: var(--size-hairline);
+}
+
+.chartTick,
+.chartLabel {
+  fill: var(--color-chart-axis);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.chartTick {
+  text-anchor: end;
+}
+
+.chartBar {
+  fill: var(--color-chart-series);
+  transition: fill var(--duration-fast) var(--ease-standard);
+}
+
+.chartBarActive {
+  fill: var(--color-chart-series-hover);
+}
+
+.chartHit {
+  fill: transparent;
+  outline: none;
+}
+
+.chartHit:focus-visible {
+  stroke: var(--color-focus);
+  stroke-width: var(--size-focus-ring);
+}
+
+.chartTooltip {
+  position: absolute;
+  top: 0;
+  z-index: var(--layer-sticky);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  padding: var(--space-1-5) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: var(--color-surface);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.chartTooltipTitle {
+  opacity: 0.8;
+}
+
+.chartTooltipValue {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}

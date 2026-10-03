@@ -61,7 +61,14 @@
     "business": "Заведение",
     "account": "Аккаунт",
     "menu": "Меню",
-    "maxEmulator": "Эмулятор MAX"
+    "maxEmulator": "Эмулятор MAX",
+    "clients": "Клиенты",
+    "team": "Команда",
+    "catalog": "Услуги",
+    "loyalty": "Лояльность",
+    "reports": "Отчёты",
+    "settings": "Настройки",
+    "more": "Ещё"
   },
   "account": {
     "theme": "Тема",
