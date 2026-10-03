@@ -125,7 +125,13 @@ export async function captureMiniApp(session: Session, base: string): Promise<vo
   await page.goto(`${base}/b/emal`);
   await page.waitForURL(/\/services/);
   await page.getByText('Отбеливание', { exact: true }).click();
-  await page.getByText('Не делается вместе с выбранными').first().scrollIntoViewIfNeeded();
+  // Into the middle of the screen: the bottom bar would cover it at the edge.
+  await page
+    .getByText('Не делается вместе с выбранными')
+    .first()
+    .evaluate((element) => {
+      element.scrollIntoView({ block: 'center' });
+    });
   await shot('22-services-not-together');
 
   // A prepaid service: the deposit on the confirmation, the payment page and the return.

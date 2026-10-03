@@ -55,8 +55,8 @@ export async function captureCabinetManagement(session: Session, base: string): 
   await page.keyboard.press('Escape');
   await sheet.waitFor({ state: 'detached' });
 
-  // Moving through the form, and what cancelling will cause.
-  await visitBlocks(page).first().click();
+  // Moving through the form, and what cancelling will cause: a visit still ahead.
+  await page.locator('[data-column-key] button[class*="draggable"]').first().click();
   await page.getByRole('dialog').waitFor();
   await page.getByRole('button', { name: 'Перенести', exact: true }).click();
   await page.getByRole('dialog', { name: 'Перенести запись' }).waitFor();

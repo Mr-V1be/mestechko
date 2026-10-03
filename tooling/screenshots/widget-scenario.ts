@@ -4,6 +4,8 @@ import type { Session } from './browser.ts';
 /** Prepaid colouring is popular: its free time may be weeks ahead. */
 const MAX_WEEKS_AHEAD = 8;
 const SETTLE_MS = 800;
+/** Each run is another visitor of the site: bookings from one address are limited. */
+let visitorNumber = 0;
 
 function inlineFrame(page: Page): Frame {
   const frame = page.frames().find((candidate) => candidate.url().includes('mode=inline'));
@@ -41,6 +43,11 @@ async function bookUpToContacts(page: Page, frame: Frame, service: string): Prom
 /** The demo salon's website with the booking widget, inline and as a popup. */
 export async function captureWidget(session: Session, base: string): Promise<void> {
   const { page, shot } = session;
+  visitorNumber += 1;
+  // A documentation address (TEST-NET-3), passed on by the proxy in front of the API.
+  await page
+    .context()
+    .setExtraHTTPHeaders({ 'x-forwarded-for': `203.0.113.${String(visitorNumber)}` });
   await page.goto(`${base}/demo/siren.html`);
   await page.waitForLoadState('networkidle');
   await shot('01-salon-site');
