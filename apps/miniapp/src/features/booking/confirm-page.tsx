@@ -1,4 +1,10 @@
-import { apiAssetUrl, useFormat, useVocabulary } from '@mestechko/booking-ui';
+import {
+  apiAssetUrl,
+  errorMessage,
+  hasCode,
+  useFormat,
+  useVocabulary,
+} from '@mestechko/booking-ui';
 import {
   Avatar,
   Button,
@@ -20,7 +26,6 @@ import { awaitsPayment } from '../payment/payment-state';
 import { useCheckout } from '../payment/use-checkout';
 import { haptics } from '../../platform/telegram/telegram-host';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
-import { errorMessage, hasCode } from '../../shared/error-message';
 import { useCurrentBusiness, useLocation } from '../business/business-context';
 import { Page } from '../layout/page';
 import { useBookingDraft } from './booking-details';

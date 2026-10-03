@@ -6,3 +6,4 @@ export { apiAssetUrl } from './asset-url';
 export { formatPhone } from './phone';
 export { SlotPicker, WEEK_DAYS, type SlotPickerProps } from './slots/slot-picker';
 export { addDays, daysBetween, localDateOf, localMinuteOf, todayIn } from './slots/local-date';
+export { errorMessage, hasCode, isNotFound } from './error-message';

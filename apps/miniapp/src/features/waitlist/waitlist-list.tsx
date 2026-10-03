@@ -1,9 +1,8 @@
-import { useFormat } from '@mestechko/booking-ui';
+import { errorMessage, useFormat } from '@mestechko/booking-ui';
 import { IconButton, ListGroup, ListItem, useToast } from '@mestechko/ui';
 import { Hourglass, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLeaveWaitlist, useWaitlist } from '../../platform/api/lifecycle-queries';
-import { errorMessage } from '../../shared/error-message';
 
 /** Days the client waits for; leaving one is a single tap. */
 export function WaitlistList({ slug }: { readonly slug: string }) {

@@ -1,11 +1,10 @@
-import { addDays, useFormat, WEEK_DAYS } from '@mestechko/booking-ui';
+import { addDays, errorMessage, useFormat, WEEK_DAYS } from '@mestechko/booking-ui';
 import { dayPartIds, type DayPart } from '@mestechko/domain';
 import { Button, DateStrip, Select, Sheet, useToast } from '@mestechko/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useJoinWaitlist } from '../../platform/api/lifecycle-queries';
 import { haptics } from '../../platform/telegram/telegram-host';
-import { errorMessage } from '../../shared/error-message';
 import { useCurrentBusiness } from '../business/business-context';
 import {
   checkContact,

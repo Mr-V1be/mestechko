@@ -1,4 +1,4 @@
-import { VerticalIcon, useVocabulary } from '@mestechko/booking-ui';
+import { errorMessage, useVocabulary, VerticalIcon } from '@mestechko/booking-ui';
 import type { DemoBusiness } from '@mestechko/contracts/client';
 import {
   Badge,
@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useDemoBusinesses, useTelegramLaunch } from '../../platform/api/queries';
 import { useHost } from '../../platform/telegram/host-context';
-import { errorMessage } from '../../shared/error-message';
 import { ListSkeleton, QueryErrorState } from '../layout/states';
 import { rememberDemoUserId, storedDemoUserId } from './demo-identity';
 import styles from './launcher.module.css';

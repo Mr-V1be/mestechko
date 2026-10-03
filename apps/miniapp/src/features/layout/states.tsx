@@ -1,6 +1,6 @@
+import { errorMessage } from '@mestechko/booking-ui';
 import { Button, EmptyIllustration, ErrorIllustration, Skeleton, StatePanel } from '@mestechko/ui';
 import { useTranslation } from 'react-i18next';
-import { errorMessage } from '../../shared/error-message';
 import styles from './layout.module.css';
 
 /** Placeholder rows in the shape of a list while it loads. */

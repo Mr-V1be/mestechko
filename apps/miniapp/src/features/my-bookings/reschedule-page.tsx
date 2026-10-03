@@ -1,6 +1,8 @@
 import {
   addDays,
   daysBetween,
+  errorMessage,
+  hasCode,
   localDateOf,
   SlotPicker,
   todayIn,
@@ -15,7 +17,6 @@ import { useRescheduleBooking, useRescheduleDays } from '../../platform/api/life
 import { useClientBooking } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { haptics } from '../../platform/telegram/telegram-host';
-import { errorMessage, hasCode } from '../../shared/error-message';
 import { useCurrentBusiness } from '../business/business-context';
 import { Page } from '../layout/page';
 import { ListSkeleton, QueryErrorState } from '../layout/states';

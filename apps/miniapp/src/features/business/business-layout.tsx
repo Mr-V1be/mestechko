@@ -1,10 +1,9 @@
-import { VerticalIcon, useVocabulary } from '@mestechko/booking-ui';
+import { isNotFound, useVocabulary, VerticalIcon } from '@mestechko/booking-ui';
 import { Skeleton } from '@mestechko/ui';
 import { CalendarCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, useParams } from 'react-router';
 import { useBusiness } from '../../platform/api/queries';
-import { isNotFound } from '../../shared/error-message';
 import styles from '../layout/layout.module.css';
 import { ListSkeleton, NotFoundState, QueryErrorState } from '../layout/states';
 import { CurrentBusinessContext } from './business-context';

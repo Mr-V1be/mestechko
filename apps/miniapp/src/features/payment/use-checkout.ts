@@ -1,8 +1,8 @@
+import { errorMessage } from '@mestechko/booking-ui';
 import { useToast } from '@mestechko/ui';
 import { useTranslation } from 'react-i18next';
 import { useStartPayment } from '../../platform/api/payment-queries';
 import { haptics } from '../../platform/telegram/telegram-host';
-import { errorMessage } from '../../shared/error-message';
 
 /**
  * Sends the client to the provider's payment page; the page brings them back to the

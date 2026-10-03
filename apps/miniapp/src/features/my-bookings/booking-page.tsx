@@ -1,4 +1,10 @@
-import { apiAssetUrl, BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
+import {
+  apiAssetUrl,
+  BookingStatusBadge,
+  errorMessage,
+  isNotFound,
+  useFormat,
+} from '@mestechko/booking-ui';
 import type { ClientBooking } from '@mestechko/contracts/client';
 import {
   Avatar,
@@ -20,7 +26,6 @@ import { PAYMENT_RETURN_PARAM } from '../../platform/api/payment-queries';
 import { useClientBooking } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { haptics } from '../../platform/telegram/telegram-host';
-import { errorMessage, isNotFound } from '../../shared/error-message';
 import { useCurrentBusiness } from '../business/business-context';
 import { Page } from '../layout/page';
 import { ListSkeleton, NotFoundState, QueryErrorState } from '../layout/states';

@@ -1,11 +1,10 @@
-import { useFormat } from '@mestechko/booking-ui';
+import { errorMessage, useFormat } from '@mestechko/booking-ui';
 import type { ClientBooking } from '@mestechko/contracts/client';
 import { Button, Spinner, useToast } from '@mestechko/ui';
 import { Hourglass } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCancelBooking } from '../../platform/api/lifecycle-queries';
 import { haptics } from '../../platform/telegram/telegram-host';
-import { errorMessage } from '../../shared/error-message';
 import type { ReturnOutcome } from './payment-state';
 import styles from './payment.module.css';
 
