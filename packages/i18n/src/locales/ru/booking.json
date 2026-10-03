@@ -17,5 +17,15 @@
   "holdReason": {
     "payment": "Ждёт предоплату",
     "waitlist_offer": "Предложена из листа ожидания"
+  },
+  "picker": {
+    "previousWeek": "Предыдущая неделя",
+    "nextWeek": "Следующая неделя",
+    "daysLabel": "Дата",
+    "slotsLabel": "Свободное время",
+    "dayFullTitle": "В этот день всё занято",
+    "dayFullDescription": "Точки под датами отмечают дни, где есть местечко.",
+    "weekFullTitle": "На этой неделе мест нет",
+    "weekFullDescription": "Посмотрите следующую неделю."
   }
 }

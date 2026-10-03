@@ -1,4 +1,12 @@
-import { useFormat } from '@mestechko/booking-ui';
+import {
+  addDays,
+  daysBetween,
+  localDateOf,
+  SlotPicker,
+  todayIn,
+  useFormat,
+  WEEK_DAYS,
+} from '@mestechko/booking-ui';
 import { StatePanel, useToast } from '@mestechko/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,9 +16,7 @@ import { useClientBooking } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { haptics } from '../../platform/telegram/telegram-host';
 import { errorMessage, hasCode } from '../../shared/error-message';
-import { addDays, daysBetween, localDateOf, todayIn } from '../../shared/local-date';
 import { useCurrentBusiness } from '../business/business-context';
-import { SlotPicker, WEEK_DAYS } from '../booking/slot-picker';
 import { Page } from '../layout/page';
 import { ListSkeleton, QueryErrorState } from '../layout/states';
 import styles from './bookings.module.css';
@@ -120,8 +126,14 @@ export function ReschedulePage() {
               setStart(null);
             }}
             days={days}
-            error={options.isError ? options.error : null}
-            onRetry={() => void options.refetch()}
+            failure={
+              options.isError ? (
+                <QueryErrorState error={options.error} onRetry={() => void options.refetch()} />
+              ) : undefined
+            }
+            onPick={() => {
+              haptics.selection();
+            }}
             selectedDate={selectedDate}
             onDateChange={(next) => {
               setDate(next);

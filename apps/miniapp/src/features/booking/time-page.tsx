@@ -1,16 +1,24 @@
+import {
+  addDays,
+  daysBetween,
+  localDateOf,
+  SlotPicker,
+  todayIn,
+  WEEK_DAYS,
+} from '@mestechko/booking-ui';
 import { Button } from '@mestechko/ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router';
 import { useAvailability } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
-import { addDays, daysBetween, localDateOf, todayIn } from '../../shared/local-date';
+import { haptics } from '../../platform/telegram/telegram-host';
 import { useCurrentBusiness, useLocation } from '../business/business-context';
 import { Page } from '../layout/page';
+import { QueryErrorState } from '../layout/states';
 import { WaitlistSheet } from '../waitlist/waitlist-sheet';
 import { BookingSummary, BookingSummaryBar } from './booking-summary';
 import { ANY_STAFF, useBookingSelection } from './selection';
-import { SlotPicker, WEEK_DAYS } from './slot-picker';
 import waitlistStyles from '../waitlist/waitlist.module.css';
 
 /** Pick a day of the week, then a free start time: the "местечко". */
@@ -85,8 +93,17 @@ export function TimePage() {
         weekStart={weekStart}
         onWeekChange={changeWeek}
         days={days}
-        error={availability.isError ? availability.error : null}
-        onRetry={() => void availability.refetch()}
+        failure={
+          availability.isError ? (
+            <QueryErrorState
+              error={availability.error}
+              onRetry={() => void availability.refetch()}
+            />
+          ) : undefined
+        }
+        onPick={() => {
+          haptics.selection();
+        }}
         selectedDate={selectedDate}
         onDateChange={(date) => {
           update({ date, start: null });

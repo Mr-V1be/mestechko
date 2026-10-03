@@ -1,4 +1,3 @@
-import { useFormat } from '@mestechko/booking-ui';
 import type { AvailableDay } from '@mestechko/contracts/client';
 import { dayPartIds, dayPartOfMinute } from '@mestechko/domain';
 import {
@@ -15,10 +14,9 @@ import {
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { haptics } from '../../platform/telegram/telegram-host';
-import { addDays, localMinuteOf } from '../../shared/local-date';
-import { QueryErrorState } from '../layout/states';
-import styles from './booking.module.css';
+import { useFormat } from '../use-format';
+import { addDays, localMinuteOf } from './local-date';
+import styles from './slot-picker.module.css';
 
 export const WEEK_DAYS = 7;
 
@@ -59,8 +57,10 @@ export interface SlotPickerProps {
   readonly onWeekChange: (weekStart: string) => void;
   /** Free starts of the week; `undefined` while they load. */
   readonly days: readonly AvailableDay[] | undefined;
-  readonly error: Error | null;
-  readonly onRetry: () => void;
+  /** Shown instead of the free starts when they failed to load (what happened + retry). */
+  readonly failure?: ReactNode;
+  /** A choice was made: a tap on a day or a time, e.g. for haptic feedback. */
+  readonly onPick?: () => void;
   readonly selectedDate: string | null;
   readonly onDateChange: (date: string) => void;
   readonly selectedStart: string | null;
@@ -77,8 +77,8 @@ export function SlotPicker({
   weekStart,
   onWeekChange,
   days,
-  error,
-  onRetry,
+  failure,
+  onPick,
   selectedDate,
   onDateChange,
   selectedStart,
@@ -120,7 +120,7 @@ export function SlotPicker({
           <p className={styles.month}>{format.localDate(selectedDate ?? weekStart, 'monthYear')}</p>
           <div className={styles.weekNav}>
             <IconButton
-              label={t('time.previousWeek')}
+              label={t('booking:picker.previousWeek')}
               icon={<ChevronLeft />}
               disabled={weekStart <= today}
               onClick={() => {
@@ -128,7 +128,7 @@ export function SlotPicker({
               }}
             />
             <IconButton
-              label={t('time.nextWeek')}
+              label={t('booking:picker.nextWeek')}
               icon={<ChevronRight />}
               disabled={weekEnd >= lastDay}
               onClick={() => {
@@ -138,23 +138,23 @@ export function SlotPicker({
           </div>
         </div>
         <DateStrip
-          label={t('time.daysLabel')}
+          label={t('booking:picker.daysLabel')}
           days={stripDays}
           value={selectedDate}
           onChange={(date) => {
-            haptics.selection();
+            onPick?.();
             onDateChange(date);
           }}
         />
       </section>
-      {error ? <QueryErrorState error={error} onRetry={onRetry} /> : null}
-      {!days && !error ? <SlotsSkeleton /> : null}
+      {failure ?? null}
+      {!days && !failure ? <SlotsSkeleton /> : null}
       {days && !firstOpen ? (
         <StatePanel
           compact
           illustration={<EmptyIllustration />}
-          title={t('time.weekFullTitle')}
-          description={t('time.weekFullDescription')}
+          title={t('booking:picker.weekFullTitle')}
+          description={t('booking:picker.weekFullDescription')}
           action={
             weekEnd < lastDay ? (
               <Button
@@ -163,7 +163,7 @@ export function SlotPicker({
                   onWeekChange(addDays(weekStart, WEEK_DAYS));
                 }}
               >
-                {t('time.nextWeek')}
+                {t('booking:picker.nextWeek')}
               </Button>
             ) : undefined
           }
@@ -172,17 +172,17 @@ export function SlotPicker({
       {days && firstOpen && groups.length === 0 ? (
         <StatePanel
           compact
-          title={t('time.dayFullTitle')}
-          description={t('time.dayFullDescription')}
+          title={t('booking:picker.dayFullTitle')}
+          description={t('booking:picker.dayFullDescription')}
         />
       ) : null}
       {groups.length > 0 ? (
         <TimeGrid
-          label={t('time.slotsLabel')}
+          label={t('booking:picker.slotsLabel')}
           groups={groups}
           value={selectedStart}
           onChange={(start) => {
-            haptics.selection();
+            onPick?.();
             onStartChange(start);
           }}
         />
