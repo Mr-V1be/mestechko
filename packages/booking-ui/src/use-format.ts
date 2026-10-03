@@ -6,18 +6,27 @@ import {
   formatLocalDate,
   formatLocalDateRange,
   formatMoney,
+  formatMoneyCompact,
   formatMoneyRange,
+  formatNumber,
+  formatShare,
   type InstantStyle,
   type LocalDateStyle,
+  type NumberStyle,
 } from '@mestechko/i18n';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export interface Formatters {
   money(value: Money): string;
+  /** `12 тыс. ₽`: for axes and tight places where the order of the sum is enough. */
+  moneyCompact(value: Money): string;
   moneyRange(min: Money, max: Money): string;
   /** The sign shown next to amounts people type, e.g. `₽`. */
   currencySymbol(currency: Money['currency']): string;
+  number(value: number, style?: NumberStyle): string;
+  /** A share of a whole (`0.587`) as percent. */
+  share(value: number, style?: NumberStyle): string;
   /** Instants are shown in the time zone of the business location. */
   instant(value: string, timeZone: string, style: InstantStyle): string;
   localDate(value: string, style: LocalDateStyle): string;
@@ -32,8 +41,11 @@ export function useFormat(): Formatters {
   return useMemo(
     () => ({
       money: (value) => formatMoney(locale, value),
+      moneyCompact: (value) => formatMoneyCompact(locale, value),
       moneyRange: (min, max) => formatMoneyRange(locale, min, max),
       currencySymbol: (currency) => formatCurrencySymbol(locale, currency),
+      number: (value, style) => formatNumber(locale, value, style),
+      share: (value, style) => formatShare(locale, value, style),
       instant: (value, timeZone, style) => formatInstant(locale, value, timeZone, style),
       localDate: (value, style) => formatLocalDate(locale, value, style),
       localDateRange: (from, to, style) => formatLocalDateRange(locale, from, to, style),

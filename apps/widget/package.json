@@ -1,0 +1,33 @@
+{
+  "name": "@mestechko/widget",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --config vite.loader.config.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@mestechko/booking-ui": "workspace:*",
+    "@mestechko/contracts": "workspace:*",
+    "@mestechko/domain": "workspace:*",
+    "@mestechko/i18n": "workspace:*",
+    "@mestechko/ui": "workspace:*",
+    "@tanstack/react-query": "5.104.1",
+    "clsx": "2.1.1",
+    "i18next": "26.4.2",
+    "libphonenumber-js": "1.13.14",
+    "lucide-react": "1.50.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-i18next": "17.0.15"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "vite": "8.3.2"
+  }
+}

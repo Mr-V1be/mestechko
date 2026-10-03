@@ -24,8 +24,12 @@ export const emptyFacts: PeriodFacts = {
 
 export type MetricUnit = 'share' | 'money';
 
+/** Which way a change is an improvement: more occupancy is welcome, more no-shows are not. */
+export type MetricImprovement = 'higher' | 'lower';
+
 interface ReportMetricDefinition {
   readonly unit: MetricUnit;
+  readonly better: MetricImprovement;
   /** For shares: the part and the whole; the value is their ratio. */
   readonly parts: (facts: PeriodFacts) => { readonly part: number; readonly whole: number };
 }
@@ -37,18 +41,22 @@ interface ReportMetricDefinition {
 export const reportMetrics = {
   occupancy: {
     unit: 'share',
+    better: 'higher',
     parts: (facts) => ({ part: facts.bookedMinutes, whole: facts.workingMinutes }),
   },
   revenue: {
     unit: 'money',
+    better: 'higher',
     parts: (facts) => ({ part: facts.revenueMinor, whole: 1 }),
   },
   no_shows: {
     unit: 'share',
+    better: 'lower',
     parts: (facts) => ({ part: facts.noShows, whole: facts.visits + facts.noShows }),
   },
   repeat_visits: {
     unit: 'share',
+    better: 'higher',
     parts: (facts) => ({ part: facts.repeatVisits, whole: facts.visits }),
   },
 } as const satisfies Record<string, ReportMetricDefinition>;
@@ -75,4 +83,38 @@ export function metricValue(metric: ReportMetric, facts: PeriodFacts): number | 
     return part;
   }
   return whole > 0 ? Math.min(1, part / whole) : null;
+}
+
+/**
+ * How a metric moved against an earlier period: shares in points of the whole
+ * (0.02 is two percentage points), money relative to before (0.08 is eight percent).
+ */
+export interface MetricChange {
+  readonly measure: 'points' | 'relative';
+  readonly amount: number;
+  /** `null` while nothing moved. */
+  readonly improved: boolean | null;
+}
+
+/** `null` when one of the periods has no value or money has nothing to compare with. */
+export function metricChange(
+  metric: ReportMetric,
+  current: PeriodFacts,
+  previous: PeriodFacts,
+): MetricChange | null {
+  const definition: ReportMetricDefinition = reportMetrics[metric];
+  const now = metricValue(metric, current);
+  const before = metricValue(metric, previous);
+  if (now === null || before === null) {
+    return null;
+  }
+  if (definition.unit === 'money' && before === 0) {
+    return null;
+  }
+  const amount = definition.unit === 'money' ? (now - before) / before : now - before;
+  return {
+    measure: definition.unit === 'money' ? 'relative' : 'points',
+    amount,
+    improved: amount === 0 ? null : amount > 0 === (definition.better === 'higher'),
+  };
 }
