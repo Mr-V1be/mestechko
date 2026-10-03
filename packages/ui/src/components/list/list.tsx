@@ -38,6 +38,8 @@ export interface ListItemProps extends RowContent {
   readonly disabled?: boolean;
   /** Content under the row, e.g. fields that open when the row's checkbox is on. */
   readonly children?: ReactNode;
+  /** Secondary actions beside the row, e.g. a «⋯» menu; kept outside the row's own control. */
+  readonly actions?: ReactNode;
 }
 
 function Content({ leading, title, description, meta, trailing }: RowContent) {
@@ -73,6 +75,7 @@ export function ListItem({
   selected = false,
   disabled = false,
   children,
+  actions,
   ...content
 }: ListItemProps) {
   const rowClass = clsx(
@@ -82,7 +85,7 @@ export function ListItem({
     disabled && styles.disabled,
   );
   return (
-    <li className={styles.item}>
+    <li className={clsx(styles.item, actions !== undefined && styles.withActions)}>
       {render ? (
         <RenderedRow render={render} className={rowClass} content={content} />
       ) : onClick ? (
@@ -104,6 +107,7 @@ export function ListItem({
           <Content {...content} />
         </div>
       )}
+      {actions !== undefined ? <span className={styles.actions}>{actions}</span> : null}
       {children ? <div className={styles.extra}>{children}</div> : null}
     </li>
   );

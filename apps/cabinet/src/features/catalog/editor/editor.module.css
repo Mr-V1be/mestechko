@@ -1,0 +1,56 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.status {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-3);
+}
+
+.deposit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.half {
+  width: calc(50% - var(--space-3) / 2);
+}
+
+.personalTerms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4)
+    calc(var(--space-4) + var(--size-avatar-sm) + var(--space-3));
+}
+
+.personalTerms:not(:last-child) {
+  box-shadow: inset 0 calc(var(--size-hairline) * -1) 0 var(--color-border);
+}
+
+@media (max-width: 767px) {
+  .personalTerms {
+    padding-left: var(--space-4);
+  }
+}
+
+.incompatible {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-md);
+}

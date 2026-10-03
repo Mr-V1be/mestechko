@@ -43,3 +43,32 @@
 .square {
   border-radius: var(--radius-md);
 }
+
+.group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.groupMember,
+.groupRest {
+  display: inline-flex;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 0 var(--size-focus-ring) var(--color-surface);
+}
+
+.groupMember + .groupMember,
+.groupMember + .groupRest {
+  margin-left: calc(var(--space-2) * -1);
+}
+
+.groupRest {
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-avatar-sm);
+  height: var(--size-avatar-sm);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}

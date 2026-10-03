@@ -51,6 +51,9 @@
   --size-device-height: 740px;
   --size-showcase-board: 440px;
   --size-chart-height: 220px;
+  /* Website widget: the frame's height before it reports its own, and the popup's. */
+  --size-widget-frame: 600px;
+  --size-widget-popup: 760px;
 
   --radius-xs: 6px;
   --radius-sm: 10px;
