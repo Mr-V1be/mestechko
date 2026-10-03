@@ -2,7 +2,7 @@ import { dayPartIds } from '@mestechko/domain';
 import { z } from 'zod';
 import { instantSchema, localDateSchema, uuidSchema } from '../../primitives.js';
 import { defineRoute } from '../../route.js';
-import { bookingContactSchema } from './miniapp-bookings.js';
+import { bookingContactSchema, clientBookingSchema } from './miniapp-bookings.js';
 import { businessParamsSchema, locationSchema } from './public-catalog.js';
 
 const MAX_SERVICES = 10;
@@ -56,6 +56,32 @@ export const leaveMiniAppWaitlist = defineRoute({
   auth: 'telegram',
   status: 204,
   params: businessParamsSchema.extend({ entryId: uuidSchema }),
+  response: null,
+});
+
+const offerParamsSchema = businessParamsSchema.extend({ bookingId: uuidSchema });
+
+/** Takes the time offered from the waitlist; a prepayment, if due, comes next. */
+export const acceptMiniAppOffer = defineRoute({
+  method: 'POST',
+  path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/offer/accept',
+  summary: 'Take the time offered from the waitlist',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 200,
+  params: offerParamsSchema,
+  response: clientBookingSchema,
+});
+
+/** Lets the offered time go to the next in line; the wish stays. */
+export const declineMiniAppOffer = defineRoute({
+  method: 'POST',
+  path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/offer/decline',
+  summary: 'Pass the offered time on to the next in line',
+  tag: 'miniapp',
+  auth: 'telegram',
+  status: 204,
+  params: offerParamsSchema,
   response: null,
 });
 

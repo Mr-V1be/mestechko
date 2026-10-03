@@ -160,6 +160,35 @@ export class WaitlistOffers {
     await this.followUps.afterCommit({ businessId, ...change });
   }
 
+  /** Takes an offer from the Mini App, which knows the held booking rather than the offer. */
+  async acceptForBooking(identity: ClientIdentity, bookingId: string): Promise<ClientBooking> {
+    const offer = await this.offerFor(identity, bookingId);
+    return this.accept(identity, offer.entryId, offer.startsAt);
+  }
+
+  /** Passes an offer on from the Mini App. */
+  async declineForBooking(identity: ClientIdentity, bookingId: string): Promise<void> {
+    const offer = await this.offerFor(identity, bookingId);
+    await this.decline(identity, offer.entryId, offer.startsAt);
+  }
+
+  /** The offer behind a held booking; whose it is, the answer itself checks. */
+  private async offerFor(
+    identity: ClientIdentity,
+    bookingId: string,
+  ): Promise<WaitlistOfferRecord> {
+    const context = await this.businesses.resolve(identity.business);
+    const offer = await this.unitOfWork.inTenant(
+      context.business.id,
+      () => this.store.offerOfBooking(bookingId),
+      { readOnly: true },
+    );
+    if (!offer) {
+      throw notFound('Offer');
+    }
+    return offer;
+  }
+
   /** Withdraws the offer of a wish the client gave up, releasing its time. */
   async withdraw(
     entryId: string,

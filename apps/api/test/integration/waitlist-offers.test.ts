@@ -126,4 +126,47 @@ describe('waitlist offers, one client at a time', () => {
       { entryId: entryOf.get(second), status: 'expired', bookingStatus: 'cancelled' },
     ]);
   });
+
+  it('lets the client take the offer in the Mini App, and nobody else', async () => {
+    // Both earlier clients answered this start already; a newcomer is next in line.
+    const newcomer = DEMO_USER_BASE + 1003;
+    const joined = await app.inject({
+      method: 'POST',
+      url: `/v1/miniapp/businesses/${tenant.slug}/waitlist`,
+      headers: { authorization: `tma ${await launchAs(app, tenant.slug, newcomer)}` },
+      payload: {
+        locationId: tenant.locationId,
+        serviceIds: [tenant.serviceId],
+        staffId: null,
+        date,
+        dayPart: null,
+        contact: { name: 'Ждёт 3', phone: '+70004120603' },
+      },
+    });
+    expect(joined.statusCode).toBe(201);
+    entryOf.set(newcomer, joined.json<{ id: string }>().id);
+    expect(await match()).toEqual({ offered: 1 });
+    const pending = await databases.admin
+      .selectFrom('waitlistOffers')
+      .select(['entryId', 'bookingId'])
+      .where('businessId', '=', tenant.businessId)
+      .where('status', '=', 'pending')
+      .executeTakeFirstOrThrow();
+    expect(pending.entryId).toBe(entryOf.get(newcomer));
+    const [stranger = 0] = users;
+    const answer = async (user: number) =>
+      app.inject({
+        method: 'POST',
+        url: `/v1/miniapp/businesses/${tenant.slug}/bookings/${pending.bookingId}/offer/accept`,
+        headers: { authorization: `tma ${await launchAs(app, tenant.slug, user)}` },
+      });
+
+    expect((await answer(stranger)).statusCode).toBe(404);
+    const taken = await answer(newcomer);
+    expect(taken.statusCode).toBe(200);
+    expect(taken.json<{ status: string; hold: unknown }>()).toMatchObject({
+      status: 'confirmed',
+      hold: null,
+    });
+  });
 });

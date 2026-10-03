@@ -205,6 +205,17 @@ export class KyselyWaitlistStore implements WaitlistStore {
     return row ?? null;
   }
 
+  async offerOfBooking(bookingId: string): Promise<WaitlistOfferRecord | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('waitlistOffers as o')
+      .select(offerColumns)
+      .where('o.bookingId', '=', bookingId)
+      .orderBy('o.createdAt', 'desc')
+      .executeTakeFirst();
+    return row ?? null;
+  }
+
   async insertOffer(offer: Omit<WaitlistOfferRecord, 'status'>, now: Date): Promise<void> {
     await this.unitOfWork
       .tenant()

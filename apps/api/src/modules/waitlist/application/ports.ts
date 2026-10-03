@@ -71,6 +71,8 @@ export interface WaitlistStore {
   pendingOffers(locationId: string, date: string): Promise<WaitlistOfferRecord[]>;
   pendingOfferOf(entryId: string): Promise<WaitlistOfferRecord | null>;
   findOffer(entryId: string, startsAt: Date): Promise<WaitlistOfferRecord | null>;
+  /** The offer a held booking was made for. */
+  offerOfBooking(bookingId: string): Promise<WaitlistOfferRecord | null>;
   insertOffer(offer: Omit<WaitlistOfferRecord, 'status'>, now: Date): Promise<void>;
   closeOffer(offerId: string, status: WaitlistOfferStatus, now: Date): Promise<void>;
 }

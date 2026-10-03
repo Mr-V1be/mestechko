@@ -34,6 +34,8 @@ export const apiRoutes = {
   joinMiniAppWaitlist: waitlist.joinMiniAppWaitlist,
   listMiniAppWaitlist: waitlist.listMiniAppWaitlist,
   leaveMiniAppWaitlist: waitlist.leaveMiniAppWaitlist,
+  acceptMiniAppOffer: waitlist.acceptMiniAppOffer,
+  declineMiniAppOffer: waitlist.declineMiniAppOffer,
   createWidgetBooking: widget.createWidgetBooking,
   getWidgetBooking: widget.getWidgetBooking,
   createSession: auth.createSession,

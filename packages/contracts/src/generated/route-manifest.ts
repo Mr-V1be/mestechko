@@ -22,6 +22,8 @@ export const routeManifest = {
   joinMiniAppWaitlist: { method: 'POST', path: '/v1/miniapp/businesses/:slug/waitlist', status: 201, auth: 'telegram', response: 'json', upload: false },
   listMiniAppWaitlist: { method: 'GET', path: '/v1/miniapp/businesses/:slug/waitlist', status: 200, auth: 'telegram', response: 'json', upload: false },
   leaveMiniAppWaitlist: { method: 'DELETE', path: '/v1/miniapp/businesses/:slug/waitlist/:entryId', status: 204, auth: 'telegram', response: 'none', upload: false },
+  acceptMiniAppOffer: { method: 'POST', path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/offer/accept', status: 200, auth: 'telegram', response: 'json', upload: false },
+  declineMiniAppOffer: { method: 'POST', path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/offer/decline', status: 204, auth: 'telegram', response: 'none', upload: false },
   createWidgetBooking: { method: 'POST', path: '/v1/widget/businesses/:slug/bookings', status: 201, auth: 'none', response: 'json', upload: false },
   getWidgetBooking: { method: 'GET', path: '/v1/widget/businesses/:slug/bookings/:bookingId', status: 200, auth: 'none', response: 'json', upload: false },
   createSession: { method: 'POST', path: '/v1/auth/sessions', status: 200, auth: 'none', response: 'json', upload: false },
