@@ -100,5 +100,12 @@
   },
   "demo": {
     "guestName": "Гость"
+  },
+  "validation": {
+    "required": "Заполните поле",
+    "tooLong": "Не длиннее {{max}} символов",
+    "range": "От {{min}} до {{max}}",
+    "min": "Не меньше {{min}}",
+    "chooseSome": "Выберите хотя бы одно"
   }
 }

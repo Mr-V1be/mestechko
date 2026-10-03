@@ -19,13 +19,15 @@ export interface MenuProps {
   readonly label: string;
   readonly actions: readonly MenuAction[];
   readonly icon?: ReactNode;
+  /** A tinted button stands alone; a plain one sits quietly in rows of a list. */
+  readonly soft?: boolean;
 }
 
 /** Rare or secondary actions behind a «⋯» button. */
-export function Menu({ label, actions, icon = <Ellipsis /> }: MenuProps) {
+export function Menu({ label, actions, icon = <Ellipsis />, soft = true }: MenuProps) {
   return (
     <BaseMenu.Root>
-      <BaseMenu.Trigger render={<IconButton label={label} icon={icon} soft />} />
+      <BaseMenu.Trigger render={<IconButton label={label} icon={icon} soft={soft} />} />
       <BaseMenu.Portal>
         <BaseMenu.Positioner sideOffset={4} align="end" style={{ zIndex: 'var(--layer-popover)' }}>
           <BaseMenu.Popup className={styles.menuPopup}>

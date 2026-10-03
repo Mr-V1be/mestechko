@@ -1,4 +1,4 @@
-import { currencies, type Money } from '@mestechko/domain';
+import { currencies, type CurrencyCode, type Money } from '@mestechko/domain';
 
 const MINUTES_PER_HOUR = 60;
 const formatterCache = new Map<string, Intl.DateTimeFormat | Intl.NumberFormat>();
@@ -76,6 +76,21 @@ export function formatMoney(locale: string, value: Money): string {
       }),
   );
   return formatter.format(amount);
+}
+
+/** The sign of a currency as the locale writes it, e.g. `₽`, for units beside amount fields. */
+export function formatCurrencySign(locale: string, currency: CurrencyCode): string {
+  const parts = cached(
+    `m|${locale}|${currency}|0`,
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }),
+  ).formatToParts(0);
+  return parts.find((part) => part.type === 'currency')?.value ?? currency;
 }
 
 /** `4 700–5 300 ₽`: one currency sign for the whole range. */

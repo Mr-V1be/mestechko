@@ -1,0 +1,109 @@
+{
+  "title": "Услуги",
+  "addService": "Услуга",
+  "addCategory": "Категория",
+  "listLabel": "Услуги по категориям",
+  "empty": {
+    "title": "Услуг пока нет",
+    "description": "Начните с категории — например, «Стрижки», и добавьте в неё услуги.",
+    "action": "Добавить категорию"
+  },
+  "emptyCategory": "В этой категории пока нет услуг",
+  "count_one": "{{count}} услуга",
+  "count_few": "{{count}} услуги",
+  "count_many": "{{count}} услуг",
+  "count_other": "{{count}} услуги",
+  "from": "от {{value}}",
+  "performers": "Выполняют: {{names}}",
+  "badges": {
+    "inactive": "Запись выключена",
+    "deposit": "Предоплата {{percent}}%",
+    "incompatible_one": "Не сочетается с {{count}} услугой",
+    "incompatible_few": "Не сочетается с {{count}} услугами",
+    "incompatible_many": "Не сочетается с {{count}} услугами",
+    "incompatible_other": "Не сочетается с {{count}} услугами",
+    "noStaff": "Некому выполнять"
+  },
+  "categoryMenu": {
+    "label": "Действия с категорией «{{name}}»",
+    "addService": "Добавить услугу",
+    "rename": "Переименовать",
+    "moveUp": "Поднять выше",
+    "moveDown": "Опустить ниже"
+  },
+  "serviceMenu": {
+    "label": "Действия с услугой «{{name}}»",
+    "edit": "Изменить",
+    "moveUp": "Поднять выше",
+    "moveDown": "Опустить ниже",
+    "deactivate": "Выключить запись",
+    "activate": "Включить запись"
+  },
+  "moveFailed": "Порядок не сохранился",
+  "category": {
+    "newTitle": "Новая категория",
+    "renameTitle": "Название категории",
+    "name": "Название",
+    "placeholder": "Например, Стрижки",
+    "create": "Добавить",
+    "save": "Сохранить",
+    "created": "Категория «{{name}}» добавлена",
+    "renamed": "Категория переименована",
+    "failed": "Категорию не удалось сохранить"
+  },
+  "activation": {
+    "title": "Выключить запись на «{{name}}»?",
+    "consequence": "Клиенты больше не смогут записаться на эту услугу. Уже созданные записи останутся в расписании.",
+    "confirm": "Выключить запись",
+    "deactivated": "Запись на «{{name}}» выключена",
+    "activated": "Запись на «{{name}}» включена",
+    "failed": "Не удалось изменить запись на услугу"
+  },
+  "editor": {
+    "newTitle": "Новая услуга",
+    "notFound": "Услуга не найдена",
+    "notFoundDescription": "Возможно, её изменили с другого устройства. Обновите список.",
+    "active": "Принимается к записи",
+    "activeOn": "Клиенты могут записаться",
+    "activeOff": "Клиенты не видят услугу",
+    "name": "Название",
+    "namePlaceholder": "Например, Женская стрижка",
+    "description": "Описание",
+    "descriptionPlaceholder": "Что входит в услугу",
+    "category": "Категория",
+    "duration": "Длительность",
+    "bufferBefore": "Пауза до",
+    "bufferAfter": "Пауза после",
+    "minutes": "мин",
+    "price": "Цена",
+    "noResource": "Не нужно",
+    "ownDeposit": "Своя предоплата",
+    "ruleDeposit": "Как в настройках: {{percent}}%",
+    "depositPercent": "Доля предоплаты",
+    "percent": "%",
+    "staffInactive": "Не в команде",
+    "personalDuration": "Своя длительность",
+    "personalPrice": "Своя цена",
+    "noStaff": "В команде пока никого нет",
+    "incompatible": "Не сочетается с",
+    "noOtherServices": "Других услуг пока нет",
+    "create": "Добавить",
+    "save": "Сохранить",
+    "created": "Услуга «{{name}}» добавлена",
+    "saved": "Услуга «{{name}}» сохранена",
+    "failed": "Услугу не удалось сохранить",
+    "discard": {
+      "title": "Закрыть без сохранения?",
+      "consequence": "Не сохранятся изменения: {{sections}}.",
+      "confirm": "Не сохранять",
+      "keep": "Вернуться"
+    },
+    "sections": {
+      "about": "название и описание",
+      "timing": "длительность",
+      "price": "цена",
+      "deposit": "предоплата",
+      "incompatible": "несовместимые услуги"
+    }
+  }
+}

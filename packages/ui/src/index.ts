@@ -15,6 +15,11 @@ export { IconButton, type IconButtonProps } from './components/button/icon-butto
 export { Spinner } from './components/feedback/spinner';
 export { Skeleton, type SkeletonProps } from './components/feedback/skeleton';
 export { Avatar, type AvatarProps } from './components/avatar/avatar';
+export {
+  AvatarGroup,
+  type AvatarGroupPerson,
+  type AvatarGroupProps,
+} from './components/avatar/avatar-group';
 export { Badge, badgeTones, type BadgeProps, type BadgeTone } from './components/badge/badge';
 export {
   ListGroup,

@@ -1,0 +1,122 @@
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.category {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-left: var(--space-4);
+}
+
+.categoryTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  min-width: 0;
+  font-size: var(--font-size-lg);
+  overflow-wrap: anywhere;
+}
+
+.categoryCount {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.facts {
+  font-variant-numeric: tabular-nums;
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.performers {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .performers {
+    display: inline-flex;
+  }
+
+  .price {
+    min-width: calc(var(--size-avatar-lg) + var(--space-8));
+  }
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+}
+
+.badge svg {
+  flex: none;
+  width: var(--font-size-sm);
+  height: var(--font-size-sm);
+}
+
+.muted {
+  color: var(--color-text-tertiary);
+}
+
+.emptyCategory {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--size-hairline) dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.skeletonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skeletonRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}

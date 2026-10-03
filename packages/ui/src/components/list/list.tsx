@@ -33,6 +33,8 @@ export interface ListItemProps extends RowContent {
   readonly controlId?: string;
   readonly selected?: boolean;
   readonly disabled?: boolean;
+  /** Secondary actions beside the row, e.g. a «⋯» menu; kept outside the row's own control. */
+  readonly actions?: ReactNode;
 }
 
 function Content({ leading, title, description, meta, trailing }: RowContent) {
@@ -54,6 +56,7 @@ export function ListItem({
   controlId,
   selected = false,
   disabled = false,
+  actions,
   ...content
 }: ListItemProps) {
   const rowClass = clsx(
@@ -63,7 +66,7 @@ export function ListItem({
     disabled && styles.disabled,
   );
   return (
-    <li className={styles.item}>
+    <li className={clsx(styles.item, actions !== undefined && styles.withActions)}>
       {onClick ? (
         <button
           type="button"
@@ -83,6 +86,7 @@ export function ListItem({
           <Content {...content} />
         </div>
       )}
+      {actions !== undefined ? <span className={styles.actions}>{actions}</span> : null}
     </li>
   );
 }
