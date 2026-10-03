@@ -52,6 +52,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+.summaryDeposit {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.summaryDepositValue {
+  color: var(--color-text);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
 .bar {
   display: flex;
   align-items: center;

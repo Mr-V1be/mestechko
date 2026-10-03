@@ -26,6 +26,8 @@ export function BookingSummary({ selection }: { readonly selection: BookingSelec
   const vocabulary = useVocabulary(business.vertical);
   const draft = useBookingDraft(selection);
   const timeZone = location?.timeZone ?? 'UTC';
+  const deposit =
+    draft.quote?.deposit && draft.quote.deposit.amountMinor > 0 ? draft.quote.deposit : null;
   return (
     <section className={styles.summary} aria-label={t('summary.title')}>
       <h2 className={styles.summaryTitle}>{t('summary.title')}</h2>
@@ -64,6 +66,12 @@ export function BookingSummary({ selection }: { readonly selection: BookingSelec
         <div className={styles.summaryTotal}>
           <span>{t('summary.total')}</span>
           <span>{priceText(t, format, draft.price)}</span>
+        </div>
+      ) : null}
+      {deposit ? (
+        <div className={styles.summaryDeposit}>
+          <span>{t('confirm.deposit')}</span>
+          <span className={styles.summaryDepositValue}>{format.money(deposit)}</span>
         </div>
       ) : null}
     </section>
