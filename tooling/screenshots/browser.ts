@@ -23,7 +23,14 @@ export interface Problem {
 }
 
 /** Network errors the browser logs for expected responses (e.g. 401 before sign-in). */
-const EXPECTED_CONSOLE = [/status of 401/, /status of 403/, /status of 500/, /status of 404/];
+const EXPECTED_CONSOLE = [
+  /status of 401/,
+  /status of 403/,
+  /status of 404/,
+  // A refused change (the time was taken meanwhile) is shown where it happened.
+  /status of 409/,
+  /status of 500/,
+];
 
 export interface Session {
   readonly page: Page;

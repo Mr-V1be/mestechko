@@ -3,7 +3,7 @@
  * workers and previews of the built apps on separate ports. The working demo database
  * is never touched, and scenarios that book or cancel cannot leak into the next run.
  *
- *   pnpm screenshots [--out docs/screenshots/m3] [--only miniapp|cabinet] [--viewport 390]
+ *   pnpm screenshots [--out docs/screenshots/m3] [--only miniapp|cabinet|widget] [--viewport 390]
  */
 import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
 import { parseArgs } from 'node:util';
@@ -13,7 +13,7 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const SCRATCH_DATABASE = 'mestechko_screenshots';
 /** Its own Redis database: queues and bot state never mix with development. */
 const SCRATCH_REDIS_DB = '3';
-const PORTS = { api: 46212, cabinet: 46223, miniapp: 46233 } as const;
+const PORTS = { api: 46212, cabinet: 46223, miniapp: 46233, widget: 46243 } as const;
 const READY_TIMEOUT_MS = 90_000;
 const POLL_MS = 1_000;
 /** The seed plans MAX notices due now; workers deliver them within the minute. */
@@ -59,6 +59,11 @@ const scratchEnv: NodeJS.ProcessEnv = {
   LOG_LEVEL: 'warn',
   METRICS_ENABLED: 'false',
   MESTECHKO_API_URL: `http://127.0.0.1:${String(PORTS.api)}`,
+  // The test payment provider sends webhooks to this API and payers back through the apps.
+  TEST_PAY_API_URL: `http://127.0.0.1:${String(PORTS.api)}/test-pay/api`,
+  TEST_PAY_WEBHOOK_URL: `http://127.0.0.1:${String(PORTS.api)}/v1/payments/webhooks/test`,
+  // The cabinet shows the embed code of this run's widget.
+  VITE_WIDGET_BASE_URL: `http://127.0.0.1:${String(PORTS.widget)}`,
 };
 
 function step(title: string, command: string, args: readonly string[], env = scratchEnv): void {
@@ -108,6 +113,7 @@ try {
   if (!values['skip-build']) {
     step('Build Mini App', 'pnpm', ['--filter', '@mestechko/miniapp', 'build']);
     step('Build cabinet', 'pnpm', ['--filter', '@mestechko/cabinet', 'build']);
+    step('Build widget', 'pnpm', ['--filter', '@mestechko/widget', 'build']);
   }
   start(
     'API with workers and bots',
@@ -115,7 +121,7 @@ try {
     ['--conditions=@mestechko/source', '--import', 'tsx', 'src/main.ts'],
     `${root}apps/api`,
   );
-  for (const app of ['cabinet', 'miniapp'] as const) {
+  for (const app of ['cabinet', 'miniapp', 'widget'] as const) {
     start(
       `${app} preview`,
       `${root}apps/${app}/node_modules/.bin/vite`,
@@ -132,7 +138,8 @@ try {
     'the previews',
     async () =>
       (await reachable(`http://127.0.0.1:${String(PORTS.cabinet)}/`)()) &&
-      (await reachable(`http://127.0.0.1:${String(PORTS.miniapp)}/`)()),
+      (await reachable(`http://127.0.0.1:${String(PORTS.miniapp)}/`)()) &&
+      (await reachable(`http://127.0.0.1:${String(PORTS.widget)}/demo/siren.html`)()),
     READY_TIMEOUT_MS,
   );
   console.log('• Waiting for the seeded MAX messages to be delivered');
@@ -148,6 +155,8 @@ try {
       `http://127.0.0.1:${String(PORTS.cabinet)}`,
       '--miniapp',
       `http://127.0.0.1:${String(PORTS.miniapp)}`,
+      '--widget',
+      `http://127.0.0.1:${String(PORTS.widget)}`,
       ...(values.only ? ['--only', values.only] : []),
       ...(values.viewport ? ['--viewport', values.viewport] : []),
     ],

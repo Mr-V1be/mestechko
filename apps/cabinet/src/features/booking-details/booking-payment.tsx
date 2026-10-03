@@ -26,7 +26,7 @@ export function BookingPayment({ booking }: { readonly booking: CabinetBookingDe
   }
   const amountOf = (reason: string, amount: number, passName: string | null) => {
     if (pointReasons.has(reason)) {
-      return t('points', { count: amount });
+      return t('points', { count: amount, points: format.number(amount) });
     }
     if (visitReasons.has(reason)) {
       return passName

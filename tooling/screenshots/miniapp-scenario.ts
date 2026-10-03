@@ -121,6 +121,42 @@ export async function captureMiniApp(session: Session, base: string): Promise<vo
   await page.getByText('Лист ожидания').waitFor();
   await shot('21-my-bookings-waitlist');
 
+  // Services the business never books together: the other one is greyed out with why.
+  await page.goto(`${base}/b/emal`);
+  await page.waitForURL(/\/services/);
+  await page.getByText('Отбеливание', { exact: true }).click();
+  await page.evaluate(() => {
+    window.scrollTo(0, 0);
+  });
+  await shot('22-services-not-together');
+
+  // A prepaid service: the deposit on the confirmation, the payment page and the return.
+  await page.goto(`${base}/b/siren`);
+  await page.getByText('Сирень на Пятницкой').click();
+  await page.getByText('Окрашивание в один тон').click();
+  await page.getByRole('button', { name: 'Выбрать мастера' }).click();
+  await page.getByText('Любой мастер').click();
+  await page.waitForURL(/\/time/);
+  for (let week = 0; week < MAX_WEEKS_AHEAD; week += 1) {
+    await slots.first().or(weekFull).waitFor();
+    if ((await slots.count()) > 0) {
+      break;
+    }
+    await page.getByRole('button', { name: 'Следующая неделя' }).first().click();
+  }
+  await slots.first().click();
+  await page.getByRole('button', { name: 'Продолжить' }).click();
+  await page.waitForURL(/\/confirm/);
+  await page.getByRole('button', { name: /^Записаться и оплатить/ }).waitFor();
+  await shot('23-confirm-deposit');
+  await page.getByRole('button', { name: /^Записаться и оплатить/ }).click();
+  await page.waitForURL(/\/test-pay\/checkout\//);
+  await shot('24-payment-page');
+  await page.getByRole('button', { name: /^Оплатить/ }).click();
+  await page.waitForURL(/payment=return/);
+  await page.getByText('Оплата прошла — вы записаны!').waitFor();
+  await shot('25-paid');
+
   await page.goto(`${base}/b/no-such-business`);
   await shot('13-business-not-found');
 

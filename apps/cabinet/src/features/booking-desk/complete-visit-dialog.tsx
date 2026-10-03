@@ -115,7 +115,8 @@ export function CompleteVisitDialog({
                 label={t('complete.points')}
                 description={t('complete.pointsBalance', {
                   count: data.pointsBalance,
-                  max: data.pointsRedeemable,
+                  points: format.number(data.pointsBalance),
+                  max: format.number(data.pointsRedeemable),
                 })}
               />
               {usePoints ? (
@@ -160,7 +161,9 @@ export function CompleteVisitDialog({
               <span className={styles.summaryValue}>{money(settlement.dueMinor)}</span>
             </div>
             {earned > 0 ? (
-              <span className={styles.hint}>{t('complete.earned', { count: earned })}</span>
+              <span className={styles.hint}>
+                {t('complete.earned', { count: earned, points: format.number(earned) })}
+              </span>
             ) : null}
             {settlement.prepaymentRefundMinor > 0 ? (
               <span className={styles.hint}>

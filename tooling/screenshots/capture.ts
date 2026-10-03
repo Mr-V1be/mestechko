@@ -1,20 +1,24 @@
 /**
  * Visual check of milestone screens: every screen at 390, 768 and 1280 px in every theme.
  * Run against built apps (vite preview) with the API and demo data up.
- *   node tooling/screenshots/capture.ts [--only miniapp|cabinet] [--out docs/screenshots/m1]
+ *   node tooling/screenshots/capture.ts [--only miniapp|cabinet|widget] [--out docs/screenshots/m3]
  */
 import { mkdirSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 import { browserLaunchOptions, openSession, viewports, type Problem } from './browser.ts';
+import { captureCabinetManagement } from './cabinet-manage-scenario.ts';
 import { captureCabinet } from './cabinet-scenario.ts';
 import { captureMiniApp } from './miniapp-scenario.ts';
+import { captureWidget } from './widget-scenario.ts';
+import type { Session } from './browser.ts';
 
 const { values } = parseArgs({
   options: {
     out: { type: 'string', default: 'docs/screenshots/m1' },
     miniapp: { type: 'string', default: 'http://127.0.0.1:46231' },
     cabinet: { type: 'string', default: 'http://127.0.0.1:46221' },
+    widget: { type: 'string', default: 'http://127.0.0.1:46241' },
     only: { type: 'string' },
     viewport: { type: 'string' },
   },
@@ -36,9 +40,21 @@ const cabinetThemes: Readonly<Record<string, ThemeSetup>> = {
   dark: { colorScheme: 'dark', storage: { 'mst-cabinet-theme': 'dark' } },
 };
 
+/** The website follows the visitor's system theme, and so does the widget on it. */
+const widgetThemes: Readonly<Record<string, ThemeSetup>> = {
+  light: { colorScheme: 'light', storage: {} },
+  dark: { colorScheme: 'dark', storage: {} },
+};
+
+async function captureWholeCabinet(session: Session, base: string): Promise<void> {
+  await captureCabinet(session, base);
+  await captureCabinetManagement(session, base);
+}
+
 const apps = [
   { name: 'miniapp', themes: miniAppThemes, base: values.miniapp, capture: captureMiniApp },
-  { name: 'cabinet', themes: cabinetThemes, base: values.cabinet, capture: captureCabinet },
+  { name: 'cabinet', themes: cabinetThemes, base: values.cabinet, capture: captureWholeCabinet },
+  { name: 'widget', themes: widgetThemes, base: values.widget, capture: captureWidget },
 ] as const;
 
 const problems: Problem[] = [];
