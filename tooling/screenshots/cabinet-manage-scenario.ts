@@ -22,8 +22,15 @@ async function openVisitToClose(page: Page, business: string): Promise<boolean> 
   for (const query of ['', `?date=${yesterday}`]) {
     await page.goto(`${business}/schedule${query}`);
     await page.waitForLoadState('networkidle');
-    const count = Math.min(await visitBlocks(page).count(), MAX_VISITS_TO_TRY);
-    for (let index = 0; index < count; index += 1) {
+    // A narrow board pages through its columns: visits of the other pages are in the
+    // document but cannot be clicked.
+    const onScreen = await visitBlocks(page).evaluateAll((blocks) =>
+      blocks.flatMap((block, index) => {
+        const rect = block.getBoundingClientRect();
+        return rect.left >= 0 && rect.right <= window.innerWidth ? [index] : [];
+      }),
+    );
+    for (const index of onScreen.slice(0, MAX_VISITS_TO_TRY)) {
       await visitBlocks(page).nth(index).click();
       const dialog = page.getByRole('dialog');
       await dialog.waitFor();
@@ -31,7 +38,7 @@ async function openVisitToClose(page: Page, business: string): Promise<boolean> 
       if (await dialog.getByRole('button', { name: 'Визит состоялся' }).isVisible()) {
         return true;
       }
-      await page.keyboard.press('Escape');
+      await dialog.getByRole('button', { name: 'Закрыть' }).click();
       await dialog.waitFor({ state: 'detached' });
     }
   }
