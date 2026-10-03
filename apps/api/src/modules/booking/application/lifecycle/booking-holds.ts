@@ -5,7 +5,7 @@ import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { BusinessContext } from '../../../tenancy/application/business-context.js';
 import type { BookingFollowUps, ExpiredHolds } from '../ports.js';
-import type { BookingCancellation } from './booking-cancellation.js';
+import type { BookingCancellation, CancellationOutcome } from './booking-cancellation.js';
 import type { BookingNotifier } from './booking-notifier.js';
 import type { BookingLifecycleStore, LockedBooking } from './ports.js';
 
@@ -25,16 +25,42 @@ export const releaseExpiredHoldsJob = defineJob({
 
 export const bookingHoldHandlerTokens = { sweep: SWEEP_HANDLER };
 
+/** Why a hold ends without a booking: its time ran out, or the client declined to pay. */
+export type HoldRelease = 'expired' | 'declined';
+
 /**
  * The end of a hold: confirmed when the prepayment arrives or the offer is accepted,
- * released when its time runs out.
+ * released when its time runs out or the client turns the payment down.
  */
 export class BookingHolds {
   constructor(
     private readonly store: BookingLifecycleStore,
+    private readonly cancellation: BookingCancellation,
     private readonly notifier: BookingNotifier,
     private readonly ids: IdGenerator,
   ) {}
+
+  /**
+   * Lets the held time go. Nothing was promised to the client, so nothing is refunded
+   * or announced; a declined payment is the client's own step, an expiry the system's.
+   */
+  async release(
+    businessId: string,
+    booking: LockedBooking,
+    why: HoldRelease,
+    now: Date,
+  ): Promise<CancellationOutcome['freedTime']> {
+    const outcome = await this.cancellation.cancel(booking, {
+      businessId,
+      actor: why === 'declined' ? 'client' : 'system',
+      channel: null,
+      actorUserId: null,
+      refundsDeposit: false,
+      seenByClient: why === 'declined',
+      now,
+    });
+    return outcome.freedTime;
+  }
 
   /** Makes a held booking firm; the client then gets the usual notice and reminders. */
   async confirm(
@@ -82,7 +108,7 @@ export class ReleaseExpiredHolds implements JobHandler<Record<string, never>> {
     private readonly expired: ExpiredHolds,
     private readonly unitOfWork: UnitOfWork,
     private readonly store: BookingLifecycleStore,
-    private readonly cancellation: BookingCancellation,
+    private readonly holds: BookingHolds,
     private readonly followUps: BookingFollowUps,
     private readonly clock: Clock,
   ) {}
@@ -100,16 +126,7 @@ export class ReleaseExpiredHolds implements JobHandler<Record<string, never>> {
       if (!booking?.hold || booking.hold.expiresAt.getTime() > now.getTime()) {
         return null;
       }
-      const outcome = await this.cancellation.cancel(booking, {
-        businessId,
-        actor: 'system',
-        channel: null,
-        actorUserId: null,
-        refundsDeposit: false,
-        seenByClient: false,
-        now,
-      });
-      return outcome.freedTime;
+      return this.holds.release(businessId, booking, 'expired', now);
     });
     if (freedTime) {
       await this.followUps.afterCommit({ businessId, freedTime });

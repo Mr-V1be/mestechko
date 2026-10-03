@@ -69,9 +69,13 @@ export const lifecycleProviders: Provider[] = [
   },
   {
     provide: BookingHolds,
-    useFactory: (store: BookingLifecycleStore, notifier: BookingNotifier, ids: IdGenerator) =>
-      new BookingHolds(store, notifier, ids),
-    inject: [BOOKING_LIFECYCLE_STORE, BookingNotifier, ID_GENERATOR],
+    useFactory: (
+      store: BookingLifecycleStore,
+      cancellation: BookingCancellation,
+      notifier: BookingNotifier,
+      ids: IdGenerator,
+    ) => new BookingHolds(store, cancellation, notifier, ids),
+    inject: [BOOKING_LIFECYCLE_STORE, BookingCancellation, BookingNotifier, ID_GENERATOR],
   },
   {
     provide: bookingHoldHandlerTokens.sweep,
@@ -79,15 +83,15 @@ export const lifecycleProviders: Provider[] = [
       expired: ExpiredHolds,
       unitOfWork: UnitOfWork,
       store: BookingLifecycleStore,
-      cancellation: BookingCancellation,
+      holds: BookingHolds,
       followUps: BookingFollowUps,
       clock: Clock,
-    ) => new ReleaseExpiredHolds(expired, unitOfWork, store, cancellation, followUps, clock),
+    ) => new ReleaseExpiredHolds(expired, unitOfWork, store, holds, followUps, clock),
     inject: [
       EXPIRED_HOLDS,
       UNIT_OF_WORK,
       BOOKING_LIFECYCLE_STORE,
-      BookingCancellation,
+      BookingHolds,
       BOOKING_FOLLOW_UPS,
       CLOCK,
     ],

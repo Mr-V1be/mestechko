@@ -171,6 +171,21 @@ describe('prepayments through the test provider', () => {
     ]);
   });
 
+  it('frees the time at once when the client turns the payment down', async () => {
+    const held = await bookAt(4, '13:00');
+    await pay(held.id, 'cancel');
+    const after = (await miniapp('GET', `/${held.id}`)).json<Booking>();
+    expect(after).toMatchObject({
+      status: 'cancelled',
+      hold: null,
+      payment: { status: 'cancelled' },
+    });
+    expect(await ledgerOf(held.id)).toEqual([]);
+    // The same time can be booked again straight away.
+    const again = await bookAt(4, '13:00');
+    expect(again.status).toBe('held');
+  });
+
   it('releases an unpaid hold when it runs out and returns money that arrives too late', async () => {
     const held = await bookAt(3, '12:00');
     const opened = await miniapp('POST', `/${held.id}/payment`, {

@@ -13,6 +13,8 @@ import type { BookingFollowUps, ClientBookingQueries, PaymentDescriptions } from
 import type { ClientBookingPresenter } from './client-booking-presenter.js';
 import type { ClientIdentity } from './client-bookings.js';
 
+const NO_CHANGE = { freedTime: null, refunds: [] } as const;
+
 /**
  * Bookings paid in advance: the client opens the provider's payment page, and the
  * provider's notification confirms the held booking. Money that arrives after the
@@ -104,16 +106,26 @@ export class PrepaidBookings {
     const event = this.provider.parseWebhook(delivery);
     const context = await this.businesses.byId(event.metadata.businessId);
     const businessId = context.business.id;
-    const refunds = await this.unitOfWork.inTenant(businessId, async () => {
+    const change = await this.unitOfWork.inTenant(businessId, async () => {
       const now = new Date(this.clock.now().epochMilliseconds);
       const outcome = await this.prepayments.apply(event, now);
-      if (outcome.kind !== 'succeeded') {
-        return [];
+      if (outcome.kind !== 'succeeded' && outcome.kind !== 'cancelled') {
+        return NO_CHANGE;
       }
       const booking = await this.store.lock(outcome.payment.bookingId);
-      if (booking && this.holds.awaitsPayment(booking)) {
-        await this.holds.confirm(context, booking, { seenByClient: false }, now);
-        return [];
+      const awaiting = booking && this.holds.awaitsPayment(booking) ? booking : null;
+      if (outcome.kind === 'cancelled') {
+        // The client turned the payment down: the held time goes back to others at once.
+        return awaiting
+          ? {
+              freedTime: await this.holds.release(businessId, awaiting, 'declined', now),
+              refunds: [],
+            }
+          : NO_CHANGE;
+      }
+      if (awaiting) {
+        await this.holds.confirm(context, awaiting, { seenByClient: false }, now);
+        return NO_CHANGE;
       }
       // Paid after the hold ran out or the booking was cancelled: the money goes back.
       const refund = await this.prepayments.requestRefund(
@@ -121,8 +133,8 @@ export class PrepaidBookings {
         outcome.payment.amountMinor,
         now,
       );
-      return refund ? [refund] : [];
+      return { freedTime: null, refunds: refund ? [refund] : [] };
     });
-    await this.followUps.afterCommit({ businessId, freedTime: null, refunds });
+    await this.followUps.afterCommit({ businessId, ...change });
   }
 }
