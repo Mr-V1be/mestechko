@@ -10,6 +10,7 @@ import { PageContainer, PageHeader } from '../common/page-header';
 import { NoAccessState, QueryErrorState } from '../common/states';
 import { ruleSections } from './rule-fields';
 import { SettingsForm } from './settings-form';
+import { WidgetEmbed } from './widget-embed';
 import styles from './settings.module.css';
 
 /** Sections and fields in their places while the settings load. */
@@ -55,12 +56,15 @@ export function SettingsPage() {
     <PageContainer>
       <PageHeader title={t('settings:title')} />
       {settings.data ? (
-        <SettingsForm
-          key={businessId}
-          businessId={businessId}
-          settings={settings.data}
-          staffAny={vocabulary.staffAny}
-        />
+        <>
+          <SettingsForm
+            key={businessId}
+            businessId={businessId}
+            settings={settings.data}
+            staffAny={vocabulary.staffAny}
+          />
+          {overview.data ? <WidgetEmbed slug={overview.data.business.slug} /> : null}
+        </>
       ) : settings.isError ? (
         <QueryErrorState error={settings.error} onRetry={() => void settings.refetch()} />
       ) : (

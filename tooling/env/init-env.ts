@@ -74,6 +74,7 @@ const defaults: Record<string, () => string> = {
   OTEL_SERVICE_NAME: () => 'mestechko-api',
   VITE_API_BASE_URL: () => '/api',
   VITE_DEMO_MODE: () => 'true',
+  VITE_WIDGET_BASE_URL: () => 'http://127.0.0.1:46240',
 };
 
 const output = readFileSync(examplePath, 'utf8')
