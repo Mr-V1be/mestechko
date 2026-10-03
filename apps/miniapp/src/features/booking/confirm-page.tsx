@@ -10,12 +10,14 @@ import {
   TextField,
   useToast,
 } from '@mestechko/ui';
-import { Users } from 'lucide-react';
+import { Users, Wallet } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router';
 import { appConfig } from '../../app/config';
 import { useCreateBooking, useQuote } from '../../platform/api/queries';
+import { awaitsPayment } from '../payment/payment-state';
+import { useCheckout } from '../payment/use-checkout';
 import { haptics } from '../../platform/telegram/telegram-host';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { errorMessage, hasCode } from '../../shared/error-message';
@@ -56,6 +58,7 @@ export function ConfirmPage() {
       : null,
   );
   const createBooking = useCreateBooking(selection.slug);
+  const checkout = useCheckout(selection.slug);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [contact, setContact] = useClientContact(selection.slug);
   const demoContacts = useDemoContacts();
@@ -84,10 +87,13 @@ export function ConfirmPage() {
       {
         onSuccess: (booking) => {
           haptics.success();
-          void navigate(
-            `/b/${encodeURIComponent(selection.slug)}/bookings/${booking.id}?created=1`,
-            { replace: true },
-          );
+          const bookingPath = `/b/${encodeURIComponent(selection.slug)}/bookings/${booking.id}?created=1`;
+          if (awaitsPayment(booking)) {
+            // Straight on to paying; if the page cannot open, the booking offers it again.
+            checkout.open(booking.id, () => void navigate(bookingPath, { replace: true }));
+            return;
+          }
+          void navigate(bookingPath, { replace: true });
         },
         onError: (error) => {
           haptics.error();
@@ -118,11 +124,14 @@ export function ConfirmPage() {
 
   const quote = draftBooking.quote;
   const assigned = quote?.assigned ?? null;
+  const deposit = quote?.deposit && quote.deposit.amountMinor > 0 ? quote.deposit : null;
   useMainButton({
-    text: t('confirm.submit'),
+    text: deposit
+      ? t('confirm.submitAndPay', { amount: format.money(deposit) })
+      : t('confirm.submit'),
     visible: quote?.available !== false,
     enabled: assigned !== null,
-    loading: createBooking.isPending || draftBooking.quoteLoading,
+    loading: createBooking.isPending || checkout.pending || draftBooking.quoteLoading,
     onClick: submit,
   });
 
@@ -214,6 +223,19 @@ export function ConfirmPage() {
             )
           }
         />
+        {deposit && assigned ? (
+          <ListItem
+            leading={<Wallet aria-hidden="true" />}
+            title={t('confirm.deposit')}
+            description={t('confirm.depositHint', {
+              rest: format.money({
+                amountMinor: Math.max(0, assigned.total.amountMinor - deposit.amountMinor),
+                currency: deposit.currency,
+              }),
+            })}
+            meta={format.money(deposit)}
+          />
+        ) : null}
       </ListGroup>
       <form
         className={styles.form}

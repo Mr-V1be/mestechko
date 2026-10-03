@@ -206,12 +206,25 @@ export function useMyBookings(slug: string, scope: BookingScope) {
   });
 }
 
-export function useClientBooking(slug: string, bookingId: string) {
+/** How often a booking is re-read while the client waits for something to settle. */
+const POLL_MS = 2_000;
+
+export function useClientBooking(
+  slug: string,
+  bookingId: string,
+  options: {
+    /** Re-reads the booking while this holds, e.g. until a payment is confirmed. */
+    readonly pollWhile?: (booking: ClientBooking) => boolean;
+  } = {},
+) {
   const api = useApi();
+  const { pollWhile } = options;
   return useQuery({
     queryKey: queryKeys.booking(slug, bookingId),
     queryFn: ({ signal }) =>
       api.request('getMiniAppBooking', { params: { slug, bookingId } }, { signal }),
+    refetchInterval: (query) =>
+      pollWhile && query.state.data && pollWhile(query.state.data) ? POLL_MS : false,
   });
 }
 

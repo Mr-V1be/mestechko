@@ -8,6 +8,8 @@ const THEME_STORAGE_KEY = 'mst-miniapp-theme';
 
 const apiProxy: Record<string, ProxyOptions> = {
   '/api': { target: API_TARGET, rewrite: (path) => path.replace(/^\/api/, '') },
+  // The test payment provider's hosted page; it sends the payer back to this app.
+  '/test-pay': { target: API_TARGET },
 };
 
 /** Applies the stored theme before the first paint. */

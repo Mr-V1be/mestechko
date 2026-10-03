@@ -109,7 +109,11 @@ export function BookingsPage() {
               title={booking.services.map((service) => service.name).join(', ')}
               description={`${format.instant(booking.start, booking.location.timeZone, 'time')}, ${booking.staff.displayName}`}
               trailing={
-                scope === 'past' ? <BookingStatusBadge status={booking.status} /> : <ChevronRight />
+                scope === 'past' || booking.status === 'held' ? (
+                  <BookingStatusBadge status={booking.status} />
+                ) : (
+                  <ChevronRight />
+                )
               }
               onClick={() => {
                 void navigate(`/b/${encodeURIComponent(business.slug)}/bookings/${booking.id}`);

@@ -1,10 +1,22 @@
 import { apiAssetUrl, BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
-import { Avatar, CelebrationIllustration, ListGroup, ListItem, useToast } from '@mestechko/ui';
+import type { ClientBooking } from '@mestechko/contracts/client';
+import {
+  Avatar,
+  Button,
+  CelebrationIllustration,
+  EmptyIllustration,
+  ListGroup,
+  ListItem,
+  StatePanel,
+  useToast,
+} from '@mestechko/ui';
 import { CalendarClock, MapPin, MessageSquareText } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { appConfig } from '../../app/config';
 import { useConfirmAttendance } from '../../platform/api/lifecycle-queries';
+import { PAYMENT_RETURN_PARAM } from '../../platform/api/payment-queries';
 import { useClientBooking } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { haptics } from '../../platform/telegram/telegram-host';
@@ -13,10 +25,75 @@ import { useCurrentBusiness } from '../business/business-context';
 import { Page } from '../layout/page';
 import { ListSkeleton, NotFoundState, QueryErrorState } from '../layout/states';
 import { NotificationsPrompt } from '../notifications/notifications-prompt';
+import { PaymentLine } from '../payment/payment-line';
+import { PaymentPanel } from '../payment/payment-panel';
+import {
+  awaitsPayment,
+  returnOutcome,
+  RETURN_WAIT_MS,
+  type ReturnOutcome,
+} from '../payment/payment-state';
+import { useCheckout } from '../payment/use-checkout';
 import { BookingActions } from './booking-actions';
 import styles from './bookings.module.css';
 
-/** One booking; right after booking it opens with a small celebration. */
+/** What opens the page: a fresh booking, a return from paying, or the booking itself. */
+function Headline({
+  booking,
+  created,
+  outcome,
+  onBookAgain,
+}: {
+  readonly booking: ClientBooking;
+  readonly created: boolean;
+  readonly outcome: ReturnOutcome | null;
+  readonly onBookAgain: () => void;
+}) {
+  const { t } = useTranslation();
+  const format = useFormat();
+  const timeZone = booking.location.timeZone;
+  if (outcome === 'declined') {
+    return (
+      <StatePanel
+        compact
+        role="status"
+        illustration={<EmptyIllustration />}
+        title={t('payment.declinedTitle')}
+        description={t('payment.declinedDescription')}
+        action={
+          <Button variant="secondary" onClick={onBookAgain}>
+            {t('payment.bookAgain')}
+          </Button>
+        }
+      />
+    );
+  }
+  if (outcome === 'paid' || (created && !awaitsPayment(booking))) {
+    return (
+      <section className={styles.celebration} role="status">
+        <div className={styles.celebrationArt}>
+          <CelebrationIllustration />
+        </div>
+        <h1 className={styles.celebrationTitle}>
+          {outcome === 'paid' ? t('payment.paidTitle') : t('booking.createdTitle')}
+        </h1>
+        <p className={styles.celebrationLead}>
+          {t('booking.createdLead', {
+            date: format.instant(booking.start, timeZone, 'dayMonth'),
+            time: format.instant(booking.start, timeZone, 'time'),
+          })}
+        </p>
+      </section>
+    );
+  }
+  return (
+    <div className={styles.statusRow}>
+      <BookingStatusBadge status={booking.status} />
+    </div>
+  );
+}
+
+/** One booking; right after booking or paying it opens with a small celebration. */
 export function BookingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -25,19 +102,45 @@ export function BookingPage() {
   const { bookingId = '' } = useParams();
   const [params] = useSearchParams();
   const created = params.get('created') === '1';
+  const returned = params.get(PAYMENT_RETURN_PARAM) === 'return';
+  const [returnedAt] = useState(() => Date.now());
   const toast = useToast();
-  const booking = useClientBooking(business.slug, bookingId);
+  const booking = useClientBooking(
+    business.slug,
+    bookingId,
+    returned
+      ? {
+          // The provider's notice may arrive a moment after the client is back.
+          pollWhile: (current) =>
+            awaitsPayment(current) && Date.now() - returnedAt < RETURN_WAIT_MS,
+        }
+      : {},
+  );
   const confirmAttendance = useConfirmAttendance(business.slug);
+  const checkout = useCheckout(business.slug);
   const listPath = `/b/${encodeURIComponent(business.slug)}/bookings`;
-  const canConfirm = booking.data?.actions.confirm_attendance === true;
+  const data = booking.data;
+  const awaiting = data ? awaitsPayment(data) : false;
+  const outcome = data && returned ? returnOutcome(data, booking.dataUpdatedAt - returnedAt) : null;
+  const canConfirm = data?.actions.confirm_attendance === true;
 
-  // One primary action: finish after booking, otherwise confirm the visit while possible.
+  // One primary action: pay while the time is held, finish after booking, otherwise
+  // confirm the visit while that is possible.
   useMainButton({
-    text: created ? t('booking.done') : t('booking.confirmAttendance'),
-    visible: created || canConfirm,
-    loading: confirmAttendance.isPending,
+    text:
+      awaiting && data?.deposit
+        ? t('payment.pay', { amount: format.money(data.deposit) })
+        : created || outcome === 'paid'
+          ? t('booking.done')
+          : t('booking.confirmAttendance'),
+    visible: (awaiting && outcome !== 'checking') || created || outcome === 'paid' || canConfirm,
+    loading: confirmAttendance.isPending || checkout.pending,
     onClick: () => {
-      if (created) {
+      if (awaiting) {
+        checkout.open(bookingId);
+        return;
+      }
+      if (created || outcome === 'paid') {
         void navigate(listPath, { replace: true });
         return;
       }
@@ -54,10 +157,10 @@ export function BookingPage() {
     },
   });
 
-  const data = booking.data;
   const timeZone = data?.location.timeZone ?? 'UTC';
+  const celebrating = outcome === 'paid' || (created && !awaiting);
   return (
-    <Page title={created ? undefined : t('booking.title')} backTo={listPath}>
+    <Page title={celebrating ? undefined : t('booking.title')} backTo={listPath}>
       {booking.isPending ? <ListSkeleton rows={4} /> : null}
       {booking.isError ? (
         isNotFound(booking.error) ? (
@@ -71,24 +174,15 @@ export function BookingPage() {
       ) : null}
       {data ? (
         <>
-          {created ? (
-            <section className={styles.celebration} role="status">
-              <div className={styles.celebrationArt}>
-                <CelebrationIllustration />
-              </div>
-              <h1 className={styles.celebrationTitle}>{t('booking.createdTitle')}</h1>
-              <p className={styles.celebrationLead}>
-                {t('booking.createdLead', {
-                  date: format.instant(data.start, timeZone, 'dayMonth'),
-                  time: format.instant(data.start, timeZone, 'time'),
-                })}
-              </p>
-            </section>
-          ) : (
-            <div className={styles.statusRow}>
-              <BookingStatusBadge status={data.status} />
-            </div>
-          )}
+          <Headline
+            booking={data}
+            created={created}
+            outcome={outcome}
+            onBookAgain={() => {
+              void navigate(`/b/${encodeURIComponent(business.slug)}`);
+            }}
+          />
+          {awaiting ? <PaymentPanel slug={business.slug} booking={data} outcome={outcome} /> : null}
           <ListGroup>
             <ListItem
               leading={<CalendarClock aria-hidden="true" />}
@@ -122,8 +216,9 @@ export function BookingPage() {
               />
             ))}
             <ListItem title={t('booking.total')} meta={format.money(data.total)} />
+            <PaymentLine booking={data} />
           </ListGroup>
-          <NotificationsPrompt />
+          {awaiting ? null : <NotificationsPrompt />}
           {data.comment ? (
             <ListGroup title={t('booking.comment')}>
               <ListItem leading={<MessageSquareText aria-hidden="true" />} title={data.comment} />

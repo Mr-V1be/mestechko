@@ -1,4 +1,5 @@
 import { useFormat, useVocabulary } from '@mestechko/booking-ui';
+import { incompatibleWith } from '@mestechko/domain';
 import { Checkbox, EmptyIllustration, ListGroup, ListItem, StatePanel } from '@mestechko/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -40,6 +41,8 @@ export function ServicesPage() {
   };
 
   const categories = services.data?.categories ?? [];
+  /** Services the business never books together with one already chosen. */
+  const excluded = incompatibleWith(chosen, services.data?.incompatible ?? []);
   const catalog = categories.flatMap((category) => category.services);
   /** A service can join the selection only if one staff member provides all of them. */
   const combinable = (providerIds: readonly string[]) =>
@@ -72,8 +75,9 @@ export function ServicesPage() {
         <ListGroup key={category.id} title={category.name}>
           {category.services.map((service) => {
             const checked = chosen.includes(service.id);
-            const incompatible = !checked && !combinable(service.providerIds);
-            const disabled = !checked && (chosen.length >= limit || incompatible);
+            const notTogether = !checked && excluded.has(service.id);
+            const incompatible = !checked && !notTogether && !combinable(service.providerIds);
+            const disabled = !checked && (chosen.length >= limit || notTogether || incompatible);
             const controlId = `service-${service.id}`;
             return (
               <ListItem
@@ -82,7 +86,13 @@ export function ServicesPage() {
                 selected={checked}
                 disabled={disabled}
                 title={service.name}
-                description={incompatible ? t('services.incompatible') : service.description}
+                description={
+                  notTogether
+                    ? t('services.notTogether')
+                    : incompatible
+                      ? t('services.incompatible')
+                      : service.description
+                }
                 meta={
                   <span className={styles.price}>
                     {service.priceVaries
