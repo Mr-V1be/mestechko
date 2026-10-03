@@ -2,7 +2,7 @@ import { sql } from 'kysely';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
-import { isExclusionViolation } from '../../../platform/db/pg-errors.js';
+import { isTimeConflict } from '../../../platform/db/pg-errors.js';
 import type { BookingStatus } from '@mestechko/domain';
 import type {
   BookingLifecycleStore,
@@ -144,7 +144,7 @@ export class KyselyBookingLifecycleStore implements BookingLifecycleStore {
       await sql`release savepoint booking_move`.execute(db);
     } catch (error) {
       await sql`rollback to savepoint booking_move`.execute(db);
-      if (isExclusionViolation(error)) {
+      if (isTimeConflict(error)) {
         throw new SlotConflictError();
       }
       throw error;

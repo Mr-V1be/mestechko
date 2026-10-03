@@ -1,5 +1,5 @@
 import { sql } from 'kysely';
-import { isExclusionViolation, isUniqueViolation } from '../../../platform/db/pg-errors.js';
+import { isTimeConflict, isUniqueViolation } from '../../../platform/db/pg-errors.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import {
   DuplicateRequestError,
@@ -71,7 +71,7 @@ export class KyselyBookingWriter implements BookingWriter {
       await sql`release savepoint booking_attempt`.execute(db);
     } catch (error) {
       await sql`rollback to savepoint booking_attempt`.execute(db);
-      if (isExclusionViolation(error)) {
+      if (isTimeConflict(error)) {
         throw new SlotConflictError();
       }
       if (isUniqueViolation(error, IDEMPOTENCY_CONSTRAINT)) {

@@ -52,6 +52,34 @@ describe('concurrent booking', () => {
     expect(stored).toHaveLength(1);
   });
 
+  it('answers a crowd racing for one time with one booking and conflicts, never an error', async () => {
+    // Writers of overlapping rows may wait on each other inside the exclusion check;
+    // the database then aborts one of them, which is a lost race like any other.
+    const tenant = await createTenant(databases.admin, { staffCount: 1, chairs: 3 });
+    await databases.admin
+      .updateTable('businesses')
+      .set({ isDemo: true })
+      .where('id', '=', tenant.businessId)
+      .execute();
+    const start = await firstSlotTomorrow(app, tenant);
+    const crowd = 24;
+    const launches = await Promise.all(
+      Array.from({ length: crowd }, (_, index) =>
+        launchAs(app, tenant.slug, DEMO_USER_BASE + 400 + index),
+      ),
+    );
+
+    const responses = await Promise.all(
+      launches.map((initData) =>
+        book(app, tenant, { initData, start, staffId: tenant.staffIds[0] ?? null }),
+      ),
+    );
+
+    const statuses = responses.map((response) => response.statusCode);
+    expect(statuses.filter((status) => status === 201)).toHaveLength(1);
+    expect(statuses.filter((status) => status === 409)).toHaveLength(crowd - 1);
+  });
+
   it('spreads simultaneous "any staff" requests over free staff until the shared chair runs out', async () => {
     const tenant = await createTenant(databases.admin, { staffCount: 3, chairs: 2 });
     await databases.admin
