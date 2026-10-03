@@ -67,6 +67,9 @@
 .rowButton {
   display: block;
   max-width: calc(var(--size-aside) - var(--space-8));
+  padding: 0;
+  border: none;
+  background: none;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: var(--font-weight-bold);

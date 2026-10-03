@@ -1,0 +1,242 @@
+{
+  "title": "Клиенты",
+  "add": "Добавить клиента",
+  "addShort": "Добавить",
+  "moreActions": "Импорт и экспорт",
+  "toolbar": {
+    "search": "Поиск",
+    "searchPlaceholder": "Имя, телефон или e-mail",
+    "tag": "Тег",
+    "allTags": "Все теги",
+    "tagOption": "{{tag}} · {{count}}",
+    "sort": "Порядок"
+  },
+  "sort": {
+    "recent": "Недавние",
+    "name": "По имени"
+  },
+  "columns": {
+    "client": "Клиент",
+    "phone": "Телефон",
+    "visits": "Визиты",
+    "noShows": "Неявки",
+    "lastVisit": "Последний визит",
+    "nextVisit": "Следующий визит"
+  },
+  "tableCaption": "Клиенты заведения",
+  "visits_one": "{{count}} визит",
+  "visits_few": "{{count}} визита",
+  "visits_many": "{{count}} визитов",
+  "visits_other": "{{count}} визита",
+  "noShows_one": "{{count}} неявка",
+  "noShows_few": "{{count}} неявки",
+  "noShows_many": "{{count}} неявок",
+  "noShows_other": "{{count}} неявки",
+  "noVisitsYet": "Ещё не был в заведении",
+  "nextVisit": "Визит {{when}}",
+  "none": "—",
+  "dayTime": "{{day}}, {{time}}",
+  "emptyTitle": "Клиентов пока нет",
+  "emptyDescription": "Добавьте первого клиента или загрузите список из таблицы.",
+  "noResultsTitle": "Никого не нашли",
+  "noResultsDescription": "Проверьте написание или сбросьте фильтры.",
+  "resetFilters": "Сбросить фильтры",
+  "tags": {
+    "label": "Теги",
+    "placeholder": "Добавить тег",
+    "remove": "Убрать тег «{{tag}}»",
+    "create": "Новый тег «{{tag}}»",
+    "limit": "Не больше {{count}} тегов, каждый до {{length}} символов",
+    "saveFailed": "Теги не сохранились"
+  },
+  "form": {
+    "createTitle": "Новый клиент",
+    "editTitle": "Профиль клиента",
+    "name": "Имя",
+    "namePlaceholder": "Как обращаться к клиенту",
+    "nameRequired": "Укажите имя",
+    "phone": "Телефон",
+    "phonePlaceholder": "+7 900 000-00-00",
+    "phoneInvalid": "Номер не распознан. Пример: +7 900 123-45-67",
+    "phoneTaken": "Этот номер уже есть в карточке другого клиента",
+    "openTaken": "Открыть карточку",
+    "email": "E-mail",
+    "emailPlaceholder": "name@example.ru",
+    "emailInvalid": "Проверьте адрес: в нём должны быть @ и домен",
+    "create": "Добавить",
+    "save": "Сохранить",
+    "created": "Клиент добавлен",
+    "saved": "Профиль сохранён"
+  },
+  "card": {
+    "back": "Все клиенты",
+    "since": "Клиент с {{date}}",
+    "edit": "Изменить",
+    "contacts": "Контакты",
+    "call": "Позвонить",
+    "write": "Написать письмо",
+    "addPhone": "Добавить телефон",
+    "addEmail": "Добавить e-mail",
+    "messenger": "Пишет в {{channel}}",
+    "stats": {
+      "visits": "Визитов",
+      "noShows": "Неявок",
+      "cancellations": "Отмен",
+      "spent": "Потрачено"
+    },
+    "upcoming": "Ближайшие визиты",
+    "noUpcoming": "Ближайших визитов нет",
+    "history": "История визитов",
+    "noHistory": "Визитов ещё не было",
+    "showAll": "Показать все ({{count}})",
+    "showLess": "Свернуть",
+    "visitDetails": "{{services}} · {{staff}}",
+    "notFoundTitle": "Клиент не найден",
+    "notFoundDescription": "Карточку могли удалить, или в ссылке ошибка.",
+    "toList": "К списку клиентов"
+  },
+  "notes": {
+    "title": "Заметки",
+    "new": "Новая заметка",
+    "placeholder": "Что важно помнить о клиенте",
+    "add": "Добавить заметку",
+    "empty": "Заметок пока нет",
+    "saving": "Сохраняем…",
+    "delete": "Удалить заметку",
+    "deleteTitle": "Удалить заметку?",
+    "deleteConsequence": "Заметка «{{excerpt}}» исчезнет из карточки у всех сотрудников. Вернуть её не получится.",
+    "deleted": "Заметка удалена",
+    "addFailed": "Заметка не сохранилась",
+    "deleteFailed": "Заметку не удалось удалить"
+  },
+  "loyalty": {
+    "title": "Баллы и абонементы",
+    "points": "Баллы",
+    "pointRate": "1 балл = {{money}}",
+    "adjust": "Изменить баллы",
+    "passes": "Абонементы",
+    "noPasses": "Абонементов нет",
+    "sell": "Продать абонемент",
+    "visitsLeft": "Осталось {{left}} из {{total}}",
+    "validUntil": "до {{date}}",
+    "passStates": {
+      "active": "Действует",
+      "used": "Использован",
+      "expired": "Истёк"
+    },
+    "ledger": "История операций",
+    "noLedger": "Операций пока не было"
+  },
+  "ledger": {
+    "reasons": {
+      "points_accrual": "Начислено за визит",
+      "points_redemption": "Оплата баллами",
+      "points_adjustment": "Изменение вручную",
+      "pass_sale": "Продажа абонемента",
+      "pass_visit": "Визит по абонементу",
+      "pass_adjustment": "Изменение абонемента",
+      "prepayment": "Предоплата",
+      "prepayment_refund": "Возврат предоплаты",
+      "visit_payment": "Оплата визита",
+      "pass_payment": "Оплата абонемента"
+    },
+    "points_one": "{{sign}}{{value}} балл",
+    "points_few": "{{sign}}{{value}} балла",
+    "points_many": "{{sign}}{{value}} баллов",
+    "points_other": "{{sign}}{{value}} балла",
+    "visits_one": "{{sign}}{{value}} визит",
+    "visits_few": "{{sign}}{{value}} визита",
+    "visits_many": "{{sign}}{{value}} визитов",
+    "visits_other": "{{sign}}{{value}} визита",
+    "money": "{{sign}}{{value}}"
+  },
+  "points": {
+    "title": "Изменить баллы",
+    "description": "Баланс: {{balance}}",
+    "direction": "Действие",
+    "directions": {
+      "credit": "Начислить",
+      "debit": "Списать"
+    },
+    "amount": "Сколько баллов",
+    "amountRequired": "Укажите, сколько баллов",
+    "notEnough": "На балансе только {{balance}}",
+    "note": "Причина",
+    "notePlaceholder": "Например: компенсация за ожидание",
+    "noteRequired": "Напишите причину — она останется в истории операций",
+    "after": "Станет: {{balance}}",
+    "submit": {
+      "credit": "Начислить {{value}}",
+      "debit": "Списать {{value}}"
+    },
+    "done": {
+      "credit": "Начислено {{value}}",
+      "debit": "Списано {{value}}"
+    }
+  },
+  "sellPass": {
+    "title": "Продать абонемент",
+    "description": "Клиент оплачивает на ресепшене, абонемент сразу появляется в карточке.",
+    "plan": "Абонемент",
+    "planOption": "{{name}} — {{price}}",
+    "visits": "Визитов",
+    "validity_one": "{{count}} день, до {{date}}",
+    "validity_few": "{{count}} дня, до {{date}}",
+    "validity_many": "{{count}} дней, до {{date}}",
+    "validity_other": "{{count}} дня, до {{date}}",
+    "validityLabel": "Действует",
+    "price": "Цена",
+    "submit": "Продать за {{price}}",
+    "noPlansTitle": "Нет абонементов в продаже",
+    "noPlansDescription": "Абонементы создаются в разделе «Лояльность».",
+    "openLoyalty": "Открыть «Лояльность»",
+    "sold": "Абонемент «{{name}}» продан"
+  },
+  "transfer": {
+    "formats": {
+      "csv": "CSV",
+      "xlsx": "Excel"
+    },
+    "export": "Экспорт в {{format}}",
+    "exportStarted": "Скачиваем список клиентов в {{format}}",
+    "import": "Импорт из файла"
+  },
+  "import": {
+    "title": "Импорт клиентов",
+    "lead": "Таблица CSV или Excel (.xlsx), в первой строке — названия колонок:",
+    "columns": {
+      "name": "Имя",
+      "phone": "Телефон",
+      "email": "E-mail",
+      "tags": "Теги",
+      "note": "Заметка"
+    },
+    "columnHints": {
+      "name": "обязательно",
+      "phone": "по нему обновим карточку, если клиент уже есть",
+      "email": "",
+      "tags": "через запятую",
+      "note": "добавится в карточку"
+    },
+    "pick": "Выбрать файл",
+    "pickAnother": "Другой файл",
+    "checking": "Проверяем «{{file}}»…",
+    "fileLabel": "Файл «{{file}}»",
+    "created": "Добавим",
+    "updated": "Обновим",
+    "rejected": "Пропустим",
+    "rejectedTitle": "Пропущенные строки",
+    "rejectedRow": "Строка {{row}}",
+    "reasons": {
+      "missing_name": "нет имени",
+      "invalid_phone": "телефон не распознан",
+      "invalid_email": "e-mail с ошибкой",
+      "invalid_tags": "больше 20 тегов или слишком длинный тег"
+    },
+    "nothingToImport": "В файле нет строк, которые можно загрузить.",
+    "submit": "Импортировать",
+    "done": "Импорт завершён: добавлено {{created}}, обновлено {{updated}}",
+    "wrongType": "Подойдёт файл CSV или Excel (.xlsx).",
+    "tooLarge": "Файл больше {{size}} МБ — разделите его на части."
+  }
+}

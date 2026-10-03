@@ -28,6 +28,7 @@ export { Checkbox, type CheckboxProps } from './components/form/checkbox';
 export { Switch, type SwitchProps } from './components/form/switch';
 export { NumberField, type NumberFieldProps } from './components/form/number-field';
 export { FileButton, type FileButtonProps } from './components/form/file-button';
+export { TagInput, type TagInputProps, type TagInputTexts } from './components/form/tag-input';
 export {
   ConfirmDialog,
   Dialog,

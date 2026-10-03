@@ -1,0 +1,100 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.balance {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.balanceIcon {
+  color: var(--color-accent-text);
+}
+
+.action {
+  color: var(--color-accent-text);
+}
+
+.actionIcon {
+  color: var(--color-accent-text);
+}
+
+.empty {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-regular);
+}
+
+.passTitle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+.line {
+  display: block;
+}
+
+.dim {
+  opacity: 0.55;
+}
+
+.entryIcon {
+  color: var(--color-text-secondary);
+}
+
+.credit {
+  color: var(--color-success);
+}
+
+.toggle {
+  align-self: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.terms {
+  margin: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+}
+
+.term {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-3) var(--space-4);
+}
+
+.term + .term {
+  box-shadow: inset 0 var(--size-hairline) 0 var(--color-border);
+}
+
+.term dt {
+  color: var(--color-text-secondary);
+}
+
+.term dd {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-control-md);
+  font-weight: var(--font-weight-bold);
+}

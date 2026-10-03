@@ -5,14 +5,26 @@ import type { ReactNode } from 'react';
 import { IconButton } from '../button/icon-button';
 import styles from './overlay.module.css';
 
-export interface MenuAction {
+interface MenuActionBase {
   readonly key: string;
   readonly label: string;
   readonly icon?: ReactNode;
-  readonly onSelect: () => void;
   readonly tone?: 'default' | 'danger';
   readonly disabled?: boolean;
 }
+
+/** An action runs `onSelect`; a link action is followed by the browser, e.g. a download. */
+export type MenuAction = MenuActionBase &
+  (
+    | { readonly onSelect: () => void; readonly href?: never }
+    | {
+        readonly href: string;
+        /** Saves the target as a file instead of opening it. */
+        readonly download?: boolean;
+        /** Runs as the link is followed, e.g. to confirm the download started. */
+        readonly onSelect?: () => void;
+      }
+  );
 
 export interface MenuProps {
   /** Accessible name of the «⋯» button. */
@@ -29,17 +41,32 @@ export function Menu({ label, actions, icon = <Ellipsis /> }: MenuProps) {
       <BaseMenu.Portal>
         <BaseMenu.Positioner sideOffset={4} align="end" style={{ zIndex: 'var(--layer-popover)' }}>
           <BaseMenu.Popup className={styles.menuPopup}>
-            {actions.map((action) => (
-              <BaseMenu.Item
-                key={action.key}
-                disabled={action.disabled ?? false}
-                className={clsx(styles.menuItem, action.tone === 'danger' && styles.menuDanger)}
-                onClick={action.onSelect}
-              >
-                {action.icon}
-                {action.label}
-              </BaseMenu.Item>
-            ))}
+            {actions.map((action) => {
+              const className = clsx(styles.menuItem, action.tone === 'danger' && styles.menuDanger);
+              return action.href === undefined ? (
+                <BaseMenu.Item
+                  key={action.key}
+                  disabled={action.disabled ?? false}
+                  className={className}
+                  onClick={action.onSelect}
+                >
+                  {action.icon}
+                  {action.label}
+                </BaseMenu.Item>
+              ) : (
+                <BaseMenu.LinkItem
+                  key={action.key}
+                  href={action.href}
+                  download={action.download ?? undefined}
+                  closeOnClick
+                  className={className}
+                  onClick={action.onSelect}
+                >
+                  {action.icon}
+                  {action.label}
+                </BaseMenu.LinkItem>
+              );
+            })}
           </BaseMenu.Popup>
         </BaseMenu.Positioner>
       </BaseMenu.Portal>

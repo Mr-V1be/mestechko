@@ -22,13 +22,22 @@ function dateFormatter(locale: string, options: Intl.DateTimeFormatOptions): Int
 
 /** Instants are always shown in the time zone of the business location. */
 export type InstantStyle =
-  'time' | 'dayNumber' | 'monthShort' | 'dayMonth' | 'weekdayShort' | 'weekdayDayMonth' | 'full';
+  | 'time'
+  | 'dayNumber'
+  | 'monthShort'
+  | 'dayMonth'
+  | 'dayMonthYear'
+  | 'weekdayShort'
+  | 'weekdayDayMonth'
+  | 'full';
 
 const instantStyles: Record<InstantStyle, Intl.DateTimeFormatOptions> = {
   time: { hour: '2-digit', minute: '2-digit' },
   dayNumber: { day: 'numeric' },
   monthShort: { month: 'short' },
   dayMonth: { day: 'numeric', month: 'long' },
+  /** For dates outside the current year, where the day and month alone mislead. */
+  dayMonthYear: { day: 'numeric', month: 'long', year: 'numeric' },
   weekdayShort: { weekday: 'short' },
   weekdayDayMonth: { weekday: 'short', day: 'numeric', month: 'long' },
   full: { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' },
@@ -45,10 +54,11 @@ export function formatInstant(
 
 /** Local calendar dates (`YYYY-MM-DD`) have no time zone of their own. */
 export type LocalDateStyle =
-  'dayMonth' | 'weekdayShort' | 'weekdayDayMonth' | 'monthYear' | 'dayNumber';
+  'dayMonth' | 'dayMonthYear' | 'weekdayShort' | 'weekdayDayMonth' | 'monthYear' | 'dayNumber';
 
 const localDateStyles: Record<LocalDateStyle, Intl.DateTimeFormatOptions> = {
   dayMonth: { day: 'numeric', month: 'long' },
+  dayMonthYear: { day: 'numeric', month: 'long', year: 'numeric' },
   weekdayShort: { weekday: 'short' },
   weekdayDayMonth: { weekday: 'long', day: 'numeric', month: 'long' },
   monthYear: { month: 'long', year: 'numeric' },

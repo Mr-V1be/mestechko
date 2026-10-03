@@ -43,6 +43,19 @@ const router = createBrowserRouter([
                 }),
               },
               {
+                path: 'clients',
+                lazy: async () => ({
+                  Component: (await import('../features/clients/clients-page')).ClientsPage,
+                }),
+              },
+              {
+                path: 'clients/:clientId',
+                lazy: async () => ({
+                  Component: (await import('../features/clients/card/client-card-page'))
+                    .ClientCardPage,
+                }),
+              },
+              {
                 path: 'max-emulator/:userId?',
                 lazy: async () => ({
                   Component: (await import('../features/max-emulator/max-emulator-page'))
