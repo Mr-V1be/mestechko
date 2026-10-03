@@ -24,6 +24,7 @@ import {
   openMaxChat,
   openSalonMiniApp,
   openWaitlist,
+  rehearseDrag,
   signInCabinet,
 } from './scenes.ts';
 
@@ -162,6 +163,7 @@ try {
     }
 
     if (wanted('drag')) {
+      let rehearsed = 0;
       await loop(
         browser,
         'loop-drag',
@@ -169,12 +171,15 @@ try {
         LAPTOP,
         async (page) => {
           await openBusyDayAhead(page, await signInCabinet(page, cabinet));
+          const found = await rehearseDrag(page);
+          if (found === null) {
+            throw new Error('No visit on screen can be dragged to free time');
+          }
+          rehearsed = found;
         },
         async (page) => {
           await beat(page, 600);
-          if (!(await dragToFreeTime(page))) {
-            throw new Error('No free time to drag a booking to');
-          }
+          await dragToFreeTime(page, rehearsed);
           await beat(page, 2200);
         },
       );

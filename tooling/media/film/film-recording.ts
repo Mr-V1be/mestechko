@@ -18,6 +18,7 @@ import {
   openBusyDayAhead,
   openMaxChat,
   openSalonMiniApp,
+  rehearseDrag,
   signInCabinet,
   tap,
 } from '../scenes.ts';
@@ -166,11 +167,13 @@ async function recordDrag(sources: FilmSources, device: FilmDevice): Promise<str
   const screen = await deviceContext(sources.browser, device);
   const page = await screen.newPage();
   await openBusyDayAhead(page, await signInCabinet(page, sources.cabinet));
+  const rehearsed = await rehearseDrag(page);
+  if (rehearsed === null) {
+    throw new Error('No visit on screen can be dragged to free time');
+  }
   const file = await capture(page, sources, clipKey('drag', device), async () => {
     await beat(page, 1200);
-    if (!(await dragToFreeTime(page))) {
-      throw new Error('No free time to drag a booking to');
-    }
+    await dragToFreeTime(page, rehearsed);
     await beat(page, 3000);
   });
   await screen.close();

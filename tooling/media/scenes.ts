@@ -76,7 +76,7 @@ export async function openBusyDayAhead(page: Page, business: string, days = 5): 
     await visits.first().waitFor();
     await page.waitForLoadState('networkidle');
     const count = await visits.count();
-    if (count > (busiest?.count ?? -1) && (await planDrag(page))) {
+    if (count > (busiest?.count ?? -1) && (await planDrags(page)).length > 0) {
       busiest = { date, count };
     }
   }
@@ -118,12 +118,14 @@ interface DragPlan {
 }
 
 /**
- * Where a booking can be dragged to free time in its own column, as on the screen: the
- * gap is measured from the working hours and the occupied time, buffers included.
+ * Where bookings can be dragged to free time in their own columns, as on the screen: the
+ * gap is measured from the working hours and the occupied time, buffers included. One
+ * plan per visit on screen, in board order.
  */
-function planDrag(page: Page): Promise<DragPlan | null> {
+function planDrags(page: Page): Promise<DragPlan[]> {
   return page.evaluate(() => {
     const SNAP_PX = 16;
+    const plans: { x: number; grabY: number; dropY: number }[] = [];
     const blocks = [...document.querySelectorAll<HTMLElement>('[data-column-key] button')].filter(
       (block) => block.className.includes('draggable'),
     );
@@ -152,7 +154,7 @@ function planDrag(page: Page): Promise<DragPlan | null> {
         band.getBoundingClientRect(),
       );
       // Free stretches of working time on screen: earlier or later than the visit itself.
-      for (const band of bands) {
+      search: for (const band of bands) {
         let top = Math.max(band.top, SNAP_PX * 4);
         const cuts = [...busy, mine]
           .filter((rect) => rect.bottom > top && rect.top < band.bottom)
@@ -160,26 +162,25 @@ function planDrag(page: Page): Promise<DragPlan | null> {
         for (const cut of [...cuts, { top: band.bottom, bottom: band.bottom }]) {
           const bottom = Math.min(cut.top, window.innerHeight - SNAP_PX);
           if (bottom - top >= needed) {
-            return {
+            plans.push({
               x: own.left + own.width / 2,
               grabY: own.top + 6,
               dropY: top + SNAP_PX / 2 + (own.top - mine.top) + 6,
-            };
+            });
+            break search;
           }
           top = Math.max(top, cut.bottom + SNAP_PX / 2);
         }
       }
     }
-    return null;
+    return plans;
   });
 }
 
-/** The front desk drags a booking to free time; `false` when no visit on screen can move. */
-export async function dragToFreeTime(page: Page): Promise<boolean> {
-  const plan = await planDrag(page);
-  if (!plan) {
-    return false;
-  }
+const MOVED = 'Запись перенесена';
+
+/** Drags along `plan`; `true` when the desk took the move, `false` when it was refused. */
+async function dragAlong(page: Page, plan: DragPlan): Promise<boolean> {
   await page.mouse.move(plan.x - 120, plan.grabY + 80);
   await page.mouse.move(plan.x, plan.grabY, { steps: 12 });
   await beat(page, 400);
@@ -187,8 +188,41 @@ export async function dragToFreeTime(page: Page): Promise<boolean> {
   await page.mouse.move(plan.x, plan.dropY, { steps: 24 });
   await beat(page, 500);
   await page.mouse.up();
-  await page.getByText('Запись перенесена').first().waitFor();
-  return true;
+  // The occupancy on screen is the staff member's; a chair may still be taken then.
+  const moved = page.getByText(MOVED).first();
+  await moved.or(page.getByText(/^Не перенесли/).first()).waitFor();
+  return moved.isVisible();
+}
+
+/**
+ * Rehearses the drag off camera: tries the visits on screen until one move is taken,
+ * takes it back with «Вернуть» and reloads the day. Returns that visit's plan number,
+ * `null` when no visit on screen can move.
+ */
+export async function rehearseDrag(page: Page): Promise<number | null> {
+  const plans = await planDrags(page);
+  for (const [index, plan] of plans.entries()) {
+    const taken = await dragAlong(page, plan);
+    if (taken) {
+      await page.getByRole('button', { name: 'Вернуть' }).first().click();
+      await page.waitForLoadState('networkidle');
+    }
+    await page.reload();
+    await page.locator('[data-column-key] button').first().waitFor();
+    await page.waitForLoadState('networkidle');
+    if (taken) {
+      return index;
+    }
+  }
+  return null;
+}
+
+/** The front desk drags a visit to free time, as rehearsed; fails if the desk refuses. */
+export async function dragToFreeTime(page: Page, planNumber: number): Promise<void> {
+  const plan = (await planDrags(page))[planNumber];
+  if (!plan || !(await dragAlong(page, plan))) {
+    throw new Error('The rehearsed drag did not go through');
+  }
 }
 
 /** The chat's newest message: the bot edits it in place as the client taps its buttons. */
