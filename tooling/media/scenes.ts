@@ -2,11 +2,22 @@
  * Moments of the product played on the demo, shared by the site's loops and the film.
  * Each scene leaves the app where a viewer would want to see it.
  */
-import type { Page } from 'playwright';
+import type { Locator, Page } from 'playwright';
 
 const MAX_WEEKS_AHEAD = 4;
 /** A pause long enough to read what just changed. */
 export const beat = (page: Page, ms = 900) => page.waitForTimeout(ms);
+
+/** A tap the viewer can follow: the pointer glides to the target, then presses. */
+export async function tap(page: Page, target: Locator): Promise<void> {
+  await target.scrollIntoViewIfNeeded();
+  const box = await target.boundingBox();
+  if (box) {
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 14 });
+    await beat(page, 180);
+  }
+  await target.click();
+}
 
 export async function signInCabinet(page: Page, base: string): Promise<string> {
   await page.goto(`${base}/sign-in`);
@@ -28,13 +39,13 @@ export async function openSalonMiniApp(page: Page, base: string): Promise<void> 
 
 /** From the services to the time step, with the free starts of the week on screen. */
 export async function chooseUpToTime(page: Page, service: string): Promise<void> {
-  await page.getByText(service, { exact: true }).click();
+  await tap(page, page.getByText(service, { exact: true }));
   await beat(page, 500);
-  await page.getByRole('button', { name: 'Выбрать мастера' }).click();
+  await tap(page, page.getByRole('button', { name: 'Выбрать мастера' }));
   await page.waitForURL(/\/staff/);
   await page.waitForLoadState('networkidle');
   await beat(page, 600);
-  await page.getByText('Любой мастер').click();
+  await tap(page, page.getByText('Любой мастер'));
   await page.waitForURL(/\/time/);
   const slots = page.getByRole('radio').filter({ hasText: /^\d\d:\d\d$/ });
   for (let week = 0; week < MAX_WEEKS_AHEAD; week += 1) {
@@ -42,7 +53,7 @@ export async function chooseUpToTime(page: Page, service: string): Promise<void>
     if ((await slots.count()) > 0) {
       break;
     }
-    await page.getByRole('button', { name: 'Следующая неделя' }).first().click();
+    await tap(page, page.getByRole('button', { name: 'Следующая неделя' }).first());
   }
   await page.waitForLoadState('networkidle');
 }
@@ -53,21 +64,24 @@ const scheduleDate = (daysAhead: number) =>
   );
 
 /**
- * The busiest of the next few days in the schedule: a full day shows the product best,
- * and the drag scene still finds free time between its visits.
+ * The busiest of the next few days in the schedule where a visit on screen can still be
+ * dragged to free time: a full day shows the product best.
  */
-export async function openBusyDayAhead(page: Page, business: string, days = 3): Promise<void> {
+export async function openBusyDayAhead(page: Page, business: string, days = 5): Promise<void> {
   const visits = page.locator('[data-column-key] button');
-  let busiest = { date: scheduleDate(1), count: -1 };
+  let busiest: { readonly date: string; readonly count: number } | null = null;
   for (let ahead = 1; ahead <= days; ahead += 1) {
     const date = scheduleDate(ahead);
     await page.goto(`${business}/schedule?date=${date}`);
     await visits.first().waitFor();
     await page.waitForLoadState('networkidle');
     const count = await visits.count();
-    if (count > busiest.count) {
+    if (count > (busiest?.count ?? -1) && (await planDrag(page))) {
       busiest = { date, count };
     }
+  }
+  if (!busiest) {
+    throw new Error(`No day in the next ${String(days)} has free time to drag a visit to`);
   }
   await page.goto(`${business}/schedule?date=${busiest.date}`);
   await visits.first().waitFor();
@@ -75,28 +89,40 @@ export async function openBusyDayAhead(page: Page, business: string, days = 3): 
 }
 
 /** The client books the first free start and lands on the celebration. */
-export async function bookFirstStart(page: Page): Promise<void> {
+export async function bookFirstStart(page: Page, contactName?: string): Promise<void> {
   const slots = page.getByRole('radio').filter({ hasText: /^\d\d:\d\d$/ });
   await beat(page, 600);
-  await slots.first().click();
+  await tap(page, slots.first());
   await beat(page, 600);
-  await page.getByRole('button', { name: 'Продолжить' }).click();
+  await tap(page, page.getByRole('button', { name: 'Продолжить' }));
   await page.waitForURL(/\/confirm/);
   await page.waitForFunction(() =>
     document.querySelector<HTMLInputElement>('input[type="tel"]')?.value.startsWith('+7 0'),
   );
+  if (contactName) {
+    const name = page.getByLabel('Имя');
+    await tap(page, name);
+    await name.fill('');
+    await name.pressSequentially(contactName, { delay: 55 });
+  }
   await beat(page, 900);
-  await page.getByRole('button', { name: 'Записаться' }).click();
+  await tap(page, page.getByRole('button', { name: 'Записаться' }));
   await page.waitForURL(/created=1/);
   await page.waitForLoadState('networkidle');
 }
 
+interface DragPlan {
+  readonly x: number;
+  readonly grabY: number;
+  readonly dropY: number;
+}
+
 /**
- * A booking moved to free time later in the same column: the gap is measured on the
- * screen from the working hours and the occupied time, buffers included.
+ * Where a booking can be dragged to free time in its own column, as on the screen: the
+ * gap is measured from the working hours and the occupied time, buffers included.
  */
-export async function dragToFreeTime(page: Page): Promise<boolean> {
-  const plan = await page.evaluate(() => {
+function planDrag(page: Page): Promise<DragPlan | null> {
+  return page.evaluate(() => {
     const SNAP_PX = 16;
     const blocks = [...document.querySelectorAll<HTMLElement>('[data-column-key] button')].filter(
       (block) => block.className.includes('draggable'),
@@ -107,6 +133,10 @@ export async function dragToFreeTime(page: Page): Promise<boolean> {
         continue;
       }
       const own = block.getBoundingClientRect();
+      // Columns scrolled out of the board are in the page but not on the screen.
+      if (own.left < 0 || own.right > window.innerWidth) {
+        continue;
+      }
       const occupied = [...column.querySelectorAll<HTMLElement>('div')]
         .filter((element) => element.className.includes('occupied'))
         .map((element) => element.getBoundingClientRect());
@@ -142,6 +172,11 @@ export async function dragToFreeTime(page: Page): Promise<boolean> {
     }
     return null;
   });
+}
+
+/** The front desk drags a booking to free time; `false` when no visit on screen can move. */
+export async function dragToFreeTime(page: Page): Promise<boolean> {
+  const plan = await planDrag(page);
   if (!plan) {
     return false;
   }
@@ -167,28 +202,32 @@ const newestMessage = (page: Page) =>
 export async function answerReminder(page: Page, kind: string): Promise<void> {
   const newest = newestMessage(page);
   if (kind === 'reminder_2h') {
-    await newest.getByRole('button', { name: 'Приду', exact: true }).click();
+    await tap(page, newest.getByRole('button', { name: 'Приду', exact: true }));
     await newest.getByText(/Вы подтвердили визит/).waitFor();
     return;
   }
-  await newest.getByRole('button', { name: 'Перенести', exact: true }).click();
+  await tap(page, newest.getByRole('button', { name: 'Перенести', exact: true }));
   await newest.getByText('Выберите новый день').waitFor();
   await beat(page, 1200);
-  await newest
-    .getByRole('button')
-    .filter({ hasText: /^(понедельник|вторник|среда|четверг|пятница|суббота|воскресенье)/ })
-    .nth(1)
-    .click();
+  await tap(
+    page,
+    newest
+      .getByRole('button')
+      .filter({ hasText: /^(понедельник|вторник|среда|четверг|пятница|суббота|воскресенье)/ })
+      .nth(1),
+  );
   await newest.getByText(/^Свободное время/).waitFor();
   await beat(page, 1200);
-  await newest
-    .getByRole('button')
-    .filter({ hasText: /^\d\d:\d\d$/ })
-    .first()
-    .click();
+  await tap(
+    page,
+    newest
+      .getByRole('button')
+      .filter({ hasText: /^\d\d:\d\d$/ })
+      .first(),
+  );
   await newest.getByText(/^Перенести на /).waitFor();
   await beat(page, 1200);
-  await newest.getByRole('button', { name: 'Перенести', exact: true }).click();
+  await tap(page, newest.getByRole('button', { name: 'Перенести', exact: true }));
   await newest.getByText('Запись перенесена').waitFor();
 }
 
@@ -230,7 +269,7 @@ export async function focusChat(page: Page, clientName: string): Promise<void> {
 
 /** The waitlist sheet over the time step: the client asks to hear about a freed time. */
 export async function openWaitlist(page: Page): Promise<void> {
-  await page.getByRole('button', { name: 'Встать в лист ожидания' }).first().click();
+  await tap(page, page.getByRole('button', { name: 'Встать в лист ожидания' }).first());
   await page.getByRole('dialog').getByText('Лист ожидания').first().waitFor();
   await beat(page, 600);
 }

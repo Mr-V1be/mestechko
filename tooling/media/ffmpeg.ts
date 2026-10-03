@@ -1,7 +1,7 @@
 /** The few ffmpeg jobs the media tooling needs; ffmpeg comes from the system. */
 import { spawnSync } from 'node:child_process';
 
-function ffmpeg(args: readonly string[]): void {
+export function ffmpeg(args: readonly string[]): void {
   const result = spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...args], {
     stdio: 'inherit',
   });

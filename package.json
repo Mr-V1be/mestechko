@@ -37,7 +37,8 @@
     "gate:tokens": "node tooling/gates/design-tokens.ts",
     "gate": "pnpm gate:limits && pnpm gate:tokens && pnpm format:check && pnpm lint && pnpm typecheck && pnpm contracts:check && pnpm test",
     "screenshots": "node --env-file-if-exists=.env tooling/screenshots/run.ts",
-    "media:landing": "node --env-file-if-exists=.env tooling/media/run.ts",
+    "media:landing": "node --env-file-if-exists=.env tooling/media/run.ts landing",
+    "media:film": "node --env-file-if-exists=.env tooling/media/run.ts film",
     "contracts:generate": "pnpm --filter @mestechko/contracts generate"
   },
   "devDependencies": {
