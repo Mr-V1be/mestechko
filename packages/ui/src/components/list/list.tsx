@@ -1,5 +1,6 @@
+import { useRender } from '@base-ui/react/use-render';
 import { clsx } from 'clsx';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import styles from './list.module.css';
 
 export interface ListGroupProps {
@@ -29,10 +30,14 @@ interface RowContent {
 
 export interface ListItemProps extends RowContent {
   readonly onClick?: () => void;
+  /** Renders the row as this element, e.g. a router link to the item's own page. */
+  readonly render?: ReactElement;
   /** Wraps the row in a label for this control id, e.g. a checkbox in `trailing`. */
   readonly controlId?: string;
   readonly selected?: boolean;
   readonly disabled?: boolean;
+  /** Content under the row, e.g. fields that open when the row's checkbox is on. */
+  readonly children?: ReactNode;
 }
 
 function Content({ leading, title, description, meta, trailing }: RowContent) {
@@ -49,22 +54,38 @@ function Content({ leading, title, description, meta, trailing }: RowContent) {
   );
 }
 
+function RenderedRow({
+  render,
+  className,
+  content,
+}: {
+  readonly render: ReactElement;
+  readonly className: string;
+  readonly content: RowContent;
+}) {
+  return useRender({ render, props: { className, children: <Content {...content} /> } });
+}
+
 export function ListItem({
   onClick,
+  render,
   controlId,
   selected = false,
   disabled = false,
+  children,
   ...content
 }: ListItemProps) {
   const rowClass = clsx(
     styles.row,
-    (onClick ?? controlId) && !disabled && styles.interactive,
+    (onClick ?? render ?? controlId) && !disabled && styles.interactive,
     selected && styles.selected,
     disabled && styles.disabled,
   );
   return (
     <li className={styles.item}>
-      {onClick ? (
+      {render ? (
+        <RenderedRow render={render} className={rowClass} content={content} />
+      ) : onClick ? (
         <button
           type="button"
           className={rowClass}
@@ -83,6 +104,7 @@ export function ListItem({
           <Content {...content} />
         </div>
       )}
+      {children ? <div className={styles.extra}>{children}</div> : null}
     </li>
   );
 }

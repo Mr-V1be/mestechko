@@ -31,7 +31,9 @@
   padding: var(--space-3) var(--space-4);
   border: none;
   background: transparent;
+  color: inherit;
   text-align: left;
+  text-decoration: none;
   transition: background-color var(--duration-fast) var(--ease-standard);
 }
 
@@ -107,4 +109,8 @@
 .trailing svg {
   width: var(--size-icon-md);
   height: var(--size-icon-md);
+}
+
+.extra {
+  padding: 0 var(--space-4) var(--space-4);
 }

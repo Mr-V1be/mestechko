@@ -1,0 +1,188 @@
+/* The person's page: one column, two once there is room for the aside. */
+.page,
+.skeletonPage {
+  container: member / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.main,
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+@container member (min-width: 880px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--size-aside);
+    align-items: start;
+    gap: var(--space-6);
+  }
+
+  .headerBody {
+    grid-template-columns: minmax(0, 1fr) var(--size-aside);
+    gap: var(--space-6);
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.back {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--size-control-sm);
+  padding-right: var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.back:hover {
+  color: var(--color-text);
+}
+
+.back svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.headerBody {
+  display: grid;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.avatar,
+.avatarFaded {
+  display: inline-flex;
+  flex: none;
+}
+
+.avatarFaded {
+  opacity: 0.55;
+}
+
+.identityText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.name {
+  min-width: 0;
+  font-size: var(--font-size-2xl);
+  overflow-wrap: anywhere;
+}
+
+.jobTitle {
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.status {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+/* Sections of the page: a title with its one action, then the content. */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  min-height: var(--size-control-sm);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+}
+
+.panel {
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* The services sheet. */
+.servicesForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.terms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.grow {
+  flex: 1;
+}
+
+.formError {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}

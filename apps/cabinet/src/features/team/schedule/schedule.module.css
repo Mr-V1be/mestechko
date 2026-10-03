@@ -1,0 +1,264 @@
+/* The regular schedule on the person's page. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: var(--space-5);
+  }
+}
+
+.assignment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.assignment + .assignment {
+  padding-top: var(--space-5);
+  border-top: var(--size-hairline) solid var(--color-border);
+}
+
+.assignmentHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+.assignmentTitle {
+  font-size: var(--font-size-lg);
+}
+
+.assignmentMeta {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Days of a pattern: worked days in the accent, days off quiet. */
+.week {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-1-5);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-0-5);
+  min-width: 0;
+  min-height: var(--size-day-min);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.work {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-soft-text);
+}
+
+.off {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-tertiary);
+}
+
+.dayName {
+  display: inline-block;
+}
+
+.dayName::first-letter {
+  text-transform: uppercase;
+}
+
+.dayNumber {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+}
+
+.hoursList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.hoursRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+}
+
+.hoursDays {
+  display: inline-block;
+  min-width: var(--space-16);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.hoursDays::first-letter {
+  text-transform: uppercase;
+}
+
+.hoursTime {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.hoursBreak {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Lists of special days and absences. */
+.rowIcon,
+.rowIconOff {
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-avatar-sm);
+  height: var(--size-avatar-sm);
+  border-radius: var(--radius-sm);
+}
+
+.rowIcon {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-soft-text);
+}
+
+.rowIconOff {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+}
+
+.rowIcon svg,
+.rowIconOff svg {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+.capitalized {
+  display: inline-block;
+}
+
+.capitalized::first-letter {
+  text-transform: uppercase;
+}
+
+.empty {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Editors in sheets. */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.fieldLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+/* A list of options inside a sheet keeps an edge, like the fields around it. */
+.choiceList {
+  overflow: hidden;
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.formError {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.grow {
+  flex: 1;
+}
+
+.dayHours {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.addBreak {
+  align-self: flex-start;
+}
+
+.customDays {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dayEditors {
+  display: flex;
+  flex-direction: column;
+}
+
+.dayEditor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+}
+
+.dayEditor + .dayEditor {
+  border-top: var(--size-hairline) solid var(--color-border);
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+}
+
+.preview .off {
+  background: var(--color-surface);
+}
+
+.previewTitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: normal;
+}
+
+.dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}

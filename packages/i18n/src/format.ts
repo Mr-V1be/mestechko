@@ -1,4 +1,4 @@
-import { currencies, type Money } from '@mestechko/domain';
+import { currencies, type CurrencyCode, type Money } from '@mestechko/domain';
 
 const MINUTES_PER_HOUR = 60;
 const formatterCache = new Map<string, Intl.DateTimeFormat | Intl.NumberFormat>();
@@ -45,11 +45,19 @@ export function formatInstant(
 
 /** Local calendar dates (`YYYY-MM-DD`) have no time zone of their own. */
 export type LocalDateStyle =
-  'dayMonth' | 'weekdayShort' | 'weekdayDayMonth' | 'monthYear' | 'dayNumber';
+  | 'dayMonth'
+  | 'dayMonthShort'
+  | 'weekdayShort'
+  | 'weekdayLong'
+  | 'weekdayDayMonth'
+  | 'monthYear'
+  | 'dayNumber';
 
 const localDateStyles: Record<LocalDateStyle, Intl.DateTimeFormatOptions> = {
   dayMonth: { day: 'numeric', month: 'long' },
+  dayMonthShort: { day: 'numeric', month: 'short' },
   weekdayShort: { weekday: 'short' },
+  weekdayLong: { weekday: 'long' },
   weekdayDayMonth: { weekday: 'long', day: 'numeric', month: 'long' },
   monthYear: { month: 'long', year: 'numeric' },
   dayNumber: { day: 'numeric' },
@@ -58,6 +66,19 @@ const localDateStyles: Record<LocalDateStyle, Intl.DateTimeFormatOptions> = {
 export function formatLocalDate(locale: string, isoDate: string, style: LocalDateStyle): string {
   return dateFormatter(locale, { ...localDateStyles[style], timeZone: 'UTC' }).format(
     new Date(`${isoDate}T12:00:00Z`),
+  );
+}
+
+/** `12–18 окт.`: shared parts of both dates are written once; one date when they match. */
+export function formatLocalDateRange(
+  locale: string,
+  from: string,
+  to: string,
+  style: LocalDateStyle,
+): string {
+  return dateFormatter(locale, { ...localDateStyles[style], timeZone: 'UTC' }).formatRange(
+    new Date(`${from}T12:00:00Z`),
+    new Date(`${to}T12:00:00Z`),
   );
 }
 
@@ -76,6 +97,15 @@ export function formatMoney(locale: string, value: Money): string {
       }),
   );
   return formatter.format(amount);
+}
+
+/** The sign people see next to amounts they type, e.g. `₽`. */
+export function formatCurrencySymbol(locale: string, currency: CurrencyCode): string {
+  const formatter = cached(
+    `s|${locale}|${currency}`,
+    () => new Intl.NumberFormat(locale, { style: 'currency', currency }),
+  );
+  return formatter.formatToParts(0).find((part) => part.type === 'currency')?.value ?? currency;
 }
 
 /** `4 700–5 300 ₽`: one currency sign for the whole range. */

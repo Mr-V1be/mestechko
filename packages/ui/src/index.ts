@@ -27,6 +27,11 @@ export { Select, type SelectOption, type SelectProps } from './components/form/s
 export { Checkbox, type CheckboxProps } from './components/form/checkbox';
 export { Switch, type SwitchProps } from './components/form/switch';
 export { NumberField, type NumberFieldProps } from './components/form/number-field';
+export {
+  TimeRangeField,
+  type TimeRange,
+  type TimeRangeFieldProps,
+} from './components/form/time-range-field';
 export { FileButton, type FileButtonProps } from './components/form/file-button';
 export {
   ConfirmDialog,
