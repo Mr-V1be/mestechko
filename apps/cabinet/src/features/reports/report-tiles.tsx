@@ -6,7 +6,10 @@ import { metricViews } from './metric-views';
 import { useMetricFormat } from './use-metric-format';
 import styles from './reports.module.css';
 
-/** The period's key figures, each against the same number of days before it. */
+/**
+ * The period's key figures, each against the same number of days before it when the
+ * records reach back far enough for a fair comparison.
+ */
 export function ReportTiles({ report }: { readonly report: BusinessReport }) {
   const { t } = useTranslation();
   const format = useMetricFormat(report.currency);
@@ -14,18 +17,23 @@ export function ReportTiles({ report }: { readonly report: BusinessReport }) {
     <div className={styles.tiles}>
       {report.metrics.map((metric) => {
         const Icon = metricViews[metric].icon;
-        const previous = metricValue(metric, report.previous);
+        const comparable = report.comparable.includes(metric);
+        const previous = comparable ? metricValue(metric, report.previous) : null;
         return (
           <StatTile
             key={metric}
             label={t(`reports:metrics.${metric}.title`)}
             icon={<Icon aria-hidden="true" />}
             value={format.value(metric, metricValue(metric, report.total))}
-            delta={format.change(metricChange(metric, report.total, report.previous))}
+            delta={
+              comparable ? format.change(metricChange(metric, report.total, report.previous)) : null
+            }
             hint={
-              previous === null
-                ? null
-                : t('reports:previous', { value: format.value(metric, previous) })
+              comparable
+                ? previous === null
+                  ? null
+                  : t('reports:previous', { value: format.value(metric, previous) })
+                : t('reports:noComparison')
             }
           />
         );

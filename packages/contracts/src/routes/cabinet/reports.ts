@@ -34,6 +34,8 @@ export const getBusinessReport = defineRoute({
     total: reportFactsSchema,
     /** The same length of time just before, for comparison. */
     previous: reportFactsSchema,
+    /** Metrics the earlier period is a fair comparison for; the rest show no change. */
+    comparable: z.array(z.enum(reportMetricIds)),
     days: z.array(reportFactsSchema.extend({ date: localDateSchema })),
     staff: z.array(reportFactsSchema.extend({ staffId: uuidSchema, displayName: z.string() })),
   }),

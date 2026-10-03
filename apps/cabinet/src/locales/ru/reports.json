@@ -39,6 +39,7 @@
     }
   },
   "previous": "Было: {{value}}",
+  "noComparison": "Нет данных для сравнения",
   "delta": {
     "points": "{{value}} п.п.",
     "percent": "{{value}} %"

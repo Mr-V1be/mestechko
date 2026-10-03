@@ -39,7 +39,9 @@ function PeriodCaption({ report }: { readonly report: BusinessReport }) {
   return (
     <p className={styles.caption}>
       <span className={styles.captionRange}>{range}</span>
-      <span>{t('reports:comparedTo', { count: report.days.length })}</span>
+      {report.comparable.length > 0 ? (
+        <span>{t('reports:comparedTo', { count: report.days.length })}</span>
+      ) : null}
     </p>
   );
 }

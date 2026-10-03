@@ -26175,6 +26175,18 @@
                       ],
                       "additionalProperties": false
                     },
+                    "comparable": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "occupancy",
+                          "revenue",
+                          "no_shows",
+                          "repeat_visits"
+                        ]
+                      }
+                    },
                     "days": {
                       "type": "array",
                       "items": {
@@ -26291,6 +26303,7 @@
                     "metrics",
                     "total",
                     "previous",
+                    "comparable",
                     "days",
                     "staff"
                   ],

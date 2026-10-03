@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { addFacts, emptyFacts, metricChange, metricValue } from '../src/index.js';
+import {
+  addFacts,
+  comparableMetrics,
+  emptyFacts,
+  metricChange,
+  metricValue,
+  reportMetricIds,
+  Temporal,
+} from '../src/index.js';
 
 describe('report metrics', () => {
   const monday = {
@@ -54,6 +62,28 @@ describe('report metrics', () => {
       measure: 'points',
       amount: 0,
       improved: null,
+    });
+  });
+
+  describe('comparison with the earlier period', () => {
+    const basis = (firstRecord: string | null) => ({
+      firstRecord: firstRecord === null ? null : Temporal.PlainDate.from(firstRecord),
+      previousFrom: Temporal.PlainDate.from('2026-08-05'),
+      days: 30,
+    });
+
+    it('compares every metric once the records reach far enough back', () => {
+      expect(comparableMetrics(basis('2026-07-06'))).toEqual(reportMetricIds);
+    });
+
+    it('leaves out repeat visits while the earlier period lacks history before it', () => {
+      expect(comparableMetrics(basis('2026-07-07'))).toEqual(['occupancy', 'revenue', 'no_shows']);
+      expect(comparableMetrics(basis('2026-08-05'))).toEqual(['occupancy', 'revenue', 'no_shows']);
+    });
+
+    it('compares nothing when the earlier period begins before the records', () => {
+      expect(comparableMetrics(basis('2026-08-06'))).toEqual([]);
+      expect(comparableMetrics(basis(null))).toEqual([]);
     });
   });
 });

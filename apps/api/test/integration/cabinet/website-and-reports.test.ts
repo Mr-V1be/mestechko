@@ -104,5 +104,7 @@ describe('website bookings and reports', () => {
       noShows: 0,
       repeatVisits: 0,
     });
+    // The day before has no records yet: a change against it would only show missing data.
+    expect(report.json<{ comparable: string[] }>().comparable).toEqual([]);
   });
 });

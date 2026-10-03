@@ -1,6 +1,7 @@
 import type { BusinessReport, ReportFacts } from '@mestechko/contracts';
 import {
   addFacts,
+  comparableMetrics,
   datesBetween,
   emptyFacts,
   localDayBounds,
@@ -44,9 +45,9 @@ const view = (facts: PeriodFacts): ReportFacts => ({ ...facts });
 
 /**
  * Occupancy, revenue, no-shows and repeat visits of a period, per day and per staff
- * member, with the same length of time before it for comparison. Working time comes
- * from the schedules, the rest from the reporting read model. Runs inside the caller's
- * tenant unit of work.
+ * member, with the same length of time before it for comparison — for the metrics the
+ * records support (see `comparableMetrics`). Working time comes from the schedules, the
+ * rest from the reporting read model. Runs inside the caller's tenant unit of work.
  */
 export class BusinessReports {
   constructor(
@@ -70,15 +71,22 @@ export class BusinessReports {
     const filter: ReportFilter = { locationId: query.locationId, staffId: query.staffId };
     const previousTo = from.subtract({ days: 1 });
     const previousFrom = previousTo.subtract({ days: days - 1 });
-    const [current, previous] = await Promise.all([
+    const timeZone = locations[0]?.timeZone ?? (await this.catalog.homeTimeZone());
+    const [current, previous, firstRecord] = await Promise.all([
       this.breakdown(context, { from, to }, locations, staff, filter),
       this.breakdown(context, { from: previousFrom, to: previousTo }, locations, staff, filter),
+      this.source.firstRecord(timeZone),
     ]);
     return {
       currency: context.business.currency,
       metrics: reportMetricIds,
       total: view(total(current.byDay.values())),
       previous: view(total(previous.byDay.values())),
+      comparable: comparableMetrics({
+        firstRecord: firstRecord === null ? null : Temporal.PlainDate.from(firstRecord),
+        previousFrom,
+        days,
+      }),
       days: datesBetween(from, to).map((date) => ({
         date: date.toString(),
         ...view(current.byDay.get(date.toString()) ?? emptyFacts),

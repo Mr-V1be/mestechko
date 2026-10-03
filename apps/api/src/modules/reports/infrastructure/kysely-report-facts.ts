@@ -94,4 +94,17 @@ export class KyselyReportFacts implements ReportFactsSource {
       amountMinor: Number(row.total),
     }));
   }
+
+  async firstRecord(timeZone: string): Promise<string | null> {
+    const row = await this.unitOfWork
+      .tenant()
+      .selectFrom('bookings as b')
+      .select(
+        sql<string | null>`(min(b.starts_at) at time zone ${sql.lit(timeZone)})::date::text`.as(
+          'date',
+        ),
+      )
+      .executeTakeFirst();
+    return row?.date ?? null;
+  }
 }

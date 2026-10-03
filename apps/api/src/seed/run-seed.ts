@@ -22,7 +22,8 @@ import { generatePeople } from './people.js';
 import { Random } from './random.js';
 import { writeDemoBusiness } from './seed-writer.js';
 
-const HISTORY_DAYS = 56;
+/** Four months: a 30-day report compares with a full earlier month, repeat visits included. */
+const HISTORY_DAYS = 120;
 const FUTURE_DAYS = 21;
 const CLIENTS_PER_BUSINESS = 360;
 const COUNTRY_CODE = 'RU';

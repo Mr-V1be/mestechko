@@ -34,6 +34,8 @@ export interface DailyRevenue {
 export interface ReportFactsSource {
   visits(window: ReportWindow, filter: ReportFilter): Promise<DailyVisitFacts[]>;
   revenue(window: ReportWindow, filter: ReportFilter): Promise<DailyRevenue[]>;
+  /** Local date of the business's earliest booking; `null` before the first one. */
+  firstRecord(timeZone: string): Promise<string | null>;
 }
 
 export const REPORT_FACTS_SOURCE = Symbol('REPORT_FACTS_SOURCE');
