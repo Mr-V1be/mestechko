@@ -1,3 +1,4 @@
+import { DemoLinks } from '@mestechko/booking-ui';
 import { Badge, Button, Logo, TextField } from '@mestechko/ui';
 import { useState, type SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -89,6 +90,7 @@ export function SignInPage() {
             </Button>
           </form>
           {appConfig.demoMode ? <DemoAccess /> : null}
+          {appConfig.demoMode ? <DemoLinks links={appConfig.demoLinks} /> : null}
         </div>
       </main>
     </div>

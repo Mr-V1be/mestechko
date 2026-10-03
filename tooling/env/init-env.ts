@@ -77,6 +77,10 @@ const defaults: Record<string, () => string> = {
   VITE_API_BASE_URL: () => '/api',
   VITE_DEMO_MODE: () => 'true',
   VITE_WIDGET_BASE_URL: () => 'http://127.0.0.1:46240',
+  VITE_LANDING_URL: () => 'http://127.0.0.1:46250',
+  VITE_CABINET_URL: () => 'http://127.0.0.1:46220',
+  VITE_MINIAPP_URL: () => 'http://127.0.0.1:46230',
+  VITE_BOT_URL: () => 'https://t.me/mestechko_zapis_bot',
 };
 
 const output = readFileSync(examplePath, 'utf8')

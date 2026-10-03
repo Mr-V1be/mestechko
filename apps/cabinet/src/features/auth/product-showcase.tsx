@@ -1,6 +1,6 @@
 import { useFormat, type Formatters } from '@mestechko/booking-ui';
 import type { ScheduleColumn } from '@mestechko/contracts/client';
-import { Button, DateStrip, TimeGrid } from '@mestechko/ui';
+import { Button, DateStrip, DeviceFrame, TimeGrid } from '@mestechko/ui';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ColumnHeader } from '../schedule/schedule-columns';
@@ -106,7 +106,7 @@ function PhoneScreen() {
     currency: showcasePhone.currency,
   });
   return (
-    <div className={styles.phone}>
+    <DeviceFrame kind="phone" className={styles.phone}>
       <div className={styles.screen}>
         <div className={styles.appBar}>
           <ChevronLeft aria-hidden="true" />
@@ -146,7 +146,7 @@ function PhoneScreen() {
           </Button>
         </div>
       </div>
-    </div>
+    </DeviceFrame>
   );
 }
 

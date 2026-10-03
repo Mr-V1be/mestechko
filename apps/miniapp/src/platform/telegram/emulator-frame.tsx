@@ -1,3 +1,5 @@
+import { DemoLinks } from '@mestechko/booking-ui';
+import { appConfig } from '../../app/config';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Ellipsis } from 'lucide-react';
 import {
@@ -90,6 +92,7 @@ function DemoSettings({
           />
         ))}
       </ListGroup>
+      <DemoLinks links={appConfig.demoLinks} />
     </Sheet>
   );
 }

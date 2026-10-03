@@ -1,0 +1,96 @@
+.phone {
+  display: flex;
+  padding: var(--space-3);
+  border-radius: var(--radius-device);
+  background: var(--color-device);
+  box-shadow: var(--shadow-lg);
+}
+
+.phoneScreen {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: calc(var(--radius-device) - var(--space-3));
+  background: var(--color-canvas);
+}
+
+.laptop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.laptopLid {
+  display: flex;
+  width: 100%;
+  padding: var(--space-2);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-xs);
+  background: var(--color-device);
+  box-shadow: var(--shadow-lg);
+}
+
+.screen {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-canvas);
+}
+
+.laptopBase {
+  width: 112%;
+  max-width: calc(100% + var(--space-16));
+  height: var(--space-3);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background: linear-gradient(var(--color-border), var(--color-device));
+}
+
+.browser {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.browserBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--size-hairline) solid var(--color-border);
+  background: var(--color-surface-sunken);
+}
+
+.dots {
+  display: inline-flex;
+  gap: var(--space-1-5);
+}
+
+.dots span {
+  width: var(--size-dot);
+  height: var(--size-dot);
+  border-radius: var(--radius-pill);
+  background: var(--color-text-tertiary);
+}
+
+.address {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browserScreen {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

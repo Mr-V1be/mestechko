@@ -55,3 +55,4 @@ export * from './reports/report-metrics.js';
 export * from './payments/payment-status.js';
 export * from './payments/checkout-presentation.js';
 export * from './scheduling/schedule-changes.js';
+export * from './billing/pricing-plans.js';

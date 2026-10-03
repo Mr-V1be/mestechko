@@ -1,4 +1,4 @@
-import { errorMessage, useVocabulary, VerticalIcon } from '@mestechko/booking-ui';
+import { DemoLinks, errorMessage, useVocabulary, VerticalIcon } from '@mestechko/booking-ui';
 import type { DemoBusiness } from '@mestechko/contracts/client';
 import {
   Badge,
@@ -12,6 +12,7 @@ import {
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { appConfig } from '../../app/config';
 import { useDemoBusinesses, useTelegramLaunch } from '../../platform/api/queries';
 import { useHost } from '../../platform/telegram/host-context';
 import { ListSkeleton, QueryErrorState } from '../layout/states';
@@ -105,6 +106,7 @@ export function LauncherPage() {
             </ListGroup>
           ) : null}
         </section>
+        <DemoLinks links={appConfig.demoLinks} />
       </div>
     </div>
   );

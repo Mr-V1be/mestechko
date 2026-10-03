@@ -107,5 +107,24 @@
     "range": "От {{min}} до {{max}}",
     "min": "Не меньше {{min}}",
     "chooseSome": "Выберите хотя бы одно"
+  },
+  "demoLinks": {
+    "title": "Ещё в демо",
+    "landing": {
+      "title": "Сайт продукта",
+      "description": "Что умеет «Местечко» и тарифы"
+    },
+    "cabinet": {
+      "title": "Кабинет заведения",
+      "description": "Расписание, клиенты, отчёты"
+    },
+    "miniapp": {
+      "title": "Mini App клиента",
+      "description": "Запись глазами клиента"
+    },
+    "bot": {
+      "title": "Бот в Telegram",
+      "description": "Напоминания, перенос и отмена"
+    }
   }
 }

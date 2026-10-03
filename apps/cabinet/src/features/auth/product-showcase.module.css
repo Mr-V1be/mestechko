@@ -53,10 +53,6 @@
   zoom: var(--showcase-phone-zoom);
   width: var(--size-device-width);
   height: var(--size-device-height);
-  padding: var(--space-3);
-  border-radius: var(--radius-device);
-  background: var(--color-device);
-  box-shadow: var(--shadow-lg);
 }
 
 .screen {
@@ -64,10 +60,7 @@
   flex-direction: column;
   gap: var(--space-5);
   height: 100%;
-  overflow: hidden;
   padding: var(--space-5) var(--space-4);
-  border-radius: calc(var(--radius-device) - var(--space-3));
-  background: var(--color-canvas);
   color: var(--color-text);
 }
 

@@ -1,4 +1,4 @@
-import { VerticalIcon } from '@mestechko/booking-ui';
+import { DemoLinks, VerticalIcon } from '@mestechko/booking-ui';
 import type { Membership } from '@mestechko/contracts/client';
 import {
   Avatar,
@@ -105,6 +105,7 @@ function AccountSheet({
           />
         ))}
       </ListGroup>
+      {appConfig.demoMode ? <DemoLinks links={appConfig.demoLinks} /> : null}
     </Sheet>
   );
 }
