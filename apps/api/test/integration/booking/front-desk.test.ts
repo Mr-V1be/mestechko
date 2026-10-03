@@ -56,6 +56,16 @@ describe('front desk', () => {
       },
     );
 
+  /** The booking's own notice went out right away, as the dispatcher sends it. */
+  const markSent = (bookingId: string) =>
+    databases.admin
+      .updateTable('notifications')
+      .set({ status: 'sent', sentAt: new Date() })
+      .where('bookingId', '=', bookingId)
+      .where('status', '=', 'pending')
+      .where('kind', '=', 'booking_created')
+      .execute();
+
   beforeAll(async () => {
     databases = openTestDatabases();
     app = await createTestApp({ clock });
@@ -95,6 +105,7 @@ describe('front desk', () => {
     const created = await book(app, tenant, { initData, start, staffId: first });
     expect(created.statusCode).toBe(201);
     const bookingId = created.json<{ id: string }>().id;
+    await markSent(bookingId);
 
     const moved = await desk(`/${bookingId}/move`, { staffId: second, start, expectedVersion: 1 });
     expect(moved.statusCode).toBe(200);
@@ -124,6 +135,49 @@ describe('front desk', () => {
       .where('status', '=', 'pending')
       .execute();
     expect(planned).toContainEqual({ kind: 'booking_rescheduled', bookingVersion: 2 });
+  });
+
+  it('tells the client nothing about a move the desk took back before the notice went out', async () => {
+    clock.reset();
+    const initData = await launchAs(app, tenant.slug, DEMO_USER_BASE + 701);
+    const start = localStart(3, '12:00');
+    const created = await book(app, tenant, { initData, start, staffId: first });
+    const bookingId = created.json<{ id: string }>().id;
+    await markSent(bookingId);
+    const notices = () =>
+      databases.admin
+        .selectFrom('notifications')
+        .select(['bookingVersion', 'status', 'dueAt'])
+        .where('bookingId', '=', bookingId)
+        .where('kind', '=', 'booking_rescheduled')
+        .orderBy('createdAt')
+        .execute();
+
+    const moved = await desk(`/${bookingId}/move`, {
+      staffId: second,
+      start: localStart(3, '15:00'),
+      expectedVersion: 1,
+    });
+    expect(moved.statusCode).toBe(200);
+    // The notice waits a moment: «Вернуть» may follow.
+    const [waiting] = await notices();
+    expect(waiting?.status).toBe('pending');
+    expect((waiting?.dueAt.getTime() ?? 0) - clock.now().epochMilliseconds).toBeGreaterThan(0);
+
+    const undone = await desk(`/${bookingId}/move`, { staffId: first, start, expectedVersion: 2 });
+    expect(undone.statusCode).toBe(200);
+    expect(await notices()).toEqual([
+      expect.objectContaining({ bookingVersion: 2, status: 'cancelled' }),
+    ]);
+
+    // Moved again for real: now the client hears about it.
+    const again = await desk(`/${bookingId}/move`, {
+      staffId: first,
+      start: localStart(3, '16:00'),
+      expectedVersion: 3,
+    });
+    expect(again.statusCode).toBe(200);
+    expect((await notices()).at(-1)).toMatchObject({ bookingVersion: 4, status: 'pending' });
   });
 
   it('settles a completed visit with points and accrues points on the money paid', async () => {

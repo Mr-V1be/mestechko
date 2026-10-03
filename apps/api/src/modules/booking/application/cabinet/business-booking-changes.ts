@@ -12,6 +12,7 @@ import {
   refundsDeposit,
   type BusinessBookingAction,
   type Clock,
+  type VisitState,
 } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { BusinessAccess } from '../../../../shared/application/business-access.js';
@@ -205,7 +206,17 @@ export class BusinessBookingChanges {
           actorUserId: actor.userId,
           occurredAt: now,
         });
-        await this.notify(context, booking, 'rescheduled', new Date(option.priced.plan.start), now);
+        await this.notify(
+          context,
+          booking,
+          'rescheduled',
+          new Date(option.priced.plan.start),
+          now,
+          {
+            from: { startsAt: booking.startsAt.getTime(), staffId: booking.staffId },
+            to: { startsAt: option.priced.plan.start, staffId: input.staffId },
+          },
+        );
         return { freedTime: this.dayOf(booking) };
       },
     );
@@ -493,6 +504,7 @@ export class BusinessBookingChanges {
     event: 'rescheduled' | 'completed' | 'no_show',
     startsAt: Date,
     now: Date,
+    change?: { readonly from: VisitState; readonly to: VisitState },
   ): Promise<void> {
     await this.notifier.plan({
       businessId: context.business.id,
@@ -505,6 +517,8 @@ export class BusinessBookingChanges {
       },
       event,
       seenByClient: false,
+      // The desk may take a move back at once; the client hears only what stays.
+      ...(change ? { change, settle: true } : {}),
       now,
     });
   }

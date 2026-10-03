@@ -4,7 +4,9 @@ import {
   canConfirmAttendance,
   clientChangeVerdict,
   dayPartOfMinute,
+  DESK_CHANGE_SETTLE_MS,
   firstStartInWindow,
+  isUnchangedForClient,
   planBookingNotifications,
   waitlistWindowOf,
   type ClientBookingState,
@@ -105,6 +107,28 @@ describe('notification planning', () => {
     expect(
       planBookingNotifications({ event: 'cancelled', startsAt: START, now, seenByClient: false }),
     ).toEqual([{ kind: 'booking_cancelled', dueAt: now }]);
+  });
+
+  it('holds a front-desk notice back for a moment, and only the notice', () => {
+    const now = START - 3 * 24 * HOUR;
+    const planned = planBookingNotifications({
+      event: 'rescheduled',
+      startsAt: START,
+      now,
+      seenByClient: false,
+      settleMs: DESK_CHANGE_SETTLE_MS,
+    });
+    expect(planned.find((item) => item.kind === 'booking_rescheduled')?.dueAt).toBe(
+      now + DESK_CHANGE_SETTLE_MS,
+    );
+    expect(planned.find((item) => item.kind === 'reminder_24h')?.dueAt).toBe(START - 24 * HOUR);
+  });
+
+  it('knows when the client would hear about nothing', () => {
+    const known = { startsAt: START, staffId: 'anna' };
+    expect(isUnchangedForClient(known, { startsAt: START, staffId: 'anna' })).toBe(true);
+    expect(isUnchangedForClient(known, { startsAt: START, staffId: 'maria' })).toBe(false);
+    expect(isUnchangedForClient(null, known)).toBe(false);
   });
 });
 

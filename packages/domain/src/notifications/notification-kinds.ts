@@ -86,7 +86,32 @@ export interface NotificationPlanInput {
    * message they pressed a button in), so the event notice is not sent again.
    */
   readonly seenByClient: boolean;
+  /**
+   * How long the event notice waits before it may go out. A change made at the front
+   * desk can be taken back at once («Вернуть»); a notice still waiting is withdrawn.
+   */
+  readonly settleMs?: number;
 }
+
+/** How long a front-desk change settles before the client hears about it. */
+export const DESK_CHANGE_SETTLE_MS = 60_000;
+
+/** Where and when a visit is, as far as the client is concerned. */
+export interface VisitState {
+  /** Epoch milliseconds. */
+  readonly startsAt: number;
+  readonly staffId: string;
+}
+
+/** Whether the client would hear about nothing: the visit is what they were last told. */
+export function isUnchangedForClient(known: VisitState | null, current: VisitState): boolean {
+  return known !== null && known.startsAt === current.startsAt && known.staffId === current.staffId;
+}
+
+/** Kinds sent right after a change, rather than ahead of the visit. */
+export const eventNoticeKinds: readonly NotificationKind[] = notificationKindIds.filter(
+  (kind) => notificationKinds[kind].schedule.kind === 'on_event',
+);
 
 /** Notifications a booking event brings: an immediate notice and future reminders. */
 export function planBookingNotifications(input: NotificationPlanInput): PlannedNotification[] {
@@ -94,7 +119,7 @@ export function planBookingNotifications(input: NotificationPlanInput): PlannedN
     const schedule: NotificationSchedule = notificationKinds[kind].schedule;
     if (schedule.kind === 'on_event') {
       return schedule.events.includes(input.event) && !input.seenByClient
-        ? [{ kind, dueAt: input.now }]
+        ? [{ kind, dueAt: input.now + (input.settleMs ?? 0) }]
         : [];
     }
     if (schedule.kind === 'before_start' && ACTIVE_EVENTS.has(input.event)) {

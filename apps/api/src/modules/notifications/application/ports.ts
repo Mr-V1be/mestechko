@@ -1,4 +1,9 @@
-import type { MessengerChannel, NotificationKind, PlannedNotification } from '@mestechko/domain';
+import type {
+  MessengerChannel,
+  NotificationKind,
+  PlannedNotification,
+  VisitState,
+} from '@mestechko/domain';
 
 /** Who receives the messages of a booking, and through which messenger. */
 export interface NotificationRecipient {
@@ -13,6 +18,8 @@ export interface BookingNotificationPlan {
   /** `null` when the client has no messenger: pending messages are still withdrawn. */
   readonly recipient: NotificationRecipient | null;
   readonly planned: readonly PlannedNotification[];
+  /** What the client was last told about the visit; kept for a change taken back. */
+  readonly clientKnows: VisitState | null;
   readonly now: Date;
 }
 
@@ -32,6 +39,14 @@ export interface WaitlistOfferPlan {
 export interface NotificationOutbox {
   /** Withdraws the booking's pending messages and plans those of its current version. */
   replaceForBooking(plan: BookingNotificationPlan): Promise<void>;
+  /**
+   * A notice about the booking that has not gone out yet, and what the client knew
+   * before it; `null` when everything the client should hear was sent.
+   */
+  unsentNotice(
+    bookingId: string,
+    kinds: readonly NotificationKind[],
+  ): Promise<{ readonly clientKnows: VisitState | null } | null>;
   /** Plans an offer once per entry and start; `false` when it was offered before. */
   offerWaitlistSlot(offer: WaitlistOfferPlan): Promise<boolean>;
 }

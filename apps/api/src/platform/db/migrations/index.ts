@@ -4,6 +4,7 @@ import { clientLifecycleMigration } from './0002-client-lifecycle-and-notificati
 import { maxEmulatorMigration } from './0003-max-emulator.js';
 import { bookingStatesMigration } from './0004-booking-states.js';
 import { businessOperationsMigration } from './0005-business-operations.js';
+import { notificationClientKnowsMigration } from './0006-notification-client-knows.js';
 
 /** Ordered, immutable list of schema migrations. */
 export const migrations: Readonly<Record<string, Migration>> = {
@@ -12,4 +13,5 @@ export const migrations: Readonly<Record<string, Migration>> = {
   '0003-max-emulator': maxEmulatorMigration,
   '0004-booking-states': bookingStatesMigration,
   '0005-business-operations': businessOperationsMigration,
+  '0006-notification-client-knows': notificationClientKnowsMigration,
 };

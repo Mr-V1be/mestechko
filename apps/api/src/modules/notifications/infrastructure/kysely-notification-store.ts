@@ -1,3 +1,4 @@
+import type { NotificationKind, VisitState } from '@mestechko/domain';
 import type { Selectable } from 'kysely';
 import type { Notifications } from '../../../platform/db/generated/database.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
@@ -67,12 +68,42 @@ export class KyselyNotificationStore implements NotificationOutbox, Notification
           dueAt: new Date(planned.dueAt),
           status: 'pending' as const,
           attempts: 0,
+          clientKnowsStartsAt: plan.clientKnows ? new Date(plan.clientKnows.startsAt) : null,
+          clientKnowsStaffId: plan.clientKnows?.staffId ?? null,
           createdAt: plan.now,
           updatedAt: plan.now,
         })),
       )
       .onConflict((conflict) => conflict.constraint('notifications_booking_kind_key').doNothing())
       .execute();
+  }
+
+  async unsentNotice(
+    bookingId: string,
+    kinds: readonly NotificationKind[],
+  ): Promise<{ readonly clientKnows: VisitState | null } | null> {
+    if (kinds.length === 0) {
+      return null;
+    }
+    const row = await this.unitOfWork
+      .platform()
+      .selectFrom('notifications')
+      .select(['clientKnowsStartsAt', 'clientKnowsStaffId'])
+      .where('bookingId', '=', bookingId)
+      .where('kind', 'in', [...kinds])
+      .where('status', '=', 'pending')
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .executeTakeFirst();
+    if (!row) {
+      return null;
+    }
+    return {
+      clientKnows:
+        row.clientKnowsStartsAt && row.clientKnowsStaffId
+          ? { startsAt: row.clientKnowsStartsAt.getTime(), staffId: row.clientKnowsStaffId }
+          : null,
+    };
   }
 
   async offerWaitlistSlot(offer: WaitlistOfferPlan): Promise<boolean> {

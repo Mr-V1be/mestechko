@@ -286,6 +286,8 @@ export interface Notifications {
   businessId: string;
   channel: MessengerChannel;
   claimedUntil: Timestamp | null;
+  clientKnowsStaffId: string | null;
+  clientKnowsStartsAt: Timestamp | null;
   createdAt: Timestamp;
   customerId: string;
   dueAt: Timestamp;
