@@ -292,3 +292,46 @@ textarea.input {
   font-weight: var(--font-weight-medium);
   pointer-events: none;
 }
+
+/* Native date and time inputs: the system picker, aligned like the other fields. */
+.input:is([type='date'], [type='time']) {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.input:is([type='date'], [type='time'])::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.input:is([type='date'], [type='time'])::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.range {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.rangePart {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.rangeDash {
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+.rangeAction {
+  display: inline-flex;
+  flex: none;
+}
