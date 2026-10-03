@@ -57,6 +57,7 @@ export const chubBarbershop: DemoBusiness = {
       key: 'artem',
       displayName: 'Артём Волков',
       title: 'Старший барбер',
+      popularity: 1.15,
       locationKey: BAUMANA,
       pattern: twoByTwo(shift, 0),
       services: [
@@ -71,6 +72,7 @@ export const chubBarbershop: DemoBusiness = {
       key: 'timur',
       displayName: 'Тимур Хайруллин',
       title: 'Барбер',
+      popularity: 1.0,
       locationKey: BAUMANA,
       pattern: twoByTwo(shift, 2),
       services: [
@@ -86,6 +88,7 @@ export const chubBarbershop: DemoBusiness = {
       key: 'denis',
       displayName: 'Денис Сорокин',
       title: 'Барбер',
+      popularity: 0.85,
       locationKey: BAUMANA,
       pattern: twoByTwo(shift, 1),
       services: ['mens_haircut', 'clipper_cut', 'beard_trim', 'haircut_and_beard'],
@@ -95,6 +98,7 @@ export const chubBarbershop: DemoBusiness = {
       key: 'ruslan',
       displayName: 'Руслан Галиев',
       title: 'Барбер-стажёр',
+      popularity: 0.7,
       locationKey: BAUMANA,
       pattern: twoByTwo(shift, 3),
       services: [
@@ -105,5 +109,12 @@ export const chubBarbershop: DemoBusiness = {
     },
   ],
   femaleClientShare: 0.05,
-  utilization: { past: [0.6, 0.9], upcoming: 0.65 },
+  demand: {
+    base: 0.63,
+    upcoming: 0.62,
+    weekdays: [0.6, 0.76, 0.85, 0.95, 1.2, 1.34, 1.04],
+    dayParts: { morning: 0.55, day: 1, evening: 1.6 },
+    peaks: [{ weekday: 5, from: '18:00', factor: 1.4 }],
+    trendStart: 0.88,
+  },
 };

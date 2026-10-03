@@ -6,6 +6,7 @@ import {
   incompatibleWith,
   localDateOf,
   localDayBounds,
+  localMinuteOf,
   planBookingOptions,
   quoteBooking,
   resolveStaffDay,
@@ -20,6 +21,7 @@ import {
   type ProductionCalendar,
 } from '@mestechko/domain';
 import type { BuiltCatalog, BuiltService, BuiltStaff } from './catalog-builder.js';
+import { attendanceRisk, dayDemand, startWeight } from './demand-model.js';
 import { clientComments } from './people.js';
 import type { Random } from './random.js';
 
@@ -49,6 +51,11 @@ const CLIENT_WEIGHT_DECAY = 0.993;
 /** Demand fades for days further ahead: people book closer to the date. */
 const FUTURE_DEMAND_DAYS = 24;
 const MIN_FUTURE_DEMAND = 0.1;
+/** Day-to-day scatter around the expected occupancy of a staff member. */
+const DAILY_NOISE = 0.1;
+const OCCUPANCY_RANGE = { min: 0.12, max: 0.96 } as const;
+const NO_SHOW_RATE = 0.045;
+const CANCEL_RATE = 0.085;
 
 /** Visits that ended this recently may still wait for the desk to mark them. */
 const UNMARKED_WINDOW_MS = 30 * 60 * MS_PER_MINUTE;
@@ -58,18 +65,18 @@ const UNMARKED_SHARE = 0.35;
  * Past visits mostly happened; a few were missed or cancelled, and some of the latest
  * are not marked yet, as at any front desk. Future ones are mostly confirmed.
  */
-function statusFor(random: Random, endsAt: number, now: number): BookingStatus {
+function statusFor(random: Random, endsAt: number, now: number, risk: number): BookingStatus {
   if (endsAt > now) {
-    return random.chance(0.07) ? 'cancelled' : 'confirmed';
+    return random.chance(0.07 * risk) ? 'cancelled' : 'confirmed';
   }
   if (now - endsAt < UNMARKED_WINDOW_MS && random.chance(UNMARKED_SHARE)) {
     return 'confirmed';
   }
   const roll = random.next();
-  if (roll < 0.05) {
+  if (roll < NO_SHOW_RATE * risk) {
     return 'no_show';
   }
-  return roll < 0.14 ? 'cancelled' : 'completed';
+  return roll < (NO_SHOW_RATE + CANCEL_RATE) * risk ? 'cancelled' : 'completed';
 }
 
 interface DayContext {
@@ -146,7 +153,18 @@ function bookOnce(context: DayContext, staff: BuiltStaff): GeneratedBooking | nu
   if (slots.length === 0) {
     return null;
   }
-  const plan = planBookingOptions(request, random.pick(slots).start)[0];
+  // Starts are not equally wanted: evenings and Friday nights go first at a salon.
+  const timeZone = request.location.timeZone;
+  const weekday = context.date.dayOfWeek;
+  const start =
+    slots[
+      random.weighted(
+        slots.map((slot) =>
+          startWeight(catalog.definition.demand, weekday, localMinuteOf(slot.start, timeZone)),
+        ),
+      )
+    ]?.start;
+  const plan = start === undefined ? undefined : planBookingOptions(request, start)[0];
   if (!plan) {
     return null;
   }
@@ -159,7 +177,12 @@ function bookOnce(context: DayContext, staff: BuiltStaff): GeneratedBooking | nu
     })),
     catalog.definition.currency,
   );
-  const status = statusFor(random, plan.end, context.now);
+  const status = statusFor(
+    random,
+    plan.end,
+    context.now,
+    attendanceRisk(weekday, localMinuteOf(plan.start, timeZone)),
+  );
   const bookedAt =
     plan.start -
     random.int(0, MAX_BOOKING_LEAD_DAYS) * MS_PER_DAY -
@@ -226,16 +249,32 @@ export function generateHistory(input: {
       clientWeights,
     };
     const daysAhead = today.until(date, { largestUnit: 'days' }).days;
+    const { demand } = catalog.definition;
+    const busyness = dayDemand({
+      demand,
+      date,
+      historyStart: input.from,
+      today,
+      calendar: input.calendar,
+    });
     for (const staff of random.shuffle(catalog.staff)) {
       const available = workingMinutes(context, staff);
       if (available === 0) {
         continue;
       }
-      const target =
+      const popularity =
+        catalog.definition.staff.find((candidate) => candidate.key === staff.key)?.popularity ?? 1;
+      const expected =
         daysAhead <= 0
-          ? random.between(...catalog.definition.utilization.past)
-          : catalog.definition.utilization.upcoming *
+          ? demand.base * busyness * popularity
+          : demand.upcoming *
+            busyness *
+            popularity *
             Math.max(MIN_FUTURE_DEMAND, 1 - daysAhead / FUTURE_DEMAND_DAYS);
+      const target = Math.min(
+        OCCUPANCY_RANGE.max,
+        Math.max(OCCUPANCY_RANGE.min, expected * random.between(1 - DAILY_NOISE, 1 + DAILY_NOISE)),
+      );
       let booked = 0;
       for (
         let attempt = 0;

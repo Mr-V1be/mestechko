@@ -30,6 +30,8 @@ export interface DemoStaff {
   readonly services: readonly (string | DemoStaffService)[];
   /** Days off relative to the seed date, e.g. a vacation day next week. */
   readonly daysOff?: readonly number[];
+  /** How sought-after the person is: 1 is average, a top stylist fills up sooner. */
+  readonly popularity?: number;
   /** Absences relative to the seed date, both ends included. */
   readonly absences?: readonly {
     readonly kind: AbsenceKind;
@@ -89,8 +91,33 @@ export interface DemoBusiness {
   readonly staff: readonly DemoStaff[];
   /** Share of female clients in the generated client base. */
   readonly femaleClientShare: number;
-  /** Booked share of working time in the past and in the coming days. */
-  readonly utilization: { readonly past: readonly [number, number]; readonly upcoming: number };
+  readonly demand: DemoDemand;
+}
+
+/** A busier stretch of the week, e.g. Friday evening. */
+export interface DemoPeak {
+  /** ISO weekday, 1 = Monday. */
+  readonly weekday: number;
+  readonly from: string;
+  readonly factor: number;
+}
+
+/**
+ * How demand moves through the week and the day. Occupancy, revenue and no-shows of the
+ * generated history all follow it, so reports look like a business, not a generator.
+ */
+export interface DemoDemand {
+  /** Booked share of working time on an average day of the recent past. */
+  readonly base: number;
+  /** Booked share of the coming days, fading further ahead. */
+  readonly upcoming: number;
+  /** Monday-first multipliers of the base. */
+  readonly weekdays: readonly [number, number, number, number, number, number, number];
+  /** Relative pull of starts in the morning (before 12:00), the day and the evening (17:00+). */
+  readonly dayParts: { readonly morning: number; readonly day: number; readonly evening: number };
+  readonly peaks?: readonly DemoPeak[];
+  /** Occupancy at the start of the history relative to today: below 1 for a growing business. */
+  readonly trendStart: number;
 }
 
 export const day = (

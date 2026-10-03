@@ -48,6 +48,7 @@ export const emalDental: DemoBusiness = {
       key: 'elena',
       displayName: 'Елена Соколова',
       title: 'Стоматолог-терапевт',
+      popularity: 1.1,
       locationKey: MALYSHEVA,
       pattern: weekdays(day('09:00', '18:00', ['13:00', '14:00']), [1, 2, 3, 4, 5]),
       services: ['consultation', 'caries_treatment', 'dental_xray'],
@@ -56,6 +57,7 @@ export const emalDental: DemoBusiness = {
       key: 'pavel',
       displayName: 'Павел Ильин',
       title: 'Стоматолог-терапевт',
+      popularity: 0.95,
       locationKey: MALYSHEVA,
       pattern: {
         kind: 'weekly',
@@ -75,6 +77,7 @@ export const emalDental: DemoBusiness = {
       key: 'igor',
       displayName: 'Игорь Морозов',
       title: 'Хирург-имплантолог',
+      popularity: 0.85,
       locationKey: MALYSHEVA,
       pattern: {
         kind: 'weekly',
@@ -94,6 +97,7 @@ export const emalDental: DemoBusiness = {
       key: 'natalia',
       displayName: 'Наталья Ветрова',
       title: 'Гигиенист',
+      popularity: 0.75,
       locationKey: MALYSHEVA,
       pattern: weekdays(day('10:00', '19:00', ['14:00', '14:30']), [1, 2, 3, 4, 5]),
       services: ['professional_hygiene', 'whitening'],
@@ -101,5 +105,11 @@ export const emalDental: DemoBusiness = {
     },
   ],
   femaleClientShare: 0.55,
-  utilization: { past: [0.5, 0.8], upcoming: 0.55 },
+  demand: {
+    base: 0.56,
+    upcoming: 0.55,
+    weekdays: [1.06, 1.02, 0.98, 0.98, 0.92, 0.84, 0.8],
+    dayParts: { morning: 1.1, day: 0.95, evening: 1.2 },
+    trendStart: 0.9,
+  },
 };
