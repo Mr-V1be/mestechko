@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
+import { defaultLocale } from '@mestechko/i18n';
+import payments from '../../locales/ru/payments.json' with { type: 'json' };
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
+import { PaymentReturnController, RETURN_PAGE_TEXTS } from './api/payment-return.controller.js';
+import type { ReturnPageTexts } from './api/payment-return-page.js';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import { JOB_QUEUE, type JobQueue } from '../../shared/application/job-queue.js';
 import {
@@ -28,7 +32,12 @@ import { createPaymentProvider } from './infrastructure/payment-providers.js';
 /** Prepayments through the configured payment provider, and their refunds. */
 @Module({
   imports: [LoyaltyModule],
+  controllers: [PaymentReturnController],
   providers: [
+    {
+      provide: RETURN_PAGE_TEXTS,
+      useValue: { locale: defaultLocale, ...payments.returned } satisfies ReturnPageTexts,
+    },
     {
       provide: PAYMENT_PROVIDER,
       useFactory: (config: AppConfig, clock: Clock) => createPaymentProvider(config, clock),
@@ -56,9 +65,13 @@ import { createPaymentProvider } from './infrastructure/payment-providers.js';
     },
     {
       provide: PaymentCheckout,
-      useFactory: (unitOfWork: UnitOfWork, store: PaymentStore, provider: PaymentProvider) =>
-        new PaymentCheckout(unitOfWork, store, provider),
-      inject: [UNIT_OF_WORK, PAYMENT_STORE, PAYMENT_PROVIDER],
+      useFactory: (
+        unitOfWork: UnitOfWork,
+        store: PaymentStore,
+        provider: PaymentProvider,
+        config: AppConfig,
+      ) => new PaymentCheckout(unitOfWork, store, provider, config.payments.returnPageUrl),
+      inject: [UNIT_OF_WORK, PAYMENT_STORE, PAYMENT_PROVIDER, APP_CONFIG],
     },
     {
       provide: refundHandlerTokens.refund,

@@ -1,4 +1,4 @@
-import { holdReasonIds, paymentStatusIds } from '@mestechko/domain';
+import { checkoutPresentationIds, holdReasonIds, paymentStatusIds } from '@mestechko/domain';
 import { z } from 'zod';
 import { bookingStatusSchema, instantSchema, moneySchema, uuidSchema } from '../../primitives.js';
 import { defineRoute } from '../../route.js';
@@ -60,6 +60,8 @@ export const createWidgetBooking = defineRoute({
     token: z.string(),
     /** Payment page when the booking asks for a prepayment. */
     checkoutUrl: z.string().nullable(),
+    /** Where to open it: in place of the form, or in a new browser window. */
+    checkoutPresentation: z.enum(checkoutPresentationIds).nullable(),
   }),
 });
 

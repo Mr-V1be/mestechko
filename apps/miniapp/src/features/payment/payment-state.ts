@@ -8,15 +8,25 @@ export function awaitsPayment(booking: ClientBooking): boolean {
   return booking.status === 'held' && booking.hold?.reason === 'payment';
 }
 
-/** What a client back from the payment page sees, while the provider's notice travels. */
-export type ReturnOutcome = 'checking' | 'late' | 'paid' | 'declined';
+/**
+ * What a client sees while the provider's notice travels: back from the page, or still
+ * paying in the browser outside the app.
+ */
+export type ReturnOutcome = 'checking' | 'outside' | 'late' | 'paid' | 'declined';
 
-export function returnOutcome(booking: ClientBooking, waitedMs: number): ReturnOutcome {
+export function returnOutcome(
+  booking: ClientBooking,
+  waitedMs: number,
+  outside: boolean,
+): ReturnOutcome {
   if (booking.payment?.status === 'succeeded' && booking.status === 'confirmed') {
     return 'paid';
   }
   if (booking.payment?.status === 'cancelled' || booking.status === 'cancelled') {
     return 'declined';
+  }
+  if (outside) {
+    return 'outside';
   }
   return waitedMs < RETURN_WAIT_MS ? 'checking' : 'late';
 }

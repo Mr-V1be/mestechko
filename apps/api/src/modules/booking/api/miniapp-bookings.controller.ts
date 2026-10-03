@@ -149,14 +149,15 @@ export class MiniAppBookingsController {
   }
 
   @ContractRoute(startMiniAppPayment)
-  startPayment(
+  async startPayment(
     @ContractInput() input: RouteInput<typeof startMiniAppPayment>,
     @TelegramClient() user: TelegramUser,
   ): Promise<RouteResult<typeof startMiniAppPayment>> {
-    return this.prepaid.startCheckout(
+    const { checkout, booking } = await this.prepaid.startCheckout(
       identityOf(input.params.slug, user),
       input.params.bookingId,
       input.body.returnPath,
     );
+    return { checkoutUrl: checkout.url, checkoutPresentation: checkout.presentation, booking };
   }
 }

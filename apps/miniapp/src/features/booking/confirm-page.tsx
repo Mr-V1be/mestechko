@@ -21,6 +21,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router';
 import { appConfig } from '../../app/config';
+import { paymentOutsidePath } from '../../platform/api/payment-queries';
 import { useCreateBooking, useQuote } from '../../platform/api/queries';
 import { awaitsPayment } from '../payment/payment-state';
 import { useCheckout } from '../payment/use-checkout';
@@ -95,7 +96,14 @@ export function ConfirmPage() {
           const bookingPath = `/b/${encodeURIComponent(selection.slug)}/bookings/${booking.id}?created=1`;
           if (awaitsPayment(booking)) {
             // Straight on to paying; if the page cannot open, the booking offers it again.
-            checkout.open(booking.id, () => void navigate(bookingPath, { replace: true }));
+            checkout.open(booking.id, {
+              onOutside: (id) => {
+                void navigate(paymentOutsidePath(selection.slug, id), { replace: true });
+              },
+              onRefused: () => {
+                void navigate(bookingPath, { replace: true });
+              },
+            });
             return;
           }
           void navigate(bookingPath, { replace: true });

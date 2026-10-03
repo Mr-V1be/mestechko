@@ -65,6 +65,8 @@ const defaults: Record<string, () => string> = {
   TEST_PAY_EMULATOR_ENABLED: () => 'true',
   TEST_PAY_WEBHOOK_URL: () => 'http://127.0.0.1:46210/v1/payments/webhooks/test',
   TEST_PAY_CHECKOUT_BASE_URL: () => '/test-pay',
+  TEST_PAY_CHECKOUT: () => 'embedded',
+  PAYMENTS_RETURN_PAGE_URL: () => 'http://127.0.0.1:46210/v1/payments/return',
   WIDGET_SIGNING_KEY: () => secret(32),
   SESSION_TTL_DAYS: () => '30',
   COOKIE_SECURE: () => 'false',

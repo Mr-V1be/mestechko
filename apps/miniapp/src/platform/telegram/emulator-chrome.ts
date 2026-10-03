@@ -51,6 +51,13 @@ const eventHandlers: Readonly<Record<string, (params: unknown) => void>> = {
   web_app_setup_back_button: (params) => {
     update({ ...state, backButtonVisible: record(params).is_visible === true });
   },
+  // An outside link opens in a new tab, as Telegram opens it in the browser.
+  web_app_open_link: (params) => {
+    const url = record(params).url;
+    if (typeof url === 'string') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  },
   // Outside Telegram a t.me link opens in a new tab, as the web version of Telegram does.
   web_app_open_tg_link: (params) => {
     const path = record(params).path_full;

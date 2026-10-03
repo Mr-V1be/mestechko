@@ -1,4 +1,4 @@
-import type { CurrencyCode, Money, PaymentStatus } from '@mestechko/domain';
+import type { CheckoutPresentation, CurrencyCode, Money, PaymentStatus } from '@mestechko/domain';
 
 /** What the payment page needs to take a prepayment. */
 export interface CheckoutRequest {
@@ -6,7 +6,7 @@ export interface CheckoutRequest {
   readonly idempotencyKey: string;
   readonly amount: Money;
   readonly description: string;
-  /** Where the payer returns after paying or giving up; a path of our own site. */
+  /** Where the payer returns after paying or giving up: a path of the app, or the neutral page. */
   readonly returnUrl: string;
   /** Echoed back in notifications; tells us whose payment it is. */
   readonly metadata: PaymentMetadata;
@@ -56,6 +56,8 @@ export class InvalidWebhookError extends Error {
 /** A payment provider behind its own adapter; the domain never sees which one. */
 export interface PaymentProvider {
   readonly id: string;
+  /** Where the provider's payment page opens: in place of the app or in the browser. */
+  readonly presentation: CheckoutPresentation;
   createCheckout(request: CheckoutRequest): Promise<ProviderCheckout>;
   /** `pending` refunds are confirmed later by a notification. */
   refund(request: RefundRequest): Promise<{ readonly status: 'succeeded' | 'pending' }>;

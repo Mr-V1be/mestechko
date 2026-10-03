@@ -1,3 +1,4 @@
+import { checkoutPresentations, type CheckoutPresentation } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import type { PaymentProvider, PaymentStore } from './ports.js';
@@ -9,11 +10,19 @@ const RETURN_PATH = /^\/(?!\/)[\w\-./?=&%]*$/;
  * Opens the provider's payment page for a pending prepayment. The provider is called
  * outside any transaction; repeating the call returns the same page.
  */
+/** A payment page and how to open it. */
+export interface OpenCheckout {
+  readonly url: string;
+  readonly presentation: CheckoutPresentation;
+}
+
 export class PaymentCheckout {
   constructor(
     private readonly unitOfWork: UnitOfWork,
     private readonly store: PaymentStore,
     private readonly provider: PaymentProvider,
+    /** The neutral page payers return to from a page opened outside the app. */
+    private readonly returnPageUrl: string | null,
   ) {}
 
   async start(input: {
@@ -23,9 +32,16 @@ export class PaymentCheckout {
     readonly returnUrl: string;
     readonly expiresAt: Date;
     readonly now: Date;
-  }): Promise<string> {
+  }): Promise<OpenCheckout> {
     if (!RETURN_PATH.test(input.returnUrl)) {
       throw new ApplicationError('validation_failed', 'Return address must be a path of this site');
+    }
+    const presentation = this.provider.presentation;
+    const returnUrl = checkoutPresentations[presentation].returnsToApp
+      ? input.returnUrl
+      : this.returnPageUrl;
+    if (returnUrl === null) {
+      throw new Error('PAYMENTS_RETURN_PAGE_URL is required for a payment page outside the app');
     }
     const payment = await this.unitOfWork.inTenant(
       input.businessId,
@@ -41,19 +57,19 @@ export class PaymentCheckout {
       });
     }
     if (payment.checkoutUrl) {
-      return payment.checkoutUrl;
+      return { url: payment.checkoutUrl, presentation };
     }
     const checkout = await this.provider.createCheckout({
       idempotencyKey: payment.id,
       amount: { amountMinor: payment.amountMinor, currency: payment.currency },
       description: input.description,
-      returnUrl: input.returnUrl,
+      returnUrl,
       metadata: { businessId: input.businessId, paymentId: payment.id },
       expiresAt: input.expiresAt,
     });
     await this.unitOfWork.inTenant(input.businessId, () =>
       this.store.attachCheckout(payment.id, checkout, input.now),
     );
-    return checkout.checkoutUrl;
+    return { url: checkout.checkoutUrl, presentation };
   }
 }

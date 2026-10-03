@@ -1,5 +1,6 @@
 import { errorMessage, hasCode, useFormat } from '@mestechko/booking-ui';
 import { ApiError, type PublicBusiness, type WidgetBooking } from '@mestechko/contracts/client';
+import type { CheckoutPresentation } from '@mestechko/domain';
 import { Button, Skeleton, StatePanel, useToast } from '@mestechko/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +33,7 @@ export interface BookedResult {
   readonly booking: WidgetBooking;
   readonly token: string;
   readonly checkoutUrl: string | null;
+  readonly checkoutPresentation: CheckoutPresentation | null;
 }
 
 export interface BookingFlowProps {

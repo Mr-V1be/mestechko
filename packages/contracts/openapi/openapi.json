@@ -4558,6 +4558,13 @@
                     "checkoutUrl": {
                       "type": "string"
                     },
+                    "checkoutPresentation": {
+                      "type": "string",
+                      "enum": [
+                        "embedded",
+                        "external"
+                      ]
+                    },
                     "booking": {
                       "type": "object",
                       "properties": {
@@ -4927,6 +4934,7 @@
                   },
                   "required": [
                     "checkoutUrl",
+                    "checkoutPresentation",
                     "booking"
                   ],
                   "additionalProperties": false
@@ -6488,12 +6496,27 @@
                         "string",
                         "null"
                       ]
+                    },
+                    "checkoutPresentation": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "embedded",
+                            "external"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
                     }
                   },
                   "required": [
                     "booking",
                     "token",
-                    "checkoutUrl"
+                    "checkoutUrl",
+                    "checkoutPresentation"
                   ],
                   "additionalProperties": false
                 }

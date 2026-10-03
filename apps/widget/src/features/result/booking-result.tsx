@@ -15,6 +15,7 @@ import { CalendarClock, Hourglass, MapPin, UserRound, Wallet } from 'lucide-reac
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { StoredBooking } from '../../embed/booking-tokens';
+import { openCheckout } from '../../embed/checkout-openers';
 import { useWidgetBooking } from '../../platform/api/queries';
 import styles from './result.module.css';
 
@@ -25,25 +26,31 @@ function awaitsPayment(booking: WidgetBooking): boolean {
   return booking.status === 'held' && booking.hold?.reason === 'payment';
 }
 
+/** Back from the payment page in place of the form, or paying in a new window. */
+export type PaymentStage = 'returned' | 'outside';
+
 export interface BookingResultProps {
   readonly slug: string;
   readonly stored: StoredBooking | null;
-  /** The visitor is back from the payment page. */
-  readonly paymentReturn: boolean;
+  /** `null` when no payment page was opened in this visit. */
+  readonly stage: PaymentStage | null;
   readonly onAgain: () => void;
 }
 
 /** What the booking became: confirmed, waiting for its prepayment, or let go. */
-export function BookingResult({ slug, stored, paymentReturn, onAgain }: BookingResultProps) {
+export function BookingResult({ slug, stored, stage, onAgain }: BookingResultProps) {
   const { t } = useTranslation();
   const [returnedAt] = useState(() => Date.now());
+  // Paying in a new window takes as long as it takes; a return settles in seconds.
   const booking = useWidgetBooking(
     slug,
     stored?.bookingId ?? '',
     stored?.token ?? null,
     (current) =>
-      paymentReturn && awaitsPayment(current) && Date.now() - returnedAt < RETURN_WAIT_MS,
+      awaitsPayment(current) &&
+      (stage === 'outside' || (stage === 'returned' && Date.now() - returnedAt < RETURN_WAIT_MS)),
   );
+  const paymentReturn = stage !== null;
   const again = (
     <Button variant="secondary" onClick={onAgain}>
       {t('result.again')}
@@ -85,8 +92,9 @@ export function BookingResult({ slug, stored, paymentReturn, onAgain }: BookingR
       {awaitsPayment(data) ? (
         <AwaitingPayment
           booking={data}
-          checkoutUrl={stored.checkoutUrl}
-          checking={paymentReturn && booking.dataUpdatedAt - returnedAt < RETURN_WAIT_MS}
+          stored={stored}
+          outside={stage === 'outside'}
+          checking={stage === 'returned' && booking.dataUpdatedAt - returnedAt < RETURN_WAIT_MS}
         />
       ) : (
         <Celebration booking={data} paid={paymentReturn && data.paymentStatus === 'succeeded'} />
@@ -125,11 +133,14 @@ function Celebration({
 
 function AwaitingPayment({
   booking,
-  checkoutUrl,
+  stored,
+  outside,
   checking,
 }: {
   readonly booking: WidgetBooking;
-  readonly checkoutUrl: string | null;
+  readonly stored: StoredBooking;
+  /** The page is open in another window; the form waits for the payment. */
+  readonly outside: boolean;
   readonly checking: boolean;
 }) {
   const { t } = useTranslation();
@@ -137,25 +148,30 @@ function AwaitingPayment({
   const until = booking.hold
     ? format.instant(booking.hold.expiresAt, booking.location.timeZone, 'time')
     : '';
+  const { checkoutUrl, checkoutPresentation } = stored;
   return (
     <Callout
-      icon={checking ? <Spinner /> : <Hourglass />}
+      icon={checking || outside ? <Spinner /> : <Hourglass />}
       title={checking ? t('result.checking') : t('result.awaitingTitle')}
       actions={
-        checkoutUrl && booking.deposit && !checking ? (
+        checkoutUrl && checkoutPresentation && booking.deposit && !checking ? (
           <Button
             onClick={() => {
-              window.location.assign(checkoutUrl);
+              openCheckout(checkoutUrl, checkoutPresentation);
             }}
           >
-            {t('result.pay', { amount: format.money(booking.deposit) })}
+            {outside
+              ? t('result.reopen')
+              : t('result.pay', { amount: format.money(booking.deposit) })}
           </Button>
         ) : undefined
       }
     >
-      {booking.deposit
-        ? t('result.awaiting', { time: until, amount: format.money(booking.deposit) })
-        : t('result.late')}
+      {outside
+        ? t('result.outside', { time: until })
+        : booking.deposit
+          ? t('result.awaiting', { time: until, amount: format.money(booking.deposit) })
+          : t('result.late')}
     </Callout>
   );
 }

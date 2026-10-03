@@ -1,4 +1,5 @@
 import { timingSafeEqual } from 'node:crypto';
+import type { CheckoutPresentation } from '@mestechko/domain';
 import { z } from 'zod';
 import {
   InvalidWebhookError,
@@ -55,6 +56,7 @@ export class TestPayRequestError extends Error {
  */
 export class TestPayProvider implements PaymentProvider {
   readonly id = 'test';
+  readonly presentation: CheckoutPresentation;
 
   constructor(
     private readonly options: {
@@ -63,8 +65,12 @@ export class TestPayProvider implements PaymentProvider {
       readonly webhookSecret: string;
       readonly timeoutMs: number;
       readonly now: () => number;
+      /** The emulator's page can be framed; it can also stand in for a provider that cannot. */
+      readonly presentation: CheckoutPresentation;
     },
-  ) {}
+  ) {
+    this.presentation = options.presentation;
+  }
 
   async createCheckout(request: CheckoutRequest): Promise<ProviderCheckout> {
     const payment = paymentSchema.parse(

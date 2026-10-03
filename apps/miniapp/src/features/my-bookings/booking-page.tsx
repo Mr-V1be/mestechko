@@ -22,7 +22,11 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { appConfig } from '../../app/config';
 import { useConfirmAttendance, useOfferAnswers } from '../../platform/api/lifecycle-queries';
-import { PAYMENT_RETURN_PARAM } from '../../platform/api/payment-queries';
+import {
+  PAYMENT_RETURN_PARAM,
+  paymentOutsidePath,
+  paymentStages,
+} from '../../platform/api/payment-queries';
 import { useClientBooking } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
 import { haptics } from '../../platform/telegram/telegram-host';
@@ -108,7 +112,9 @@ export function BookingPage() {
   const { bookingId = '' } = useParams();
   const [params] = useSearchParams();
   const created = params.get('created') === '1';
-  const returned = params.get(PAYMENT_RETURN_PARAM) === 'return';
+  const stage = params.get(PAYMENT_RETURN_PARAM);
+  const outside = stage === paymentStages.outside;
+  const returned = stage === paymentStages.returned || outside;
   const [returnedAt] = useState(() => Date.now());
   const toast = useToast();
   const booking = useClientBooking(
@@ -117,8 +123,9 @@ export function BookingPage() {
     returned
       ? {
           // The provider's notice may arrive a moment after the client is back.
+          // Paying in the browser takes as long as it takes; a return settles in seconds.
           pollWhile: (current) =>
-            awaitsPayment(current) && Date.now() - returnedAt < RETURN_WAIT_MS,
+            awaitsPayment(current) && (outside || Date.now() - returnedAt < RETURN_WAIT_MS),
         }
       : {},
   );
@@ -129,7 +136,13 @@ export function BookingPage() {
   const data = booking.data;
   const awaiting = data ? awaitsPayment(data) : false;
   const offered = data ? isWaitlistOffer(data) : false;
-  const outcome = data && returned ? returnOutcome(data, booking.dataUpdatedAt - returnedAt) : null;
+  const outcome =
+    data && returned ? returnOutcome(data, booking.dataUpdatedAt - returnedAt, outside) : null;
+  const payOutside = {
+    onOutside: (id: string) => {
+      void navigate(paymentOutsidePath(business.slug, id), { replace: true });
+    },
+  };
   const canConfirm = data?.actions.confirm_attendance === true;
 
   // One primary action: pay while the time is held, finish after booking, otherwise
@@ -155,7 +168,7 @@ export function BookingPage() {
           onSuccess: (taken) => {
             haptics.success();
             if (awaitsPayment(taken)) {
-              checkout.open(taken.id);
+              checkout.open(taken.id, payOutside);
               return;
             }
             void navigate(`${listPath}/${taken.id}?created=1`, { replace: true });
@@ -168,7 +181,7 @@ export function BookingPage() {
         return;
       }
       if (awaiting) {
-        checkout.open(bookingId);
+        checkout.open(bookingId, payOutside);
         return;
       }
       if (created || outcome === 'paid') {

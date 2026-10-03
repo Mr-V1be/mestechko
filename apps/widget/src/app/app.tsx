@@ -6,7 +6,8 @@ import { rememberBooking, storedBooking, type StoredBooking } from '../embed/boo
 import { attemptPath, freshFormPath, type EmbedParams } from '../embed/embed-params';
 import { postToHost, useAutoHeight } from '../embed/host-bridge';
 import { BookingFlow, type BookedResult } from '../features/flow/booking-flow';
-import { BookingResult } from '../features/result/booking-result';
+import { BookingResult, type PaymentStage } from '../features/result/booking-result';
+import { openCheckout, paysOutside } from '../embed/checkout-openers';
 import { useBusiness } from '../platform/api/queries';
 import { AppProviders } from './providers';
 import styles from './app.module.css';
@@ -41,7 +42,7 @@ function WidgetFrame({ params }: { readonly params: EmbedParams }) {
 interface Attempt {
   readonly id: string;
   readonly stored: StoredBooking | null;
-  readonly paymentReturn: boolean;
+  readonly stage: PaymentStage | null;
 }
 
 function Widget({ slug, params }: { readonly slug: string; readonly params: EmbedParams }) {
@@ -52,31 +53,39 @@ function Widget({ slug, params }: { readonly slug: string; readonly params: Embe
       ? {
           id: params.attemptId,
           stored: storedBooking(params.attemptId),
-          paymentReturn: params.paymentReturn,
+          stage: params.paymentReturn ? 'returned' : null,
         }
       : null,
   );
 
   const booked = (result: BookedResult) => {
-    const stored = {
+    const stored: StoredBooking = {
       bookingId: result.booking.id,
       token: result.token,
       checkoutUrl: result.checkoutUrl,
+      checkoutPresentation: result.checkoutPresentation,
     };
     rememberBooking(result.attemptId, stored);
     postToHost({ type: 'booked', status: result.checkoutUrl ? 'held' : 'confirmed' });
-    if (result.checkoutUrl) {
-      // The payment page brings the visitor back to this frame, to the same attempt.
-      window.location.assign(result.checkoutUrl);
+    // A reload shows the result too.
+    const show = (stage: PaymentStage | null) => {
+      window.history.replaceState(
+        null,
+        '',
+        attemptPath(params, result.attemptId, { paymentReturn: false }),
+      );
+      setAttempt({ id: result.attemptId, stored, stage });
+    };
+    if (result.checkoutUrl && result.checkoutPresentation) {
+      // In place of the form the page brings the visitor back to this attempt; in a
+      // new window the visitor waits here while the payment goes through.
+      openCheckout(result.checkoutUrl, result.checkoutPresentation);
+      if (paysOutside(result.checkoutPresentation)) {
+        show('outside');
+      }
       return;
     }
-    // A reload shows the result too.
-    window.history.replaceState(
-      null,
-      '',
-      attemptPath(params, result.attemptId, { paymentReturn: false }),
-    );
-    setAttempt({ id: result.attemptId, stored, paymentReturn: false });
+    show(null);
   };
 
   if (business.isError) {
@@ -97,7 +106,7 @@ function Widget({ slug, params }: { readonly slug: string; readonly params: Embe
         <BookingResult
           slug={slug}
           stored={attempt.stored}
-          paymentReturn={attempt.paymentReturn}
+          stage={attempt.stage}
           onAgain={() => {
             window.history.replaceState(null, '', freshFormPath(params));
             setAttempt(null);

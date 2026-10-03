@@ -32,11 +32,18 @@ export function PaymentPanel({ slug, booking, outcome }: PaymentPanelProps) {
     amountMinor: Math.max(0, booking.total.amountMinor - booking.deposit.amountMinor),
     currency: booking.total.currency,
   };
-  const checking = outcome === 'checking';
+  // Back from the page, or paying in the browser: either way the answer is on its way.
+  const checking = outcome === 'checking' || outcome === 'outside';
   return (
     <Callout
       icon={checking ? <Spinner /> : <Hourglass />}
-      title={checking ? t('payment.checking') : t('payment.awaitingTitle')}
+      title={
+        outcome === 'outside'
+          ? t('payment.outsideTitle')
+          : checking
+            ? t('payment.checking')
+            : t('payment.awaitingTitle')
+      }
       actions={
         booking.actions.cancel ? (
           <Button
@@ -63,11 +70,13 @@ export function PaymentPanel({ slug, booking, outcome }: PaymentPanelProps) {
     >
       {outcome === 'late'
         ? t('payment.late', { time: until })
-        : t('payment.awaiting', {
-            time: until,
-            amount: format.money(booking.deposit),
-            rest: format.money(rest),
-          })}
+        : outcome === 'outside'
+          ? t('payment.outside', { time: until })
+          : t('payment.awaiting', {
+              time: until,
+              amount: format.money(booking.deposit),
+              rest: format.money(rest),
+            })}
     </Callout>
   );
 }

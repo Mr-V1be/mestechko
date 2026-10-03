@@ -3,7 +3,10 @@ import type { Clock } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { ClientDirectory, CustomerIdentities } from '../../../clients/application/ports.js';
-import type { PaymentCheckout } from '../../../payments/application/payment-checkout.js';
+import type {
+  OpenCheckout,
+  PaymentCheckout,
+} from '../../../payments/application/payment-checkout.js';
 import type { PaymentProvider, WebhookDelivery } from '../../../payments/application/ports.js';
 import type { Prepayments } from '../../../payments/application/prepayments.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
@@ -43,7 +46,7 @@ export class PrepaidBookings {
     identity: ClientIdentity,
     bookingId: string,
     returnPath: string,
-  ): Promise<{ checkoutUrl: string; booking: ClientBooking }> {
+  ): Promise<{ checkout: OpenCheckout; booking: ClientBooking }> {
     const context = await this.businesses.resolve(identity.business);
     const customerId = await this.customers.find(identity.channel, identity.externalUserId);
     const found = await this.unitOfWork.inTenant(
@@ -72,14 +75,14 @@ export class PrepaidBookings {
       readonly payment: Awaited<ReturnType<Prepayments['ofBooking']>>;
     },
     returnPath: string,
-  ): Promise<{ checkoutUrl: string; booking: ClientBooking }> {
+  ): Promise<{ checkout: OpenCheckout; booking: ClientBooking }> {
     const { view, payment } = found;
     if (!view.hold || payment?.status !== 'pending') {
       throw new ApplicationError('change_not_allowed', 'The booking does not wait for a payment', {
         reason: 'not_awaiting_payment',
       });
     }
-    const checkoutUrl = await this.checkout.start({
+    const checkout = await this.checkout.start({
       businessId,
       paymentId: payment.id,
       description: this.descriptions.describe({
@@ -98,7 +101,7 @@ export class PrepaidBookings {
       () => this.presenter.present(context, found.clientId, view.id),
       { readOnly: true },
     );
-    return { checkoutUrl, booking };
+    return { checkout, booking };
   }
 
   /** A notification from the payment provider; repeated deliveries change nothing. */

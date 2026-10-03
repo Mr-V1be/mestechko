@@ -1,3 +1,4 @@
+import { checkoutPresentationIds, type CheckoutPresentation } from '@mestechko/domain';
 import { z } from 'zod';
 
 /**
@@ -68,6 +69,8 @@ const environmentSchema = z
       .string()
       .regex(/^(https?:\/\/[^\s]+|\/[^\s]*)$/)
       .default('/test-pay'),
+    TEST_PAY_CHECKOUT: z.enum(checkoutPresentationIds).default('embedded'),
+    PAYMENTS_RETURN_PAGE_URL: z.url().optional(),
     WIDGET_SIGNING_KEY: z.string().min(32).optional(),
     DEMO_MODE: flag.default(false),
     TELEGRAM_DEMO_SIGNING_KEY: z.string().min(32).optional(),
@@ -149,7 +152,11 @@ export interface AppConfig {
       readonly emulatorEnabled: boolean;
       readonly webhookUrl: string;
       readonly checkoutBaseUrl: string;
+      /** Where the test provider's page opens: in place of the app or in the browser. */
+      readonly checkout: CheckoutPresentation;
     };
+    /** The neutral page payers return to from a page opened outside the app. */
+    readonly returnPageUrl: string | null;
   };
   /** Signs the tokens that let a website visitor see the booking they made. */
   readonly widget: { readonly signingKey: string | null };
@@ -218,7 +225,9 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
         emulatorEnabled: env.TEST_PAY_EMULATOR_ENABLED,
         webhookUrl: env.TEST_PAY_WEBHOOK_URL,
         checkoutBaseUrl: env.TEST_PAY_CHECKOUT_BASE_URL.replace(/\/+$/, ''),
+        checkout: env.TEST_PAY_CHECKOUT,
       },
+      returnPageUrl: env.PAYMENTS_RETURN_PAGE_URL ?? null,
     },
     widget: { signingKey: env.WIDGET_SIGNING_KEY ?? null },
     demo: { enabled: env.DEMO_MODE, telegramSigningKey: env.TELEGRAM_DEMO_SIGNING_KEY ?? null },

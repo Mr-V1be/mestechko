@@ -6,6 +6,7 @@ import type { RateLimiter } from '../../../../shared/application/rate-limits.js'
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import { clientContactOf } from '../../../clients/application/client-contact-policy.js';
 import type { ClientDirectory } from '../../../clients/application/ports.js';
+import type { OpenCheckout } from '../../../payments/application/payment-checkout.js';
 import type { Prepayments } from '../../../payments/application/prepayments.js';
 import type {
   BusinessContext,
@@ -116,10 +117,15 @@ export class WebsiteBookings {
     await this.followUps.afterCommit({ businessId, freedTime: null });
     const bookingId = placed.placement.id;
     const token = this.tokens.issue(bookingId);
-    const checkoutUrl = placed.placement.awaitsPayment
-      ? await this.checkoutOf(context, placed.clientId, bookingId, command.returnPath, token)
+    const checkout = placed.placement.awaitsPayment
+      ? await this.checkoutOf(context, placed.clientId, bookingId, command.returnPath)
       : null;
-    return { booking: await this.view(context, bookingId), token, checkoutUrl };
+    return {
+      booking: await this.view(context, bookingId),
+      token,
+      checkoutUrl: checkout?.url ?? null,
+      checkoutPresentation: checkout?.presentation ?? null,
+    };
   }
 
   async get(slug: string, bookingId: string, token: string): Promise<WidgetBooking> {
@@ -134,8 +140,7 @@ export class WebsiteBookings {
     clientId: string,
     bookingId: string,
     returnPath: string,
-    token: string,
-  ): Promise<string> {
+  ): Promise<OpenCheckout> {
     const found = await this.unitOfWork.inTenant(
       context.business.id,
       async () => {
@@ -147,14 +152,14 @@ export class WebsiteBookings {
     if (!found) {
       throw notFound('Booking');
     }
-    const separator = returnPath.includes('?') ? '&' : '?';
+    // The widget remembers the booking and its token itself: neither goes into the address.
     const page = await this.prepaid.openPage(
       context.business.id,
       context.business.name,
       { clientId, ...found },
-      `${returnPath}${separator}booking=${bookingId}&token=${token}`,
+      returnPath,
     );
-    return page.checkoutUrl;
+    return page.checkout;
   }
 
   private async view(context: BusinessContext, bookingId: string): Promise<WidgetBooking> {

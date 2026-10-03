@@ -10,7 +10,7 @@ const providerFactories: Readonly<
   Record<ProviderId, (config: AppConfig, clock: Clock) => PaymentProvider>
 > = {
   test: (config, clock) => {
-    const { apiUrl, secretKey, webhookSecret } = config.payments.test;
+    const { apiUrl, secretKey, webhookSecret, checkout } = config.payments.test;
     if (!secretKey || !webhookSecret) {
       throw new Error('The test payment provider is not configured');
     }
@@ -20,6 +20,7 @@ const providerFactories: Readonly<
       webhookSecret,
       timeoutMs: config.externalHttp.timeoutMs,
       now: () => clock.now().epochMilliseconds,
+      presentation: checkout,
     });
   },
 };

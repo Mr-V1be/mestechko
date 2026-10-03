@@ -1,4 +1,9 @@
-import { bookingActionIds, holdReasonIds, paymentStatusIds } from '@mestechko/domain';
+import {
+  bookingActionIds,
+  checkoutPresentationIds,
+  holdReasonIds,
+  paymentStatusIds,
+} from '@mestechko/domain';
 import { z } from 'zod';
 import {
   bookingStatusSchema,
@@ -204,7 +209,12 @@ export const startMiniAppPayment = defineRoute({
     /** Where the payment page sends the client back: a path of this app. */
     returnPath: returnPathSchema,
   }),
-  response: z.object({ checkoutUrl: z.string(), booking: clientBookingSchema }),
+  response: z.object({
+    checkoutUrl: z.string(),
+    /** Where to open the page: in place of the app, or in the browser outside it. */
+    checkoutPresentation: z.enum(checkoutPresentationIds),
+    booking: clientBookingSchema,
+  }),
 });
 
 export type ClientBooking = z.infer<typeof clientBookingSchema>;
