@@ -52,6 +52,21 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: true,
-    rollupOptions: { input: { embed: 'embed.html', siren: 'demo/siren.html' } },
+    rolldownOptions: {
+      input: { embed: 'embed.html', siren: 'demo/siren.html' },
+      output: {
+        // Libraries change rarely: they get their own chunks and stay cached across releases.
+        codeSplitting: {
+          groups: [
+            { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+            { name: 'ui-kit', test: /node_modules[\\/](@base-ui|@floating-ui|lucide-react)/ },
+            {
+              name: 'data',
+              test: /node_modules[\\/](@tanstack|i18next|react-i18next|libphonenumber-js)/,
+            },
+          ],
+        },
+      },
+    },
   },
 });

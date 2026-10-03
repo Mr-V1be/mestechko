@@ -2,7 +2,7 @@ import { errorMessage, hasCode, useFormat } from '@mestechko/booking-ui';
 import { ApiError, type PublicBusiness, type WidgetBooking } from '@mestechko/contracts/client';
 import type { CheckoutPresentation } from '@mestechko/domain';
 import { Button, Skeleton, StatePanel, useToast } from '@mestechko/ui';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { attemptPath, type EmbedParams } from '../../embed/embed-params';
 import {
@@ -11,7 +11,7 @@ import {
   useServices,
   useStaffOptions,
 } from '../../platform/api/queries';
-import { checkContact, ContactStep, emptyContact, type ContactErrors } from './contact-step';
+import { checkContact, emptyContact, type ContactErrors } from './contact-check';
 import { FlowFooter } from './flow-footer';
 import { FlowHeader } from './flow-header';
 import {
@@ -24,9 +24,12 @@ import {
   type FlowState,
 } from './flow-state';
 import { ServicesStep } from './services-step';
-import { StaffStep } from './staff-step';
-import { TimeStep } from './time-step';
 import styles from './widget.module.css';
+
+// The first step comes with the frame; the next ones load while the visitor chooses.
+const StaffStep = lazy(async () => ({ default: (await import('./staff-step')).StaffStep }));
+const TimeStep = lazy(async () => ({ default: (await import('./time-step')).TimeStep }));
+const ContactStep = lazy(async () => ({ default: (await import('./contact-step')).ContactStep }));
 
 export interface BookedResult {
   readonly attemptId: string;
@@ -148,78 +151,80 @@ export function BookingFlow({ business, params, onBooked }: BookingFlowProps) {
         }
       />
       <main className={styles.body}>
-        {notice ? (
-          <p className={styles.notice} role="alert">
-            {notice}
-          </p>
-        ) : null}
-        {flow.step === 'services' ? (
-          services.data ? (
-            <ServicesStep
-              categories={services.data.categories}
-              incompatible={services.data.incompatible}
-              limit={business.booking.maxServicesPerBooking}
-              chosen={flow.serviceIds}
-              onChange={(serviceIds) => {
-                update({ serviceIds, staff: null, date: null, start: null });
-              }}
-            />
-          ) : services.isError ? (
-            <LoadFailed onRetry={() => void services.refetch()} />
-          ) : (
-            <RowsSkeleton rows={5} />
-          )
-        ) : null}
-        {flow.step === 'staff' ? (
-          staffOptions.data ? (
-            <StaffStep
-              vertical={business.vertical}
+        <Suspense fallback={<RowsSkeleton rows={4} />}>
+          {notice ? (
+            <p className={styles.notice} role="alert">
+              {notice}
+            </p>
+          ) : null}
+          {flow.step === 'services' ? (
+            services.data ? (
+              <ServicesStep
+                categories={services.data.categories}
+                incompatible={services.data.incompatible}
+                limit={business.booking.maxServicesPerBooking}
+                chosen={flow.serviceIds}
+                onChange={(serviceIds) => {
+                  update({ serviceIds, staff: null, date: null, start: null });
+                }}
+              />
+            ) : services.isError ? (
+              <LoadFailed onRetry={() => void services.refetch()} />
+            ) : (
+              <RowsSkeleton rows={5} />
+            )
+          ) : null}
+          {flow.step === 'staff' ? (
+            staffOptions.data ? (
+              <StaffStep
+                vertical={business.vertical}
+                timeZone={timeZone}
+                staff={staffOptions.data.staff}
+                anyNextSlot={staffOptions.data.anyNextSlot}
+                value={flow.staff}
+                onChoose={(choice) => {
+                  update({ staff: choice, date: null, start: null, step: 'time' });
+                }}
+              />
+            ) : staffOptions.isError ? (
+              <LoadFailed onRetry={() => void staffOptions.refetch()} />
+            ) : (
+              <RowsSkeleton rows={4} />
+            )
+          ) : null}
+          {flow.step === 'time' ? (
+            <TimeStep
+              slug={business.slug}
+              locationId={flow.locationId}
+              serviceIds={flow.serviceIds}
+              staffId={staffId}
               timeZone={timeZone}
-              staff={staffOptions.data.staff}
-              anyNextSlot={staffOptions.data.anyNextSlot}
-              value={flow.staff}
-              onChoose={(choice) => {
-                update({ staff: choice, date: null, start: null, step: 'time' });
+              horizonDays={business.booking.horizonDays}
+              weekStart={flow.weekStart}
+              date={flow.date}
+              start={flow.start}
+              onChange={(patch) => {
+                setNotice(null);
+                update({
+                  ...patch,
+                  ...(patch.start ? { attemptId: crypto.randomUUID() } : {}),
+                });
               }}
             />
-          ) : staffOptions.isError ? (
-            <LoadFailed onRetry={() => void staffOptions.refetch()} />
-          ) : (
-            <RowsSkeleton rows={4} />
-          )
-        ) : null}
-        {flow.step === 'time' ? (
-          <TimeStep
-            slug={business.slug}
-            locationId={flow.locationId}
-            serviceIds={flow.serviceIds}
-            staffId={staffId}
-            timeZone={timeZone}
-            horizonDays={business.booking.horizonDays}
-            weekStart={flow.weekStart}
-            date={flow.date}
-            start={flow.start}
-            onChange={(patch) => {
-              setNotice(null);
-              update({
-                ...patch,
-                ...(patch.start ? { attemptId: crypto.randomUUID() } : {}),
-              });
-            }}
-          />
-        ) : null}
-        {flow.step === 'contact' && flow.start ? (
-          <ContactStep
-            start={flow.start}
-            timeZone={timeZone}
-            serviceNames={chosen.map((service) => service.name)}
-            quote={quote.data ?? null}
-            countryCode={business.countryCode}
-            draft={contact}
-            errors={errors}
-            onChange={setContact}
-          />
-        ) : null}
+          ) : null}
+          {flow.step === 'contact' && flow.start ? (
+            <ContactStep
+              start={flow.start}
+              timeZone={timeZone}
+              serviceNames={chosen.map((service) => service.name)}
+              quote={quote.data ?? null}
+              countryCode={business.countryCode}
+              draft={contact}
+              errors={errors}
+              onChange={setContact}
+            />
+          ) : null}
+        </Suspense>
       </main>
       <FlowFooter
         price={price}

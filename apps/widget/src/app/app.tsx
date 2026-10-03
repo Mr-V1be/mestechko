@@ -1,16 +1,20 @@
 import type { i18n } from 'i18next';
 import { EmptyIllustration, StatePanel } from '@mestechko/ui';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rememberBooking, storedBooking, type StoredBooking } from '../embed/booking-tokens';
 import { attemptPath, freshFormPath, type EmbedParams } from '../embed/embed-params';
 import { postToHost, useAutoHeight } from '../embed/host-bridge';
 import { BookingFlow, type BookedResult } from '../features/flow/booking-flow';
-import { BookingResult, type PaymentStage } from '../features/result/booking-result';
+import type { PaymentStage } from '../features/result/booking-result';
 import { openCheckout, paysOutside } from '../embed/checkout-openers';
 import { useBusiness } from '../platform/api/queries';
 import { AppProviders } from './providers';
 import styles from './app.module.css';
+
+const BookingResult = lazy(async () => ({
+  default: (await import('../features/result/booking-result')).BookingResult,
+}));
 
 export function App({ i18n, params }: { readonly i18n: i18n; readonly params: EmbedParams }) {
   return (
@@ -103,15 +107,17 @@ function Widget({ slug, params }: { readonly slug: string; readonly params: Embe
   if (attempt) {
     return (
       <div className={styles.resultBody}>
-        <BookingResult
-          slug={slug}
-          stored={attempt.stored}
-          stage={attempt.stage}
-          onAgain={() => {
-            window.history.replaceState(null, '', freshFormPath(params));
-            setAttempt(null);
-          }}
-        />
+        <Suspense fallback={<div className={styles.loading} aria-busy="true" />}>
+          <BookingResult
+            slug={slug}
+            stored={attempt.stored}
+            stage={attempt.stage}
+            onAgain={() => {
+              window.history.replaceState(null, '', freshFormPath(params));
+              setAttempt(null);
+            }}
+          />
+        </Suspense>
       </div>
     );
   }
