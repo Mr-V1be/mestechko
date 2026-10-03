@@ -111,4 +111,11 @@ export default tseslint.config(
     files: ['**/*.js'],
     ...tseslint.configs.disableTypeChecked,
   },
+  {
+    // k6 scripts run in k6's own runtime, not in Node.
+    files: ['tooling/load/**/*.js'],
+    languageOptions: {
+      globals: { __ENV: 'readonly', __VU: 'readonly', __ITER: 'readonly' },
+    },
+  },
 );
