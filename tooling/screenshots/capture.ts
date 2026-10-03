@@ -46,16 +46,47 @@ const widgetThemes: Readonly<Record<string, ThemeSetup>> = {
   dark: { colorScheme: 'dark', storage: {} },
 };
 
-async function captureWholeCabinet(session: Session, base: string): Promise<void> {
-  await captureCabinet(session, base);
-  await captureCabinetManagement(session, base);
+interface App {
+  readonly name: string;
+  /** Where its screenshots go; parts of one app share a folder. */
+  readonly folder: string;
+  readonly themes: Readonly<Record<string, ThemeSetup>>;
+  readonly base: string;
+  readonly capture: (session: Session, base: string) => Promise<void>;
 }
 
-const apps = [
-  { name: 'miniapp', themes: miniAppThemes, base: values.miniapp, capture: captureMiniApp },
-  { name: 'cabinet', themes: cabinetThemes, base: values.cabinet, capture: captureWholeCabinet },
-  { name: 'widget', themes: widgetThemes, base: values.widget, capture: captureWidget },
-] as const;
+// The cabinet runs in two parts, each in a fresh browser context, so one long session
+// never carries the memory of forty screens.
+const apps: readonly App[] = [
+  {
+    name: 'miniapp',
+    folder: 'miniapp',
+    themes: miniAppThemes,
+    base: values.miniapp,
+    capture: captureMiniApp,
+  },
+  {
+    name: 'cabinet',
+    folder: 'cabinet',
+    themes: cabinetThemes,
+    base: values.cabinet,
+    capture: captureCabinet,
+  },
+  {
+    name: 'cabinet',
+    folder: 'cabinet',
+    themes: cabinetThemes,
+    base: values.cabinet,
+    capture: captureCabinetManagement,
+  },
+  {
+    name: 'widget',
+    folder: 'widget',
+    themes: widgetThemes,
+    base: values.widget,
+    capture: captureWidget,
+  },
+];
 
 const problems: Problem[] = [];
 const browser = await chromium.launch(browserLaunchOptions);
@@ -66,7 +97,7 @@ try {
       (candidate) => !values.viewport || candidate.name === values.viewport,
     )) {
       for (const [themeName, theme] of Object.entries(app.themes)) {
-        const directory = `${values.out}/${app.name}/${viewport.name}-${themeName}`;
+        const directory = `${values.out}/${app.folder}/${viewport.name}-${themeName}`;
         mkdirSync(directory, { recursive: true });
         const session = await openSession({
           browser,
@@ -84,7 +115,10 @@ try {
             shot: directory,
             issue: `scenario failed: ${String(error).split('\n')[0] ?? ''}`,
           });
-          await session.page.screenshot({ path: `${directory}/zz-failure.png` });
+          // A crashed page cannot be captured; the problem above already says what failed.
+          await session.page
+            .screenshot({ path: `${directory}/zz-failure.png` })
+            .catch(() => undefined);
         } finally {
           await session.close();
         }

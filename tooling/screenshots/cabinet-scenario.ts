@@ -102,7 +102,8 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
   await shot('12-schedule-dental');
 
   // The MAX emulator: a client's chat with the bot, buttons pressed as the client.
-  await page.getByRole('link', { name: 'Эмулятор MAX' }).first().click();
+  // Phones keep this section under «Ещё»; it opens by its address on every screen.
+  await page.goto(page.url().replace(/\/schedule.*$/, '/max-emulator'));
   await page.waitForURL(/\/max-emulator/);
   await page.getByText('Клиенты в MAX').waitFor();
   await shot('17-max-chats');
