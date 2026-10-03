@@ -1,0 +1,14 @@
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--size-top-bar);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  overflow-x: hidden;
+}

@@ -1,0 +1,140 @@
+.grid {
+  display: grid;
+  grid-auto-flow: dense;
+  gap: var(--space-4);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+/* A device in a window: the tile shows the part of it that tells the story. */
+.media {
+  display: flex;
+  justify-content: center;
+  height: var(--size-feature-window);
+  overflow: hidden;
+  background: linear-gradient(var(--color-accent-soft), var(--color-surface));
+}
+
+.showsTop {
+  align-items: flex-start;
+  padding: var(--space-6) var(--space-6) 0;
+}
+
+.showsBottom {
+  align-items: flex-end;
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+.showsWhole {
+  align-items: center;
+  height: auto;
+  padding: var(--space-6) var(--space-6) 0;
+}
+
+.phone {
+  flex: none;
+  width: min(72%, var(--size-feature-phone));
+  aspect-ratio: 390 / 844;
+}
+
+.laptop {
+  width: 100%;
+}
+
+.laptop video,
+.laptop img {
+  aspect-ratio: 1280 / 800;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tall {
+    grid-row: span 2;
+  }
+
+  .wide {
+    grid-column: span 2;
+  }
+
+  /* The tall tile's device fills whatever height its two rows have. */
+  .tall .media {
+    flex: 1;
+    height: auto;
+    min-height: var(--size-feature-window);
+    contain: size;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .tall,
+  .small {
+    grid-column: span 2;
+  }
+
+  .wide {
+    grid-column: span 4;
+  }
+
+  .side {
+    flex-direction: row;
+    grid-column: span 4;
+  }
+
+  /* Beside the text the device takes the row's height and never sets it. */
+  .side .media {
+    flex: 1 1 55%;
+    height: auto;
+    contain: size;
+  }
+
+  .side .text {
+    flex: 1 1 45%;
+    justify-content: center;
+  }
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-control-md);
+  height: var(--size-control-md);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-soft-text);
+}
+
+.icon svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.tileTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-heavy);
+  line-height: var(--line-height-snug);
+}
+
+.tileText {
+  color: var(--color-text-secondary);
+}

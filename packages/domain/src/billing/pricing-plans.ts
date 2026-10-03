@@ -23,7 +23,7 @@ export interface PricingPlan {
   readonly maxStaff: number | null;
   readonly maxLocations: number | null;
   readonly features: readonly PlanFeature[];
-  /** The plan most businesses start with; shown first among equals. */
+  /** The plan the service suggests starting with; the page singles it out. */
   readonly recommended: boolean;
 }
 

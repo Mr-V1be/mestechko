@@ -1,7 +1,7 @@
 /**
  * Visual check of milestone screens: every screen at 390, 768 and 1280 px in every theme.
  * Run against built apps (vite preview) with the API and demo data up.
- *   node tooling/screenshots/capture.ts [--only miniapp,cabinet,widget] [--out docs/screenshots/m3]
+ *   node tooling/screenshots/capture.ts [--only landing,miniapp,cabinet,widget] [--out docs/screenshots/m4]
  */
 import { mkdirSync } from 'node:fs';
 import { parseArgs } from 'node:util';
@@ -9,16 +9,18 @@ import { chromium } from 'playwright';
 import { browserLaunchOptions, openSession, viewports, type Problem } from './browser.ts';
 import { captureCabinetManagement } from './cabinet-manage-scenario.ts';
 import { captureCabinet } from './cabinet-scenario.ts';
+import { captureLanding } from './landing-scenario.ts';
 import { captureMiniApp } from './miniapp-scenario.ts';
 import { captureWidget } from './widget-scenario.ts';
 import type { Session } from './browser.ts';
 
 const { values } = parseArgs({
   options: {
-    out: { type: 'string', default: 'docs/screenshots/m1' },
+    out: { type: 'string', default: 'docs/screenshots/m4' },
     miniapp: { type: 'string', default: 'http://127.0.0.1:46231' },
     cabinet: { type: 'string', default: 'http://127.0.0.1:46221' },
     widget: { type: 'string', default: 'http://127.0.0.1:46241' },
+    landing: { type: 'string', default: 'http://127.0.0.1:46251' },
     only: { type: 'string' },
     viewport: { type: 'string' },
   },
@@ -46,6 +48,21 @@ const widgetThemes: Readonly<Record<string, ThemeSetup>> = {
   dark: { colorScheme: 'dark', storage: {} },
 };
 
+/** The site and the demos a guest walks into from it keep one theme. */
+const landingThemes: Readonly<Record<string, ThemeSetup>> = Object.fromEntries(
+  (['light', 'dark'] as const).map((theme) => [
+    theme,
+    {
+      colorScheme: theme,
+      storage: {
+        'mst-landing-theme': theme,
+        'mst-cabinet-theme': theme,
+        'mst-miniapp-theme': theme,
+      },
+    },
+  ]),
+);
+
 interface App {
   readonly name: string;
   /** Where its screenshots go; parts of one app share a folder. */
@@ -58,6 +75,13 @@ interface App {
 // The cabinet runs in two parts, each in a fresh browser context, so one long session
 // never carries the memory of forty screens.
 const apps: readonly App[] = [
+  {
+    name: 'landing',
+    folder: 'landing',
+    themes: landingThemes,
+    base: values.landing,
+    capture: captureLanding,
+  },
   {
     name: 'miniapp',
     folder: 'miniapp',

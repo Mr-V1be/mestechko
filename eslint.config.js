@@ -78,6 +78,7 @@ export default tseslint.config(
       'apps/miniapp/src/**/*.{ts,tsx}',
       'apps/cabinet/src/**/*.{ts,tsx}',
       'apps/widget/src/**/*.{ts,tsx}',
+      'apps/landing/src/**/*.{ts,tsx}',
       'packages/ui/src/**/*.{ts,tsx}',
     ],
     plugins: { 'react-hooks': reactHooks },
@@ -98,7 +99,12 @@ export default tseslint.config(
   },
   {
     // CLI entry points report progress on the console.
-    files: ['apps/api/src/cli/**/*.ts', 'tooling/**/*.ts', 'packages/contracts/scripts/**/*.ts'],
+    files: [
+      'apps/api/src/cli/**/*.ts',
+      'tooling/**/*.ts',
+      'packages/contracts/scripts/**/*.ts',
+      'apps/landing/scripts/**/*.ts',
+    ],
     rules: { 'no-console': 'off' },
   },
   {

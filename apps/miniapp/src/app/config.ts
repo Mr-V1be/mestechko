@@ -19,4 +19,4 @@ export const appConfig: AppConfig = {
   },
 };
 
-export const THEME_STORAGE_KEY = 'mst-miniapp-theme';
+export { THEME_STORAGE_KEY } from './theme-storage';

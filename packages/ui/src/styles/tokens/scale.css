@@ -35,6 +35,7 @@
   --size-dialog-max: 560px;
   --size-text-max: 560px;
   --size-content-max: 1120px;
+  --size-page-max: 1280px;
   --size-column-narrow: 640px;
   --size-aside: 340px;
   --size-sidebar: 248px;
@@ -50,6 +51,11 @@
   --size-device-width: 360px;
   --size-device-height: 740px;
   --size-showcase-board: 440px;
+  /* Product site: the phone beside a laptop, and a phone on its own. */
+  --size-hero-phone: 260px;
+  --size-feature-phone: 300px;
+  /* How much of a device a feature tile shows before it cuts the device off. */
+  --size-feature-window: 460px;
   --size-chart-height: 220px;
   /* Website widget: the frame's height before it reports its own, and the popup's. */
   --size-widget-frame: 600px;
@@ -73,6 +79,8 @@
   --font-size-xl: 22px;
   --font-size-2xl: 28px;
   --font-size-3xl: 36px;
+  --font-size-4xl: 48px;
+  --font-size-display: 72px;
   --line-height-tight: 1.15;
   --line-height-snug: 1.3;
   --line-height-normal: 1.5;

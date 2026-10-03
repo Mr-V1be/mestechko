@@ -5,6 +5,10 @@ export type ResolvedTheme = 'light' | 'dark';
 const DARK_QUERY = '(prefers-color-scheme: dark)';
 
 export function systemTheme(): ResolvedTheme {
+  // Pages rendered ahead of time start light; the boot script sets the real theme.
+  if (typeof window === 'undefined') {
+    return 'light';
+  }
   return window.matchMedia(DARK_QUERY).matches ? 'dark' : 'light';
 }
 

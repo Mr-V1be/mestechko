@@ -23,6 +23,7 @@
     "dev:miniapp": "pnpm --filter @mestechko/miniapp dev",
     "dev:cabinet": "pnpm --filter @mestechko/cabinet dev",
     "dev:widget": "pnpm --filter @mestechko/widget dev",
+    "dev:landing": "pnpm --filter @mestechko/landing dev",
     "build": "pnpm -r --workspace-concurrency=2 build",
     "typecheck": "pnpm -r --workspace-concurrency=2 typecheck",
     "lint": "node --max-old-space-size=6144 node_modules/eslint/bin/eslint.js --max-warnings=0 .",
@@ -35,6 +36,7 @@
     "gate:tokens": "node tooling/gates/design-tokens.ts",
     "gate": "pnpm gate:limits && pnpm gate:tokens && pnpm format:check && pnpm lint && pnpm typecheck && pnpm contracts:check && pnpm test",
     "screenshots": "node --env-file-if-exists=.env tooling/screenshots/run.ts",
+    "media:landing": "node --env-file-if-exists=.env tooling/media/run.ts",
     "contracts:generate": "pnpm --filter @mestechko/contracts generate"
   },
   "devDependencies": {

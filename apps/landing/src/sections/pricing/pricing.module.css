@@ -1,0 +1,100 @@
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: var(--size-hairline) solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-canvas);
+}
+
+.recommended {
+  border: var(--size-focus-ring) solid var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.planHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.planName {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-heavy);
+}
+
+.planText {
+  color: var(--color-text-secondary);
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.amount {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.period {
+  color: var(--color-text-secondary);
+}
+
+.limits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0 0 var(--space-4);
+  border-bottom: var(--size-hairline) solid var(--color-border);
+  list-style: none;
+  font-weight: var(--font-weight-bold);
+}
+
+.features {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.feature svg {
+  flex: none;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  color: var(--color-accent-soft-text);
+}
+
+.everything {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-bold);
+}

@@ -39,7 +39,6 @@ const appPassword = (() => {
 const redisPassword = pick('REDIS_PASSWORD', () => secret(24));
 
 const defaults: Record<string, () => string> = {
-  NODE_ENV: () => 'development',
   APP_ROLES: () => 'api,worker,bot',
   API_HOST: () => '127.0.0.1',
   API_PORT: () => '46210',

@@ -1,0 +1,15 @@
+.media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+:root[data-theme='dark'] .lightOnly {
+  display: none;
+}
+
+:root:not([data-theme='dark']) .darkOnly {
+  display: none;
+}

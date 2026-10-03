@@ -1,0 +1,107 @@
+.hero {
+  overflow: hidden;
+  padding: clamp(var(--space-10), 7vw, var(--space-20)) var(--space-4)
+    clamp(var(--space-12), 8vw, var(--space-20));
+  background:
+    radial-gradient(ellipse at 85% 10%, var(--color-accent-soft), transparent 60%),
+    var(--color-canvas);
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-right: var(--space-8);
+    padding-left: var(--space-8);
+  }
+}
+
+.inner {
+  display: grid;
+  gap: clamp(var(--space-10), 6vw, var(--space-16));
+  align-items: center;
+  max-width: var(--size-page-max);
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1-5) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-soft-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.eyebrow svg {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+.title {
+  font-size: clamp(var(--font-size-3xl), 8vw, var(--font-size-display));
+  font-weight: var(--font-weight-heavy);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.lead {
+  max-width: var(--size-text-max);
+  color: var(--color-text-secondary);
+  font-size: clamp(var(--font-size-lg), 2vw, var(--font-size-xl));
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.note {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+/* The laptop and the phone share one cell: the taller of them sets the height. */
+.visual {
+  display: grid;
+  grid-template: 1fr / 1fr;
+  align-items: center;
+}
+
+.laptop,
+.phone {
+  grid-area: 1 / 1;
+}
+
+.laptop {
+  justify-self: end;
+  width: 90%;
+}
+
+.laptop img {
+  aspect-ratio: 1280 / 800;
+}
+
+.phone {
+  z-index: 1;
+  align-self: end;
+  justify-self: start;
+  width: clamp(34%, 22vw, var(--size-hero-phone));
+  aspect-ratio: 390 / 844;
+}

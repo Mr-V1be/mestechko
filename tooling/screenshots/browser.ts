@@ -32,10 +32,19 @@ const EXPECTED_CONSOLE = [
   /status of 500/,
 ];
 
+export interface ShotOptions {
+  /** `false` captures while requests are deliberately held (loading states). */
+  readonly settle?: boolean;
+  /** The whole scrolled page instead of the screen. */
+  readonly fullPage?: boolean;
+}
+
 export interface Session {
+  /** The page being captured; a scenario that follows a link into a new tab adopts it. */
   readonly page: Page;
-  /** `settle: false` captures while requests are deliberately held (loading states). */
-  readonly shot: (name: string, options?: { readonly settle?: boolean }) => Promise<void>;
+  readonly shot: (name: string, options?: ShotOptions) => Promise<void>;
+  /** Watches and captures `next` from now on, e.g. a tab the app opened. */
+  readonly adopt: (next: Page) => Promise<void>;
   readonly close: () => Promise<void>;
 }
 
@@ -63,26 +72,36 @@ export async function openSession(input: {
       window.localStorage.setItem(key, value);
     }
   }, input.storage);
-  const page = await context.newPage();
   let consoleErrors: string[] = [];
-  page.on('console', (message) => {
-    if (
-      message.type() === 'error' &&
-      !EXPECTED_CONSOLE.some((pattern) => pattern.test(message.text()))
-    ) {
-      consoleErrors.push(message.text());
-    }
-  });
-  page.on('pageerror', (error) => consoleErrors.push(String(error)));
+  const watch = (watched: Page) => {
+    watched.on('console', (message) => {
+      if (
+        message.type() === 'error' &&
+        !EXPECTED_CONSOLE.some((pattern) => pattern.test(message.text()))
+      ) {
+        consoleErrors.push(message.text());
+      }
+    });
+    watched.on('pageerror', (error) => consoleErrors.push(String(error)));
+  };
+  let page = await context.newPage();
+  watch(page);
   return {
-    page,
+    get page() {
+      return page;
+    },
+    adopt: async (next) => {
+      page = next;
+      watch(next);
+      await next.bringToFront();
+    },
     shot: async (name, options = {}) => {
       if (options.settle !== false) {
         await page.waitForLoadState('networkidle');
       }
       await page.waitForTimeout(400);
       const path = `${input.directory}/${name}.png`;
-      await page.screenshot({ path });
+      await page.screenshot({ path, fullPage: options.fullPage === true });
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
       );

@@ -1,0 +1,79 @@
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-12), 8vw, var(--space-20));
+}
+
+.row {
+  display: grid;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .row {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-16);
+  }
+
+  /* Every other row turns around: the eye moves down the page in a zigzag. */
+  .row:nth-child(even) .visual {
+    order: 2;
+  }
+}
+
+.visual {
+  display: flex;
+  justify-content: center;
+}
+
+.laptop,
+.browser {
+  width: 100%;
+}
+
+.laptop img,
+.browser img {
+  aspect-ratio: 1280 / 800;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.rowTitle {
+  font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-3xl));
+  font-weight: var(--font-weight-heavy);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.rowText {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.point {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: var(--font-weight-bold);
+}
+
+.point svg {
+  flex: none;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+  color: var(--color-accent-soft-text);
+}

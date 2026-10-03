@@ -1,0 +1,65 @@
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(var(--size-schedule-column), 1fr));
+    gap: var(--space-5);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-avatar-lg);
+  height: var(--size-avatar-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.icon svg {
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+}
+
+.name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-heavy);
+}
+
+.words {
+  color: var(--color-accent-soft-text);
+  font-weight: var(--font-weight-bold);
+}
+
+.words::first-letter {
+  text-transform: uppercase;
+}
+
+.services {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text-secondary);
+}

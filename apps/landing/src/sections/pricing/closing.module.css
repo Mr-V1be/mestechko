@@ -1,0 +1,53 @@
+.closing {
+  padding: clamp(var(--space-16), 10vw, var(--space-20)) var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  max-width: var(--size-text-max);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.mark {
+  width: var(--size-avatar-lg);
+  height: var(--size-avatar-lg);
+}
+
+.title {
+  font-size: clamp(var(--font-size-3xl), 6vw, var(--font-size-display));
+  font-weight: var(--font-weight-heavy);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.lead {
+  font-size: var(--font-size-lg);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3) var(--space-6);
+}
+
+.bot {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: inherit;
+  font-weight: var(--font-weight-bold);
+}
+
+.bot svg {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}

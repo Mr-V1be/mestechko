@@ -1,10 +1,10 @@
 import react from '@vitejs/plugin-react';
 import { themeBootScript } from '@mestechko/ui/theme-boot';
 import { defaultClientConditions, defineConfig, type Plugin, type ProxyOptions } from 'vite';
+import { THEME_STORAGE_KEY } from './src/app/theme-storage.ts';
 
 /** The API the dev and preview servers proxy to; the screenshot pipeline runs its own. */
 const API_TARGET = process.env.MESTECHKO_API_URL ?? 'http://127.0.0.1:46210';
-const THEME_STORAGE_KEY = 'mst-cabinet-theme';
 
 const apiProxy: Record<string, ProxyOptions> = {
   '/api': { target: API_TARGET, rewrite: (path) => path.replace(/^\/api/, '') },

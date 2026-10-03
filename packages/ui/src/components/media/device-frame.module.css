@@ -3,7 +3,9 @@
   padding: var(--space-3);
   border-radius: var(--radius-device);
   background: var(--color-device);
-  box-shadow: var(--shadow-lg);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 var(--size-hairline) var(--color-device-edge);
 }
 
 .phoneScreen {
@@ -20,13 +22,16 @@
   align-items: center;
 }
 
+/* The base is the widest part: the frame's box ends where the laptop does. */
 .laptopLid {
   display: flex;
-  width: 100%;
+  width: 90%;
   padding: var(--space-2);
   border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-xs);
   background: var(--color-device);
-  box-shadow: var(--shadow-lg);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 var(--size-hairline) var(--color-device-edge);
 }
 
 .screen {
@@ -38,8 +43,7 @@
 }
 
 .laptopBase {
-  width: 112%;
-  max-width: calc(100% + var(--space-16));
+  width: 100%;
   height: var(--space-3);
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   background: linear-gradient(var(--color-border), var(--color-device));

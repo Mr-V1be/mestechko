@@ -14,4 +14,4 @@ export const appConfig = {
   } satisfies DemoLinkTargets,
 } as const;
 
-export const THEME_STORAGE_KEY = 'mst-cabinet-theme';
+export { THEME_STORAGE_KEY } from './theme-storage';
