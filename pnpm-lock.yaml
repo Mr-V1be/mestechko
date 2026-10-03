@@ -297,6 +297,61 @@ importers:
         specifier: 8.3.2
         version: 8.3.2(@types/node@24.19.1)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
 
+  apps/widget:
+    dependencies:
+      '@mestechko/booking-ui':
+        specifier: workspace:*
+        version: link:../../packages/booking-ui
+      '@mestechko/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@mestechko/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@mestechko/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@mestechko/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@tanstack/react-query':
+        specifier: 5.104.1
+        version: 5.104.1(react@19.3.0)
+      clsx:
+        specifier: 2.1.1
+        version: 2.1.1
+      i18next:
+        specifier: 26.4.2
+        version: 26.4.2(typescript@6.0.3)
+      libphonenumber-js:
+        specifier: 1.13.14
+        version: 1.13.14
+      lucide-react:
+        specifier: 1.50.0
+        version: 1.50.0(@types/react@19.3.0)(react@19.3.0)
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      react-dom:
+        specifier: 19.3.0
+        version: 19.3.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: 19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: 6.1.1
+        version: 6.1.1(vite@8.3.2(@types/node@24.19.1)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+      vite:
+        specifier: 8.3.2
+        version: 8.3.2(@types/node@24.19.1)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
+
   packages/booking-ui:
     dependencies:
       '@mestechko/contracts':

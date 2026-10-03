@@ -1,23 +1,11 @@
 import { useEffect } from 'react';
-
-/** Marks messages from the widget among everything else the embedding page receives. */
-export const WIDGET_MESSAGE_SOURCE = 'mestechko-widget';
-
-export type WidgetMessage =
-  | { readonly source: typeof WIDGET_MESSAGE_SOURCE; readonly type: 'height'; readonly height: number }
-  | {
-      readonly source: typeof WIDGET_MESSAGE_SOURCE;
-      readonly type: 'booked';
-      readonly status: 'confirmed' | 'held';
-    };
-
-type Payload = WidgetMessage extends infer M ? (M extends WidgetMessage ? Omit<M, 'source'> : never) : never;
+import { WIDGET_MESSAGE_SOURCE, type WidgetMessage } from './widget-messages';
 
 /**
  * Tells the embedding page about the widget. Messages carry no personal data, so they
  * go to whichever page embeds the widget.
  */
-export function postToHost(message: Payload): void {
+export function postToHost(message: WidgetMessage): void {
   if (window.parent !== window) {
     window.parent.postMessage({ source: WIDGET_MESSAGE_SOURCE, ...message }, '*');
   }

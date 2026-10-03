@@ -22,7 +22,14 @@ export const queryKeys = {
       ...input.serviceIds,
     ] as const,
   quote: (slug: string, input: QuoteInput) =>
-    ['quote', slug, input.locationId, input.staffId ?? 'any', input.start, ...input.serviceIds] as const,
+    [
+      'quote',
+      slug,
+      input.locationId,
+      input.staffId ?? 'any',
+      input.start,
+      ...input.serviceIds,
+    ] as const,
   booking: (slug: string, id: string) => ['booking', slug, id] as const,
 };
 

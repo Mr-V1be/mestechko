@@ -64,6 +64,7 @@
   --radius-device: 48px;
 
   --font-family: 'Nunito Variable', 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-family-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
   --font-size-2xs: 11px;
   --font-size-xs: 12px;
   --font-size-sm: 14px;
@@ -80,6 +81,7 @@
   --font-weight-bold: 700;
   --font-weight-heavy: 800;
   --letter-spacing-tight: -0.02em;
+  --letter-spacing-caps: 0.04em;
 
   --duration-instant: 80ms;
   --duration-fast: 140ms;

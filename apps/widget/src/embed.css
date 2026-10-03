@@ -1,0 +1,12 @@
+/*
+ * The frame is transparent: around the card the embedding site shows through. Its height
+ * follows the content, so the page must not stretch itself to the frame.
+ */
+html,
+body {
+  background: transparent;
+}
+
+body {
+  min-height: 0;
+}

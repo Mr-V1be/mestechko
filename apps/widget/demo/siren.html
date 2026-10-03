@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Сирень — салон красоты на Пятницкой (демо)</title>
+    <link rel="stylesheet" href="./siren.css" />
+  </head>
+  <body>
+    <div class="demo-note" role="note">
+      Демо-сайт вымышленного салона: так виджет «Местечка» выглядит на сайте заведения.
+    </div>
+    <header class="site-header">
+      <a class="logo" href="#top">Сирень<span>салон красоты</span></a>
+      <nav class="nav" aria-label="Разделы сайта">
+        <a href="#services">Услуги</a>
+        <a href="#booking">Запись</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <button class="cta cta-small" type="button" data-mestechko-open>Записаться</button>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-text">
+          <p class="kicker">Москва · Пятницкая, 31</p>
+          <h1>Стрижки, цвет и маникюр — без звонков и ожидания</h1>
+          <p class="lead">
+            Выберите мастера и свободное время прямо на сайте. Напомним о визите и сообщим, если
+            что-то изменится.
+          </p>
+          <div class="hero-actions">
+            <button class="cta" type="button" data-mestechko-open>Записаться онлайн</button>
+            <a class="link" href="#services">Услуги и цены</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="petal petal-1"></div>
+          <div class="petal petal-2"></div>
+          <div class="petal petal-3"></div>
+          <div class="hero-card">
+            <p class="hero-card-title">Ближайшее окно</p>
+            <p class="hero-card-time">Сегодня, вечер</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="services">
+        <h2>Услуги</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Волосы</h3>
+            <p>Женские и мужские стрижки, укладки, окрашивание в один тон.</p>
+          </article>
+          <article class="card">
+            <h3>Ногти</h3>
+            <p>Маникюр с покрытием гель-лак, классический маникюр, педикюр.</p>
+          </article>
+          <article class="card">
+            <h3>Брови</h3>
+            <p>Коррекция и окрашивание бровей.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section booking" id="booking">
+        <div class="booking-text">
+          <h2>Онлайн-запись</h2>
+          <p>
+            Свободное время обновляется сразу: если окно заняли, вы увидите это до того, как
+            запишетесь. На окрашивание берём предоплату 30% — остальное на месте.
+          </p>
+        </div>
+        <div class="booking-widget" data-mestechko-widget></div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contacts">
+      <div>
+        <p class="logo logo-footer">Сирень<span>салон красоты</span></p>
+        <p>Москва, Пятницкая улица, 31 · ежедневно 10:00–21:00</p>
+      </div>
+      <p class="footer-note">Демо-страница. Записи из виджета видны в кабинете «Местечка».</p>
+    </footer>
+
+    <!-- The embed code from the cabinet's settings, as the salon pasted it. -->
+    <script src="/widget.js" data-mestechko data-business="siren" async></script>
+  </body>
+</html>

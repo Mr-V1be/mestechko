@@ -75,6 +75,7 @@ export default tseslint.config(
     files: [
       'apps/miniapp/src/**/*.{ts,tsx}',
       'apps/cabinet/src/**/*.{ts,tsx}',
+      'apps/widget/src/**/*.{ts,tsx}',
       'packages/ui/src/**/*.{ts,tsx}',
     ],
     plugins: { 'react-hooks': reactHooks },

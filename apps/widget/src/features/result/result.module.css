@@ -1,0 +1,79 @@
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.celebration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  text-align: center;
+}
+
+.art {
+  width: var(--size-illustration-sm);
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-heavy);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+  text-wrap: balance;
+}
+
+.lead {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+}
+
+.lead::first-letter {
+  text-transform: uppercase;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--size-hairline) solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-soft);
+}
+
+.panelHeading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-accent-soft-text);
+}
+
+.panelHeading svg {
+  flex: none;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.panelTitle {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+}
+
+.panelText {
+  font-size: var(--font-size-sm);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}

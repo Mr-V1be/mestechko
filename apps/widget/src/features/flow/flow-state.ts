@@ -16,6 +16,8 @@ export interface FlowState {
   readonly weekStart: string | null;
   readonly date: string | null;
   readonly start: string | null;
+  /** One booking attempt per chosen start: repeating the press books once. */
+  readonly attemptId: string;
 }
 
 export function initialFlow(locationId: string): FlowState {
@@ -27,6 +29,7 @@ export function initialFlow(locationId: string): FlowState {
     weekStart: null,
     date: null,
     start: null,
+    attemptId: crypto.randomUUID(),
   };
 }
 

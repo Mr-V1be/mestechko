@@ -22,6 +22,7 @@
     "dev:api": "pnpm --filter @mestechko/api dev",
     "dev:miniapp": "pnpm --filter @mestechko/miniapp dev",
     "dev:cabinet": "pnpm --filter @mestechko/cabinet dev",
+    "dev:widget": "pnpm --filter @mestechko/widget dev",
     "build": "pnpm -r --workspace-concurrency=2 build",
     "typecheck": "pnpm -r --workspace-concurrency=2 typecheck",
     "lint": "eslint --max-warnings=0 .",

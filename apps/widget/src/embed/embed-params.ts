@@ -12,8 +12,8 @@ export interface EmbedParams {
   readonly business: string | null;
   readonly theme: EmbedTheme;
   readonly mode: EmbedMode;
-  /** A booking to show instead of the form, e.g. after paying. */
-  readonly bookingId: string | null;
+  /** The booking attempt to show instead of the form, e.g. after paying. */
+  readonly attemptId: string | null;
   readonly paymentReturn: boolean;
 }
 
@@ -28,24 +28,31 @@ function oneOf<T extends string>(values: readonly T[], value: string | null, fal
 export function readEmbedParams(search: string = window.location.search): EmbedParams {
   const params = new URLSearchParams(search);
   const business = params.get('business');
-  const bookingId = params.get('booking');
+  const attemptId = params.get('attempt');
   return {
     business: business && SLUG.test(business) ? business : null,
     theme: oneOf(embedThemes, params.get('theme'), 'auto'),
     mode: oneOf(embedModes, params.get('mode'), 'inline'),
-    bookingId: bookingId && UUID.test(bookingId) ? bookingId : null,
+    attemptId: attemptId && UUID.test(attemptId) ? attemptId : null,
     paymentReturn: params.get('payment') === 'return',
   };
 }
 
-/** The frame's own address for a booking: where the payment page sends the visitor back. */
-export function bookingReturnPath(params: EmbedParams, bookingId: string): string {
+/**
+ * The frame's own address for a booking attempt. The booking's id is not known before
+ * it exists, so the attempt names it; the tab remembers which booking it became.
+ */
+export function attemptPath(
+  params: EmbedParams,
+  attemptId: string,
+  options: { readonly paymentReturn: boolean },
+): string {
   const query = new URLSearchParams({
     business: params.business ?? '',
     theme: params.theme,
     mode: params.mode,
-    booking: bookingId,
-    payment: 'return',
+    attempt: attemptId,
+    ...(options.paymentReturn ? { payment: 'return' } : {}),
   });
   return `${EMBED_PAGE}?${query.toString()}`;
 }

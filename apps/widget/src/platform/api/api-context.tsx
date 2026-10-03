@@ -6,10 +6,7 @@ const ApiContext = createContext<ApiClient | null>(null);
 
 /** API client of the widget: public catalog and website bookings, no account. */
 export function ApiProvider({ children }: { readonly children: ReactNode }) {
-  const client = useMemo(
-    () => createApiClient({ baseUrl: appConfig.apiBaseUrl }),
-    [],
-  );
+  const client = useMemo(() => createApiClient({ baseUrl: appConfig.apiBaseUrl }), []);
   return <ApiContext value={client}>{children}</ApiContext>;
 }
 

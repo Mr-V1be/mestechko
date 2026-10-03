@@ -1,0 +1,128 @@
+/*
+ * The embed script's own pieces on the host page, inside a shadow root: the host site's
+ * styles never reach them and theirs never leak out.
+ */
+:host {
+  all: initial;
+  display: block;
+  color: var(--color-text);
+  font-family: var(--font-family);
+  line-height: var(--line-height-normal);
+}
+
+:host([data-launcher]) {
+  display: contents;
+}
+
+.frame {
+  display: block;
+  width: 100%;
+  height: var(--size-widget-frame);
+  border: 0;
+  background: transparent;
+  color-scheme: light;
+}
+
+:host([data-theme='dark']) .frame {
+  color-scheme: dark;
+}
+
+.launcher {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: 2147483000;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--size-control-lg);
+  padding: 0 var(--space-6);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-on-accent);
+  font: inherit;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.launcher:hover {
+  transform: translateY(calc(var(--space-0-5) * -1));
+}
+
+.launcher:focus-visible,
+.close:focus-visible {
+  outline: var(--size-focus-ring) solid var(--color-accent);
+  outline-offset: var(--size-focus-ring);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: var(--color-overlay);
+}
+
+.backdrop[hidden] {
+  display: none;
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--size-dialog-max);
+  height: 100%;
+  max-height: var(--size-widget-popup);
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  width: var(--size-control-md);
+  height: var(--size-control-md);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+}
+
+.dialog .frame {
+  flex: 1;
+  height: auto;
+}
+
+@media (max-width: 640px) {
+  .backdrop {
+    padding: 0;
+  }
+
+  .dialog {
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .launcher {
+    right: var(--space-4);
+    bottom: var(--space-4);
+  }
+}
