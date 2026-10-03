@@ -71,3 +71,23 @@ jobs:
         run: pnpm test:integration
       - name: Demo seed runs end to end
         run: pnpm db:seed
+
+  images:
+    name: Production images
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Compose file of the production stack is valid
+        run: |
+          sed -E 's/^([A-Z_]+)=$/\1=ci-placeholder/' .env.production.example > "$RUNNER_TEMP/ci.env"
+          docker compose --env-file "$RUNNER_TEMP/ci.env" -f docker-compose.prod.yml --profile demo config --quiet
+      - name: API image (api, worker, bot, migrations, demo reset)
+        run: docker build -f deploy/docker/api.Dockerfile -t mestechko/api:ci .
+      - name: Web images
+        run: |
+          for app in landing cabinet miniapp widget; do
+            docker build -f deploy/docker/web.Dockerfile --build-arg APP="$app" -t "mestechko/$app:ci" .
+          done
+      - name: Edge image
+        run: docker build -f deploy/docker/edge.Dockerfile -t mestechko/edge:ci .

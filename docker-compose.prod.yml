@@ -1,0 +1,315 @@
+# The production stack of «Местечко» on one server.
+#
+#   docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
+#
+# Secrets and public names come from .env.production (see .env.production.example);
+# each service gets only the variables it needs. Step-by-step: docs/deploy.md.
+name: mestechko-prod
+
+x-logging: &logging # Container logs rotate: five files of 10 MB per service at most.
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '5'
+
+x-api-image: &api-image
+  image: mestechko/api:${IMAGE_TAG:-latest}
+  build:
+    context: .
+    dockerfile: deploy/docker/api.Dockerfile
+
+# What every server-side process knows. The owner's database password is not here:
+# only migrations and the demo reset get it.
+x-app-environment: &app-environment
+  NODE_ENV: production
+  DATABASE_URL: postgres://mestechko_app:${APP_DB_PASSWORD:?}@postgres:5432/mestechko
+  DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
+  REDIS_URL: redis://:${REDIS_PASSWORD:?}@redis:6379/0
+  API_HOST: 0.0.0.0
+  API_PORT: '46210'
+  COOKIE_SECURE: 'true'
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  METRICS_ENABLED: ${METRICS_ENABLED:-true}
+  OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+  TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+  TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME:-}
+  TELEGRAM_UPDATES_MODE: webhook
+  TELEGRAM_WEBHOOK_URL: https://${API_DOMAIN:?}${PUBLIC_PORT_SUFFIX:-}/v1/telegram/webhook
+  TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET:?}
+  MINIAPP_PUBLIC_URL: https://${MINIAPP_DOMAIN:?}${PUBLIC_PORT_SUFFIX:-}
+  MAX_BOT_TOKEN: ${MAX_BOT_TOKEN:-}
+  MAX_API_BASE_URL: ${MAX_API_BASE_URL:-https://platform-api2.max.ru}
+  MAX_EMULATOR_ENABLED: ${MAX_EMULATOR_ENABLED:-false}
+  PAYMENTS_PROVIDER: ${PAYMENTS_PROVIDER:-test}
+  TEST_PAY_API_URL: ${TEST_PAY_API_URL:-http://api:46210/test-pay/api}
+  TEST_PAY_SECRET_KEY: ${TEST_PAY_SECRET_KEY:?}
+  TEST_PAY_WEBHOOK_SECRET: ${TEST_PAY_WEBHOOK_SECRET:?}
+  TEST_PAY_EMULATOR_ENABLED: ${TEST_PAY_EMULATOR_ENABLED:-false}
+  TEST_PAY_WEBHOOK_URL: ${TEST_PAY_WEBHOOK_URL:-http://api:46210/v1/payments/webhooks/test}
+  TEST_PAY_CHECKOUT: ${TEST_PAY_CHECKOUT:-embedded}
+  PAYMENTS_RETURN_PAGE_URL: https://${API_DOMAIN}${PUBLIC_PORT_SUFFIX:-}/v1/payments/return
+  WIDGET_SIGNING_KEY: ${WIDGET_SIGNING_KEY:?}
+  DEMO_MODE: ${DEMO_MODE:-false}
+  TELEGRAM_DEMO_SIGNING_KEY: ${TELEGRAM_DEMO_SIGNING_KEY:-}
+
+x-owner-database: &owner-database
+  DATABASE_ADMIN_URL: postgres://mestechko:${POSTGRES_PASSWORD:?}@postgres:5432/mestechko
+
+# Addresses the browser apps link to; Vite puts them into the bundles at build time.
+x-web-build: &web-build
+  context: .
+  dockerfile: deploy/docker/web.Dockerfile
+  args: &web-args
+    VITE_DEMO_MODE: ${DEMO_MODE:-false}
+    VITE_WIDGET_BASE_URL: https://${WIDGET_DOMAIN:?}${PUBLIC_PORT_SUFFIX:-}
+    VITE_LANDING_URL: https://${SITE_DOMAIN:?}${PUBLIC_PORT_SUFFIX:-}
+    VITE_CABINET_URL: https://${CABINET_DOMAIN:?}${PUBLIC_PORT_SUFFIX:-}
+    VITE_MINIAPP_URL: https://${MINIAPP_DOMAIN}${PUBLIC_PORT_SUFFIX:-}
+    VITE_BOT_URL: https://t.me/${TELEGRAM_BOT_USERNAME:-mestechko_zapis_bot}
+
+x-web-service: &web-service
+  restart: unless-stopped
+  logging: *logging
+  networks: [edge]
+  read_only: true
+  # Caddy's own scratch space, owned by the image's unprivileged user.
+  tmpfs:
+    - /tmp:uid=10001,gid=10001
+    - /config:uid=10001,gid=10001
+    - /data:uid=10001,gid=10001
+
+services:
+  postgres:
+    image: postgres:18.6-alpine
+    environment:
+      POSTGRES_DB: mestechko
+      POSTGRES_USER: mestechko
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+    command: [postgres, -c, max_connections=100, -c, shared_buffers=256MB]
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U mestechko -d mestechko']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    logging: *logging
+    networks: [data]
+
+  redis:
+    image: redis:8.10.2-alpine
+    # BullMQ needs `noeviction`: evicting job keys would silently lose work.
+    command:
+      [
+        redis-server,
+        --appendonly,
+        'yes',
+        --maxmemory,
+        256mb,
+        --maxmemory-policy,
+        noeviction,
+        --requirepass,
+        '${REDIS_PASSWORD:?}',
+      ]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli -a "$$REDIS_PASSWORD" --no-auth-warning ping | grep PONG']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    logging: *logging
+    networks: [data]
+
+  # Runs on every rollout before the new code serves: the application role, then
+  # the schema. Both steps are idempotent.
+  migrate:
+    <<: *api-image
+    command: [sh, -c, 'node dist/cli/provision-database.js && node dist/cli/migrate.js']
+    environment:
+      <<: *owner-database
+      NODE_ENV: production
+      DATABASE_URL: postgres://mestechko_app:${APP_DB_PASSWORD}@postgres:5432/mestechko
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: 'no'
+    logging: *logging
+    networks: [data]
+
+  api:
+    <<: *api-image
+    environment:
+      <<: *app-environment
+      APP_ROLES: api
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+    networks: [edge, data]
+
+  worker:
+    <<: *api-image
+    environment:
+      <<: *app-environment
+      APP_ROLES: worker
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+    networks: [edge, data]
+
+  # Registers the Telegram webhook at start and reads MAX updates.
+  bot:
+    <<: *api-image
+    environment:
+      <<: *app-environment
+      APP_ROLES: bot
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+    networks: [edge, data]
+
+  # Demo installations only (profile `demo`): the demo returns to its seeded state
+  # every night.
+  demo-reset:
+    <<: *api-image
+    profiles: [demo]
+    command: [node, dist/cli/demo-reset-scheduler.js]
+    environment:
+      <<: *owner-database
+      NODE_ENV: production
+      DATABASE_URL: postgres://mestechko_app:${APP_DB_PASSWORD}@postgres:5432/mestechko
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      DEMO_RESET_CRON: ${DEMO_RESET_CRON:-0 4 * * *}
+      DEMO_RESET_TIMEZONE: ${DEMO_RESET_TIMEZONE:-Europe/Moscow}
+    healthcheck:
+      test: [CMD, node, dist/cli/healthcheck.js, --heartbeat]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+    networks: [edge, data]
+
+  landing:
+    <<: *web-service
+    image: mestechko/landing:${IMAGE_TAG:-latest}
+    build:
+      <<: *web-build
+      args:
+        <<: *web-args
+        APP: landing
+
+  cabinet:
+    <<: *web-service
+    image: mestechko/cabinet:${IMAGE_TAG:-latest}
+    build:
+      <<: *web-build
+      args:
+        <<: *web-args
+        APP: cabinet
+
+  miniapp:
+    <<: *web-service
+    image: mestechko/miniapp:${IMAGE_TAG:-latest}
+    build:
+      <<: *web-build
+      args:
+        <<: *web-args
+        APP: miniapp
+
+  widget:
+    <<: *web-service
+    image: mestechko/widget:${IMAGE_TAG:-latest}
+    build:
+      <<: *web-build
+      args:
+        <<: *web-args
+        APP: widget
+
+  edge:
+    image: mestechko/edge:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/edge.Dockerfile
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:?}
+      SITE_DOMAIN: ${SITE_DOMAIN}
+      CABINET_DOMAIN: ${CABINET_DOMAIN}
+      MINIAPP_DOMAIN: ${MINIAPP_DOMAIN}
+      WIDGET_DOMAIN: ${WIDGET_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+    ports:
+      - '${PUBLIC_BIND:-0.0.0.0}:${HTTP_PORT:-80}:80'
+      - '${PUBLIC_BIND:-0.0.0.0}:${HTTPS_PORT:-443}:443'
+      - '${PUBLIC_BIND:-0.0.0.0}:${HTTPS_PORT:-443}:443/udp'
+    volumes:
+      # Certificates and ACME accounts survive rebuilds.
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      api: { condition: service_healthy }
+      landing: { condition: service_healthy }
+      cabinet: { condition: service_healthy }
+      miniapp: { condition: service_healthy }
+      widget: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+    networks: [edge]
+
+  backup:
+    image: postgres:18.6-alpine
+    # The image's postgres user; the backup directory belongs to it (docs/deploy.md).
+    user: '70:70'
+    entrypoint: [/usr/local/bin/backup.sh]
+    environment:
+      PGHOST: postgres
+      PGUSER: mestechko
+      PGDATABASE: mestechko
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      TZ: ${BACKUP_TZ:-Europe/Moscow}
+      BACKUP_TIME: ${BACKUP_TIME:-03:30}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - ./deploy/backup/backup.sh:/usr/local/bin/backup.sh:ro
+      - ${BACKUP_DIR:-./backups}:/backups
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h postgres -U mestechko -d mestechko']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+    networks: [data]
+
+volumes:
+  postgres-data:
+  redis-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  # Public side: the edge proxy, the web apps and the processes that call the outside
+  # world (Telegram, MAX, the production calendar).
+  edge:
+    ipam:
+      config:
+        - subnet: ${EDGE_SUBNET:-10.239.63.0/27}
+  # Data side: no way out to the internet.
+  data:
+    internal: true
+    ipam:
+      config:
+        - subnet: ${DATA_SUBNET:-10.239.63.32/27}

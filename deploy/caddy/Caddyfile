@@ -1,0 +1,75 @@
+# The edge of the production stack. Every public name gets a certificate from
+# Let's Encrypt automatically (names under .localhost get a local one instead).
+# Names and the ACME e-mail come from the environment (see .env.production.example).
+{
+	email {$ACME_EMAIL}
+	# The local CA is only used for .localhost names; never touch a system trust store.
+	skip_install_trust
+}
+
+(site) {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	log {
+		output stdout
+		format json
+	}
+}
+
+# The apps call the API under /api on their own name: cookies and CORS stay simple.
+# The test payment provider's page lives under /test-pay on the same name.
+(api_routes) {
+	handle_path /api/* {
+		reverse_proxy api:46210
+	}
+	handle /test-pay/* {
+		reverse_proxy api:46210
+	}
+}
+
+{$SITE_DOMAIN} {
+	import site
+	reverse_proxy landing:8080
+}
+
+{$CABINET_DOMAIN} {
+	import site
+	import api_routes
+	handle {
+		reverse_proxy cabinet:8080
+	}
+}
+
+{$MINIAPP_DOMAIN} {
+	import site
+	import api_routes
+	handle {
+		reverse_proxy miniapp:8080
+	}
+}
+
+{$WIDGET_DOMAIN} {
+	import site
+	import api_routes
+	handle {
+		reverse_proxy widget:8080
+	}
+}
+
+# Telegram's webhook, payment notifications and the payment return page.
+{$API_DOMAIN} {
+	import site
+	@internal path /metrics /metrics/*
+	respond @internal 404
+	reverse_proxy api:46210
+}
+
+# The container's own health check; this port is never published.
+:8081 {
+	respond /healthz 200
+}

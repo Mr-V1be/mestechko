@@ -1,0 +1,18 @@
+# Only what the images build from: sources, manifests and the lockfile.
+.git
+.github
+.claude
+**/node_modules
+**/dist
+**/dist-ssr
+**/*.tsbuildinfo
+**/coverage
+**/test-results
+.env
+.env.*
+!.env.example
+deploy/backups
+docs
+tmp
+tooling
+**/*.log
