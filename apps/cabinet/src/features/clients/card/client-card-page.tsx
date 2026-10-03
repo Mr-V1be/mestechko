@@ -116,7 +116,12 @@ function ClientCardScreen({
         </div>
         <div className={styles.main}>
           <VisitsPanel card={card.data} onOpen={setOpenBooking} />
-          <NotesPanel businessId={businessId} clientId={clientId} notes={card.data.notes} timeZone={timeZone} />
+          <NotesPanel
+            businessId={businessId}
+            clientId={clientId}
+            notes={card.data.notes}
+            timeZone={timeZone}
+          />
         </div>
         <div className={styles.loyalty}>
           <LoyaltyPanel membership={membership} card={card.data} timeZone={timeZone} />

@@ -75,8 +75,7 @@ export function useClientTags(businessId: string) {
   const api = useApi();
   return useQuery({
     queryKey: clientKeys.tags(businessId),
-    queryFn: ({ signal }) =>
-      api.request('listClientTags', { params: { businessId } }, { signal }),
+    queryFn: ({ signal }) => api.request('listClientTags', { params: { businessId } }, { signal }),
   });
 }
 

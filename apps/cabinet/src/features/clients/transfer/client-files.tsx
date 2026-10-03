@@ -37,7 +37,9 @@ export function asClientFile(file: File): Blob | null {
 /** Why a file was refused: too large for the API, or what the API said about it. */
 export function importFailureMessage(t: TFunction, error: unknown): string {
   const maxBytes =
-    error instanceof ApiError ? (error.details as { maxBytes?: unknown } | undefined)?.maxBytes : null;
+    error instanceof ApiError
+      ? (error.details as { maxBytes?: unknown } | undefined)?.maxBytes
+      : null;
   return typeof maxBytes === 'number'
     ? t('clients:import.tooLarge', { size: Math.floor(maxBytes / BYTES_PER_MEGABYTE) })
     : errorMessage(t, error);

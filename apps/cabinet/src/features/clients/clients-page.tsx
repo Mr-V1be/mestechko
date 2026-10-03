@@ -11,11 +11,7 @@ import { FileUp, UserPlus } from 'lucide-react';
 import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
-import {
-  appliedSearch,
-  useClients,
-  type ClientSort,
-} from '../../platform/api/clients-queries';
+import { appliedSearch, useClients, type ClientSort } from '../../platform/api/clients-queries';
 import { useOverview } from '../../platform/api/queries';
 import { canOpen, useActiveMembership } from '../../platform/session/active-business';
 import { useSession } from '../../platform/session/session-context';

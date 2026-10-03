@@ -44,7 +44,10 @@ export function Menu({ label, actions, icon = <Ellipsis />, soft = true }: MenuP
         <BaseMenu.Positioner sideOffset={4} align="end" style={{ zIndex: 'var(--layer-popover)' }}>
           <BaseMenu.Popup className={styles.menuPopup}>
             {actions.map((action) => {
-              const className = clsx(styles.menuItem, action.tone === 'danger' && styles.menuDanger);
+              const className = clsx(
+                styles.menuItem,
+                action.tone === 'danger' && styles.menuDanger,
+              );
               return action.href === undefined ? (
                 <BaseMenu.Item
                   key={action.key}

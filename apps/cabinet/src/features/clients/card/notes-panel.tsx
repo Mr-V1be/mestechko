@@ -112,7 +112,9 @@ export function NotesPanel({ businessId, clientId, notes, timeZone }: NotesPanel
             </Button>
           </form>
         </li>
-        {notes.length === 0 ? <li className={styles.noteEmpty}>{t('clients:notes.empty')}</li> : null}
+        {notes.length === 0 ? (
+          <li className={styles.noteEmpty}>{t('clients:notes.empty')}</li>
+        ) : null}
         {notes.map((note) => {
           const pending = isPendingNote(note);
           return (
@@ -120,7 +122,10 @@ export function NotesPanel({ businessId, clientId, notes, timeZone }: NotesPanel
               <p className={styles.noteBody}>{note.body}</p>
               <div className={styles.noteMeta}>
                 <span>
-                  {[note.authorName, pending ? t('clients:notes.saving') : dates.dayTime(note.createdAt)]
+                  {[
+                    note.authorName,
+                    pending ? t('clients:notes.saving') : dates.dayTime(note.createdAt),
+                  ]
                     .filter(Boolean)
                     .join(' · ')}
                 </span>

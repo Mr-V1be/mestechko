@@ -71,7 +71,9 @@ export function PointsDialog({
       { amount: signed, note: note.trim(), idempotencyKey },
       {
         onSuccess: () => {
-          toast.show({ title: t(`clients:points.done.${direction}`, { value: ledger.points(points) }) });
+          toast.show({
+            title: t(`clients:points.done.${direction}`, { value: ledger.points(points) }),
+          });
           onOpenChange(false);
         },
       },
@@ -140,9 +142,7 @@ export function PointsDialog({
           }}
           error={submitted ? noteError : null}
         />
-        {adjust.isError ? (
-          <FormFailure>{errorMessage(t, adjust.error)}</FormFailure>
-        ) : null}
+        {adjust.isError ? <FormFailure>{errorMessage(t, adjust.error)}</FormFailure> : null}
       </form>
     </Dialog>
   );

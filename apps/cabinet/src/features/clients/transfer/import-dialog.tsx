@@ -164,9 +164,7 @@ export function ImportDialog({ businessId, open, onOpenChange }: ImportDialogPro
         {step.kind === 'checked' ? (
           <CheckResult fileName={step.fileName} result={step.result} />
         ) : null}
-        {applyFailure ? (
-          <FormFailure>{applyFailure}</FormFailure>
-        ) : null}
+        {applyFailure ? <FormFailure>{applyFailure}</FormFailure> : null}
       </div>
     </Dialog>
   );
@@ -209,9 +207,7 @@ function CheckResult({
         <StatTile label={t('clients:import.updated')} value={result.updated} />
         <StatTile label={t('clients:import.rejected')} value={result.rejected.length} />
       </div>
-      {nothing ? (
-        <FormFailure>{t('clients:import.nothingToImport')}</FormFailure>
-      ) : null}
+      {nothing ? <FormFailure>{t('clients:import.nothingToImport')}</FormFailure> : null}
       {result.rejected.length > 0 ? (
         <section className={styles.rejected}>
           <h3 className={styles.rejectedTitle}>{t('clients:import.rejectedTitle')}</h3>
@@ -221,7 +217,9 @@ function CheckResult({
                 <span className={styles.rowName}>
                   {t('clients:import.rejectedRow', { row: entry.row })}
                 </span>
-                <span className={styles.rowHint}>{t(`clients:import.reasons.${entry.reason}`)}</span>
+                <span className={styles.rowHint}>
+                  {t(`clients:import.reasons.${entry.reason}`)}
+                </span>
               </li>
             ))}
           </ul>

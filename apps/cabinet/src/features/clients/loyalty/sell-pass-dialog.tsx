@@ -160,9 +160,7 @@ export function SellPassDialog({
               <dd>{format.money(plan.price)}</dd>
             </div>
           </dl>
-          {sell.isError ? (
-            <FormFailure>{errorMessage(t, sell.error)}</FormFailure>
-          ) : null}
+          {sell.isError ? <FormFailure>{errorMessage(t, sell.error)}</FormFailure> : null}
         </div>
       ) : null}
     </Dialog>

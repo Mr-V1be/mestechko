@@ -26,6 +26,8 @@ export default tseslint.config(
       '**/node_modules/**',
       'apps/api/src/platform/db/generated/**',
       'tooling/screenshots/.output/**',
+      // Local scratch scripts, never committed.
+      'tmp/**',
     ],
   },
   js.configs.recommended,

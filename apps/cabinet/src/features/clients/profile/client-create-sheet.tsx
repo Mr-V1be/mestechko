@@ -52,7 +52,10 @@ export function ClientCreateSheet({
           { ...fields, tags },
           {
             onSuccess: (card) => {
-              toast.show({ title: t('clients:form.created'), description: card.client.displayName });
+              toast.show({
+                title: t('clients:form.created'),
+                description: card.client.displayName,
+              });
               form.reset(emptyProfile);
               setTags([]);
               onOpenChange(false);
