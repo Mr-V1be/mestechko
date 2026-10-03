@@ -308,3 +308,17 @@
 .menuDanger svg {
   color: var(--color-danger);
 }
+
+/* The task below the dialog's header: what opening focuses first. */
+.dialogContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* A panel takes focus only to announce itself; its controls show the focus ring. */
+.sheet:focus-visible,
+.dialog:focus-visible {
+  outline: none;
+}

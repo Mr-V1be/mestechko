@@ -1,6 +1,6 @@
 import { Dialog } from '@base-ui/react/dialog';
 import { X } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { IconButton } from '../button/icon-button';
 import styles from './overlay.module.css';
 
@@ -14,7 +14,11 @@ export interface SheetProps {
   readonly children: ReactNode;
 }
 
-/** Details and secondary tasks: a bottom sheet on phones, a side panel on larger screens. */
+/**
+ * Details and secondary tasks: a bottom sheet on phones, a side panel on larger screens.
+ * Opening focuses the panel itself, so a screen reader announces its title and the close
+ * button does not light up with its tooltip before anything was done.
+ */
 export function Sheet({
   open,
   onOpenChange,
@@ -24,6 +28,7 @@ export function Sheet({
   footer,
   children,
 }: SheetProps) {
+  const panel = useRef<HTMLDivElement>(null);
   return (
     <Dialog.Root
       open={open}
@@ -33,7 +38,7 @@ export function Sheet({
     >
       <Dialog.Portal>
         <Dialog.Backdrop className={styles.backdrop} />
-        <Dialog.Popup className={styles.sheet}>
+        <Dialog.Popup ref={panel} initialFocus={panel} className={styles.sheet}>
           <span className={styles.handle} aria-hidden="true" />
           <div className={styles.sheetHeader}>
             <div className={styles.sheetTitle}>

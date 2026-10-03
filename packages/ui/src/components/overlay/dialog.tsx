@@ -1,6 +1,6 @@
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import { X } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Button } from '../button/button';
 import { IconButton } from '../button/icon-button';
 import styles from './overlay.module.css';
@@ -15,9 +15,13 @@ export interface DialogProps {
   readonly children?: ReactNode;
 }
 
+const FOCUSABLE =
+  'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
+
 /**
  * A focused task or decision: centred on larger screens, a bottom sheet on phones so
- * its buttons stay within thumb reach.
+ * its buttons stay within thumb reach. Opening focuses the first control of the task,
+ * never the close button; without one, or on touch, the dialog itself.
  */
 export function Dialog({
   open,
@@ -28,6 +32,8 @@ export function Dialog({
   footer,
   children,
 }: DialogProps) {
+  const popup = useRef<HTMLDivElement>(null);
+  const content = useRef<HTMLDivElement>(null);
   return (
     <BaseDialog.Root
       open={open}
@@ -37,7 +43,16 @@ export function Dialog({
     >
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className={styles.backdrop} />
-        <BaseDialog.Popup className={styles.dialog}>
+        <BaseDialog.Popup
+          ref={popup}
+          // A touch opens no keyboard on its own: the dialog itself takes focus then.
+          initialFocus={(openType) =>
+            (openType === 'touch'
+              ? null
+              : content.current?.querySelector<HTMLElement>(FOCUSABLE)) ?? popup.current
+          }
+          className={styles.dialog}
+        >
           <span className={styles.handle} aria-hidden="true" />
           <div className={styles.sheetHeader}>
             <div className={styles.sheetTitle}>
@@ -50,8 +65,10 @@ export function Dialog({
             </div>
             <BaseDialog.Close render={<IconButton label={closeLabel} icon={<X />} soft />} />
           </div>
-          {children ? <div className={styles.sheetBody}>{children}</div> : null}
-          {footer ? <div className={styles.dialogFooter}>{footer}</div> : null}
+          <div ref={content} className={styles.dialogContent}>
+            {children ? <div className={styles.sheetBody}>{children}</div> : null}
+            {footer ? <div className={styles.dialogFooter}>{footer}</div> : null}
+          </div>
         </BaseDialog.Popup>
       </BaseDialog.Portal>
     </BaseDialog.Root>
