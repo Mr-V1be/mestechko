@@ -21,7 +21,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { appConfig } from '../../app/config';
-import { useConfirmAttendance } from '../../platform/api/lifecycle-queries';
+import { useConfirmAttendance, useOfferAnswers } from '../../platform/api/lifecycle-queries';
 import { PAYMENT_RETURN_PARAM } from '../../platform/api/payment-queries';
 import { useClientBooking } from '../../platform/api/queries';
 import { useMainButton } from '../../platform/telegram/sdk-buttons';
@@ -39,6 +39,7 @@ import {
   type ReturnOutcome,
 } from '../payment/payment-state';
 import { useCheckout } from '../payment/use-checkout';
+import { isWaitlistOffer, OfferPanel } from '../waitlist/offer-panel';
 import { BookingActions } from './booking-actions';
 import styles from './bookings.module.css';
 
@@ -123,24 +124,49 @@ export function BookingPage() {
   );
   const confirmAttendance = useConfirmAttendance(business.slug);
   const checkout = useCheckout(business.slug);
+  const { accept } = useOfferAnswers(business.slug);
   const listPath = `/b/${encodeURIComponent(business.slug)}/bookings`;
   const data = booking.data;
   const awaiting = data ? awaitsPayment(data) : false;
+  const offered = data ? isWaitlistOffer(data) : false;
   const outcome = data && returned ? returnOutcome(data, booking.dataUpdatedAt - returnedAt) : null;
   const canConfirm = data?.actions.confirm_attendance === true;
 
   // One primary action: pay while the time is held, finish after booking, otherwise
   // confirm the visit while that is possible.
   useMainButton({
-    text:
-      awaiting && data?.deposit
+    text: offered
+      ? t('offer.accept')
+      : awaiting && data?.deposit
         ? t('payment.pay', { amount: format.money(data.deposit) })
         : created || outcome === 'paid'
           ? t('booking.done')
           : t('booking.confirmAttendance'),
-    visible: (awaiting && outcome !== 'checking') || created || outcome === 'paid' || canConfirm,
-    loading: confirmAttendance.isPending || checkout.pending,
+    visible:
+      offered ||
+      (awaiting && outcome !== 'checking') ||
+      created ||
+      outcome === 'paid' ||
+      canConfirm,
+    loading: confirmAttendance.isPending || checkout.pending || accept.isPending,
     onClick: () => {
+      if (offered) {
+        accept.mutate(bookingId, {
+          onSuccess: (taken) => {
+            haptics.success();
+            if (awaitsPayment(taken)) {
+              checkout.open(taken.id);
+              return;
+            }
+            void navigate(`${listPath}/${taken.id}?created=1`, { replace: true });
+          },
+          onError: (error) => {
+            haptics.error();
+            toast.show({ title: errorMessage(t, error), tone: 'error' });
+          },
+        });
+        return;
+      }
       if (awaiting) {
         checkout.open(bookingId);
         return;
@@ -188,6 +214,7 @@ export function BookingPage() {
             }}
           />
           {awaiting ? <PaymentPanel slug={business.slug} booking={data} outcome={outcome} /> : null}
+          {offered ? <OfferPanel slug={business.slug} booking={data} /> : null}
           <ListGroup>
             <ListItem
               leading={<CalendarClock aria-hidden="true" />}
@@ -223,7 +250,7 @@ export function BookingPage() {
             <ListItem title={t('booking.total')} meta={format.money(data.total)} />
             <PaymentLine booking={data} />
           </ListGroup>
-          {awaiting ? null : <NotificationsPrompt />}
+          {awaiting || offered ? null : <NotificationsPrompt />}
           {data.comment ? (
             <ListGroup title={t('booking.comment')}>
               <ListItem leading={<MessageSquareText aria-hidden="true" />} title={data.comment} />

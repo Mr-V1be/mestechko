@@ -124,3 +124,27 @@ export function useNotificationStatus() {
     refetchOnWindowFocus: true,
   });
 }
+
+/** Answers to a time offered from the waitlist, from the held booking it made. */
+export function useOfferAnswers(slug: string) {
+  const api = useApi();
+  const queryClient = useQueryClient();
+  const accept = useMutation({
+    mutationFn: (bookingId: string) =>
+      api.request('acceptMiniAppOffer', { params: { slug, bookingId } }),
+    onSuccess: (booking) => {
+      storeBooking(queryClient, slug, booking);
+      void queryClient.invalidateQueries({ queryKey: lifecycleKeys.waitlist(slug) });
+    },
+  });
+  const decline = useMutation({
+    mutationFn: (bookingId: string) =>
+      api.request('declineMiniAppOffer', { params: { slug, bookingId } }),
+    onSuccess: (_result, bookingId) => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.booking(slug, bookingId) });
+      void queryClient.invalidateQueries({ queryKey: ['bookings', slug] });
+      void queryClient.invalidateQueries({ queryKey: lifecycleKeys.waitlist(slug) });
+    },
+  });
+  return { accept, decline };
+}

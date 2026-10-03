@@ -13,6 +13,7 @@ export {
 export { Button, type ButtonProps } from './components/button/button';
 export { IconButton, type IconButtonProps } from './components/button/icon-button';
 export { Spinner } from './components/feedback/spinner';
+export { Callout, type CalloutProps } from './components/feedback/callout';
 export { Skeleton, type SkeletonProps } from './components/feedback/skeleton';
 export { Avatar, type AvatarProps } from './components/avatar/avatar';
 export {

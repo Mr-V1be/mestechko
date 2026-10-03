@@ -1,4 +1,4 @@
-.panel {
+.callout {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -16,8 +16,12 @@
   color: var(--color-accent-soft-text);
 }
 
-.heading svg {
+.icon {
+  display: inline-flex;
   flex: none;
+}
+
+.icon svg {
   width: var(--size-icon-md);
   height: var(--size-icon-md);
 }
@@ -27,7 +31,13 @@
   font-weight: var(--font-weight-bold);
 }
 
-.text {
+.body {
   color: var(--color-text);
   font-size: var(--font-size-sm);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }

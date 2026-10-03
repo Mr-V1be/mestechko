@@ -1,12 +1,11 @@
 import { errorMessage, useFormat } from '@mestechko/booking-ui';
 import type { ClientBooking } from '@mestechko/contracts/client';
-import { Button, Spinner, useToast } from '@mestechko/ui';
+import { Button, Callout, Spinner, useToast } from '@mestechko/ui';
 import { Hourglass } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCancelBooking } from '../../platform/api/lifecycle-queries';
 import { haptics } from '../../platform/telegram/telegram-host';
 import type { ReturnOutcome } from './payment-state';
-import styles from './payment.module.css';
 
 export interface PaymentPanelProps {
   readonly slug: string;
@@ -35,43 +34,40 @@ export function PaymentPanel({ slug, booking, outcome }: PaymentPanelProps) {
   };
   const checking = outcome === 'checking';
   return (
-    <section className={styles.panel} aria-live="polite">
-      <div className={styles.heading}>
-        {checking ? <Spinner /> : <Hourglass aria-hidden="true" />}
-        <h2 className={styles.title}>
-          {checking ? t('payment.checking') : t('payment.awaitingTitle')}
-        </h2>
-      </div>
-      <p className={styles.text}>
-        {outcome === 'late'
-          ? t('payment.late', { time: until })
-          : t('payment.awaiting', {
-              time: until,
-              amount: format.money(booking.deposit),
-              rest: format.money(rest),
-            })}
-      </p>
-      {booking.actions.cancel ? (
-        <Button
-          variant="ghost"
-          size="sm"
-          loading={release.isPending}
-          onClick={() => {
-            release.mutate(booking.id, {
-              onSuccess: () => {
-                haptics.success();
-                toast.show({ title: t('payment.released') });
-              },
-              onError: (error) => {
-                haptics.error();
-                toast.show({ title: errorMessage(t, error), tone: 'error' });
-              },
-            });
-          }}
-        >
-          {t('payment.release')}
-        </Button>
-      ) : null}
-    </section>
+    <Callout
+      icon={checking ? <Spinner /> : <Hourglass />}
+      title={checking ? t('payment.checking') : t('payment.awaitingTitle')}
+      actions={
+        booking.actions.cancel ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            loading={release.isPending}
+            onClick={() => {
+              release.mutate(booking.id, {
+                onSuccess: () => {
+                  haptics.success();
+                  toast.show({ title: t('payment.released') });
+                },
+                onError: (error) => {
+                  haptics.error();
+                  toast.show({ title: errorMessage(t, error), tone: 'error' });
+                },
+              });
+            }}
+          >
+            {t('payment.release')}
+          </Button>
+        ) : undefined
+      }
+    >
+      {outcome === 'late'
+        ? t('payment.late', { time: until })
+        : t('payment.awaiting', {
+            time: until,
+            amount: format.money(booking.deposit),
+            rest: format.money(rest),
+          })}
+    </Callout>
   );
 }
