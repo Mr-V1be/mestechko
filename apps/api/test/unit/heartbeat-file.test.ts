@@ -2,7 +2,11 @@ import { mkdtempSync, rmSync, utimesSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { beat, HEARTBEAT_MAX_AGE_MS, heartbeatIsFresh } from '../../src/platform/observability/heartbeat-file.js';
+import {
+  beat,
+  HEARTBEAT_MAX_AGE_MS,
+  heartbeatIsFresh,
+} from '../../src/platform/observability/heartbeat-file.js';
 
 describe('heartbeat file', () => {
   const directory = mkdtempSync(join(tmpdir(), 'mestechko-heartbeat-'));
