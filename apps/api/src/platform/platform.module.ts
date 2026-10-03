@@ -16,6 +16,7 @@ import { UNIT_OF_WORK } from '../shared/application/unit-of-work.js';
 import { APP_CONFIG, type AppConfig } from './config/app-config.js';
 import { createDatabase, DATABASE, type Database } from './db/database.js';
 import { KyselyUnitOfWork } from './db/kysely-unit-of-work.js';
+import { Heartbeat } from './observability/heartbeat.js';
 import { loggingParams } from './observability/logging.js';
 import { OperationsController } from './observability/operations.controller.js';
 import { TELEMETRY, type Telemetry } from './observability/telemetry.js';
@@ -93,6 +94,7 @@ export class PlatformModule {
         },
         { provide: JOB_DEFINITIONS, useValue: jobs },
         JobWorkers,
+        Heartbeat,
         PlatformLifecycle,
       ],
       exports: [

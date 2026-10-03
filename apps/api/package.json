@@ -12,6 +12,7 @@
     "db:migrate": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/migrate.ts",
     "db:codegen": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/codegen.ts",
     "db:seed": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/seed.ts",
+    "demo:schedule": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/demo-reset-scheduler.ts",
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "bot:setup": "node --env-file-if-exists=../../.env --conditions=@mestechko/source --import tsx src/cli/setup-telegram-bot.ts",

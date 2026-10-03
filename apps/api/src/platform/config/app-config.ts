@@ -1,5 +1,6 @@
 import { checkoutPresentationIds, type CheckoutPresentation } from '@mestechko/domain';
 import { z } from 'zod';
+import { DEFAULT_HEARTBEAT_FILE } from '../observability/heartbeat-file.js';
 
 /**
  * Roles of a process: `api` serves HTTP, `worker` runs queued jobs, `bot` consumes
@@ -82,6 +83,7 @@ const environmentSchema = z
     METRICS_ENABLED: flag.default(true),
     OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
     OTEL_SERVICE_NAME: z.string().default('mestechko-api'),
+    HEARTBEAT_FILE: z.string().min(1).default(DEFAULT_HEARTBEAT_FILE),
   })
   .refine((env) => !env.DEMO_MODE || env.TELEGRAM_DEMO_SIGNING_KEY !== undefined, {
     message: 'TELEGRAM_DEMO_SIGNING_KEY is required when DEMO_MODE=true',
@@ -169,6 +171,8 @@ export interface AppConfig {
     readonly metricsEnabled: boolean;
     readonly otlpEndpoint: string | null;
     readonly serviceName: string;
+    /** Renewed by processes without HTTP; see `heartbeat-file.ts`. */
+    readonly heartbeatFile: string;
   };
 }
 
@@ -242,6 +246,7 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
       metricsEnabled: env.METRICS_ENABLED,
       otlpEndpoint: env.OTEL_EXPORTER_OTLP_ENDPOINT ?? null,
       serviceName: env.OTEL_SERVICE_NAME,
+      heartbeatFile: env.HEARTBEAT_FILE,
     },
   };
 }
