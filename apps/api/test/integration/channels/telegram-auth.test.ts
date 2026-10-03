@@ -1,10 +1,10 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Temporal } from '@mestechko/domain';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { TmaTelegramLaunch } from '../../src/modules/identity/infrastructure/tma-telegram-launch.js';
-import { createTestApp, TEST_DEMO_KEY } from './support/test-app.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+import { TmaTelegramLaunch } from '../../../src/modules/identity/infrastructure/tma-telegram-launch.js';
+import { createTestApp, TEST_DEMO_KEY } from '../support/test-app.js';
+import { createTenant, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 const user = {
   id: '9200000000001',

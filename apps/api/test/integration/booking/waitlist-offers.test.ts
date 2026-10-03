@@ -4,19 +4,19 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   bookingHoldHandlerTokens,
   type ReleaseExpiredHolds,
-} from '../../src/modules/booking/application/lifecycle/booking-holds.js';
+} from '../../../src/modules/booking/application/lifecycle/booking-holds.js';
 import {
   waitlistHandlerTokens,
   type MatchWaitlist,
-} from '../../src/modules/waitlist/application/waitlist-matching.js';
-import { WaitlistOffers } from '../../src/modules/waitlist/application/waitlist-offers.js';
-import { DEMO_USER_BASE, launchAs } from './support/booking-client.js';
-import { addMember, cabinetHeaders, enableDemoSignIn } from './support/cabinet-session.js';
-import { InlineJobQueue } from './support/inline-job-queue.js';
-import { MutableClock } from './support/mutable-clock.js';
-import { createTestApp } from './support/test-app.js';
-import { createTenant, fixtureTimeZone, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+} from '../../../src/modules/waitlist/application/waitlist-matching.js';
+import { WaitlistOffers } from '../../../src/modules/waitlist/application/waitlist-offers.js';
+import { DEMO_USER_BASE, launchAs } from '../support/booking-client.js';
+import { addMember, cabinetHeaders, enableDemoSignIn } from '../support/cabinet-session.js';
+import { InlineJobQueue } from '../support/inline-job-queue.js';
+import { MutableClock } from '../support/mutable-clock.js';
+import { createTestApp } from '../support/test-app.js';
+import { createTenant, fixtureTimeZone, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 describe('waitlist offers, one client at a time', () => {
   const clock = new MutableClock();

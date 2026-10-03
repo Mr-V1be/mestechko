@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { DEMO_USER_BASE, book, firstSlotTomorrow, launchAs } from './support/booking-client.js';
-import { createTestApp } from './support/test-app.js';
-import { createTenant } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+import { DEMO_USER_BASE, book, firstSlotTomorrow, launchAs } from '../support/booking-client.js';
+import { createTestApp } from '../support/test-app.js';
+import { createTenant } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 describe('concurrent booking', () => {
   let app: NestFastifyApplication;

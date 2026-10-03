@@ -1,9 +1,9 @@
 import { bookingStatuses, bookingStatusIds, roleIds, type BookingStatus } from '@mestechko/domain';
 import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { UuidV7Generator } from '../../src/platform/system-clock.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+import { UuidV7Generator } from '../../../src/platform/system-clock.js';
+import { createTenant, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 const ids = new UuidV7Generator();
 const HOUR_MS = 3_600_000;

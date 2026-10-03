@@ -1,13 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { DEMO_USER_BASE, book, launchAs } from './support/booking-client.js';
-import { addMember, cabinetHeaders, enableDemoSignIn } from './support/cabinet-session.js';
-import { localStart } from './support/local-time.js';
-import { MutableClock } from './support/mutable-clock.js';
-import { createTestApp } from './support/test-app.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+import { DEMO_USER_BASE, book, launchAs } from '../support/booking-client.js';
+import { addMember, cabinetHeaders, enableDemoSignIn } from '../support/cabinet-session.js';
+import { localStart } from '../support/local-time.js';
+import { MutableClock } from '../support/mutable-clock.js';
+import { createTestApp } from '../support/test-app.js';
+import { createTenant, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 interface Details {
   id: string;

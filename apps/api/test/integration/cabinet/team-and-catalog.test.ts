@@ -1,12 +1,12 @@
 import { Temporal } from '@mestechko/domain';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { DEMO_USER_BASE, book, launchAs, slotsOn } from './support/booking-client.js';
-import { addMember, cabinetHeaders, enableDemoSignIn } from './support/cabinet-session.js';
-import { localStart } from './support/local-time.js';
-import { createTestApp } from './support/test-app.js';
-import { createTenant, fixtureTimeZone, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+import { DEMO_USER_BASE, book, launchAs, slotsOn } from '../support/booking-client.js';
+import { addMember, cabinetHeaders, enableDemoSignIn } from '../support/cabinet-session.js';
+import { localStart } from '../support/local-time.js';
+import { createTestApp } from '../support/test-app.js';
+import { createTenant, fixtureTimeZone, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 const dayIn = (days: number) => Temporal.Now.plainDateISO(fixtureTimeZone).add({ days }).toString();
 

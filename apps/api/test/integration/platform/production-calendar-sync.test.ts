@@ -4,11 +4,11 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   productionCalendarSyncJob,
   SyncProductionCalendar,
-} from '../../src/modules/scheduling/application/production-calendar-jobs.js';
-import { KyselyProductionCalendarStore } from '../../src/modules/scheduling/infrastructure/kysely-production-calendar-store.js';
-import { BullMqJobQueue, QUEUE_PREFIX } from '../../src/platform/queue/bullmq-job-queue.js';
-import { createRedis } from '../../src/platform/redis/redis.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+} from '../../../src/modules/scheduling/application/production-calendar-jobs.js';
+import { KyselyProductionCalendarStore } from '../../../src/modules/scheduling/infrastructure/kysely-production-calendar-store.js';
+import { BullMqJobQueue, QUEUE_PREFIX } from '../../../src/platform/queue/bullmq-job-queue.js';
+import { createRedis } from '../../../src/platform/redis/redis.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 const TEST_REDIS_DB = '14';
 const YEAR = 2031;

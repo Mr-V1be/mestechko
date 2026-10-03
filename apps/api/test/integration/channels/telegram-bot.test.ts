@@ -1,14 +1,14 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { dispatchNotificationsJob } from '../../src/modules/notifications/application/notification-jobs.js';
-import { DEMO_USER_BASE, book, dateInDays, launchAs, slotsOn } from './support/booking-client.js';
-import { InlineJobQueue } from './support/inline-job-queue.js';
-import { MockTelegram } from './support/mock-telegram.js';
-import { MutableClock } from './support/mutable-clock.js';
-import { TelegramChat, WEBHOOK_SECRET } from './support/telegram-chat.js';
-import { createTestApp } from './support/test-app.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+import { dispatchNotificationsJob } from '../../../src/modules/notifications/application/notification-jobs.js';
+import { DEMO_USER_BASE, book, dateInDays, launchAs, slotsOn } from '../support/booking-client.js';
+import { InlineJobQueue } from '../support/inline-job-queue.js';
+import { MockTelegram } from '../support/mock-telegram.js';
+import { MutableClock } from '../support/mutable-clock.js';
+import { TelegramChat, WEBHOOK_SECRET } from '../support/telegram-chat.js';
+import { createTestApp } from '../support/test-app.js';
+import { createTenant, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 const HOUR = 3_600_000;
 const MINUTE = 60_000;

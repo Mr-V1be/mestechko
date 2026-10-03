@@ -1,18 +1,18 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import type { RoleId } from '@mestechko/domain';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { ScryptPasswordHasher } from '../../src/modules/identity/infrastructure/crypto-adapters.js';
-import { UuidV7Generator } from '../../src/platform/system-clock.js';
+import { ScryptPasswordHasher } from '../../../src/modules/identity/infrastructure/crypto-adapters.js';
+import { UuidV7Generator } from '../../../src/platform/system-clock.js';
 import {
   DEMO_USER_BASE,
   book,
   dateInDays,
   firstSlotTomorrow,
   launchAs,
-} from './support/booking-client.js';
-import { createTestApp } from './support/test-app.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+} from '../support/booking-client.js';
+import { createTestApp } from '../support/test-app.js';
+import { createTenant, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 const ids = new UuidV7Generator();
 

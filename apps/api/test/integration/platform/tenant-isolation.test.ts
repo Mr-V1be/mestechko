@@ -1,12 +1,12 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { TenantContextMissingError } from '../../src/platform/db/kysely-unit-of-work.js';
-import { ScryptPasswordHasher } from '../../src/modules/identity/infrastructure/crypto-adapters.js';
-import { UuidV7Generator } from '../../src/platform/system-clock.js';
-import { createTestApp } from './support/test-app.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+import { TenantContextMissingError } from '../../../src/platform/db/kysely-unit-of-work.js';
+import { ScryptPasswordHasher } from '../../../src/modules/identity/infrastructure/crypto-adapters.js';
+import { UuidV7Generator } from '../../../src/platform/system-clock.js';
+import { createTestApp } from '../support/test-app.js';
+import { createTenant, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 const ids = new UuidV7Generator();
 const PASSWORD = 'correct horse battery staple';

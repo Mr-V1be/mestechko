@@ -3,17 +3,17 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   type ReleaseExpiredHolds,
   bookingHoldHandlerTokens,
-} from '../../src/modules/booking/application/lifecycle/booking-holds.js';
-import { signTestPayBody } from '../../src/modules/payments/infrastructure/test-pay-protocol.js';
-import { DEMO_USER_BASE, book, launchAs } from './support/booking-client.js';
-import { enableDemoSignIn } from './support/cabinet-session.js';
-import { freePort } from './support/free-port.js';
-import { InlineJobQueue } from './support/inline-job-queue.js';
-import { localStart } from './support/local-time.js';
-import { MutableClock } from './support/mutable-clock.js';
-import { createTestApp, TEST_PAY_WEBHOOK_SECRET } from './support/test-app.js';
-import { createTenant, type TenantFixture } from './support/tenant-fixture.js';
-import { openTestDatabases, type TestDatabases } from './support/test-database.js';
+} from '../../../src/modules/booking/application/lifecycle/booking-holds.js';
+import { signTestPayBody } from '../../../src/modules/payments/infrastructure/test-pay-protocol.js';
+import { DEMO_USER_BASE, book, launchAs } from '../support/booking-client.js';
+import { enableDemoSignIn } from '../support/cabinet-session.js';
+import { freePort } from '../support/free-port.js';
+import { InlineJobQueue } from '../support/inline-job-queue.js';
+import { localStart } from '../support/local-time.js';
+import { MutableClock } from '../support/mutable-clock.js';
+import { createTestApp, TEST_PAY_WEBHOOK_SECRET } from '../support/test-app.js';
+import { createTenant, type TenantFixture } from '../support/tenant-fixture.js';
+import { openTestDatabases, type TestDatabases } from '../support/test-database.js';
 
 interface Booking {
   id: string;

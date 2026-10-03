@@ -1,9 +1,9 @@
 import { sql } from 'kysely';
 import { Migrator } from 'kysely/migration';
 import { inject, describe, expect, it } from 'vitest';
-import { createDatabase } from '../../src/platform/db/database.js';
-import { migrateToLatest, MIGRATIONS_SCHEMA } from '../../src/platform/db/migrator.js';
-import { migrations } from '../../src/platform/db/migrations/index.js';
+import { createDatabase } from '../../../src/platform/db/database.js';
+import { migrateToLatest, MIGRATIONS_SCHEMA } from '../../../src/platform/db/migrator.js';
+import { migrations } from '../../../src/platform/db/migrations/index.js';
 
 const SCRATCH_DATABASE = 'mestechko_test_migrations';
 
