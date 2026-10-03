@@ -25,7 +25,7 @@
     "dev:widget": "pnpm --filter @mestechko/widget dev",
     "build": "pnpm -r --workspace-concurrency=2 build",
     "typecheck": "pnpm -r --workspace-concurrency=2 typecheck",
-    "lint": "eslint --max-warnings=0 .",
+    "lint": "node --max-old-space-size=6144 node_modules/eslint/bin/eslint.js --max-warnings=0 .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "pnpm -r --workspace-concurrency=1 test",
