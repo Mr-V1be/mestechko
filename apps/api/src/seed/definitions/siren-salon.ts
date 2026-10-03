@@ -39,7 +39,7 @@ export const sirenSalon: DemoBusiness = {
   services: [
     { template: 'women_haircut', priceMajor: 2800 },
     { template: 'men_haircut', priceMajor: 1700 },
-    { template: 'hair_coloring', priceMajor: 5900 },
+    { template: 'hair_coloring', priceMajor: 5900, depositPercent: 30 },
     { template: 'blowout', priceMajor: 1900 },
     { template: 'gel_manicure', priceMajor: 2400 },
     { template: 'classic_manicure', priceMajor: 1500 },
@@ -47,6 +47,34 @@ export const sirenSalon: DemoBusiness = {
     { template: 'brow_shaping', priceMajor: 1000 },
     { template: 'brow_tint', priceMajor: 800 },
   ],
+  loyalty: { accrualPercent: 5, maxRedeemPercent: 30 },
+  passPlans: [
+    {
+      name: 'Маникюр: 4 визита',
+      visits: 4,
+      validityDays: 120,
+      priceMajor: 8600,
+      services: ['gel_manicure', 'classic_manicure'],
+    },
+    {
+      name: 'Брови: 5 коррекций',
+      visits: 5,
+      validityDays: 180,
+      priceMajor: 4500,
+      services: ['brow_shaping'],
+    },
+  ],
+  crm: {
+    regularTag: 'Постоянная гостья',
+    tags: ['VIP', 'Любит утро', 'Сложное окрашивание'],
+    notes: [
+      'Аллергия на аммиак — только безаммиачные красители',
+      'Предпочитает утренние часы, до 12:00',
+      'Чувствительная кожа головы',
+      'Просит напоминать накануне звонком',
+      'Приходит с дочкой — нужен детский стульчик',
+    ],
+  },
   staff: [
     {
       key: 'anna',
@@ -69,6 +97,7 @@ export const sirenSalon: DemoBusiness = {
       locationKey: PYATNITSKAYA,
       pattern: twoByTwo(day('10:00', '21:00', ['15:00', '15:30']), 0),
       services: ['hair_coloring', 'women_haircut', 'blowout'],
+      absences: [{ kind: 'vacation', from: 12, to: 18 }],
     },
     {
       key: 'olga',

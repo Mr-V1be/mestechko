@@ -32,6 +32,26 @@ export const chubBarbershop: DemoBusiness = {
     { template: 'royal_shave', priceMajor: 1700 },
     { template: 'haircut_and_beard', priceMajor: 2700 },
   ],
+  loyalty: { accrualPercent: 3, maxRedeemPercent: 20 },
+  passPlans: [
+    {
+      name: '5 стрижек',
+      visits: 5,
+      validityDays: 120,
+      priceMajor: 8500,
+      services: ['mens_haircut', 'clipper_cut'],
+    },
+  ],
+  crm: {
+    regularTag: 'Постоянный клиент',
+    tags: ['VIP', 'Борода', 'С сыном'],
+    notes: [
+      'Стрижёт только машинкой, насадка 6 мм по бокам',
+      'Любит крепкий кофе',
+      'Приводит сына раз в месяц',
+      'Не любит разговоры во время стрижки',
+    ],
+  },
   staff: [
     {
       key: 'artem',

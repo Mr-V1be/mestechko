@@ -33,6 +33,16 @@ export const porshenAuto: DemoBusiness = {
     { template: 'wheel_alignment', priceMajor: 2800 },
     { template: 'computer_diagnostics', priceMajor: 1300 },
   ],
+  crm: {
+    regularTag: 'Постоянный клиент',
+    tags: ['Корпоративный', 'Kia Rio', 'Hyundai Solaris'],
+    notes: [
+      'Масло только своё, привозит с собой',
+      'Летние шины хранятся у нас, стеллаж 4',
+      'Просит позвонить перед дополнительными работами',
+      'Машина на гарантии дилера — без разборки двигателя',
+    ],
+  },
   staff: [
     {
       key: 'sergey',

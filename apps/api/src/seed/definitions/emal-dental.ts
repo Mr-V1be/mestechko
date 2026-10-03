@@ -29,9 +29,20 @@ export const emalDental: DemoBusiness = {
     { template: 'dental_xray', priceMajor: 600 },
     { template: 'caries_treatment', priceMajor: 7200 },
     { template: 'professional_hygiene', priceMajor: 6000 },
-    { template: 'whitening', priceMajor: 16_500 },
+    { template: 'whitening', priceMajor: 16_500, depositPercent: 20 },
     { template: 'tooth_extraction', priceMajor: 4500 },
   ],
+  incompatible: [['whitening', 'tooth_extraction']],
+  crm: {
+    regularTag: 'Постоянный пациент',
+    tags: ['Боится уколов', 'Брекеты', 'Семейный договор'],
+    notes: [
+      'Аллергия на лидокаин — анестезия артикаином',
+      'Повышенное давление, измерять перед приёмом',
+      'Предпочитает вечерние приёмы',
+      'Гигиена раз в полгода, напомнить в марте',
+    ],
+  },
   staff: [
     {
       key: 'elena',

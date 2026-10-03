@@ -4,8 +4,10 @@ import {
   resolveBookingRules,
   type BookingRules,
   type DayTemplate,
+  type IncompatiblePair,
   type PlainDate,
   type SchedulePattern,
+  type StaffAbsence,
   type StaffCandidate,
   type VerticalDefinition,
 } from '@mestechko/domain';
@@ -43,6 +45,7 @@ export interface BuiltStaff {
     readonly intervals: readonly IntervalRow[];
   };
   readonly daysOff: readonly { readonly id: string; readonly date: string }[];
+  readonly absences: readonly (StaffAbsence & { readonly id: string })[];
   readonly candidate: StaffCandidate;
 }
 
@@ -57,6 +60,7 @@ export interface BuiltService {
   readonly bufferAfterMinutes: number;
   readonly priceMinor: number;
   readonly resourceTypeId: string | null;
+  readonly depositPercent: number | null;
   readonly sortOrder: number;
 }
 
@@ -82,6 +86,8 @@ export interface BuiltCatalog {
   }[];
   readonly categories: readonly { id: string; key: string; name: string; sortOrder: number }[];
   readonly services: readonly BuiltService[];
+  /** Services never booked together, as ordered pairs of ids. */
+  readonly incompatible: readonly IncompatiblePair[];
   readonly staff: readonly BuiltStaff[];
 }
 
@@ -206,6 +212,7 @@ export function buildCatalog(input: {
           ? template.suggestedPrice.amountMinor
           : offer.priceMajor * MINOR_PER_MAJOR,
       resourceTypeId: template.resourceTypeId,
+      depositPercent: offer.depositPercent ?? null,
       sortOrder,
     };
   });
@@ -233,6 +240,12 @@ export function buildCatalog(input: {
       id: ids.next(),
       date: seedDate.add({ days: offset }),
     }));
+    const absences = (member.absences ?? []).map((absence) => ({
+      id: ids.next(),
+      kind: absence.kind,
+      from: seedDate.add({ days: absence.from }),
+      to: seedDate.add({ days: absence.to }),
+    }));
     const memberLocation = locationId(member.locationKey);
     return {
       id,
@@ -252,6 +265,7 @@ export function buildCatalog(input: {
         intervals: intervalRows(pattern.days),
       },
       daysOff: daysOff.map((dayOff) => ({ id: dayOff.id, date: dayOff.date.toString() })),
+      absences,
       candidate: {
         id,
         rank: sortOrder,
@@ -269,7 +283,7 @@ export function buildCatalog(input: {
             locationId: null,
             template: null,
           })),
-          absences: [],
+          absences,
         },
         serviceTerms: new Map(
           terms.map((term) => [term.serviceId, { durationMinutes: term.durationMinutes }]),
@@ -293,6 +307,10 @@ export function buildCatalog(input: {
     })),
     categories,
     services,
+    incompatible: (definition.incompatible ?? []).map(([a, b]) => {
+      const [first, second] = [serviceId(a), serviceId(b)].sort();
+      return { serviceId: first ?? '', otherServiceId: second ?? '' };
+    }),
     staff,
   };
 }

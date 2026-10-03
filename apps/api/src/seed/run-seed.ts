@@ -42,7 +42,8 @@ export interface SeedDependencies {
 
 /**
  * Removes demo tenants, their accounts and customers known only to them. Booking history
- * protects staff and services from deletion, so bookings go first.
+ * protects staff and services from deletion, so bookings go first, taking their payments
+ * and ledger entries with them.
  */
 async function removeDemoData(db: Kysely<Database>): Promise<void> {
   const emails = demoAccountEmails(demoBusinesses);
@@ -53,10 +54,11 @@ async function removeDemoData(db: Kysely<Database>): Promise<void> {
       and not exists (select 1 from clients cl join businesses b on b.id = cl.business_id
                       where cl.customer_id = c.id and not b.is_demo)
   `.execute(db);
-  const demoIds = db.selectFrom('businesses').select('id').where('isDemo', '=', true);
-  // The MAX emulator only ever holds demo chats.
+  // The emulators only ever hold demo chats and payments.
   await db.deleteFrom('maxEmulatorUpdates').execute();
   await db.deleteFrom('maxEmulatorUsers').execute();
+  await db.deleteFrom('testPayPayments').execute();
+  const demoIds = db.selectFrom('businesses').select('id').where('isDemo', '=', true);
   await db.deleteFrom('bookings').where('businessId', 'in', demoIds).execute();
   await db.deleteFrom('businesses').where('isDemo', '=', true).execute();
   await db

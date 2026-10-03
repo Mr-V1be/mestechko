@@ -228,8 +228,9 @@ CREATE TABLE payments (
   CHECK ((status = 'refunded') = (refunded_minor = amount_minor)),
   UNIQUE (business_id, id),
   UNIQUE (provider, provider_payment_id),
-  FOREIGN KEY (business_id, booking_id) REFERENCES bookings (business_id, id),
-  FOREIGN KEY (business_id, client_id) REFERENCES clients (business_id, id)
+  -- Bookings and clients are never deleted by the product; they go only with their business.
+  FOREIGN KEY (business_id, booking_id) REFERENCES bookings (business_id, id) ON DELETE CASCADE,
+  FOREIGN KEY (business_id, client_id) REFERENCES clients (business_id, id) ON DELETE CASCADE
 );
 -- A booking has at most one payment that is open or holds money.
 CREATE UNIQUE INDEX payments_booking_active_key ON payments (booking_id)
@@ -298,15 +299,16 @@ CREATE TABLE ledger_entries (
   CONSTRAINT ledger_entries_idempotency_key UNIQUE (business_id, idempotency_key),
   FOREIGN KEY (business_id, client_id) REFERENCES clients (business_id, id) ON DELETE CASCADE,
   FOREIGN KEY (business_id, pass_id) REFERENCES client_passes (business_id, id) ON DELETE CASCADE,
-  FOREIGN KEY (business_id, booking_id) REFERENCES bookings (business_id, id),
-  FOREIGN KEY (business_id, payment_id) REFERENCES payments (business_id, id)
+  FOREIGN KEY (business_id, booking_id) REFERENCES bookings (business_id, id) ON DELETE CASCADE,
+  FOREIGN KEY (business_id, payment_id) REFERENCES payments (business_id, id) ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX ledger_entries_pass_sale_key ON ledger_entries (pass_id, reason)
   WHERE reason IN ('pass_sale', 'pass_payment');
 CREATE INDEX ledger_entries_client_idx ON ledger_entries (business_id, client_id, account, created_at);
 CREATE INDEX ledger_entries_money_idx ON ledger_entries (business_id, created_at) WHERE account = 'money';
 
--- Corrections are new entries; entries go away only with their client or business.
+-- Corrections are new entries; entries go away only with what they belong to (a client,
+-- a booking, a payment), which the product never deletes outside removing a business.
 CREATE FUNCTION ledger_entries_append_only() RETURNS trigger
   LANGUAGE plpgsql
   AS $$

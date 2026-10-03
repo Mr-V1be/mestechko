@@ -1,4 +1,4 @@
-import type { BookingRulesOverrides, CurrencyCode } from '@mestechko/domain';
+import type { AbsenceKind, BookingRulesOverrides, CurrencyCode } from '@mestechko/domain';
 
 /** Working hours of one day in a demo schedule: `['10:00', '20:00']` plus optional breaks. */
 export interface DemoDay {
@@ -30,6 +30,21 @@ export interface DemoStaff {
   readonly services: readonly (string | DemoStaffService)[];
   /** Days off relative to the seed date, e.g. a vacation day next week. */
   readonly daysOff?: readonly number[];
+  /** Absences relative to the seed date, both ends included. */
+  readonly absences?: readonly {
+    readonly kind: AbsenceKind;
+    readonly from: number;
+    readonly to: number;
+  }[];
+}
+
+/** A pass the business sells: visits of some services within so many days. */
+export interface DemoPassPlan {
+  readonly name: string;
+  readonly visits: number;
+  readonly validityDays: number;
+  readonly priceMajor: number;
+  readonly services: readonly string[];
 }
 
 export interface DemoBusiness {
@@ -54,7 +69,23 @@ export interface DemoBusiness {
     readonly name: string;
   }[];
   /** Service templates of the vertical the business offers, with its own prices. */
-  readonly services: readonly { readonly template: string; readonly priceMajor?: number }[];
+  readonly services: readonly {
+    readonly template: string;
+    readonly priceMajor?: number;
+    /** The service's own prepayment share. */
+    readonly depositPercent?: number;
+  }[];
+  /** Pairs of service templates never booked together. */
+  readonly incompatible?: readonly (readonly [string, string])[];
+  /** Points earned per 100 paid and the largest share payable with points. */
+  readonly loyalty?: { readonly accrualPercent: number; readonly maxRedeemPercent: number };
+  readonly passPlans?: readonly DemoPassPlan[];
+  /** How the business keeps its client cards: the tag of regulars, other tags, notes. */
+  readonly crm: {
+    readonly regularTag: string;
+    readonly tags: readonly string[];
+    readonly notes: readonly string[];
+  };
   readonly staff: readonly DemoStaff[];
   /** Share of female clients in the generated client base. */
   readonly femaleClientShare: number;

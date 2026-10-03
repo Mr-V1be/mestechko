@@ -11,6 +11,7 @@ import {
   withMaxSources,
   type WrittenBooking,
 } from './messenger-clients.js';
+import { writeOperations } from './operations-writer.js';
 import type { DemoPerson } from './people.js';
 
 const BATCH_SIZE = 400;
@@ -373,6 +374,13 @@ export async function writeDemoBusiness(
       input.ids,
       input.now,
     );
+    await writeOperations(tx, {
+      catalog: input.catalog,
+      written,
+      clientIds,
+      ids: input.ids,
+      now: input.now,
+    });
     const notifications = await planMaxNotifications(tx, {
       businessId: input.catalog.businessId,
       written,

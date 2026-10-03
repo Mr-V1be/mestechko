@@ -3,6 +3,7 @@ import {
   BusyIndex,
   datesBetween,
   findAvailability,
+  incompatibleWith,
   localDateOf,
   localDayBounds,
   planBookingOptions,
@@ -87,7 +88,10 @@ function pickServices(context: DayContext, staff: BuiltStaff): BuiltService[] {
     staff.terms.some((term) => term.serviceId === service.id),
   );
   const first = context.random.pick(offered);
-  const companions = offered.filter((service) => service.categoryId !== first.categoryId);
+  const blocked = incompatibleWith([first.id], context.catalog.incompatible);
+  const companions = offered.filter(
+    (service) => service.categoryId !== first.categoryId && !blocked.has(service.id),
+  );
   const chosen =
     context.random.chance(COMBO_PROBABILITY) && companions.length > 0
       ? [first, context.random.pick(companions)]
