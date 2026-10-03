@@ -177,6 +177,26 @@
   opacity: 0.8;
 }
 
+.toastAction {
+  flex: none;
+  align-self: center;
+  min-height: var(--size-control-sm);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-accent);
+  font-weight: var(--font-weight-bold);
+}
+
+.toastAction:hover {
+  background: var(--color-edge-shade);
+}
+
+.toastAction:focus-visible {
+  outline: var(--size-focus-ring) solid var(--color-accent);
+}
+
 /* Dialogs: a bottom sheet on phones, centred above the page on larger screens. */
 .dialog {
   position: fixed;

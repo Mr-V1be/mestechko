@@ -21,6 +21,7 @@ function ToastList() {
         <Toast.Title className={styles.toastTitle} />
         <Toast.Description className={styles.toastDescription} />
       </div>
+      {toast.actionProps ? <Toast.Action className={styles.toastAction} /> : null}
     </Toast.Root>
   ));
 }
@@ -46,11 +47,25 @@ export function useToast() {
       readonly title: string;
       readonly description?: string;
       readonly tone?: ToastTone;
+      /** One quick follow-up, e.g. undoing what was just done. */
+      readonly action?: { readonly label: string; readonly onClick: () => void };
     }) {
-      manager.add({
+      const { action } = input;
+      const id = manager.add({
         title: input.title,
         description: input.description,
         type: input.tone ?? 'success',
+        ...(action
+          ? {
+              actionProps: {
+                children: action.label,
+                onClick: () => {
+                  manager.close(id);
+                  action.onClick();
+                },
+              },
+            }
+          : {}),
       });
     },
   };

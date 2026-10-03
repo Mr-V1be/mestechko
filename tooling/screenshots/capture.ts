@@ -6,7 +6,7 @@
 import { mkdirSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
-import { openSession, viewports, type Problem } from './browser.ts';
+import { browserLaunchOptions, openSession, viewports, type Problem } from './browser.ts';
 import { captureCabinet } from './cabinet-scenario.ts';
 import { captureMiniApp } from './miniapp-scenario.ts';
 
@@ -42,7 +42,7 @@ const apps = [
 ] as const;
 
 const problems: Problem[] = [];
-const browser = await chromium.launch({ args: ['--mute-audio'] });
+const browser = await chromium.launch(browserLaunchOptions);
 try {
   for (const app of apps.filter((candidate) => !values.only || candidate.name === values.only)) {
     for (const viewport of viewports.filter(

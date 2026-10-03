@@ -1,0 +1,137 @@
+{
+  "newBooking": "Новая запись",
+  "create": {
+    "title": "Новая запись",
+    "submit": "Записать",
+    "created": "Запись создана",
+    "createdDescription": "{{client}}, {{when}}"
+  },
+  "client": {
+    "title": "Клиент",
+    "mode": "Клиент",
+    "existing": "Из базы",
+    "new": "Новый",
+    "search": "Имя или телефон",
+    "searchPlaceholder": "Начните вводить",
+    "noMatches": "Никого не нашли — добавьте нового клиента.",
+    "name": "Имя",
+    "phone": "Телефон",
+    "phoneHint": "Необязательно. По номеру найдём карточку, если клиент уже был.",
+    "phoneInvalid": "Проверьте номер",
+    "nameRequired": "Укажите имя",
+    "pickRequired": "Выберите клиента"
+  },
+  "services": {
+    "title": "Услуги",
+    "required": "Выберите хотя бы одну услугу",
+    "incompatible": "Не сочетается с выбранными",
+    "noProviders": "Никто не выполняет эти услуги вместе",
+    "priceFrom": "от {{price}}"
+  },
+  "when": {
+    "staff": "Специалист",
+    "date": "Дата",
+    "time": "Время",
+    "free": "Свободно у специалиста",
+    "noFree": "Свободных окон для клиентов нет — время можно задать вручную.",
+    "timeRequired": "Укажите время"
+  },
+  "comment": "Комментарий",
+  "move": {
+    "title": "Перенести запись",
+    "submit": "Перенести",
+    "done": "Запись перенесена",
+    "doneDescription": "{{when}}, {{staff}}",
+    "notify": "Клиент получит уведомление в {{channel}}.",
+    "undo": "Вернуть",
+    "undone": "Перенос отменён",
+    "priceKept": "Цена остаётся прежней: {{total}}."
+  },
+  "cancel": {
+    "action": "Отменить запись",
+    "title": "Отменить запись?",
+    "consequence": "Время освободится для других клиентов.",
+    "notify": "Клиент получит уведомление в {{channel}}.",
+    "refund": "Предоплата {{amount}} вернётся клиенту.",
+    "releaseHold": "Время перестанет удерживаться, оплата будет отменена.",
+    "confirm": "Отменить запись",
+    "keep": "Не отменять",
+    "done": "Запись отменена"
+  },
+  "noShow": {
+    "action": "Не пришёл",
+    "title": "Клиент не пришёл?",
+    "consequence": "Визит отметится как неявка и попадёт в карточку клиента.",
+    "depositKept": "Предоплата {{amount}} останется у заведения.",
+    "confirm": "Отметить неявку",
+    "done": "Неявка отмечена"
+  },
+  "complete": {
+    "action": "Визит состоялся",
+    "title": "Закрыть визит",
+    "total": "Стоимость",
+    "prepaid": "Предоплата",
+    "pass": "Абонемент",
+    "noPass": "Без абонемента",
+    "passOption": "{{name}} — осталось {{left}}",
+    "points": "Оплатить баллами",
+    "pointsBalance_one": "На счету {{count}} балл, можно списать до {{max}}",
+    "pointsBalance_few": "На счету {{count}} балла, можно списать до {{max}}",
+    "pointsBalance_many": "На счету {{count}} баллов, можно списать до {{max}}",
+    "pointsBalance_other": "На счету {{count}} балла, можно списать до {{max}}",
+    "pointsAmount": "Сколько баллов",
+    "due": "К оплате на месте",
+    "earned_one": "Начислим {{count}} балл",
+    "earned_few": "Начислим {{count}} балла",
+    "earned_many": "Начислим {{count}} баллов",
+    "earned_other": "Начислим {{count}} балла",
+    "refund": "Вернём предоплату {{amount}}",
+    "passCovers": "Визит спишется с абонемента",
+    "confirm": "Закрыть визит",
+    "done": "Визит закрыт"
+  },
+  "details": {
+    "actions": "Действия",
+    "move": "Перенести",
+    "hold": {
+      "payment": "Ждёт предоплату до {{time}}",
+      "waitlist_offer": "Предложена из листа ожидания до {{time}}"
+    },
+    "deposit": "Предоплата",
+    "payment": {
+      "pending": "ожидается",
+      "succeeded": "оплачена",
+      "cancelled": "отменена",
+      "refunded": "возвращена"
+    },
+    "refunded": "Возвращено {{amount}}",
+    "settlement": "Оплата визита",
+    "notifiedVia": "Уведомления — в {{channel}}"
+  },
+  "ledger": {
+    "points_accrual": "Начислено баллов",
+    "points_redemption": "Оплачено баллами",
+    "points_adjustment": "Корректировка баллов",
+    "pass_sale": "Продан абонемент",
+    "pass_visit": "Визит по абонементу",
+    "pass_adjustment": "Корректировка абонемента",
+    "prepayment": "Предоплата",
+    "prepayment_refund": "Возврат предоплаты",
+    "visit_payment": "Оплата на месте",
+    "pass_payment": "Оплата абонемента"
+  },
+  "channels": {
+    "telegram": "Telegram",
+    "max": "MAX"
+  },
+  "dropRefused": "Не перенесли: {{reason}}",
+  "dragHint": "Перетащите запись, чтобы перенести",
+  "points_one": "{{count}} балл",
+  "points_few": "{{count}} балла",
+  "points_many": "{{count}} баллов",
+  "points_other": "{{count}} балла",
+  "visits_one": "{{count}} визит",
+  "visits_few": "{{count}} визита",
+  "visits_many": "{{count}} визитов",
+  "visits_other": "{{count}} визита"
+}

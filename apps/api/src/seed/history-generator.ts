@@ -50,10 +50,20 @@ const CLIENT_WEIGHT_DECAY = 0.993;
 const FUTURE_DEMAND_DAYS = 24;
 const MIN_FUTURE_DEMAND = 0.1;
 
-/** Past visits mostly happened; a few were missed or cancelled. Future ones are mostly confirmed. */
+/** Visits that ended this recently may still wait for the desk to mark them. */
+const UNMARKED_WINDOW_MS = 30 * 60 * MS_PER_MINUTE;
+const UNMARKED_SHARE = 0.35;
+
+/**
+ * Past visits mostly happened; a few were missed or cancelled, and some of the latest
+ * are not marked yet, as at any front desk. Future ones are mostly confirmed.
+ */
 function statusFor(random: Random, endsAt: number, now: number): BookingStatus {
   if (endsAt > now) {
     return random.chance(0.07) ? 'cancelled' : 'confirmed';
+  }
+  if (now - endsAt < UNMARKED_WINDOW_MS && random.chance(UNMARKED_SHARE)) {
+    return 'confirmed';
   }
   const roll = random.next();
   if (roll < 0.05) {

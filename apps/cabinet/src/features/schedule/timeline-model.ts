@@ -12,7 +12,12 @@ export interface MinuteRange {
 
 export interface TimelineBlock {
   readonly id: string;
+  readonly version: number;
+  readonly staffId: string;
   readonly status: BookingStatus;
+  /** Held for a while (prepayment, waitlist offer) rather than firm. */
+  readonly held: boolean;
+  readonly movable: boolean;
   readonly service: MinuteRange;
   readonly occupied: MinuteRange;
   readonly timeLabel: string;
@@ -82,7 +87,11 @@ export function toBlock(
 ): TimelineBlock {
   return {
     id: booking.id,
+    version: booking.version,
+    staffId: booking.staffId,
     status: booking.status,
+    held: booking.hold !== null,
+    movable: booking.movable,
     service: rangeOn(date, booking, timeZone),
     occupied: rangeOn(date, booking.occupied, timeZone),
     timeLabel: `${formatTime(booking.start)}–${formatTime(booking.end)}`,
@@ -123,4 +132,37 @@ export function weekStart(date: string): string {
 
 export function todayIn(timeZone: string): string {
   return parts(new Date().toISOString(), timeZone).date;
+}
+
+const MS_PER_MINUTE = 60_000;
+
+/** Offset of the zone from UTC at an instant, in minutes. */
+function offsetMinutes(epoch: number, timeZone: string): number {
+  const local = parts(new Date(epoch).toISOString(), timeZone);
+  const asUtc = Date.parse(`${local.date}T00:00:00Z`) + local.minute * MS_PER_MINUTE;
+  return Math.round((asUtc - Math.floor(epoch / MS_PER_MINUTE) * MS_PER_MINUTE) / MS_PER_MINUTE);
+}
+
+/** The instant of a local minute of a date in the zone, as ISO; DST-safe in two passes. */
+export function instantAt(date: string, minute: number, timeZone: string): string {
+  const wall = Date.parse(`${date}T00:00:00Z`) + minute * MS_PER_MINUTE;
+  let epoch = wall - offsetMinutes(wall, timeZone) * MS_PER_MINUTE;
+  epoch = wall - offsetMinutes(epoch, timeZone) * MS_PER_MINUTE;
+  return new Date(epoch).toISOString();
+}
+
+/** `HH:MM` of a minute of the day. */
+export function wallTime(minute: number): string {
+  const hours = Math.floor(minute / MINUTES_PER_HOUR);
+  return `${String(hours).padStart(2, '0')}:${String(minute % MINUTES_PER_HOUR).padStart(2, '0')}`;
+}
+
+/** Minutes of `HH:MM`, or `null` for anything else. */
+export function parseWallTime(value: string): number | null {
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) {
+    return null;
+  }
+  const minute = Number(match[1]) * MINUTES_PER_HOUR + Number(match[2]);
+  return minute < 24 * MINUTES_PER_HOUR ? minute : null;
 }

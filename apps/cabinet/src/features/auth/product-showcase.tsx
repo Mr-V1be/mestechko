@@ -48,7 +48,11 @@ function toColumn(t: Translate, format: Formatters, member: ShowcaseStaff): Time
     working: [member.working],
     blocks: member.visits.map((visit) => ({
       id: `${member.key}-${String(visit.start)}`,
+      version: 1,
+      staffId: member.key,
       status: visit.status,
+      held: false,
+      movable: false,
       service: { start: visit.start, end: visit.end },
       occupied: { start: visit.start, end: visit.end + visit.afterMinutes },
       timeLabel: `${clock(format, visit.start)}–${clock(format, visit.end)}`,

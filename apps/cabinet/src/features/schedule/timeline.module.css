@@ -294,3 +294,75 @@
   background: var(--color-accent);
   transform: translateY(-50%);
 }
+
+.held {
+  --block-fill: var(--color-surface);
+  --block-edge: var(--color-accent);
+  outline: var(--size-hairline) dashed var(--color-accent);
+  outline-offset: calc(var(--size-hairline) * -1);
+}
+
+.creatable {
+  cursor: copy;
+}
+
+.creatable .working {
+  cursor: copy;
+}
+
+.draggable {
+  cursor: grab;
+  touch-action: manipulation;
+}
+
+.dragging,
+.dragging .draggable {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.lifted {
+  opacity: 0.45;
+}
+
+.ghost {
+  position: absolute;
+  inset-inline: var(--space-1);
+  top: calc((var(--start) - var(--from)) * var(--size-hour) / 60);
+  height: calc((var(--end) - var(--start)) * var(--size-hour) / 60 - var(--space-0-5));
+  z-index: 2;
+  padding: var(--space-1) var(--space-2);
+  border: var(--size-focus-ring) dashed var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-soft-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+.notice {
+  position: absolute;
+  inset-inline: var(--space-1);
+  top: calc((var(--start) - var(--from)) * var(--size-hour) / 60);
+  z-index: 3;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-danger);
+  color: var(--color-surface);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  animation: notice-in var(--duration-base) var(--ease-out);
+}
+
+@keyframes notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-1));
+  }
+}

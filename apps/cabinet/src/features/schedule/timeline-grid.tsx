@@ -3,7 +3,8 @@ import { clsx } from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
-import { visibleHours, type MinuteRange, type TimelineColumn } from './timeline-model';
+import { useBlockDrag, type DropTarget } from './use-block-drag';
+import { visibleHours, wallTime, type MinuteRange, type TimelineColumn } from './timeline-model';
 import { useColumnPaging } from './use-column-paging';
 import styles from './timeline.module.css';
 
@@ -18,6 +19,7 @@ function densityOf(minutes: number): string | undefined {
 }
 
 const blockStatusClass: Readonly<Record<string, string | undefined>> = {
+  held: styles.held,
   confirmed: styles.confirmed,
   completed: styles.completed,
   no_show: styles.no_show,
@@ -31,12 +33,32 @@ function place(range: MinuteRange): CSSProperties {
 /** How narrow a column may get: day columns of one person pack tighter. */
 export type TimelineDensity = 'regular' | 'compact';
 
+const MINUTES_PER_HOUR = 60;
+/** Grid a dragged block snaps to and a click on free time starts at. */
+const SNAP_MINUTES = 15;
+
+export interface TimelineEditing {
+  /** Whether blocks may land in another column (staff member or day). */
+  readonly acrossColumns: boolean;
+  readonly onMove: (bookingId: string, target: DropTarget, from: DropTarget) => void;
+  /** A click on free time of a column starts a booking there. */
+  readonly onCreateAt?: (target: DropTarget) => void;
+}
+
+/** A message pinned where an action happened, e.g. why a drop was refused. */
+export interface TimelineNotice extends DropTarget {
+  readonly text: string;
+}
+
 export interface TimelineGridProps {
   readonly columns: readonly TimelineColumn[];
   /** What the columns are, for the pager: «Мастера», «Дни». */
   readonly columnsLabel: string;
   readonly density?: TimelineDensity;
   readonly onOpenBooking: (bookingId: string) => void;
+  /** Present when the viewer may change bookings here. */
+  readonly editing?: TimelineEditing | undefined;
+  readonly notice?: TimelineNotice | null;
 }
 
 /**
@@ -49,6 +71,8 @@ export function TimelineGrid({
   columnsLabel,
   density = 'regular',
   onOpenBooking,
+  editing,
+  notice,
 }: TimelineGridProps) {
   const { t } = useTranslation();
   const scroller = useRef<HTMLDivElement>(null);
@@ -59,6 +83,24 @@ export function TimelineGrid({
     columns.map((column) => column.key),
   );
   const hours = visibleHours(columns);
+  const {
+    grid: dragGrid,
+    preview: dragPreview,
+    start: startDrag,
+    wasDragged,
+  } = useBlockDrag({
+    enabled: editing !== undefined,
+    stepMinutes: SNAP_MINUTES,
+    hours,
+    acrossColumns: editing?.acrossColumns ?? false,
+    onDrop: (bookingId, target, from) => {
+      editing?.onMove(bookingId, target, from);
+    },
+  });
+  const durationOf = (blockId: string) => {
+    const block = columns.flatMap((column) => column.blocks).find((item) => item.id === blockId);
+    return block ? block.service.end - block.service.start : 0;
+  };
   const gridStyle = {
     '--columns': columns.length,
     '--hours': hours.to - hours.from,
@@ -109,7 +151,11 @@ export function TimelineGrid({
         )}
       >
         <div ref={scroller} className={styles.scroller}>
-          <div className={styles.grid} style={gridStyle}>
+          <div
+            ref={dragGrid}
+            className={clsx(styles.grid, dragPreview && styles.dragging)}
+            style={gridStyle}
+          >
             <div ref={corner} className={styles.corner} />
             {columns.map((column) => (
               <div key={column.key} className={styles.header}>
@@ -128,12 +174,41 @@ export function TimelineGrid({
               ))}
             </div>
             {columns.map((column) => (
-              <div key={column.key} className={styles.column}>
+              <div
+                key={column.key}
+                className={clsx(styles.column, editing?.onCreateAt && styles.creatable)}
+                data-column-key={column.key}
+                onClick={(event) => {
+                  const onCreateAt = editing?.onCreateAt;
+                  const target = event.target as HTMLElement;
+                  // Free time only: the column itself or a working-hours band, not a booking.
+                  // A drag that ends over free time also clicks there, which is not a request.
+                  if (
+                    !onCreateAt ||
+                    wasDragged() ||
+                    (target !== event.currentTarget && !target.hasAttribute('data-free-time'))
+                  ) {
+                    return;
+                  }
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  const minute =
+                    hours.from * MINUTES_PER_HOUR +
+                    ((event.clientY - rect.top) / rect.height) *
+                      (hours.to - hours.from) *
+                      MINUTES_PER_HOUR;
+                  onCreateAt({
+                    columnKey: column.key,
+                    minute: Math.floor(minute / SNAP_MINUTES) * SNAP_MINUTES,
+                  });
+                }}
+              >
                 {column.working.map((range) => (
                   <div
                     key={`w-${String(range.start)}`}
                     className={styles.working}
                     style={place(range)}
+                    aria-hidden="true"
+                    data-free-time=""
                   />
                 ))}
                 {column.blocks.map((block) => (
@@ -150,15 +225,26 @@ export function TimelineGrid({
                     <button
                       key={block.id}
                       type="button"
-                      className={clsx(styles.block, blockStatusClass[block.status], density)}
+                      className={clsx(
+                        styles.block,
+                        blockStatusClass[block.status],
+                        density,
+                        editing && block.movable && styles.draggable,
+                        dragPreview?.blockId === block.id && styles.lifted,
+                      )}
                       style={place(block.service)}
                       aria-label={t('schedule.bookingLabel', {
                         time: block.timeLabel,
                         client: block.client,
                         services: block.services,
                       })}
+                      onPointerDown={(event) => {
+                        startDrag(event, block, column.key);
+                      }}
                       onClick={() => {
-                        onOpenBooking(block.id);
+                        if (!wasDragged()) {
+                          onOpenBooking(block.id);
+                        }
                       }}
                     >
                       <span className={styles.blockTime}>
@@ -169,6 +255,27 @@ export function TimelineGrid({
                     </button>
                   );
                 })}
+                {dragPreview?.columnKey === column.key ? (
+                  <div
+                    className={styles.ghost}
+                    style={place({
+                      start: dragPreview.minute,
+                      end: dragPreview.minute + durationOf(dragPreview.blockId),
+                    })}
+                    aria-hidden="true"
+                  >
+                    {`${wallTime(dragPreview.minute)}–${wallTime(dragPreview.minute + durationOf(dragPreview.blockId))}`}
+                  </div>
+                ) : null}
+                {notice?.columnKey === column.key ? (
+                  <div
+                    className={styles.notice}
+                    style={place({ start: notice.minute, end: notice.minute })}
+                    role="alert"
+                  >
+                    {notice.text}
+                  </div>
+                ) : null}
                 {column.nowMinute !== null ? (
                   <div
                     className={styles.now}

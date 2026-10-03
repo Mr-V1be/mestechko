@@ -1,10 +1,13 @@
 import { apiAssetUrl, BookingStatusBadge, formatPhone, useFormat } from '@mestechko/booking-ui';
+import type { CabinetBookingDetails } from '@mestechko/contracts/client';
 import { Avatar, Badge, Button, ListGroup, ListItem, Sheet, Skeleton } from '@mestechko/ui';
 import { CalendarClock, MapPin, MessageSquareText, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';
 import { useCabinetBooking } from '../../platform/api/queries';
 import { QueryErrorState } from '../common/states';
+import { BookingActions } from './booking-actions';
+import { BookingPayment } from './booking-payment';
 import { BookingHistory } from './booking-history';
 import styles from './booking-details.module.css';
 
@@ -12,6 +15,33 @@ export interface BookingDetailsSheetProps {
   readonly businessId: string;
   readonly bookingId: string | null;
   readonly onClose: () => void;
+}
+
+/**
+ * The desk acts on a booking that can still change; a finished one only offers a call.
+ */
+function footerOf(businessId: string, booking: CabinetBookingDetails | undefined) {
+  if (!booking) {
+    return undefined;
+  }
+  if (Object.values(booking.actions).some(Boolean)) {
+    return <BookingActions businessId={businessId} booking={booking} />;
+  }
+  return booking.client.phone ? <CallButton phone={booking.client.phone} /> : undefined;
+}
+
+function CallButton({ phone }: { readonly phone: string }) {
+  const { t } = useTranslation();
+  return (
+    <Button
+      variant="secondary"
+      block
+      icon={<Phone />}
+      onClick={() => window.open(`tel:${phone}`, '_self')}
+    >
+      {t('details.call')}
+    </Button>
+  );
 }
 
 /** Everything about one booking, beside the schedule or the list it was opened from. */
@@ -41,18 +71,7 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
         ) : undefined
       }
       closeLabel={t('common:actions.close')}
-      footer={
-        data?.client.phone ? (
-          <Button
-            variant="secondary"
-            block
-            icon={<Phone />}
-            onClick={() => window.open(`tel:${data.client.phone ?? ''}`, '_self')}
-          >
-            {t('details.call')}
-          </Button>
-        ) : undefined
-      }
+      footer={footerOf(businessId, data)}
     >
       {booking.isPending ? (
         <div className={styles.skeleton}>
@@ -104,6 +123,7 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
             ))}
             <ListItem title={t('details.total')} meta={format.money(data.total)} />
           </ListGroup>
+          <BookingPayment booking={data} />
           <BookingHistory booking={data} />
           {data.comment ? (
             <ListGroup title={t('details.comment')}>

@@ -1,5 +1,5 @@
 import { useFormat, useVocabulary } from '@mestechko/booking-ui';
-import { scheduleAxes, type ScheduleAxis } from '@mestechko/contracts/client';
+import { scheduleAxes, type Membership, type ScheduleAxis } from '@mestechko/contracts/client';
 import {
   Button,
   EmptyIllustration,
@@ -11,7 +11,7 @@ import {
   breakpoints,
   useMediaQuery,
 } from '@mestechko/ui';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -19,12 +19,14 @@ import { useOverview, useSchedule } from '../../platform/api/queries';
 import { canOpen, useActiveMembership } from '../../platform/session/active-business';
 import { useSession } from '../../platform/session/session-context';
 import { BookingDetailsSheet } from '../booking-details/booking-details-sheet';
+import { CreateBookingSheet } from '../booking-desk/create-booking-sheet';
 import { PageContainer, PageHeader } from '../common/page-header';
 import { NoAccessState, QueryErrorState } from '../common/states';
 import { AgendaList } from './agenda-list';
 import { dayColumns, weekColumns } from './schedule-columns';
 import { addDays, weekStart } from './timeline-model';
 import { TimelineGrid } from './timeline-grid';
+import { useScheduleEditing } from './use-schedule-editing';
 import {
   DEFAULT_AXIS,
   DEFAULT_VIEW,
@@ -68,16 +70,20 @@ export function SchedulePage() {
           <ScheduleSkeleton />
         </>
       ) : null}
-      {overview.data ? <ScheduleBoard businessId={businessId} overview={overview.data} /> : null}
+      {overview.data ? (
+        <ScheduleBoard businessId={businessId} membership={membership} overview={overview.data} />
+      ) : null}
     </PageContainer>
   );
 }
 
 function ScheduleBoard({
   businessId,
+  membership,
   overview,
 }: {
   readonly businessId: string;
+  readonly membership: Membership | null;
   readonly overview: NonNullable<ReturnType<typeof useOverview>['data']>;
 }) {
   const { t } = useTranslation();
@@ -104,6 +110,18 @@ function ScheduleBoard({
   const columnId =
     data?.columns.find((column) => column.id === state.column)?.id ?? data?.columns[0]?.id ?? null;
   const step = state.view === 'week' ? WEEK_DAYS : 1;
+  const desk = useScheduleEditing({
+    businessId,
+    membership,
+    overview,
+    schedule: data,
+    view: state.view,
+    axis: state.axis,
+    date: state.date,
+    locationId: location?.id ?? '',
+    columnId,
+    timeZone,
+  });
 
   const dateLabel =
     state.view === 'week'
@@ -157,7 +175,14 @@ function ScheduleBoard({
           </div>
         }
       />
-      <p className={styles.dateLabel}>{dateLabel}</p>
+      <div className={styles.titleRow}>
+        <p className={styles.dateLabel}>{dateLabel}</p>
+        {desk.canEdit && location ? (
+          <Button size="sm" icon={<Plus />} onClick={desk.startNew}>
+            {t('desk:newBooking')}
+          </Button>
+        ) : null}
+      </div>
       <div className={styles.controls}>
         <SegmentedControl
           label={t('schedule.view')}
@@ -230,6 +255,8 @@ function ScheduleBoard({
           }
           density={state.view === 'week' ? 'compact' : 'regular'}
           onOpenBooking={setOpenBooking}
+          editing={desk.editing}
+          notice={desk.notice}
         />
       ) : null}
       <BookingDetailsSheet
@@ -237,6 +264,17 @@ function ScheduleBoard({
         bookingId={openBooking}
         onClose={() => {
           setOpenBooking(null);
+        }}
+      />
+      <CreateBookingSheet
+        businessId={businessId}
+        overview={overview}
+        start={desk.createStart}
+        canSearchClients={membership !== null && canOpen(membership, 'clients')}
+        onClose={desk.closeCreate}
+        onCreated={(bookingId) => {
+          desk.closeCreate();
+          setOpenBooking(bookingId);
         }}
       />
     </>

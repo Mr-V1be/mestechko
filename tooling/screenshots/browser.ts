@@ -8,6 +8,15 @@ export const viewports = [
 
 export type Viewport = (typeof viewports)[number];
 
+/**
+ * Launch options of the screenshot browser: Russian like the product's audience, so
+ * native date and time fields read «03.10.2026» and «10:00», not the US format.
+ */
+export const browserLaunchOptions = {
+  args: ['--mute-audio', '--lang=ru-RU'],
+  env: { ...process.env, LANG: 'ru_RU.UTF-8', LANGUAGE: 'ru' },
+};
+
 export interface Problem {
   readonly shot: string;
   readonly issue: string;
