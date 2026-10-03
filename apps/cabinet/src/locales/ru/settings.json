@@ -1,0 +1,62 @@
+{
+  "title": "Настройки",
+  "sections": {
+    "name": "Название",
+    "booking": "Онлайн-запись",
+    "changes": "Перенос и отмена",
+    "prepayment": "Предоплата",
+    "waitlist": "Лист ожидания"
+  },
+  "name": {
+    "label": "Название заведения"
+  },
+  "rules": {
+    "slotStepMinutes": "Шаг времени записи",
+    "minLeadMinutes": "Запись не позже чем за",
+    "horizonDays": "Запись открыта вперёд на",
+    "staffAssignment": "Кого назначать, если выбран «{{any}}»",
+    "clientChangeCutoffMinutes": "Клиент переносит и отменяет не позже чем за",
+    "depositPercent": "Предоплата от стоимости",
+    "paymentHoldMinutes": "Время на оплату",
+    "waitlistOfferHoldMinutes": "Сколько освободившееся время ждёт ответа клиента"
+  },
+  "assignment": {
+    "balanced": "С меньшей загрузкой в этот день",
+    "first_listed": "По порядку в списке команды"
+  },
+  "suffix": {
+    "minutes": "мин",
+    "days": "дн.",
+    "percent": "%"
+  },
+  "amount": {
+    "minutes": "{{value}} мин",
+    "days_one": "{{value}} день",
+    "days_few": "{{value}} дня",
+    "days_many": "{{value}} дней",
+    "days_other": "{{value}} дня",
+    "percent": "{{value}} %"
+  },
+  "default": "По умолчанию: {{value}}",
+  "reset": "Вернуть",
+  "resetLabel": "Вернуть значение по умолчанию: {{value}}",
+  "errors": {
+    "required": "Укажите значение",
+    "nameRequired": "Укажите название",
+    "nameRejected": "Слишком длинное название",
+    "range": "От {{min}} до {{max}}",
+    "rejected": "Такое значение не подходит"
+  },
+  "discard": "Отменить изменения",
+  "saved": "Настройки сохранены",
+  "notSaved": "Не сохранили настройки",
+  "leave": {
+    "title": "Изменения не сохранены",
+    "consequence_one": "Не сохранится {{count}} изменённая настройка.",
+    "consequence_few": "Не сохранятся {{count}} изменённые настройки.",
+    "consequence_many": "Не сохранятся {{count}} изменённых настроек.",
+    "consequence_other": "Не сохранятся {{count}} изменённой настройки.",
+    "confirm": "Уйти без сохранения",
+    "stay": "Остаться"
+  }
+}

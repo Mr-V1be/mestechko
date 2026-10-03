@@ -1,0 +1,72 @@
+{
+  "title": "Отчёты",
+  "filters": {
+    "period": "Период",
+    "location": "Филиал",
+    "allLocations": "Все филиалы",
+    "allStaff": "Все"
+  },
+  "periods": {
+    "thisWeek": "Эта неделя",
+    "thisMonth": "Этот месяц",
+    "lastMonth": "Прошлый месяц",
+    "last30": "Последние 30 дней",
+    "quarter": "Квартал"
+  },
+  "range": "{{from}} – {{to}}",
+  "comparedTo_one": "сравнение с предыдущим {{count}} днём",
+  "comparedTo_few": "сравнение с предыдущими {{count}} днями",
+  "comparedTo_many": "сравнение с предыдущими {{count}} днями",
+  "comparedTo_other": "сравнение с предыдущими {{count}} днями",
+  "metrics": {
+    "occupancy": {
+      "title": "Загрузка",
+      "part": "Занято",
+      "whole": "Рабочее время"
+    },
+    "revenue": {
+      "title": "Выручка"
+    },
+    "no_shows": {
+      "title": "Неявки",
+      "part": "Не пришли",
+      "whole": "Ждали визитов"
+    },
+    "repeat_visits": {
+      "title": "Повторные визиты",
+      "part": "Повторных",
+      "whole": "Визитов"
+    }
+  },
+  "previous": "Было: {{value}}",
+  "delta": {
+    "points": "{{value}} п.п.",
+    "percent": "{{value}} %"
+  },
+  "units": {
+    "hours": "{{value}} ч"
+  },
+  "noValue": "—",
+  "view": {
+    "label": "Вид",
+    "chart": "График",
+    "table": "Таблица"
+  },
+  "table": {
+    "date": "Дата",
+    "total": "Итого",
+    "caption": "{{metric}} по дням"
+  },
+  "staff": {
+    "caption": "Показатели по сотрудникам",
+    "occupancy": "Загрузка",
+    "visits": "Визиты",
+    "noShows": "Неявки",
+    "revenue": "Выручка",
+    "total": "Итого",
+    "otherIncome": "Прочие поступления"
+  },
+  "emptyTitle": "За этот период данных нет",
+  "emptyDescription": "Здесь появятся загрузка, выручка и визиты, когда пройдут рабочие дни.",
+  "showDefault": "Показать последние 30 дней"
+}

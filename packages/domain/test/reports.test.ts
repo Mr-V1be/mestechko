@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addFacts, emptyFacts, metricValue } from '../src/index.js';
+import { addFacts, emptyFacts, metricChange, metricValue } from '../src/index.js';
 
 describe('report metrics', () => {
   const monday = {
@@ -28,5 +28,32 @@ describe('report metrics', () => {
     expect(metricValue('occupancy', emptyFacts)).toBeNull();
     expect(metricValue('no_shows', emptyFacts)).toBeNull();
     expect(metricValue('revenue', emptyFacts)).toBe(0);
+  });
+
+  it('compares shares in points and money relative to before', () => {
+    const earlier = { ...monday, bookedMinutes: 300, noShows: 1, revenueMinor: 1_000_000 };
+    expect(metricChange('occupancy', monday, earlier)).toEqual({
+      measure: 'points',
+      amount: 0.25,
+      improved: true,
+    });
+    expect(metricChange('revenue', monday, earlier)).toEqual({
+      measure: 'relative',
+      amount: 0.25,
+      improved: true,
+    });
+    const noShows = metricChange('no_shows', monday, earlier);
+    expect(noShows?.improved).toBe(false);
+    expect(noShows?.amount).toBeCloseTo(0.25 - 1 / 7);
+  });
+
+  it('has no change without a value to compare with', () => {
+    expect(metricChange('occupancy', monday, emptyFacts)).toBeNull();
+    expect(metricChange('revenue', monday, emptyFacts)).toBeNull();
+    expect(metricChange('repeat_visits', monday, monday)).toEqual({
+      measure: 'points',
+      amount: 0,
+      improved: null,
+    });
   });
 });

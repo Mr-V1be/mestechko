@@ -5,7 +5,10 @@ import {
   formatInstant,
   formatLocalDate,
   formatMoney,
+  formatMoneyCompact,
   formatMoneyRange,
+  formatNumber,
+  formatShare,
 } from './format.js';
 
 describe('formatting', () => {
@@ -19,6 +22,16 @@ describe('formatting', () => {
         { amountMinor: 530_000, currency: 'RUB' },
       ),
     ).toMatch(/^4\s700\s?–\s?5\s300\s₽$/u);
+  });
+
+  it('formats compact sums, shares and signed changes', () => {
+    expect(formatMoneyCompact('ru', { amountMinor: 1_200_000, currency: 'RUB' })).toMatch(
+      /^12\sтыс\.\s₽$/u,
+    );
+    expect(formatShare('ru', 0.587)).toMatch(/^59\s%$/u);
+    expect(formatShare('ru', 0.0563, { fractionDigits: 1 })).toMatch(/^5,6\s%$/u);
+    expect(formatNumber('ru', 2.25, { fractionDigits: 1, signed: true })).toBe('+2,3');
+    expect(formatNumber('ru', 0, { signed: true })).toBe('0');
   });
 
   it('shows instants in the time zone of the location', () => {

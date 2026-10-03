@@ -45,12 +45,22 @@ export function formatInstant(
 
 /** Local calendar dates (`YYYY-MM-DD`) have no time zone of their own. */
 export type LocalDateStyle =
-  'dayMonth' | 'weekdayShort' | 'weekdayDayMonth' | 'monthYear' | 'dayNumber';
+  | 'dayMonth'
+  | 'dayMonthShort'
+  | 'dayMonthNumeric'
+  | 'weekdayShort'
+  | 'weekdayDayMonth'
+  | 'weekdayDayMonthShort'
+  | 'monthYear'
+  | 'dayNumber';
 
 const localDateStyles: Record<LocalDateStyle, Intl.DateTimeFormatOptions> = {
   dayMonth: { day: 'numeric', month: 'long' },
+  dayMonthShort: { day: 'numeric', month: 'short' },
+  dayMonthNumeric: { day: '2-digit', month: '2-digit' },
   weekdayShort: { weekday: 'short' },
   weekdayDayMonth: { weekday: 'long', day: 'numeric', month: 'long' },
+  weekdayDayMonthShort: { weekday: 'short', day: 'numeric', month: 'short' },
   monthYear: { month: 'long', year: 'numeric' },
   dayNumber: { day: 'numeric' },
 };
@@ -76,6 +86,53 @@ export function formatMoney(locale: string, value: Money): string {
       }),
   );
   return formatter.format(amount);
+}
+
+/** `12 тыс. ₽`, `1,4 млн ₽`: sums where the order matters more than kopecks, e.g. axes. */
+export function formatMoneyCompact(locale: string, value: Money): string {
+  const amount = value.amountMinor / 10 ** currencies[value.currency].minorUnitDigits;
+  return cached(
+    `mc|${locale}|${value.currency}`,
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: value.currency,
+        notation: 'compact',
+        maximumFractionDigits: 1,
+      }),
+  ).format(amount);
+}
+
+export interface NumberStyle {
+  /** Exactly this many digits after the separator. */
+  readonly fractionDigits?: number;
+  /** `+3` and `−3` for changes; zero stays unsigned. */
+  readonly signed?: boolean;
+}
+
+function numberFormatter(locale: string, kind: 'decimal' | 'percent', style: NumberStyle) {
+  const digits = style.fractionDigits ?? 0;
+  const signed = style.signed ?? false;
+  return cached(
+    `n|${locale}|${kind}|${String(digits)}|${String(signed)}`,
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: kind,
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+        signDisplay: signed ? 'exceptZero' : 'auto',
+      }),
+  );
+}
+
+/** `1 234`, `+2,5`: grouped in the way of the locale. */
+export function formatNumber(locale: string, value: number, style: NumberStyle = {}): string {
+  return numberFormatter(locale, 'decimal', style).format(value);
+}
+
+/** A share of a whole, `0.587` → `59 %`. */
+export function formatShare(locale: string, share: number, style: NumberStyle = {}): string {
+  return numberFormatter(locale, 'percent', style).format(share);
 }
 
 /** `4 700–5 300 ₽`: one currency sign for the whole range. */

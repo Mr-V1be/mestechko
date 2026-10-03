@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import styles from './data.module.css';
 
 export interface BarPoint {
@@ -22,11 +22,14 @@ export interface BarChartProps {
   readonly emptyLabel: string;
 }
 
-const GUTTER = 56;
+/** Room for value ticks before they are measured; then the widest tick sets it. */
+const INITIAL_GUTTER = 56;
+const TICK_GAP = 8;
 const AXIS_HEIGHT = 24;
 const TOP_PADDING = 8;
 const TICKS = 4;
 const MIN_LABEL_SPACE = 36;
+const LABEL_GAP = 12;
 const BAR_GAP_SHARE = 0.28;
 const NICE_STEPS = [1, 2, 2.5, 5, 10] as const;
 
@@ -38,13 +41,35 @@ function niceStep(range: number, ticks: number): number {
   return step * magnitude;
 }
 
+/** Rendered width of SVG content, kept up to date as its text changes. */
+function useSvgWidth(target: RefObject<SVGGraphicsElement | null>, mounted: boolean): number {
+  const [width, setWidth] = useState(0);
+  useLayoutEffect(() => {
+    const element = target.current;
+    if (!element) {
+      return undefined;
+    }
+    const observer = new ResizeObserver(([entry]) => {
+      setWidth(Math.ceil(entry?.contentRect.width ?? 0));
+    });
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+    };
+  }, [target, mounted]);
+  return width;
+}
+
 /**
  * Bars over days or categories with a labelled value axis. Colours, grid and text come
  * from tokens, so both themes stay readable; every bar tells its value on hover and on
- * keyboard focus. Pair it with a table of the same figures.
+ * keyboard focus. The value axis takes the room its widest tick needs, and bar labels
+ * thin out to the room the longest of them needs. Pair it with a table of the same figures.
  */
 export function BarChart({ label, points, format, max, emptyLabel }: BarChartProps) {
   const frame = useRef<HTMLDivElement>(null);
+  const tickLabels = useRef<SVGGElement>(null);
+  const labelProbe = useRef<SVGTextElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [active, setActive] = useState<number | null>(null);
 
@@ -65,23 +90,34 @@ export function BarChart({ label, points, format, max, emptyLabel }: BarChartPro
     };
   }, []);
 
+  const drawn = size.width > 0 && size.height > 0;
+  // Tick texts share their right edge, so their group is as wide as the widest one.
+  const tickWidth = useSvgWidth(tickLabels, drawn);
+  const labelWidth = useSvgWidth(labelProbe, drawn);
+  const gutter = tickWidth > 0 ? tickWidth + TICK_GAP : INITIAL_GUTTER;
+  const labelSpace = Math.max(MIN_LABEL_SPACE, labelWidth + LABEL_GAP);
+  const longestLabel = points.reduce(
+    (longest, point) => (point.label.length > longest.length ? point.label : longest),
+    '',
+  );
+
   const values = points.flatMap((point) => (point.value === null ? [] : [point.value]));
   const dataMax = Math.max(0, ...values);
   const step = niceStep(max ?? (dataMax > 0 ? dataMax : 1), TICKS);
   const top = max ?? Math.max(step, Math.ceil(dataMax / step) * step);
   const ticks = Array.from({ length: Math.round(top / step) + 1 }, (_, index) => index * step);
   const { width, height: chartHeight } = size;
-  const plotWidth = Math.max(0, width - GUTTER);
+  const plotWidth = Math.max(0, width - gutter);
   const plotHeight = Math.max(0, chartHeight - AXIS_HEIGHT - TOP_PADDING);
   const slot = points.length > 0 ? plotWidth / points.length : 0;
   const barWidth = Math.max(1, slot * (1 - BAR_GAP_SHARE));
-  const labelEvery = Math.max(1, Math.ceil(MIN_LABEL_SPACE / Math.max(slot, 1)));
+  const labelEvery = Math.max(1, Math.ceil(labelSpace / Math.max(slot, 1)));
   const y = (value: number) => TOP_PADDING + plotHeight - (value / top) * plotHeight;
   const activePoint = active === null ? null : points[active];
 
   return (
     <div ref={frame} className={styles.chart}>
-      {width > 0 && chartHeight > 0 ? (
+      {drawn ? (
         <svg
           role="img"
           aria-label={label}
@@ -91,15 +127,41 @@ export function BarChart({ label, points, format, max, emptyLabel }: BarChartPro
           className={styles.chartSvg}
         >
           {ticks.map((tick) => (
-            <g key={tick}>
-              <line x1={GUTTER} x2={width} y1={y(tick)} y2={y(tick)} className={styles.chartGrid} />
-              <text x={GUTTER - 8} y={y(tick)} className={styles.chartTick} dy="0.32em">
+            <line
+              key={tick}
+              x1={gutter}
+              x2={width}
+              y1={y(tick)}
+              y2={y(tick)}
+              className={styles.chartGrid}
+            />
+          ))}
+          <text
+            ref={labelProbe}
+            className={styles.chartLabel}
+            visibility="hidden"
+            aria-hidden="true"
+          >
+            {longestLabel}
+          </text>
+          <g ref={tickLabels}>
+            {ticks.map((tick) => (
+              <text
+                key={tick}
+                x={gutter - TICK_GAP}
+                y={y(tick)}
+                className={styles.chartTick}
+                dy="0.32em"
+              >
                 {format(tick)}
               </text>
-            </g>
-          ))}
+            ))}
+          </g>
           {points.map((point, index) => {
-            const x = GUTTER + index * slot + (slot - barWidth) / 2;
+            const x = gutter + index * slot + (slot - barWidth) / 2;
+            const center = x + barWidth / 2;
+            // A label without room before the right edge is left out rather than cut.
+            const labelled = index % labelEvery === 0 && center + labelSpace / 2 <= width;
             const height = point.value === null ? 0 : (point.value / top) * plotHeight;
             return (
               <g key={point.key}>
@@ -113,9 +175,9 @@ export function BarChart({ label, points, format, max, emptyLabel }: BarChartPro
                     className={clsx(styles.chartBar, active === index && styles.chartBarActive)}
                   />
                 )}
-                {index % labelEvery === 0 ? (
+                {labelled ? (
                   <text
-                    x={x + barWidth / 2}
+                    x={center}
                     y={chartHeight - 6}
                     className={styles.chartLabel}
                     textAnchor="middle"
@@ -124,7 +186,7 @@ export function BarChart({ label, points, format, max, emptyLabel }: BarChartPro
                   </text>
                 ) : null}
                 <rect
-                  x={GUTTER + index * slot}
+                  x={gutter + index * slot}
                   y={TOP_PADDING}
                   width={slot}
                   height={plotHeight}
@@ -154,7 +216,7 @@ export function BarChart({ label, points, format, max, emptyLabel }: BarChartPro
         <div
           className={styles.chartTooltip}
           style={{
-            left: `${String(Math.min(width - 8, Math.max(8, GUTTER + (active + 0.5) * slot)))}px`,
+            left: `${String(Math.min(width - 8, Math.max(8, gutter + (active + 0.5) * slot)))}px`,
           }}
           aria-hidden="true"
         >

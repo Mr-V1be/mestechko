@@ -50,9 +50,10 @@ export type BookingRulesOverrides = {
 };
 
 const SLOT_STEP_RANGE = { min: 5, max: 240 } as const;
+const LEAD_RANGE = { min: 0, max: 7 * 24 * 60 } as const;
 const HORIZON_RANGE = { min: 1, max: 366 } as const;
 const SERVICES_RANGE = { min: 1, max: 10 } as const;
-const PERCENT_MAX = 100;
+const PERCENT_RANGE = { min: 0, max: 100 } as const;
 const CHANGE_CUTOFF_RANGE = { min: 0, max: 7 * 24 * 60 } as const;
 const HOLD_RANGE = { min: 5, max: 24 * 60 } as const;
 
@@ -60,17 +61,35 @@ function isWithin(value: number, range: { min: number; max: number }): boolean {
   return Number.isInteger(value) && value >= range.min && value <= range.max;
 }
 
+/**
+ * Whole-number ranges of the rules a business tunes, so forms check what they offer
+ * against the same limits the rules are validated with.
+ */
+export const bookingRuleLimits = {
+  slotStepMinutes: SLOT_STEP_RANGE,
+  minLeadMinutes: LEAD_RANGE,
+  horizonDays: HORIZON_RANGE,
+  maxServicesPerBooking: SERVICES_RANGE,
+  depositPercent: PERCENT_RANGE,
+  changeCutoffMinutes: CHANGE_CUTOFF_RANGE,
+  holdMinutes: HOLD_RANGE,
+} as const;
+
+/** A slot step works only when whole steps fill a day. */
+export function isValidSlotStep(minutes: number): boolean {
+  return isWithin(minutes, SLOT_STEP_RANGE) && MINUTES_PER_DAY % minutes === 0;
+}
+
 export function validateBookingRules(rules: BookingRules): void {
   invariant(
-    isWithin(rules.slotStepMinutes, SLOT_STEP_RANGE) &&
-      MINUTES_PER_DAY % rules.slotStepMinutes === 0,
+    isValidSlotStep(rules.slotStepMinutes),
     'invalid_booking_rules',
     'Slot step must divide a day into whole steps between 5 and 240 minutes',
   );
   invariant(
-    Number.isInteger(rules.minLeadMinutes) && rules.minLeadMinutes >= 0,
+    isWithin(rules.minLeadMinutes, LEAD_RANGE),
     'invalid_booking_rules',
-    'Lead time must be a non-negative number of minutes',
+    'Lead time must be between 0 minutes and 7 days',
   );
   invariant(isWithin(rules.horizonDays, HORIZON_RANGE), 'invalid_booking_rules', 'Invalid horizon');
   invariant(
@@ -84,7 +103,7 @@ export function validateBookingRules(rules: BookingRules): void {
     `Unknown staff assignment strategy "${rules.staffAssignment}"`,
   );
   invariant(
-    rules.prepayment.depositPercent >= 0 && rules.prepayment.depositPercent <= PERCENT_MAX,
+    isWithin(rules.prepayment.depositPercent, PERCENT_RANGE),
     'invalid_booking_rules',
     'Deposit must be between 0 and 100 percent',
   );
