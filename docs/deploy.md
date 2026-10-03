@@ -60,7 +60,8 @@
 
 ## Что нужно от владельца
 
-1. Сервер с параметрами выше и SSH-доступ к нему по ключу.
+1. Сервер с параметрами выше и SSH-доступ к нему по ключу; добавить deploy-ключ сервера в
+   репозиторий GitHub (шаг 3) — или дать доступ, чтобы это сделали мы.
 2. Домен и пять DNS-записей на IP сервера (или доступ к DNS-панели).
 3. Адрес почты для Let's Encrypt (`ACME_EMAIL`).
 4. Токен бота Telegram от @BotFather (`TELEGRAM_BOT_TOKEN`) и его имя
@@ -107,9 +108,15 @@ docker compose version
 
 ### 3. Код
 
+Репозиторий приватный: серверу нужен доступ на чтение — deploy-ключ GitHub.
+
 ```sh
+ssh-keygen -t ed25519 -N '' -f ~/.ssh/mestechko_deploy -C "deploy@$(hostname)"
+cat ~/.ssh/mestechko_deploy.pub   # добавить в GitHub: Settings → Deploy keys (только чтение)
+printf 'Host github.com\n  IdentityFile ~/.ssh/mestechko_deploy\n' >> ~/.ssh/config
+
 sudo install -d -o "$USER" -g "$USER" /opt/mestechko
-git clone https://github.com/Mr-V1be/mestechko.git /opt/mestechko
+git clone git@github.com:Mr-V1be/mestechko.git /opt/mestechko
 cd /opt/mestechko
 git checkout main            # или тег выпуска, например v1.0.0
 ```

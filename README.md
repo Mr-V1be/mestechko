@@ -16,13 +16,17 @@
 | Mini App клиента | `apps/miniapp`        | React 19, Vite 8, `@tma.js/sdk-react`                               |
 | Кабинет бизнеса  | `apps/cabinet`        | React 19, Vite 8                                                    |
 | Виджет для сайта | `apps/widget`         | скрипт встраивания + форма записи в iframe (React 19, Vite 8)       |
+| Сайт продукта    | `apps/landing`        | React 19, Vite 8, рендер заранее, настоящие экраны и ролики         |
 | Домен            | `packages/domain`     | движок доступности, графики, правила вертикалей                     |
 | Контракты API    | `packages/contracts`  | схемы Zod → типы, OpenAPI, клиент                                   |
 | Дизайн-система   | `packages/ui`         | токены, светлая/тёмная тема и тема Telegram, компоненты на Base UI  |
 | Общие обёртки    | `packages/booking-ui` | иконки вертикалей, статусы, форматирование                          |
 | Переводы         | `packages/i18n`       | i18next, словарь вертикалей, форматтеры                             |
 
-Архитектура и принятые решения — в [docs/architecture.md](docs/architecture.md).
+Архитектура и принятые решения — в [docs/architecture.md](docs/architecture.md), выкатка в
+продакшен — в [docs/deploy.md](docs/deploy.md), нагрузочный тест — в
+[docs/performance.md](docs/performance.md), материалы о продукте и фильм — в
+[docs/case](docs/case/README.md).
 
 ## Запуск локально
 
@@ -37,6 +41,7 @@ pnpm dev:api           # API, фоновые задачи и боты (роли 
 pnpm dev:miniapp       # Mini App
 pnpm dev:cabinet       # кабинет
 pnpm dev:widget        # виджет записи и демо-сайт салона
+pnpm dev:landing       # сайт продукта
 ```
 
 | Сервис                                  | Адрес                                                                   |
@@ -45,10 +50,11 @@ pnpm dev:widget        # виджет записи и демо-сайт сало
 | Кабинет                                 | http://127.0.0.1:46220                                                  |
 | Mini App (вне Telegram — демо-эмулятор) | http://127.0.0.1:46230                                                  |
 | Демо-сайт салона с виджетом             | http://127.0.0.1:46240/demo/siren.html                                  |
+| Сайт продукта                           | http://127.0.0.1:46250                                                  |
 | Тестовая касса (страница оплаты)        | открывается из Mini App и виджета при предоплате                        |
 | PostgreSQL / Redis                      | 127.0.0.1:46201 / 127.0.0.1:46202                                       |
 
-Сборка для продакшена: `pnpm build`, просмотр собранных фронтендов — `pnpm --filter @mestechko/cabinet preview` (46221), `pnpm --filter @mestechko/miniapp preview` (46231) и `pnpm --filter @mestechko/widget preview` (46241).
+Сборка для продакшена: `pnpm build`, просмотр собранных фронтендов — `pnpm --filter @mestechko/cabinet preview` (46221), `pnpm --filter @mestechko/miniapp preview` (46231), `pnpm --filter @mestechko/widget preview` (46241) и `pnpm --filter @mestechko/landing preview` (46251). Продакшен-стек целиком (Docker, Caddy с TLS, бэкапы) — `docker-compose.prod.yml`, см. [docs/deploy.md](docs/deploy.md).
 
 Остановить инфраструктуру: `pnpm infra:stop`.
 
@@ -74,8 +80,9 @@ Mini App вне Telegram открывается в эмуляторе: выбе�
 ## Демо-данные
 
 `pnpm demo:reset` возвращает демо-бизнесы к состоянию seed: удаляет их вместе с записями,
-клиентами и сообщениями и создаёт заново. В развёртывании эта же команда запускается каждую ночь
-по расписанию. Скриншоты снимаются на отдельной базе `mestechko_screenshots`, которую
+клиентами и сообщениями и создаёт заново. В развёртывании то же делает каждую ночь сервис
+`demo-reset` (`pnpm demo:schedule`: планировщик BullMQ, `DEMO_RESET_CRON` в
+`DEMO_RESET_TIMEZONE`, по умолчанию 04:00 по Москве). Скриншоты снимаются на отдельной базе `mestechko_screenshots`, которую
 `pnpm screenshots` каждый раз создаёт с нуля, — рабочая демо-база не меняется. Что внутри
 демо-данных и почему телефоны вида «+7 0XX …», — в [docs/demo-data.md](docs/demo-data.md).
 
@@ -139,6 +146,11 @@ Mini App вне Telegram открывается в эмуляторе: выбе�
 pnpm gate              # размеры файлов и папок, токены, формат, линтер, типы, контракты, unit-тесты
 pnpm test:integration  # PostgreSQL и Redis: брони, изоляция тенантов, ограничения, миграции,
                        # бот на тестовом Bot API: напоминания, явка, перенос, отмена, лист ожидания
-pnpm screenshots       # скриншоты Mini App, кабинета и виджета: 390/768/1280 во всех темах
-                       # на чистой базе из seed (своя БД, API, превью)
+pnpm screenshots       # скриншоты сайта, Mini App, кабинета и виджета: 390/768/1280 во всех
+                       # темах на чистой базе из seed (своя БД, API, превью)
+pnpm media:landing     # экраны и ролики для сайта продукта на чистой базе
+pnpm media:film        # фильм о продукте 1920×1080 и 1080×1920 в docs/case/video
 ```
+
+Нагрузочный тест — k6 из Docker-образа `grafana/k6` по продакшен-стеку, сценарий
+`tooling/load/booking-load.js`, результаты и запуск — в [docs/performance.md](docs/performance.md).
