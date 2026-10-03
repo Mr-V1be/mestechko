@@ -1,7 +1,7 @@
 /**
  * Visual check of milestone screens: every screen at 390, 768 and 1280 px in every theme.
  * Run against built apps (vite preview) with the API and demo data up.
- *   node tooling/screenshots/capture.ts [--only miniapp|cabinet|widget] [--out docs/screenshots/m3]
+ *   node tooling/screenshots/capture.ts [--only miniapp,cabinet,widget] [--out docs/screenshots/m3]
  */
 import { mkdirSync } from 'node:fs';
 import { parseArgs } from 'node:util';
@@ -60,7 +60,8 @@ const apps = [
 const problems: Problem[] = [];
 const browser = await chromium.launch(browserLaunchOptions);
 try {
-  for (const app of apps.filter((candidate) => !values.only || candidate.name === values.only)) {
+  const only = values.only?.split(',');
+  for (const app of apps.filter((candidate) => !only || only.includes(candidate.name))) {
     for (const viewport of viewports.filter(
       (candidate) => !values.viewport || candidate.name === values.viewport,
     )) {

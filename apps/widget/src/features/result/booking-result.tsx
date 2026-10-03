@@ -2,6 +2,7 @@ import { useFormat } from '@mestechko/booking-ui';
 import type { WidgetBooking } from '@mestechko/contracts/client';
 import {
   Button,
+  Callout,
   CelebrationIllustration,
   EmptyIllustration,
   ListGroup,
@@ -137,28 +138,25 @@ function AwaitingPayment({
     ? format.instant(booking.hold.expiresAt, booking.location.timeZone, 'time')
     : '';
   return (
-    <section className={styles.panel} aria-live="polite">
-      <div className={styles.panelHeading}>
-        {checking ? <Spinner /> : <Hourglass aria-hidden="true" />}
-        <h2 className={styles.panelTitle}>
-          {checking ? t('result.checking') : t('result.awaitingTitle')}
-        </h2>
-      </div>
-      <p className={styles.panelText}>
-        {booking.deposit
-          ? t('result.awaiting', { time: until, amount: format.money(booking.deposit) })
-          : t('result.late')}
-      </p>
-      {checkoutUrl && booking.deposit && !checking ? (
-        <Button
-          onClick={() => {
-            window.location.assign(checkoutUrl);
-          }}
-        >
-          {t('result.pay', { amount: format.money(booking.deposit) })}
-        </Button>
-      ) : null}
-    </section>
+    <Callout
+      icon={checking ? <Spinner /> : <Hourglass />}
+      title={checking ? t('result.checking') : t('result.awaitingTitle')}
+      actions={
+        checkoutUrl && booking.deposit && !checking ? (
+          <Button
+            onClick={() => {
+              window.location.assign(checkoutUrl);
+            }}
+          >
+            {t('result.pay', { amount: format.money(booking.deposit) })}
+          </Button>
+        ) : undefined
+      }
+    >
+      {booking.deposit
+        ? t('result.awaiting', { time: until, amount: format.money(booking.deposit) })
+        : t('result.late')}
+    </Callout>
   );
 }
 

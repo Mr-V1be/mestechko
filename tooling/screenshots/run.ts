@@ -3,7 +3,7 @@
  * workers and previews of the built apps on separate ports. The working demo database
  * is never touched, and scenarios that book or cancel cannot leak into the next run.
  *
- *   pnpm screenshots [--out docs/screenshots/m3] [--only miniapp|cabinet|widget] [--viewport 390]
+ *   pnpm screenshots [--out docs/screenshots/m3] [--only cabinet,widget] [--viewport 390]
  */
 import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
 import { parseArgs } from 'node:util';

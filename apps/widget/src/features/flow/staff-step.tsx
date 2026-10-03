@@ -38,7 +38,6 @@ export function StaffStep({
     <ListGroup>
       <ListItem
         selected={value === ANY_STAFF}
-        disabled={anyNextSlot === null}
         leading={
           <span className={styles.anyIcon}>
             <Users aria-hidden="true" />
@@ -55,7 +54,6 @@ export function StaffStep({
         <ListItem
           key={option.id}
           selected={value === option.id}
-          disabled={option.nextSlot === null}
           leading={
             <Avatar
               name={option.displayName}

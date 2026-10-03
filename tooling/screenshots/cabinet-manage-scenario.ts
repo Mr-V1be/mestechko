@@ -6,6 +6,8 @@ const SETTLE_MS = 600;
 const MAX_VISITS_TO_TRY = 10;
 
 async function signInAsOwner(page: Page, base: string): Promise<string> {
+  // The front-desk scenario ends signed in as a staff member.
+  await page.context().clearCookies();
   await page.goto(`${base}/sign-in`);
   await page.getByRole('button', { name: 'Войти в демо' }).click();
   await page.waitForURL(/\/schedule/);

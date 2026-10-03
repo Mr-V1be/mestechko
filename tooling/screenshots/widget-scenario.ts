@@ -1,7 +1,8 @@
 import type { Frame, Page } from 'playwright';
 import type { Session } from './browser.ts';
 
-const MAX_WEEKS_AHEAD = 3;
+/** Prepaid colouring is popular: its free time may be weeks ahead. */
+const MAX_WEEKS_AHEAD = 8;
 const SETTLE_MS = 800;
 
 function inlineFrame(page: Page): Frame {
