@@ -1,8 +1,23 @@
 import { sql, type Kysely } from 'kysely';
 
+export class UnsafeApplicationRoleError extends Error {
+  constructor(role: string) {
+    super(
+      `The application role "${role}" is a superuser: row-level security would not apply to it. ` +
+        'Recreate it as an ordinary role.',
+    );
+    this.name = 'UnsafeApplicationRoleError';
+  }
+}
+
 /**
  * Ensures the restricted application role exists and can use every table.
  * The role owns nothing and is not a superuser, so row-level security applies to it.
+ *
+ * The owner that runs this may be a superuser (a dedicated server) or an ordinary role with
+ * CREATEROLE and BYPASSRLS (a PostgreSQL shared with other products). Only a superuser may
+ * name the SUPERUSER attribute in ALTER ROLE, so an existing role is checked instead of
+ * being altered with NOSUPERUSER.
  */
 export async function provisionApplicationRole(
   admin: Kysely<unknown>,
@@ -15,11 +30,15 @@ export async function provisionApplicationRole(
   const roleId = sql.id(role);
   const passwordLiteral = sql.lit(password);
 
-  const existing = await sql<{ exists: boolean }>`
-    select exists (select 1 from pg_roles where rolname = ${role}) as exists
+  const existing = await sql<{ superuser: boolean }>`
+    select rolsuper as superuser from pg_roles where rolname = ${role}
   `.execute(admin);
-  if (existing.rows[0]?.exists) {
-    await sql`alter role ${roleId} with login nosuperuser nobypassrls password ${passwordLiteral}`.execute(
+  const current = existing.rows[0];
+  if (current !== undefined) {
+    if (current.superuser) {
+      throw new UnsafeApplicationRoleError(role);
+    }
+    await sql`alter role ${roleId} with login nobypassrls password ${passwordLiteral}`.execute(
       admin,
     );
   } else {
