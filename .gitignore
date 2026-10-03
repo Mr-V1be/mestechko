@@ -10,3 +10,4 @@ coverage/
 *.log
 tooling/screenshots/.output/
 tmp/
+.claude/
