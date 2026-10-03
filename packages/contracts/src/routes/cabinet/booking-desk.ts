@@ -1,3 +1,4 @@
+import { loyaltyKindIds } from '@mestechko/domain';
 import { z } from 'zod';
 import {
   instantSchema,
@@ -125,6 +126,12 @@ export const getVisitSettlementOptions = defineRoute({
     prepaid: moneySchema,
     pointsBalance: z.number().int(),
     pointsRedeemable: z.number().int(),
+    /** The business's program, so the desk can show points earned before settling. */
+    loyalty: z.object({
+      kind: z.enum(loyaltyKindIds),
+      accrualPercent: z.number().int(),
+      maxRedeemPercent: z.number().int(),
+    }),
     passes: z.array(
       z.object({
         id: uuidSchema,

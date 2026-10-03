@@ -73,6 +73,7 @@ export class CatalogQueries {
         name: business.name,
         vertical: verticalSummaryOf(vertical),
         currency: business.currency,
+        countryCode: business.countryCode,
       },
       locations,
       staff: staff.map((member) => ({

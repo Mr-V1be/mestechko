@@ -7547,6 +7547,10 @@
                             "KZT",
                             "UZS"
                           ]
+                        },
+                        "countryCode": {
+                          "type": "string",
+                          "pattern": "^[A-Z]{2}$"
                         }
                       },
                       "required": [
@@ -7554,7 +7558,8 @@
                         "slug",
                         "name",
                         "vertical",
-                        "currency"
+                        "currency",
+                        "countryCode"
                       ],
                       "additionalProperties": false
                     },
@@ -8995,6 +9000,20 @@
                         "no_show"
                       ]
                     },
+                    "notifiedVia": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "telegram",
+                            "max"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "comment": {
                       "type": [
                         "string",
@@ -9188,6 +9207,7 @@
                     "payment",
                     "settlement",
                     "actions",
+                    "notifiedVia",
                     "comment",
                     "createdAt",
                     "attendanceConfirmedAt",
@@ -9671,6 +9691,20 @@
                         "no_show"
                       ]
                     },
+                    "notifiedVia": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "telegram",
+                            "max"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "comment": {
                       "type": [
                         "string",
@@ -9864,6 +9898,7 @@
                     "payment",
                     "settlement",
                     "actions",
+                    "notifiedVia",
                     "comment",
                     "createdAt",
                     "attendanceConfirmedAt",
@@ -10379,6 +10414,20 @@
                         "no_show"
                       ]
                     },
+                    "notifiedVia": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "telegram",
+                            "max"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "comment": {
                       "type": [
                         "string",
@@ -10572,6 +10621,7 @@
                     "payment",
                     "settlement",
                     "actions",
+                    "notifiedVia",
                     "comment",
                     "createdAt",
                     "attendanceConfirmedAt",
@@ -11075,6 +11125,20 @@
                         "no_show"
                       ]
                     },
+                    "notifiedVia": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "telegram",
+                            "max"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "comment": {
                       "type": [
                         "string",
@@ -11268,6 +11332,7 @@
                     "payment",
                     "settlement",
                     "actions",
+                    "notifiedVia",
                     "comment",
                     "createdAt",
                     "attendanceConfirmedAt",
@@ -11790,6 +11855,20 @@
                         "no_show"
                       ]
                     },
+                    "notifiedVia": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "telegram",
+                            "max"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "comment": {
                       "type": [
                         "string",
@@ -11983,6 +12062,7 @@
                     "payment",
                     "settlement",
                     "actions",
+                    "notifiedVia",
                     "comment",
                     "createdAt",
                     "attendanceConfirmedAt",
@@ -12486,6 +12566,20 @@
                         "no_show"
                       ]
                     },
+                    "notifiedVia": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "telegram",
+                            "max"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "comment": {
                       "type": [
                         "string",
@@ -12679,6 +12773,7 @@
                     "payment",
                     "settlement",
                     "actions",
+                    "notifiedVia",
                     "comment",
                     "createdAt",
                     "attendanceConfirmedAt",
@@ -12847,6 +12942,34 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "loyalty": {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "none",
+                            "cashback_points"
+                          ]
+                        },
+                        "accrualPercent": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "maxRedeemPercent": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "accrualPercent",
+                        "maxRedeemPercent"
+                      ],
+                      "additionalProperties": false
+                    },
                     "passes": {
                       "type": "array",
                       "items": {
@@ -12886,6 +13009,7 @@
                     "prepaid",
                     "pointsBalance",
                     "pointsRedeemable",
+                    "loyalty",
                     "passes"
                   ],
                   "additionalProperties": false

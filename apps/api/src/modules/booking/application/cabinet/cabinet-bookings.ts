@@ -1,17 +1,20 @@
 import type { CabinetBookingDetails, CabinetBookingRow } from '@mestechko/contracts';
 import {
+  bookingSources,
   businessBookingActionIds,
   businessBookingActions,
   localDayBounds,
   Temporal,
   type BookingStatus,
   type Clock,
+  type MessengerChannel,
 } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { BusinessAccess } from '../../../../shared/application/business-access.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { CatalogReader } from '../../../catalog/application/catalog-reader.js';
+import type { MessengerContacts } from '../../../clients/application/ports.js';
 import type { LedgerStore, SettlementEntryView } from '../../../loyalty/application/ports.js';
 import type { PaymentRecord } from '../../../payments/application/ports.js';
 import type { Prepayments } from '../../../payments/application/prepayments.js';
@@ -46,7 +49,7 @@ function toRow(view: CabinetBookingView, avatars: AvatarUrls): CabinetBookingRow
     start: view.startsAt.toISOString(),
     end: view.endsAt.toISOString(),
     timeZone: view.timeZone,
-    client: view.client,
+    client: { id: view.client.id, displayName: view.client.displayName, phone: view.client.phone },
     staff: {
       id: view.staff.id,
       displayName: view.staff.displayName,
@@ -60,6 +63,7 @@ function toRow(view: CabinetBookingView, avatars: AvatarUrls): CabinetBookingRow
 }
 
 interface DetailsExtras {
+  readonly notifiedVia: MessengerChannel | null;
   readonly payment: PaymentRecord | null;
   readonly settlement: readonly SettlementEntryView[];
   readonly now: number;
@@ -96,6 +100,7 @@ function toDetails(
         businessBookingActions[action].isAvailable(state, extras.now),
       ]),
     ) as CabinetBookingDetails['actions'],
+    notifiedVia: extras.notifiedVia,
     comment: view.comment,
     createdAt: view.createdAt.toISOString(),
     attendanceConfirmedAt: view.attendanceConfirmedAt?.toISOString() ?? null,
@@ -129,6 +134,7 @@ export class CabinetBookings {
     private readonly queries: CabinetBookingQueries,
     private readonly prepayments: Prepayments,
     private readonly ledger: LedgerStore,
+    private readonly contacts: MessengerContacts,
     private readonly avatars: AvatarUrls,
     private readonly clock: Clock,
   ) {}
@@ -188,11 +194,14 @@ export class CabinetBookings {
     if (!view) {
       throw notFound('Booking');
     }
-    const [payment, settlement] = await Promise.all([
+    const customerId = view.client.customerId;
+    const [payment, settlement, preferred] = await Promise.all([
       this.prepayments.ofBooking(bookingId),
       this.ledger.settlementOf(bookingId),
+      customerId ? this.contacts.preferredChannel(customerId) : Promise.resolve(null),
     ]);
     return toDetails(view, this.avatars, {
+      notifiedVia: customerId ? (bookingSources[view.source].channel ?? preferred) : null,
       payment,
       settlement,
       now: this.clock.now().epochMilliseconds,

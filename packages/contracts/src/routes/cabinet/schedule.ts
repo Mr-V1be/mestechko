@@ -61,6 +61,8 @@ export const getCabinetOverview = defineRoute({
       name: z.string(),
       vertical: verticalSummarySchema,
       currency: currencySchema,
+      /** ISO 3166-1 alpha-2; the default region for phone numbers. */
+      countryCode: z.string().regex(/^[A-Z]{2}$/),
     }),
     locations: z.array(locationSchema),
     staff: z.array(cabinetStaffSchema),
@@ -184,6 +186,8 @@ export const cabinetBookingDetailsSchema = cabinetBookingRowSchema.extend({
   settlement: visitSettlementSchema.nullable(),
   /** What the business can do with the booking right now. */
   actions: z.record(z.enum(businessBookingActionIds), z.boolean()),
+  /** Messenger the client hears about changes in; `null` when they cannot be told. */
+  notifiedVia: z.enum(messengerChannelIds).nullable(),
   comment: z.string().nullable(),
   createdAt: instantSchema,
   attendanceConfirmedAt: instantSchema.nullable(),

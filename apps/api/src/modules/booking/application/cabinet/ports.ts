@@ -48,6 +48,7 @@ export interface CabinetBookingView {
     readonly id: string;
     readonly displayName: string;
     readonly phone: string | null;
+    readonly customerId: string | null;
   };
   readonly staff: {
     readonly id: string;

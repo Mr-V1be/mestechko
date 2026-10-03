@@ -289,6 +289,7 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
         'c.id as clientId',
         'c.displayName as clientName',
         'c.phone as clientPhone',
+        'c.customerId as clientCustomerId',
         's.id as staffId',
         's.displayName as staffName',
         's.title as staffTitle',
@@ -318,7 +319,12 @@ export class KyselyCabinetBookingQueries implements CabinetBookingQueries {
       startsAt: row.startsAt,
       endsAt: row.endsAt,
       timeZone: row.timeZone,
-      client: { id: row.clientId, displayName: row.clientName, phone: row.clientPhone },
+      client: {
+        id: row.clientId,
+        displayName: row.clientName,
+        phone: row.clientPhone,
+        customerId: row.clientCustomerId,
+      },
       staff: {
         id: row.staffId,
         displayName: row.staffName,

@@ -302,6 +302,7 @@ export class BusinessBookingChanges {
           prepaid: money(visit.prepaidMinor),
           pointsBalance: options.pointsBalance,
           pointsRedeemable: options.pointsRedeemable,
+          loyalty: options.loyalty,
           passes: options.passes.map((pass) => ({
             id: pass.id,
             name: pass.name,

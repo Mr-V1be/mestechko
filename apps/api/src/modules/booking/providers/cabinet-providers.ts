@@ -4,7 +4,12 @@ import { AVATAR_URLS, type AvatarUrls } from '../../../shared/application/avatar
 import { CLOCK, ID_GENERATOR, type IdGenerator } from '../../../shared/application/ports.js';
 import { UNIT_OF_WORK, type UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import { CATALOG_READER, type CatalogReader } from '../../catalog/application/catalog-reader.js';
-import { CLIENT_DIRECTORY, type ClientDirectory } from '../../clients/application/ports.js';
+import {
+  CLIENT_DIRECTORY,
+  MESSENGER_CONTACTS,
+  type ClientDirectory,
+  type MessengerContacts,
+} from '../../clients/application/ports.js';
 import { LEDGER_STORE, type LedgerStore } from '../../loyalty/application/ports.js';
 import { VisitSettlements } from '../../loyalty/application/visit-settlements.js';
 import { Prepayments } from '../../payments/application/prepayments.js';
@@ -72,6 +77,7 @@ export const cabinetBookingProviders: Provider[] = [
       queries: CabinetBookingQueries,
       prepayments: Prepayments,
       ledger: LedgerStore,
+      contacts: MessengerContacts,
       avatars: AvatarUrls,
       clock: Clock,
     ) =>
@@ -82,6 +88,7 @@ export const cabinetBookingProviders: Provider[] = [
         queries,
         prepayments,
         ledger,
+        contacts,
         avatars,
         clock,
       ),
@@ -92,6 +99,7 @@ export const cabinetBookingProviders: Provider[] = [
       CABINET_BOOKING_QUERIES,
       Prepayments,
       LEDGER_STORE,
+      MESSENGER_CONTACTS,
       AVATAR_URLS,
       CLOCK,
     ],

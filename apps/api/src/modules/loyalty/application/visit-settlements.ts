@@ -36,6 +36,7 @@ export interface SettlementChoice {
 
 /** What the front desk may use to pay for a visit. */
 export interface SettlementOptions {
+  readonly loyalty: LoyaltySettings;
   readonly pointsBalance: number;
   readonly pointsRedeemable: number;
   readonly passes: readonly (ClientPassRecord & { readonly visitsLeft: number })[];
@@ -56,6 +57,7 @@ export class VisitSettlements {
     const program = (await this.loyalty.program()) ?? noLoyalty;
     const pointsBalance = await this.ledger.balance(visit.clientId, 'points');
     return {
+      loyalty: program,
       pointsBalance,
       pointsRedeemable: pointsRedeemable(program, visit.totalMinor, pointsBalance),
       passes: await this.coveringPasses(visit),
