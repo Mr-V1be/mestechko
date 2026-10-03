@@ -226,6 +226,38 @@ docker compose --env-file .env.production -f docker-compose.prod.yml exec api \
   node dist/cli/bot-check.js booking --business siren   # = pnpm bot:check booking
 ```
 
+## Маленький сервер и общая инфраструктура
+
+**Один процесс.** Роли процесса задаёт `APP_ROLES`; сервис `api` берёт их из `API_ROLES`
+(по умолчанию `api`). На сервере с 2–4 ГБ памяти API, очереди и бот работают в одном процессе
+Node — без двух лишних рантаймов Node и их пулов соединений:
+
+```sh
+# .env.production
+API_ROLES=api,worker,bot
+DATABASE_POOL_MAX=8
+```
+
+```sh
+docker compose --env-file .env.production -f docker-compose.prod.yml up -d --wait \
+  --scale worker=0 --scale bot=0
+```
+
+Раздельные сервисы `worker` и `bot` остаются для роста: их можно масштабировать независимо,
+вернув `API_ROLES=api`. Проверка здоровья у процесса с ролью `api` — по HTTP, у остальных — по
+файлу-пульсу, так что оба режима проверяются одинаково.
+
+**PostgreSQL, общий с другими продуктами.** Владелец базы (`DATABASE_ADMIN_URL`) не обязан
+быть суперпользователем: достаточно роли-владельца базы с `CREATEROLE` (создаёт роль
+приложения) и `BYPASSRLS` (миграции и демо-сброс работают поверх всех заведений). Роль
+приложения `mestechko_app` создаётся без `BYPASSRLS`; при каждой выкатке `migrate` проверяет,
+что она не суперпользователь, иначе останавливает выкатку. Расширения `btree_gist` и
+`pg_trgm` доверенные — владелец создаёт их сам.
+
+**Redis, общий с другими продуктами.** `REDIS_DB` — номер базы Redis для «Местечка»
+(по умолчанию 0). Политика памяти — только `noeviction`: очереди BullMQ не переживают
+вытеснение ключей.
+
 ## Обновление
 
 ```sh

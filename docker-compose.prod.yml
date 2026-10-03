@@ -24,7 +24,7 @@ x-app-environment: &app-environment
   NODE_ENV: production
   DATABASE_URL: postgres://mestechko_app:${APP_DB_PASSWORD:?}@postgres:5432/mestechko
   DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
-  REDIS_URL: redis://:${REDIS_PASSWORD:?}@redis:6379/0
+  REDIS_URL: redis://:${REDIS_PASSWORD:?}@redis:6379/${REDIS_DB:-0}
   API_HOST: 0.0.0.0
   API_PORT: '46210'
   COOKIE_SECURE: 'true'
@@ -140,11 +140,13 @@ services:
     logging: *logging
     networks: [data]
 
+  # On a small host one process can take every role: API_ROLES=api,worker,bot, and the
+  # worker and bot services are not started (docs/deploy.md, «Один процесс»).
   api:
     <<: *api-image
     environment:
       <<: *app-environment
-      APP_ROLES: api
+      APP_ROLES: ${API_ROLES:-api}
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
@@ -186,7 +188,7 @@ services:
       <<: *owner-database
       NODE_ENV: production
       DATABASE_URL: postgres://mestechko_app:${APP_DB_PASSWORD}@postgres:5432/mestechko
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/${REDIS_DB:-0}
       DEMO_RESET_CRON: ${DEMO_RESET_CRON:-0 4 * * *}
       DEMO_RESET_TIMEZONE: ${DEMO_RESET_TIMEZONE:-Europe/Moscow}
     healthcheck:
