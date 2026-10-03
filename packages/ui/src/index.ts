@@ -38,6 +38,7 @@ export {
   type TimeRangeFieldProps,
 } from './components/form/time-range-field';
 export { FileButton, type FileButtonProps } from './components/form/file-button';
+export { TagInput, type TagInputProps, type TagInputTexts } from './components/form/tag-input';
 export {
   ConfirmDialog,
   Dialog,

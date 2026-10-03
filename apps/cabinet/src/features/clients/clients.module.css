@@ -1,0 +1,143 @@
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Search on its own row until desktop widths; tag and order share the next one. */
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'search search'
+    'tag sort';
+  align-items: end;
+  gap: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+  .toolbar {
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--size-aside)) auto;
+    grid-template-areas: 'search tag sort';
+  }
+}
+
+.search {
+  grid-area: search;
+}
+
+.tagFilter {
+  grid-area: tag;
+}
+
+/* The segmented control is lower than a field; it centres on the fields' line. */
+.sort {
+  grid-area: sort;
+  display: flex;
+  align-items: center;
+  min-height: var(--size-control-md);
+}
+
+.results {
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.results[aria-busy='true'] {
+  opacity: 0.6;
+}
+
+.clientCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.clientName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  font-weight: var(--font-weight-regular);
+}
+
+.clientCell .tags {
+  flex-wrap: nowrap;
+  margin-top: 0;
+  overflow: hidden;
+}
+
+.line {
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+
+.figures {
+  font-variant-numeric: tabular-nums;
+}
+
+.noShows {
+  color: var(--color-danger);
+  font-weight: var(--font-weight-heavy);
+}
+
+.quiet {
+  color: var(--color-text-tertiary);
+}
+
+.next {
+  color: var(--color-accent-text);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.more {
+  align-self: center;
+}
+
+.emptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: calc(var(--size-control-lg) + var(--space-4));
+  padding: var(--space-3) var(--space-4);
+}
+
+.skeletonRow + .skeletonRow {
+  box-shadow: inset 0 var(--size-hairline) 0 var(--color-border);
+}
+
+.skeletonText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.failure {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
