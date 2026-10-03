@@ -4,7 +4,7 @@
  * page scroll and console errors. For checking a screen while building it; the
  * milestone screenshots come from `pnpm screenshots`.
  *   node tooling/screenshots/look.ts --path team [--out /tmp/look] [--cabinet http://127.0.0.1:46220]
- *     [--business siren] [--role owner] [--click "Добавить"] [--viewport 390]
+ *     [--business Чуб] [--role owner] [--click "Добавить"] [--viewport 390]
  */
 import { mkdirSync } from 'node:fs';
 import { parseArgs } from 'node:util';
@@ -16,7 +16,7 @@ const { values } = parseArgs({
     path: { type: 'string', default: 'schedule' },
     out: { type: 'string', default: 'tmp/look' },
     cabinet: { type: 'string', default: 'http://127.0.0.1:46220' },
-    business: { type: 'string', default: 'Сирень' },
+    business: { type: 'string' },
     role: { type: 'string', default: 'Владелец' },
     click: { type: 'string', multiple: true },
     viewport: { type: 'string' },
@@ -51,9 +51,9 @@ try {
         await page.goto(`${values.cabinet}/sign-in`);
         await page.getByRole('button', { name: 'Войти в демо' }).waitFor();
         // The demo picker preselects the first business; another one is chosen by name.
-        const business = page.getByText(values.business, { exact: false }).first();
-        if (await business.isVisible()) {
-          await business.click();
+        if (values.business) {
+          await page.getByRole('combobox').first().click();
+          await page.getByRole('option', { name: new RegExp(values.business) }).click();
         }
         await page.getByRole('button', { name: 'Войти в демо' }).click();
         await page.waitForURL(/\/b\/[^/]+\//);
