@@ -17,7 +17,8 @@ export interface EmbedParams {
   readonly paymentReturn: boolean;
 }
 
-const EMBED_PAGE = '/embed.html';
+/** The frame's page, under the widget's base path (`/` or e.g. `/widget/`). */
+const EMBED_PAGE = `${import.meta.env.BASE_URL}embed.html`;
 const SLUG = /^[a-z0-9][a-z0-9-]{1,62}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

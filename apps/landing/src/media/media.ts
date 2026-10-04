@@ -1,4 +1,4 @@
-/** A screen of the product captured in both themes, as files under `/media`. */
+/** A screen of the product captured in both themes, as files under the site's `media/`. */
 export interface ThemedMedia {
   readonly light: string;
   readonly dark: string;
@@ -7,8 +7,8 @@ export interface ThemedMedia {
 }
 
 const themed = (name: string, extension: string, width: number, height: number): ThemedMedia => ({
-  light: `/media/${name}-light.${extension}`,
-  dark: `/media/${name}-dark.${extension}`,
+  light: `${import.meta.env.BASE_URL}media/${name}-light.${extension}`,
+  dark: `${import.meta.env.BASE_URL}media/${name}-dark.${extension}`,
   width,
   height,
 });

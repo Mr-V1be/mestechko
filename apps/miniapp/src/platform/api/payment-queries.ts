@@ -12,9 +12,13 @@ function bookingPath(slug: string, bookingId: string, stage: string): string {
   return `/b/${encodeURIComponent(slug)}/bookings/${bookingId}?${PAYMENT_RETURN_PARAM}=${stage}`;
 }
 
-/** Where the payment page sends the client back: the booking, marked as a return. */
+/**
+ * Where the payment page sends the client back: the booking, marked as a return. The page
+ * leaves the app, so the path is the site's whole path, under the app's base (`/` on a name
+ * of its own, e.g. `/miniapp/` under a shared one) — unlike the router's paths below it.
+ */
 export function paymentReturnPath(slug: string, bookingId: string): string {
-  return bookingPath(slug, bookingId, paymentStages.returned);
+  return `${import.meta.env.BASE_URL.replace(/\/$/, '')}${bookingPath(slug, bookingId, paymentStages.returned)}`;
 }
 
 /** The booking while its payment page is open in the browser outside the app. */

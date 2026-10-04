@@ -1,5 +1,12 @@
 import react from '@vitejs/plugin-react';
-import { defaultClientConditions, defineConfig, type Plugin, type ProxyOptions } from 'vite';
+import { appBasePath } from '@mestechko/ui/app-base';
+import {
+  defaultClientConditions,
+  defineConfig,
+  loadEnv,
+  type Plugin,
+  type ProxyOptions,
+} from 'vite';
 
 /** The API the dev and preview servers proxy to; the screenshot pipeline runs its own. */
 const API_TARGET = process.env.MESTECHKO_API_URL ?? 'http://127.0.0.1:46210';
@@ -43,8 +50,13 @@ function devLoader(): Plugin {
   };
 }
 
-export default defineConfig({
-  envDir: '../../',
+/** The repository's `.env` and build arguments both reach the config through here. */
+const ENV_DIR = '../../';
+
+export default defineConfig(({ mode }) => ({
+  envDir: ENV_DIR,
+  // Served under the path of its public address (VITE_WIDGET_BASE_URL): `/` on a name of its own.
+  base: appBasePath(loadEnv(mode, ENV_DIR, 'VITE_').VITE_WIDGET_BASE_URL),
   plugins: [react(), themeBoot(), devLoader()],
   resolve: { conditions: ['@mestechko/source', ...defaultClientConditions] },
   server: { host: '127.0.0.1', port: 46240, strictPort: true, proxy: apiProxy },
@@ -69,4 +81,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

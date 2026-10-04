@@ -10,8 +10,10 @@
   },
   "include": [
     "src",
+    "test",
     "vite.config.ts",
     "vite.loader.config.ts",
-    "../../packages/ui/src/css-modules.d.ts"
+    "../../packages/ui/src/css-modules.d.ts",
+    "vitest.config.ts"
   ]
 }

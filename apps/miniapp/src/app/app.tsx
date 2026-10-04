@@ -11,65 +11,69 @@ import type { HostStatus } from '../platform/telegram/telegram-host';
 import { AppProviders } from './providers';
 
 /** Screens beyond the first one load on demand to keep the first paint fast. */
-const router = createBrowserRouter([
-  {
-    element: <RootLayout />,
-    errorElement: <RouteErrorPage />,
-    children: [
-      { index: true, element: <StartRedirect /> },
-      {
-        path: 'b/:slug',
-        element: <BusinessLayout />,
-        children: [
-          { index: true, element: <BusinessPage /> },
-          {
-            path: 'l/:locationId/services',
-            lazy: async () => ({
-              Component: (await import('../features/booking/services-page')).ServicesPage,
-            }),
-          },
-          {
-            path: 'l/:locationId/staff',
-            lazy: async () => ({
-              Component: (await import('../features/booking/staff-page')).StaffPage,
-            }),
-          },
-          {
-            path: 'l/:locationId/time',
-            lazy: async () => ({
-              Component: (await import('../features/booking/time-page')).TimePage,
-            }),
-          },
-          {
-            path: 'l/:locationId/confirm',
-            lazy: async () => ({
-              Component: (await import('../features/booking/confirm-page')).ConfirmPage,
-            }),
-          },
-          {
-            path: 'bookings',
-            lazy: async () => ({
-              Component: (await import('../features/my-bookings/bookings-page')).BookingsPage,
-            }),
-          },
-          {
-            path: 'bookings/:bookingId',
-            lazy: async () => ({
-              Component: (await import('../features/my-bookings/booking-page')).BookingPage,
-            }),
-          },
-          {
-            path: 'bookings/:bookingId/reschedule',
-            lazy: async () => ({
-              Component: (await import('../features/my-bookings/reschedule-page')).ReschedulePage,
-            }),
-          },
-        ],
-      },
-      { path: '*', element: <NotFoundPage /> },
-    ],
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      element: <RootLayout />,
+      errorElement: <RouteErrorPage />,
+      children: [
+        { index: true, element: <StartRedirect /> },
+        {
+          path: 'b/:slug',
+          element: <BusinessLayout />,
+          children: [
+            { index: true, element: <BusinessPage /> },
+            {
+              path: 'l/:locationId/services',
+              lazy: async () => ({
+                Component: (await import('../features/booking/services-page')).ServicesPage,
+              }),
+            },
+            {
+              path: 'l/:locationId/staff',
+              lazy: async () => ({
+                Component: (await import('../features/booking/staff-page')).StaffPage,
+              }),
+            },
+            {
+              path: 'l/:locationId/time',
+              lazy: async () => ({
+                Component: (await import('../features/booking/time-page')).TimePage,
+              }),
+            },
+            {
+              path: 'l/:locationId/confirm',
+              lazy: async () => ({
+                Component: (await import('../features/booking/confirm-page')).ConfirmPage,
+              }),
+            },
+            {
+              path: 'bookings',
+              lazy: async () => ({
+                Component: (await import('../features/my-bookings/bookings-page')).BookingsPage,
+              }),
+            },
+            {
+              path: 'bookings/:bookingId',
+              lazy: async () => ({
+                Component: (await import('../features/my-bookings/booking-page')).BookingPage,
+              }),
+            },
+            {
+              path: 'bookings/:bookingId/reschedule',
+              lazy: async () => ({
+                Component: (await import('../features/my-bookings/reschedule-page')).ReschedulePage,
+              }),
+            },
+          ],
+        },
+        { path: '*', element: <NotFoundPage /> },
+      ],
+    },
+  ],
+  // Served under a path of a shared name, the routes start below it.
+  { basename: import.meta.env.BASE_URL },
+);
 
 export function App({ i18n, host }: { readonly i18n: i18n; readonly host: HostStatus }) {
   return (

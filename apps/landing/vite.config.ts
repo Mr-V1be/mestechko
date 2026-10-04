@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
+import { appBasePath } from '@mestechko/ui/app-base';
 import { themeBootScript } from '@mestechko/ui/theme-boot';
-import { defaultClientConditions, defineConfig, type Plugin } from 'vite';
+import { defaultClientConditions, defineConfig, loadEnv, type Plugin } from 'vite';
 import { THEME_STORAGE_KEY } from './src/app/theme-storage.ts';
 
 /** Applies the stored or system theme before the first paint. */
@@ -12,8 +13,13 @@ function themeBoot(): Plugin {
   };
 }
 
-export default defineConfig({
-  envDir: '../../',
+/** The repository's `.env` and build arguments both reach the config through here. */
+const ENV_DIR = '../../';
+
+export default defineConfig(({ mode }) => ({
+  envDir: ENV_DIR,
+  // Served under the path of its public address (VITE_LANDING_URL): `/` on a name of its own.
+  base: appBasePath(loadEnv(mode, ENV_DIR, 'VITE_').VITE_LANDING_URL),
   plugins: [react(), themeBoot()],
   resolve: { conditions: ['@mestechko/source', ...defaultClientConditions] },
   ssr: { noExternal: true, resolve: { conditions: ['@mestechko/source'] } },
@@ -38,4 +44,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

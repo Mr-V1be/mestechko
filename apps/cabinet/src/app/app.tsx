@@ -16,96 +16,100 @@ import { THEME_STORAGE_KEY } from './config';
 const RETRY_LIMIT = 2;
 const STALE_MS = 30_000;
 
-const router = createBrowserRouter([
-  {
-    errorElement: <RouteErrorPage />,
-    children: [
-      { path: 'sign-in', element: <SignInPage /> },
-      {
-        element: <RequireSession />,
-        children: [
-          { index: true, element: <HomeRedirect /> },
-          {
-            path: 'b/:businessId',
-            element: <AppShell />,
-            children: [
-              { index: true, element: <Navigate to="schedule" replace /> },
-              {
-                path: 'schedule',
-                lazy: async () => ({
-                  Component: (await import('../features/schedule/schedule-page')).SchedulePage,
-                }),
-              },
-              {
-                path: 'bookings',
-                lazy: async () => ({
-                  Component: (await import('../features/bookings/bookings-page')).BookingsPage,
-                }),
-              },
-              {
-                path: 'team',
-                lazy: async () => ({
-                  Component: (await import('../features/team/team-page')).TeamPage,
-                }),
-              },
-              {
-                path: 'team/:staffId',
-                lazy: async () => ({
-                  Component: (await import('../features/team/member/member-page')).MemberPage,
-                }),
-              },
-              {
-                path: 'services',
-                lazy: async () => ({
-                  Component: (await import('../features/catalog/catalog-page')).CatalogPage,
-                }),
-              },
-              {
-                path: 'loyalty',
-                lazy: async () => ({
-                  Component: (await import('../features/loyalty/loyalty-page')).LoyaltyPage,
-                }),
-              },
-              {
-                path: 'clients',
-                lazy: async () => ({
-                  Component: (await import('../features/clients/clients-page')).ClientsPage,
-                }),
-              },
-              {
-                path: 'clients/:clientId',
-                lazy: async () => ({
-                  Component: (await import('../features/clients/card/client-card-page'))
-                    .ClientCardPage,
-                }),
-              },
-              {
-                path: 'reports',
-                lazy: async () => ({
-                  Component: (await import('../features/reports/reports-page')).ReportsPage,
-                }),
-              },
-              {
-                path: 'settings',
-                lazy: async () => ({
-                  Component: (await import('../features/settings/settings-page')).SettingsPage,
-                }),
-              },
-              {
-                path: 'max-emulator/:userId?',
-                lazy: async () => ({
-                  Component: (await import('../features/max-emulator/max-emulator-page'))
-                    .MaxEmulatorPage,
-                }),
-              },
-            ],
-          },
-          { path: '*', element: <HomeRedirect /> },
-        ],
-      },
-    ],
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      errorElement: <RouteErrorPage />,
+      children: [
+        { path: 'sign-in', element: <SignInPage /> },
+        {
+          element: <RequireSession />,
+          children: [
+            { index: true, element: <HomeRedirect /> },
+            {
+              path: 'b/:businessId',
+              element: <AppShell />,
+              children: [
+                { index: true, element: <Navigate to="schedule" replace /> },
+                {
+                  path: 'schedule',
+                  lazy: async () => ({
+                    Component: (await import('../features/schedule/schedule-page')).SchedulePage,
+                  }),
+                },
+                {
+                  path: 'bookings',
+                  lazy: async () => ({
+                    Component: (await import('../features/bookings/bookings-page')).BookingsPage,
+                  }),
+                },
+                {
+                  path: 'team',
+                  lazy: async () => ({
+                    Component: (await import('../features/team/team-page')).TeamPage,
+                  }),
+                },
+                {
+                  path: 'team/:staffId',
+                  lazy: async () => ({
+                    Component: (await import('../features/team/member/member-page')).MemberPage,
+                  }),
+                },
+                {
+                  path: 'services',
+                  lazy: async () => ({
+                    Component: (await import('../features/catalog/catalog-page')).CatalogPage,
+                  }),
+                },
+                {
+                  path: 'loyalty',
+                  lazy: async () => ({
+                    Component: (await import('../features/loyalty/loyalty-page')).LoyaltyPage,
+                  }),
+                },
+                {
+                  path: 'clients',
+                  lazy: async () => ({
+                    Component: (await import('../features/clients/clients-page')).ClientsPage,
+                  }),
+                },
+                {
+                  path: 'clients/:clientId',
+                  lazy: async () => ({
+                    Component: (await import('../features/clients/card/client-card-page'))
+                      .ClientCardPage,
+                  }),
+                },
+                {
+                  path: 'reports',
+                  lazy: async () => ({
+                    Component: (await import('../features/reports/reports-page')).ReportsPage,
+                  }),
+                },
+                {
+                  path: 'settings',
+                  lazy: async () => ({
+                    Component: (await import('../features/settings/settings-page')).SettingsPage,
+                  }),
+                },
+                {
+                  path: 'max-emulator/:userId?',
+                  lazy: async () => ({
+                    Component: (await import('../features/max-emulator/max-emulator-page'))
+                      .MaxEmulatorPage,
+                  }),
+                },
+              ],
+            },
+            { path: '*', element: <HomeRedirect /> },
+          ],
+        },
+      ],
+    },
+  ],
+  // Served under a path of a shared name, the routes start below it.
+  { basename: import.meta.env.BASE_URL },
+);
 
 export function App({ i18n }: { readonly i18n: i18n }) {
   const [queryClient] = useState(

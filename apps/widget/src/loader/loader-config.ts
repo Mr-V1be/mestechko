@@ -9,8 +9,10 @@ export interface LoaderConfig {
   readonly target: string | null;
   /** The floating button of a popup widget; `false` when the site has its own buttons. */
   readonly launcher: boolean;
-  /** The widget's own origin, from the script's address. */
+  /** The widget's own origin, from the script's address: frames' messages must come from it. */
   readonly origin: string;
+  /** Where the widget is served: the folder of its script, e.g. `https://…/widget/`. */
+  readonly base: string;
 }
 
 function oneOf<T extends string>(values: readonly T[], value: string | undefined, fallback: T): T {
@@ -36,12 +38,24 @@ export function readLoaderConfig(script: HTMLScriptElement): LoaderConfig | null
     mode: oneOf(embedModes, script.dataset.mode, 'inline'),
     target: script.dataset.target ?? null,
     launcher: script.dataset.launcher !== 'none',
-    origin: new URL(script.src, window.location.href).origin,
+    ...widgetLocation(script.src, window.location.href),
   };
+}
+
+/**
+ * The widget's origin and folder from its script's address: the frame's page sits next to
+ * `widget.js`, at the root of a name of its own or under a path of a shared one.
+ */
+export function widgetLocation(
+  scriptSrc: string,
+  pageUrl: string,
+): { origin: string; base: string } {
+  const script = new URL(scriptSrc, pageUrl);
+  return { origin: script.origin, base: new URL('.', script).href };
 }
 
 /** The widget page for a frame of this config. */
 export function frameUrl(config: LoaderConfig, mode: EmbedMode): string {
   const query = new URLSearchParams({ business: config.business, theme: config.theme, mode });
-  return `${config.origin}/embed.html?${query.toString()}`;
+  return `${config.base}embed.html?${query.toString()}`;
 }
