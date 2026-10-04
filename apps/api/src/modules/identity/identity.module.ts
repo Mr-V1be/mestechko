@@ -138,7 +138,10 @@ import { TmaTelegramLaunch } from './infrastructure/tma-telegram-launch.js';
     },
     {
       provide: SESSION_COOKIE_SETTINGS,
-      useFactory: (config: AppConfig) => ({ secure: config.sessions.cookieSecure }),
+      useFactory: (config: AppConfig) => ({
+        secure: config.sessions.cookieSecure,
+        path: config.sessions.cookiePath,
+      }),
       inject: [APP_CONFIG],
     },
     {

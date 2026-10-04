@@ -18,6 +18,16 @@ describe('configuration', () => {
     expect(config.miniApp.publicUrl).toBeNull();
   });
 
+  it('sends the session cookie to the whole site unless the API has a path of its own', () => {
+    expect(loadConfig(required).sessions.cookiePath).toBe('/');
+    expect(loadConfig({ ...required, SESSION_COOKIE_PATH: '/api' }).sessions.cookiePath).toBe(
+      '/api',
+    );
+    expect(() => loadConfig({ ...required, SESSION_COOKIE_PATH: 'api' })).toThrow(
+      ConfigurationError,
+    );
+  });
+
   it('requires the payment provider’s keys', () => {
     expect(() => loadConfig({ ...required, TEST_PAY_SECRET_KEY: '' })).toThrow(ConfigurationError);
   });

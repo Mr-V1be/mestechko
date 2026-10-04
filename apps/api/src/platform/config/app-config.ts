@@ -79,6 +79,12 @@ const environmentSchema = z
     EXTERNAL_HTTP_TIMEOUT_MS: z.coerce.number().int().min(100).max(60_000).default(5_000),
     SESSION_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(30),
     COOKIE_SECURE: flag.optional(),
+    // The path of the session cookie: `/` when the API has a name of its own; the API's path
+    // (e.g. `/api`) when the apps and the API share one name, so pages never carry it.
+    SESSION_COOKIE_PATH: z
+      .string()
+      .regex(/^\/[\w\-./]*$/, { message: 'Must be a path starting with /' })
+      .default('/'),
     LOG_LEVEL: z.enum(logLevels).default('info'),
     METRICS_ENABLED: flag.default(true),
     OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
@@ -165,7 +171,11 @@ export interface AppConfig {
   readonly demo: { readonly enabled: boolean; readonly telegramSigningKey: string | null };
   readonly calendar: { readonly isDayOffBaseUrl: string };
   readonly externalHttp: { readonly timeoutMs: number };
-  readonly sessions: { readonly ttlDays: number; readonly cookieSecure: boolean };
+  readonly sessions: {
+    readonly ttlDays: number;
+    readonly cookieSecure: boolean;
+    readonly cookiePath: string;
+  };
   readonly observability: {
     readonly logLevel: (typeof logLevels)[number];
     readonly metricsEnabled: boolean;
@@ -240,6 +250,7 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
     sessions: {
       ttlDays: env.SESSION_TTL_DAYS,
       cookieSecure: env.COOKIE_SECURE ?? env.NODE_ENV === 'production',
+      cookiePath: env.SESSION_COOKIE_PATH,
     },
     observability: {
       logLevel: env.LOG_LEVEL,

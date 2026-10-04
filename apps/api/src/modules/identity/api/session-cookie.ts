@@ -4,6 +4,8 @@ export const SESSION_COOKIE = 'mst_session';
 
 export interface SessionCookieSettings {
   readonly secure: boolean;
+  /** Where the browser sends it back: the API's path on the site. */
+  readonly path: string;
 }
 
 export function readSessionCookie(request: FastifyRequest): string | null {
@@ -22,7 +24,7 @@ export function writeSessionCookie(
     httpOnly: true,
     sameSite: 'lax',
     secure: settings.secure,
-    path: '/',
+    path: settings.path,
     expires: expiresAt,
   });
 }
@@ -32,6 +34,6 @@ export function clearSessionCookie(reply: FastifyReply, settings: SessionCookieS
     httpOnly: true,
     sameSite: 'lax',
     secure: settings.secure,
-    path: '/',
+    path: settings.path,
   });
 }
