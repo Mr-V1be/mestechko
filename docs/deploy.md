@@ -254,6 +254,28 @@ docker compose --env-file .env.production -f docker-compose.prod.yml up -d --wai
 что она не суперпользователь, иначе останавливает выкатку. Расширения `btree_gist` и
 `pg_trgm` доверенные — владелец создаёт их сам.
 
+**Одно имя с путями.** Вместо пяти имён части продукта могут жить под путями одного имени,
+например `https://mestechko.ru/` — сайт, `/app/` — кабинет, `/miniapp/` — Mini App,
+`/widget/` — виджет, `/api/` — API. В `.env.production` задаются адреса частей — имена тогда не
+используются:
+
+```sh
+SITE_PUBLIC_URL=https://mestechko.ru
+CABINET_PUBLIC_URL=https://mestechko.ru/app
+MINIAPP_PUBLIC_URL=https://mestechko.ru/miniapp
+WIDGET_PUBLIC_URL=https://mestechko.ru/widget
+API_PUBLIC_URL=https://mestechko.ru/api
+TEST_PAY_CHECKOUT_BASE_URL=/api/test-pay   # страница тестовой кассы — под путём API
+SESSION_COOKIE_PATH=/api                    # cookie кабинета уходит только в запросы к API
+```
+
+Каждое приложение собирается под путь своего адреса (Vite `base`, basename маршрутизатора),
+виджет открывает форму рядом со своим `widget.js`, страница оплаты возвращает на полный путь
+приложения, вебхук Telegram и страница возврата после оплаты — под `API_PUBLIC_URL`. Пути
+раздаёт прокси перед стеком: `/api/*` — в `api` со снятым префиксом, `/app/*`, `/miniapp/*`,
+`/widget/*` — в статические приложения со снятым префиксом, остальное — в `landing`.
+Встроенный `edge` этого файла настроен на отдельные имена.
+
 **Redis, общий с другими продуктами.** `REDIS_DB` — номер базы Redis для «Местечка»
 (по умолчанию 0). Политика памяти — только `noeviction`: очереди BullMQ не переживают
 вытеснение ключей.
