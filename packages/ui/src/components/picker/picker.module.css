@@ -11,9 +11,13 @@
   font-weight: var(--font-weight-bold);
 }
 
+/* Seats are as wide as the longest time needs: `10:00` and `10:00 AM` both fit on one line. */
 .slots {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--size-slot-min), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(var(--size-slot-min), calc(var(--slot-label-length) * 1ch + var(--space-6))), 1fr)
+  );
   gap: var(--space-2);
 }
 
@@ -31,6 +35,7 @@
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   transition:
     background-color var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard);

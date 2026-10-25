@@ -133,6 +133,7 @@
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   transform: translateY(-50%);
 }
 
@@ -253,9 +254,16 @@
 }
 
 .blockTime {
+  overflow: hidden;
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
   color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact .blockTime {
+  flex-shrink: 0;
 }
 
 .blockClient {

@@ -42,7 +42,7 @@ export function ImpactDialog({ flow }: { readonly flow: ScheduleChangeFlow }) {
               key={visit.bookingId}
               title={t('impact.visit', {
                 date: format.instant(visit.start, visit.timeZone, 'weekdayDayMonth'),
-                time: `${format.instant(visit.start, visit.timeZone, 'time')}–${format.instant(visit.end, visit.timeZone, 'time')}`,
+                time: format.instantRange(visit.start, visit.end, visit.timeZone, 'time'),
               })}
               description={[visit.clientName, ...visit.serviceNames].join(' · ')}
             />

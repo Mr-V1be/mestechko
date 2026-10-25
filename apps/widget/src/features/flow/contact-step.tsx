@@ -1,17 +1,11 @@
-import { useFormat } from '@mestechko/booking-ui';
-import { asDemoPhone, formatDemoPhone, type BookingQuoteView } from '@mestechko/contracts/client';
+import { formatPhone, formatPhoneInput, phoneHint, useFormat } from '@mestechko/booking-ui';
+import { demoPhoneRangeOf, type BookingQuoteView } from '@mestechko/contracts/client';
 import { Checkbox, ListGroup, ListItem, Skeleton, TextField } from '@mestechko/ui';
 import { CalendarClock, UserRound, Wallet } from 'lucide-react';
-import { AsYouType, type CountryCode } from 'libphonenumber-js/min';
 import { useTranslation } from 'react-i18next';
 import type { ContactDraft, ContactErrors } from './contact-check';
 import { appConfig } from '../../app/config';
 import styles from './widget.module.css';
-
-function formatPhoneInput(value: string, country: string): string {
-  const demo = asDemoPhone(value);
-  return demo ? formatDemoPhone(demo) : new AsYouType(country as CountryCode).input(value);
-}
 
 export interface ContactStepProps {
   readonly start: string;
@@ -37,6 +31,8 @@ export function ContactStep({
 }: ContactStepProps) {
   const { t } = useTranslation();
   const format = useFormat();
+  const hint = phoneHint(countryCode);
+  const demoRange = demoPhoneRangeOf(countryCode);
   const assigned = quote?.assigned ?? null;
   const deposit = quote?.deposit && quote.deposit.amountMinor > 0 ? quote.deposit : null;
   return (
@@ -93,8 +89,15 @@ export function ContactStep({
           type="tel"
           inputMode="tel"
           autoComplete="tel"
-          placeholder={t('contact.phonePlaceholder')}
-          description={appConfig.demoMode ? t('contact.demoPhoneHint') : t('contact.phoneHint')}
+          placeholder={hint?.placeholder}
+          description={
+            appConfig.demoMode && demoRange
+              ? t('contact.demoPhoneHint', {
+                  mask: demoRange.mask,
+                  example: formatPhone(demoRange.example),
+                })
+              : t('contact.phoneHint')
+          }
           value={draft.phone}
           error={errors.phone ?? null}
           onChange={(event) => {

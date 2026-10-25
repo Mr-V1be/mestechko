@@ -1,10 +1,11 @@
+import { useFormat } from '@mestechko/booking-ui';
 import { IconButton } from '@mestechko/ui';
 import { clsx } from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBlockDrag, type DropTarget } from './use-block-drag';
-import { visibleHours, wallTime, type MinuteRange, type TimelineColumn } from './timeline-model';
+import { visibleHours, type MinuteRange, type TimelineColumn } from './timeline-model';
 import { useColumnPaging } from './use-column-paging';
 import styles from './timeline.module.css';
 
@@ -75,6 +76,7 @@ export function TimelineGrid({
   notice,
 }: TimelineGridProps) {
   const { t } = useTranslation();
+  const format = useFormat();
   const scroller = useRef<HTMLDivElement>(null);
   const corner = useRef<HTMLDivElement>(null);
   const paging = useColumnPaging(
@@ -169,7 +171,7 @@ export function TimelineGrid({
                   className={styles.hourLabel}
                   style={{ '--offset': index } as CSSProperties}
                 >
-                  {`${String(hour).padStart(2, '0')}:00`}
+                  {format.hourMark(hour)}
                 </span>
               ))}
             </div>
@@ -264,7 +266,10 @@ export function TimelineGrid({
                     })}
                     aria-hidden="true"
                   >
-                    {`${wallTime(dragPreview.minute)}–${wallTime(dragPreview.minute + durationOf(dragPreview.blockId))}`}
+                    {format.wallTimeRange(
+                      dragPreview.minute,
+                      dragPreview.minute + durationOf(dragPreview.blockId),
+                    )}
                   </div>
                 ) : null}
                 {notice?.columnKey === column.key ? (

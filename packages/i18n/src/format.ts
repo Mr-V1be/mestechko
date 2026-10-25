@@ -43,13 +43,88 @@ const instantStyles: Record<InstantStyle, Intl.DateTimeFormatOptions> = {
   full: { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' },
 };
 
+/** 09:05 UTC: its hour shows whether the locale pads hours with a zero. */
+const SINGLE_DIGIT_HOUR = new Date(Date.UTC(2000, 0, 1, 9, 5));
+
+/**
+ * How the locale writes the hour of a time: `09:05` in Russian, `9:05 AM` in English.
+ * Read from the locale's own short time style, so every language gets its native form.
+ */
+function nativeHour(locale: string): Intl.DateTimeFormatOptions['hour'] {
+  const hour = dateFormatter(locale, { timeStyle: 'short', timeZone: 'UTC' })
+    .formatToParts(SINGLE_DIGIT_HOUR)
+    .find((part) => part.type === 'hour')?.value;
+  return hour?.length === 2 ? '2-digit' : 'numeric';
+}
+
+/** The style's options with times written the way the locale writes them. */
+function inLocale(locale: string, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormatOptions {
+  return options.hour === undefined ? options : { ...options, hour: nativeHour(locale) };
+}
+
 export function formatInstant(
   locale: string,
   instant: string | number,
   timeZone: string,
   style: InstantStyle,
 ): string {
-  return dateFormatter(locale, { ...instantStyles[style], timeZone }).format(new Date(instant));
+  return dateFormatter(locale, { ...inLocale(locale, instantStyles[style]), timeZone }).format(
+    new Date(instant),
+  );
+}
+
+/**
+ * A span between two instants, written once where both ends share parts: `10:00–11:30`
+ * in Russian, `10:00 – 11:30 AM` in English.
+ */
+export function formatInstantRange(
+  locale: string,
+  start: string | number,
+  end: string | number,
+  timeZone: string,
+  style: InstantStyle,
+): string {
+  return dateFormatter(locale, { ...inLocale(locale, instantStyles[style]), timeZone }).formatRange(
+    new Date(start),
+    new Date(end),
+  );
+}
+
+const MS_PER_MINUTE = 60_000;
+
+function wallTimeFormatter(locale: string): Intl.DateTimeFormat {
+  return dateFormatter(locale, { ...inLocale(locale, instantStyles.time), timeZone: 'UTC' });
+}
+
+/** A time of day given in minutes after midnight, as the locale writes times: `09:30`, `9:30 AM`. */
+export function formatWallTime(locale: string, minuteOfDay: number): string {
+  return wallTimeFormatter(locale).format(new Date(minuteOfDay * MS_PER_MINUTE));
+}
+
+const MS_PER_HOUR = 60 * MS_PER_MINUTE;
+
+/** Whether the locale tells time on a 12-hour clock with AM and PM. */
+function usesTwelveHours(locale: string): boolean {
+  return dateFormatter(locale, { timeStyle: 'short', timeZone: 'UTC' })
+    .formatToParts(SINGLE_DIGIT_HOUR)
+    .some((part) => part.type === 'dayPeriod');
+}
+
+/** An hour mark of a timeline, as calendars write it: `11:00` on a 24-hour clock, `11 AM` on a 12-hour one. */
+export function formatHourMark(locale: string, hour: number): string {
+  return usesTwelveHours(locale)
+    ? dateFormatter(locale, { hour: 'numeric', timeZone: 'UTC' }).format(
+        new Date(hour * MS_PER_HOUR),
+      )
+    : formatWallTime(locale, hour * (MS_PER_HOUR / MS_PER_MINUTE));
+}
+
+/** A span of the day in minutes after midnight: `10:00–11:30`, `10:00 – 11:30 AM`. */
+export function formatWallTimeRange(locale: string, from: number, to: number): string {
+  return wallTimeFormatter(locale).formatRange(
+    new Date(from * MS_PER_MINUTE),
+    new Date(to * MS_PER_MINUTE),
+  );
 }
 
 /** Local calendar dates (`YYYY-MM-DD`) have no time zone of their own. */

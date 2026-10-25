@@ -1,4 +1,5 @@
-import type { Money } from '../money/money.js';
+import type { MarketCurrency } from '../locales/locales.js';
+import { moneyFromMajor, type Money } from '../money/money.js';
 
 /** What a subscription includes; names and descriptions live in the translation system. */
 export const planFeatureIds = [
@@ -18,7 +19,8 @@ export const planFeatureIds = [
 export type PlanFeature = (typeof planFeatureIds)[number];
 
 export interface PricingPlan {
-  readonly monthlyPrice: Money;
+  /** The price in every currency the product is sold in; each market sees its own. */
+  readonly monthlyPrices: Readonly<Record<MarketCurrency, Money>>;
   /** `null` means no limit. */
   readonly maxStaff: number | null;
   readonly maxLocations: number | null;
@@ -27,7 +29,10 @@ export interface PricingPlan {
   readonly recommended: boolean;
 }
 
-const rub = (major: number): Money => ({ amountMinor: major * 100, currency: 'RUB' });
+const prices = (rub: number, usd: number): PricingPlan['monthlyPrices'] => ({
+  RUB: moneyFromMajor(rub, 'RUB'),
+  USD: moneyFromMajor(usd, 'USD'),
+});
 
 const essentials: readonly PlanFeature[] = [
   'miniapp_booking',
@@ -46,21 +51,21 @@ const growth: readonly PlanFeature[] = [
 /** Subscription plans of the service, in the order they are offered. */
 export const pricingPlans = {
   start: {
-    monthlyPrice: rub(990),
+    monthlyPrices: prices(990, 15),
     maxStaff: 3,
     maxLocations: 1,
     features: essentials,
     recommended: false,
   },
   team: {
-    monthlyPrice: rub(2490),
+    monthlyPrices: prices(2490, 35),
     maxStaff: 10,
     maxLocations: 1,
     features: growth,
     recommended: true,
   },
   network: {
-    monthlyPrice: rub(5990),
+    monthlyPrices: prices(5990, 79),
     maxStaff: null,
     maxLocations: null,
     features: [...growth, 'many_locations', 'branch_reports', 'priority_support'],

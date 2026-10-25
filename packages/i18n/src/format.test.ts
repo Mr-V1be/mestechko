@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { createI18n } from './create-i18n.js';
 import {
+  formatCurrencySymbol,
   formatDuration,
+  formatHourMark,
   formatInstant,
   formatLocalDate,
   formatMoney,
@@ -9,6 +11,9 @@ import {
   formatMoneyRange,
   formatNumber,
   formatShare,
+  formatInstantRange,
+  formatWallTime,
+  formatWallTimeRange,
 } from './format.js';
 
 describe('formatting', () => {
@@ -39,11 +44,62 @@ describe('formatting', () => {
     expect(formatLocalDate('ru', '2026-03-02', 'dayMonth')).toBe('2 марта');
   });
 
-  it('spells durations with Russian plurals', async () => {
-    const i18n = await createI18n({ defaultNamespace: 'common' });
-    const t = i18n.t.bind(i18n) as (key: string, options: { count: number }) => string;
-    expect(formatDuration(t, 90)).toBe('1 ч 30 мин');
-    expect(formatDuration(t, 45)).toBe('45 мин');
-    expect(formatDuration(t, 120)).toBe('2 ч');
+  it('spells durations in the language of the reader', async () => {
+    const i18n = await createI18n({
+      locale: 'ru',
+      preload: ['en'],
+      defaultNamespace: 'common',
+    });
+    const ru = i18n.getFixedT('ru') as (key: string, options: { count: number }) => string;
+    expect(formatDuration(ru, 90)).toBe('1 ч 30 мин');
+    expect(formatDuration(ru, 45)).toBe('45 мин');
+    expect(formatDuration(ru, 120)).toBe('2 ч');
+    const en = i18n.getFixedT('en') as (key: string, options: { count: number }) => string;
+    expect(formatDuration(en, 90)).toBe('1 h 30 min');
+  });
+});
+
+describe('the organisation currency', () => {
+  const dollars = (amountMinor: number) => ({ amountMinor, currency: 'USD' as const });
+
+  it('is kept whatever language the amount is read in', () => {
+    expect(formatMoney('en', dollars(8_500))).toBe('$85');
+    expect(formatMoney('en', dollars(8_550))).toBe('$85.50');
+    expect(formatMoney('ru', dollars(8_500))).toMatch(/^85\s\$$/u);
+    expect(formatMoney('en', { amountMinor: 250_000, currency: 'RUB' })).toMatch(/^RUB\s2,500$/u);
+  });
+
+  it('formats ranges, compact sums and the sign people type next to', () => {
+    expect(formatMoneyRange('en', dollars(8_500), dollars(11_000))).toMatch(/^\$85\s?–\s?\$110$/u);
+    expect(formatMoneyRange('en', dollars(8_500), dollars(8_500))).toBe('$85');
+    expect(formatMoneyCompact('en', dollars(1_200_000))).toBe('$12K');
+    expect(formatCurrencySymbol('en', 'USD')).toBe('$');
+    expect(formatCurrencySymbol('ru', 'RUB')).toBe('₽');
+  });
+
+  it('shows times of a US location on its own clock, written the way each language writes them', () => {
+    expect(formatInstant('en', '2026-03-02T15:00:00Z', 'America/New_York', 'time')).toMatch(
+      /^10:00\sAM$/u,
+    );
+    expect(formatInstant('en', '2026-03-02T14:05:00Z', 'America/New_York', 'time')).toMatch(
+      /^9:05\sAM$/u,
+    );
+    expect(formatInstant('ru', '2026-03-02T06:05:00Z', 'Europe/Moscow', 'time')).toBe('09:05');
+    expect(formatWallTime('en', 13 * 60 + 30)).toMatch(/^1:30\sPM$/u);
+    expect(formatWallTime('ru', 9 * 60)).toBe('09:00');
+    expect(formatWallTimeRange('ru', 600, 690)).toBe('10:00–11:30');
+    expect(formatHourMark('ru', 11)).toBe('11:00');
+    expect(formatHourMark('en', 13)).toMatch(/^1\sPM$/u);
+    expect(formatWallTimeRange('en', 600, 690)).toMatch(/^10:00\s–\s11:30\sAM$/u);
+    expect(
+      formatInstantRange(
+        'en',
+        '2026-03-02T15:00:00Z',
+        '2026-03-02T18:45:00Z',
+        'America/New_York',
+        'time',
+      ),
+    ).toMatch(/^10:00\sAM\s–\s1:45\sPM$/u);
+    expect(formatLocalDate('en', '2026-03-02', 'dayMonth')).toBe('March 2');
   });
 });

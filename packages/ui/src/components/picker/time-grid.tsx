@@ -1,5 +1,6 @@
 import { Radio } from '@base-ui/react/radio';
 import { RadioGroup } from '@base-ui/react/radio-group';
+import type { CSSProperties } from 'react';
 import styles from './picker.module.css';
 
 export interface TimeGridGroup {
@@ -17,6 +18,11 @@ export interface TimeGridProps {
 
 /** Free start times as seats to pick; arrow keys move between them. */
 export function TimeGrid({ label, groups, value, onChange }: TimeGridProps) {
+  const longest = Math.max(
+    0,
+    ...groups.flatMap((group) => group.options.map((option) => option.label.length)),
+  );
+  const sizing = { '--slot-label-length': longest } as CSSProperties;
   return (
     <RadioGroup
       aria-label={label}
@@ -33,7 +39,7 @@ export function TimeGrid({ label, groups, value, onChange }: TimeGridProps) {
           <p className={styles.groupTitle} aria-hidden="true">
             {group.title}
           </p>
-          <div className={styles.slots}>
+          <div className={styles.slots} style={sizing}>
             {group.options.map((option) => (
               <Radio.Root key={option.value} value={option.value} className={styles.slot}>
                 {option.label}

@@ -1,3 +1,4 @@
+import type { Formatters } from '@mestechko/booking-ui';
 import type { ScheduleBooking } from '@mestechko/contracts/client';
 import type { BookingStatus } from '@mestechko/domain';
 import type { ReactNode } from 'react';
@@ -83,7 +84,7 @@ export function toBlock(
   booking: ScheduleBooking,
   date: string,
   timeZone: string,
-  formatTime: (instant: string) => string,
+  format: Pick<Formatters, 'instant' | 'instantRange'>,
 ): TimelineBlock {
   return {
     id: booking.id,
@@ -94,8 +95,8 @@ export function toBlock(
     movable: booking.movable,
     service: rangeOn(date, booking, timeZone),
     occupied: rangeOn(date, booking.occupied, timeZone),
-    timeLabel: `${formatTime(booking.start)}–${formatTime(booking.end)}`,
-    startLabel: formatTime(booking.start),
+    timeLabel: format.instantRange(booking.start, booking.end, timeZone, 'time'),
+    startLabel: format.instant(booking.start, timeZone, 'time'),
     client: booking.clientName,
     services: booking.serviceNames.join(', '),
   };

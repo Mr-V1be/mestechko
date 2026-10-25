@@ -66,7 +66,7 @@ export function ConfirmPage() {
   const createBooking = useCreateBooking(selection.slug);
   const checkout = useCheckout(selection.slug);
   const [errors, setErrors] = useState<ContactErrors>({});
-  const [contact, setContact] = useClientContact(selection.slug);
+  const [contact, setContact] = useClientContact(selection.slug, business.countryCode);
   const demoContacts = useDemoContacts();
   const selectionKey = `${selection.slug}:${selection.serviceIds.join(',')}:${selection.staff ?? ''}:${selection.start ?? ''}`;
   const idempotencyKey = useMemo(() => idempotencyKeyFor(selectionKey), [selectionKey]);

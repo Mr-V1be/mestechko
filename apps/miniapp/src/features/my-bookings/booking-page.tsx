@@ -232,7 +232,7 @@ export function BookingPage() {
             <ListItem
               leading={<CalendarClock aria-hidden="true" />}
               title={format.instant(data.start, timeZone, 'weekdayDayMonth')}
-              description={`${format.instant(data.start, timeZone, 'time')}–${format.instant(data.end, timeZone, 'time')}`}
+              description={format.instantRange(data.start, data.end, timeZone, 'time')}
             />
             <ListItem
               leading={

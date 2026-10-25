@@ -55,7 +55,6 @@ function columnOn(
   format: Formatters,
   now: Date,
 ): Omit<TimelineColumn, 'key' | 'header'> {
-  const formatTime = (instant: string) => format.instant(instant, schedule.timeZone, 'time');
   return {
     working: schedule.workingHours
       .filter((entry) => entry.columnId === columnId && entry.date === date)
@@ -64,7 +63,7 @@ function columnOn(
       ),
     blocks: schedule.bookings
       .filter((booking) => booking.columnId === columnId)
-      .map((booking) => toBlock(booking, date, schedule.timeZone, formatTime))
+      .map((booking) => toBlock(booking, date, schedule.timeZone, format))
       .filter((block) => block.service.end > block.service.start),
     nowMinute: nowMinuteIfToday(date, schedule.timeZone, now),
   };

@@ -1,5 +1,10 @@
 import type { VerticalSummary } from '@mestechko/contracts/client';
-import type { BookingStatus } from '@mestechko/domain';
+import {
+  moneyFromMajor,
+  type BookingStatus,
+  type MarketCurrency,
+  type Money,
+} from '@mestechko/domain';
 
 /**
  * Test data of the sign-in showcase: a morning in a demo salon. Names and services are
@@ -105,12 +110,17 @@ export const showcaseStaff: readonly ShowcaseStaff[] = [
 /** The "now" line of the showcase schedule. */
 export const SHOWCASE_NOW_MINUTE = hour(11.75);
 
-/** The client in the phone is picking a time with Maria for a colouring. */
+/**
+ * The client in the phone is picking a time with Maria for a colouring, priced like the
+ * demo salon of the reader's market.
+ */
 export const showcasePhone = {
   staffKey: 'maria',
   serviceKey: 'hair_coloring',
-  priceMinor: 470_000,
-  currency: 'RUB',
+  prices: {
+    RUB: moneyFromMajor(4700, 'RUB'),
+    USD: moneyFromMajor(165, 'USD'),
+  } satisfies Readonly<Record<MarketCurrency, Money>>,
   chosenDayOffset: 1,
   daysShown: 7,
   slots: [

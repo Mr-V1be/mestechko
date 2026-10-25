@@ -1,4 +1,4 @@
-import { formatPhone } from '@mestechko/booking-ui';
+import { formatPhone, phoneHint } from '@mestechko/booking-ui';
 import { ApiError, normalizePhone } from '@mestechko/contracts/client';
 import { useState } from 'react';
 import { appConfig } from '../../../app/config';
@@ -76,6 +76,8 @@ export function useProfileForm(initial: ProfileDraft, region: string | undefined
   return {
     draft,
     errors,
+    /** How phones of the business's region are prompted for; `null` while it loads. */
+    phoneHint: region ? phoneHint(region) : null,
     /** Card that already has the typed phone, to offer opening it. */
     phoneOwner: takenPhone?.owner ?? null,
     /** The region is still loading: phones cannot be checked yet. */

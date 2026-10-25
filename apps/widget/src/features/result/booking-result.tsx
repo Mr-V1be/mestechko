@@ -191,7 +191,7 @@ function BookingSummary({ booking }: { readonly booking: WidgetBooking }) {
       <ListItem
         leading={<CalendarClock aria-hidden="true" />}
         title={format.instant(booking.start, timeZone, 'weekdayDayMonth')}
-        description={`${format.instant(booking.start, timeZone, 'time')}–${format.instant(booking.end, timeZone, 'time')}`}
+        description={format.instantRange(booking.start, booking.end, timeZone, 'time')}
       />
       <ListItem
         leading={<UserRound aria-hidden="true" />}

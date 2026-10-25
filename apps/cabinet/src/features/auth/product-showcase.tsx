@@ -1,4 +1,5 @@
-import { useFormat, type Formatters } from '@mestechko/booking-ui';
+import { useFormat, useLocale, type Formatters } from '@mestechko/booking-ui';
+import { locales } from '@mestechko/domain';
 import type { ScheduleColumn } from '@mestechko/contracts/client';
 import { Button, DateStrip, DeviceFrame, TimeGrid } from '@mestechko/ui';
 import { ChevronLeft } from 'lucide-react';
@@ -18,12 +19,7 @@ import styles from './product-showcase.module.css';
 type Translate = ReturnType<typeof useTranslation>['t'];
 
 const SHOWCASE_TIME_ZONE = 'Europe/Moscow';
-const MS_PER_MINUTE = 60_000;
 const ignore = () => undefined;
-
-function clock(format: Formatters, minute: number): string {
-  return format.instant(new Date(minute * MS_PER_MINUTE).toISOString(), 'UTC', 'time');
-}
 
 function serviceName(t: Translate, serviceKey: string): string {
   return t(`catalog:services.${showcaseVertical.id}.${serviceKey}.name`);
@@ -55,8 +51,8 @@ function toColumn(t: Translate, format: Formatters, member: ShowcaseStaff): Time
       movable: false,
       service: { start: visit.start, end: visit.end },
       occupied: { start: visit.start, end: visit.end + visit.afterMinutes },
-      timeLabel: `${clock(format, visit.start)}–${clock(format, visit.end)}`,
-      startLabel: clock(format, visit.start),
+      timeLabel: format.wallTimeRange(visit.start, visit.end),
+      startLabel: format.wallTime(visit.start),
       client: t(`signIn.showcase.clients.${visit.clientKey}`),
       services: serviceName(t, visit.serviceKey),
     })),
@@ -87,6 +83,7 @@ function ScheduleFragment() {
 function PhoneScreen() {
   const { t } = useTranslation();
   const format = useFormat();
+  const { locale } = useLocale();
   const today = todayIn(SHOWCASE_TIME_ZONE);
   const chosenDay = addDays(today, showcasePhone.chosenDayOffset);
   const days = Array.from({ length: showcasePhone.daysShown }, (_, offset) => {
@@ -101,10 +98,7 @@ function PhoneScreen() {
       today: offset === 0,
     };
   });
-  const price = format.money({
-    amountMinor: showcasePhone.priceMinor,
-    currency: showcasePhone.currency,
-  });
+  const price = format.money(showcasePhone.prices[locales[locale].marketCurrency]);
   return (
     <DeviceFrame kind="phone" className={styles.phone}>
       <div className={styles.screen}>
@@ -134,7 +128,7 @@ function PhoneScreen() {
             title: t(`signIn.showcase.${group.groupKey}`),
             options: group.starts.map((start) => ({
               value: String(start),
-              label: clock(format, start),
+              label: format.wallTime(start),
             })),
           }))}
           value={String(showcasePhone.chosenStart)}

@@ -42,7 +42,7 @@ export function WaitlistSheet({
   const toast = useToast();
   const business = useCurrentBusiness();
   const join = useJoinWaitlist(business.slug);
-  const [contact, setContact] = useClientContact(business.slug);
+  const [contact, setContact] = useClientContact(business.slug, business.countryCode);
   const demoContacts = useDemoContacts();
   const [errors, setErrors] = useState<ContactErrors>({});
   const [dayPart, setDayPart] = useState<DayPart | typeof ANY_TIME>(ANY_TIME);

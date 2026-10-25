@@ -49,8 +49,7 @@ export function BookingsTable({ rows, staffLabel, onOpen }: BookingsViewProps) {
               }}
             >
               <td className={clsx(styles.when, styles.fit)}>
-                {format.instant(row.start, row.timeZone, 'time')}–
-                {format.instant(row.end, row.timeZone, 'time')}
+                {format.instantRange(row.start, row.end, row.timeZone, 'time')}
                 <span className={styles.whenDate}>
                   {format.instant(row.start, row.timeZone, 'weekdayDayMonth')}
                 </span>

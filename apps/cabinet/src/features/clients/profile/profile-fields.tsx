@@ -16,7 +16,7 @@ export function ProfileFields({
   const { t } = useTranslation();
   const errorOf = (field: ProfileField) => {
     const key = form.errors[field];
-    return key ? t(key) : null;
+    return key ? t(key, { example: form.phoneHint?.example ?? '' }) : null;
   };
   const bind = (field: ProfileField) => ({
     value: form.draft[field],
@@ -41,7 +41,7 @@ export function ProfileFields({
           label={t('clients:form.phone')}
           type="tel"
           inputMode="tel"
-          placeholder={t('clients:form.phonePlaceholder')}
+          placeholder={form.phoneHint?.placeholder}
           {...bind('phone')}
         />
         {form.phoneOwner ? (

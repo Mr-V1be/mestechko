@@ -50,7 +50,8 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
   const format = useFormat();
   const booking = useCabinetBooking(businessId, bookingId);
   const data = booking.data;
-  const time = (instant: string) => (data ? format.instant(instant, data.timeZone, 'time') : '');
+  const timeRange = (start: string, end: string) =>
+    data ? format.instantRange(start, end, data.timeZone, 'time') : '';
   return (
     <Sheet
       open={bookingId !== null}
@@ -89,7 +90,7 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
             <ListItem
               leading={<CalendarClock aria-hidden="true" />}
               title={format.instant(data.start, data.timeZone, 'weekdayDayMonth')}
-              description={`${time(data.start)}–${time(data.end)}`}
+              description={timeRange(data.start, data.end)}
             />
             <ListItem
               leading={
@@ -115,7 +116,7 @@ export function BookingDetailsSheet({ businessId, bookingId, onClose }: BookingD
               <ListItem
                 key={`${item.serviceId}-${item.start}`}
                 title={item.serviceName}
-                description={[`${time(item.start)}–${time(item.end)}`, item.resourceName]
+                description={[timeRange(item.start, item.end), item.resourceName]
                   .filter(Boolean)
                   .join(', ')}
                 meta={format.money(item.price)}

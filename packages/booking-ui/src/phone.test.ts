@@ -15,6 +15,10 @@ describe('formatPhone', () => {
     expect(formatPhone('+70004123785')).toBe('+7 000 412-37-85');
   });
 
+  it('writes American numbers, the fictional demo ones included, with the local dash', () => {
+    expect(formatPhone('+12125550123')).toBe('+1 212 555-0123');
+  });
+
   it('returns unparseable input unchanged', () => {
     expect(formatPhone('12')).toBe('12');
   });

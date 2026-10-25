@@ -1,4 +1,4 @@
-import { formatPhone } from '@mestechko/booking-ui';
+import { formatPhone, formatPhoneInput, phoneHint } from '@mestechko/booking-ui';
 import { demoPhoneFor, normalizePhone, type BookingContact } from '@mestechko/contracts/client';
 import { TextField } from '@mestechko/ui';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { useProfile } from '../../platform/api/queries';
 import { useHost } from '../../platform/telegram/host-context';
 import { useContactDraft, type ContactDraft } from './contact-draft';
-import { formatPhoneInput } from './phone';
 
 export interface ContactErrors {
   readonly name?: string;
@@ -34,21 +33,22 @@ export function useDemoContacts(): boolean {
  * The client's contact draft for a business: what they typed survives, and an empty
  * draft starts from what the business already knows or the Telegram name.
  */
-export function useClientContact(slug: string) {
+export function useClientContact(slug: string, countryCode: string) {
   const profile = useProfile(slug);
   const demo = useDemoContacts();
   const [contact, setContact] = useContactDraft(`mst-contact:${slug}`, () => null);
   useEffect(() => {
     if (profile.data && !contact.name && !contact.phone) {
       const user = telegramUser();
-      const known = profile.data.phone;
+      const known =
+        profile.data.phone ?? (demo && user ? demoPhoneFor(user.id, countryCode) : null);
       setContact({
         name: profile.data.displayName ?? user?.firstName ?? '',
-        phone: known ? formatPhone(known) : demo && user ? formatPhone(demoPhoneFor(user.id)) : '',
+        phone: known ? formatPhone(known) : '',
         comment: contact.comment,
       });
     }
-  }, [profile.data, contact, setContact, demo]);
+  }, [profile.data, contact, setContact, demo, countryCode]);
   return [contact, setContact] as const;
 }
 
@@ -96,7 +96,7 @@ export function ContactFields({
         type="tel"
         inputMode="tel"
         autoComplete="tel"
-        placeholder={t('confirm.phonePlaceholder')}
+        placeholder={phoneHint(countryCode)?.placeholder}
         description={t('confirm.phoneHint')}
         value={contact.phone}
         error={errors.phone ?? null}
