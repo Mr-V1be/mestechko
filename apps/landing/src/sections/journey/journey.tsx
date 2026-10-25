@@ -12,7 +12,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import page from '../../app/page.module.css';
 import { LoopVideo } from '../../media/loop-video';
-import { loops, shots, type Loop, type ThemedMedia } from '../../media/media';
+import { type Loop, type SiteMedia, type ThemedMedia } from '../../media/media';
+import { useSiteMedia } from '../../media/use-media';
 import { ThemedImage } from '../../media/themed-image';
 import styles from './journey.module.css';
 
@@ -41,7 +42,7 @@ const showsClass: Record<Shows, string | undefined> = {
 };
 
 /** The path of a booking, from the client's tap to the reminder, in the product's own screens. */
-const moments: readonly Moment[] = [
+const momentsOf = ({ shots, loops }: SiteMedia): readonly Moment[] => [
   {
     id: 'book',
     icon: Smartphone,
@@ -86,6 +87,7 @@ function MomentScreen({ screen, label }: { readonly screen: Screen; readonly lab
 
 export function Journey() {
   const { t } = useTranslation();
+  const moments = momentsOf(useSiteMedia());
   return (
     <section id="how" className={page.section}>
       <div className={page.inner}>

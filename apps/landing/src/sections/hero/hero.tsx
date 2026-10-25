@@ -2,13 +2,14 @@ import { Button, DeviceFrame } from '@mestechko/ui';
 import { Send, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../../app/config';
-import { shots } from '../../media/media';
+import { useSiteMedia } from '../../media/use-media';
 import { ThemedImage } from '../../media/themed-image';
 import styles from './hero.module.css';
 
 /** The first screen: the question the product answers and the product itself. */
 export function Hero({ onDemo }: { readonly onDemo: () => void }) {
   const { t } = useTranslation();
+  const { shots } = useSiteMedia();
   return (
     <section id="top" className={styles.hero}>
       <div className={styles.inner}>

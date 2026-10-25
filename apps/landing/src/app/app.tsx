@@ -1,3 +1,4 @@
+import { DocumentLocale } from '@mestechko/booking-ui';
 import { ThemeProvider } from '@mestechko/ui';
 import type { i18n } from 'i18next';
 import { useState } from 'react';
@@ -39,6 +40,7 @@ function Page() {
 export function App({ i18n }: { readonly i18n: i18n }) {
   return (
     <I18nextProvider i18n={i18n}>
+      <DocumentLocale titleKey="meta.title" />
       <ThemeProvider storageKey={THEME_STORAGE_KEY}>
         <Page />
       </ThemeProvider>

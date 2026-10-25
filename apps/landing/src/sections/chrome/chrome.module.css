@@ -29,6 +29,24 @@
   text-decoration: none;
 }
 
+.wordmark {
+  display: none;
+}
+
+.markOnly {
+  display: inline-flex;
+}
+
+@media (min-width: 480px) {
+  .wordmark {
+    display: inline-flex;
+  }
+
+  .markOnly {
+    display: none;
+  }
+}
+
 .nav {
   display: none;
   gap: var(--space-6);

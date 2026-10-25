@@ -1,5 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
+import { useFormat, useLocale } from '@mestechko/booking-ui';
 import {
+  locales,
   pricingPlanIds,
   pricingPlans,
   TRIAL_DAYS,
@@ -29,6 +30,7 @@ function PlanCard({
 }) {
   const { t } = useTranslation();
   const format = useFormat();
+  const { locale } = useLocale();
   const previous = previousOf(id);
   const included = new Set<PlanFeature>(previous ? pricingPlans[previous].features : []);
   const added = plan.features.filter((feature) => !included.has(feature));
@@ -40,7 +42,9 @@ function PlanCard({
       </div>
       <p className={styles.planText}>{t(`pricing.plans.${id}.text`)}</p>
       <p className={styles.price}>
-        <span className={styles.amount}>{format.money(plan.monthlyPrice)}</span>
+        <span className={styles.amount}>
+          {format.money(plan.monthlyPrices[locales[locale].marketCurrency])}
+        </span>
         <span className={styles.period}>{t('pricing.perMonth')}</span>
       </p>
       <ul className={styles.limits}>
