@@ -8,6 +8,7 @@ export const emalDental: DemoBusiness = {
   verticalId: 'dental_clinic',
   countryCode: 'RU',
   currency: 'RUB',
+  locale: 'ru',
   owner: { email: 'owner@emal.example', displayName: 'Ольга Эмалиева' },
   staffAccounts: [{ staffKey: 'elena', email: 'elena@emal.example' }],
   locations: [

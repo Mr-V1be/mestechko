@@ -1,5 +1,6 @@
 import {
   dayTemplate,
+  moneyFromMajor,
   parseWallInterval,
   resolveBookingRules,
   type BookingRules,
@@ -91,8 +92,6 @@ export interface BuiltCatalog {
   readonly staff: readonly BuiltStaff[];
 }
 
-const MINOR_PER_MAJOR = 100;
-
 function templateOf(demo: DemoDay | null): DayTemplate | null {
   if (!demo) {
     return null;
@@ -161,6 +160,26 @@ function convertPattern(pattern: DemoPattern, weekStart: PlainDate): ConvertedPa
   return converterFor(pattern)(pattern, weekStart);
 }
 
+/**
+ * A service's price in the business's currency. The vertical suggests prices in one
+ * currency only, so a business selling in another names every price itself.
+ */
+function offerPrice(
+  definition: DemoBusiness,
+  template: VerticalDefinition['serviceTemplates'][number],
+  priceMajor: number | undefined,
+): number {
+  if (priceMajor !== undefined) {
+    return moneyFromMajor(priceMajor, definition.currency).amountMinor;
+  }
+  if (template.suggestedPrice.currency !== definition.currency) {
+    throw new Error(
+      `${definition.slug} sells in ${definition.currency}: give "${template.key}" its price`,
+    );
+  }
+  return template.suggestedPrice.amountMinor;
+}
+
 /** Turns a demo definition into rows with fresh ids plus the matching domain objects. */
 export function buildCatalog(input: {
   readonly definition: DemoBusiness;
@@ -207,10 +226,7 @@ export function buildCatalog(input: {
       durationMinutes: template.durationMinutes,
       bufferBeforeMinutes: template.bufferBeforeMinutes,
       bufferAfterMinutes: template.bufferAfterMinutes,
-      priceMinor:
-        offer.priceMajor === undefined
-          ? template.suggestedPrice.amountMinor
-          : offer.priceMajor * MINOR_PER_MAJOR,
+      priceMinor: offerPrice(definition, template, offer.priceMajor),
       resourceTypeId: template.resourceTypeId,
       depositPercent: offer.depositPercent ?? null,
       sortOrder,
@@ -233,7 +249,9 @@ export function buildCatalog(input: {
         serviceId: serviceId(normalized.template),
         durationMinutes: normalized.durationMinutes ?? null,
         priceMinor:
-          normalized.priceMajor === undefined ? null : normalized.priceMajor * MINOR_PER_MAJOR,
+          normalized.priceMajor === undefined
+            ? null
+            : moneyFromMajor(normalized.priceMajor, definition.currency).amountMinor,
       };
     });
     const daysOff = (member.daysOff ?? []).map((offset) => ({

@@ -22,7 +22,7 @@ import {
 } from '@mestechko/domain';
 import type { BuiltCatalog, BuiltService, BuiltStaff } from './catalog-builder.js';
 import { attendanceRisk, dayDemand, startWeight } from './demand-model.js';
-import { clientComments } from './people.js';
+import { demoPopulations } from './people/index.js';
 import type { Random } from './random.js';
 
 export interface GeneratedBooking {
@@ -197,7 +197,9 @@ function bookOnce(context: DayContext, staff: BuiltStaff): GeneratedBooking | nu
     status,
     source: random.chance(TELEGRAM_SHARE) ? 'telegram_mini_app' : 'cabinet',
     clientIndex: random.weighted(context.clientWeights),
-    comment: random.chance(COMMENT_PROBABILITY) ? random.pick(clientComments) : null,
+    comment: random.chance(COMMENT_PROBABILITY)
+      ? random.pick(demoPopulations[context.catalog.definition.locale].comments)
+      : null,
     createdAt: new Date(Math.min(bookedAt, context.now)),
   };
 }

@@ -1,5 +1,6 @@
 import {
   localDateOf,
+  moneyFromMajor,
   passCovers,
   pointsEarned,
   type LedgerReason,
@@ -13,7 +14,6 @@ import type { BuiltCatalog } from './catalog-builder.js';
 import type { WrittenBooking } from './messenger-clients.js';
 import { Random } from './random.js';
 
-const MINOR_PER_MAJOR = 100;
 const BATCH_SIZE = 400;
 /** Clients with this many visits behind them carry the business's regular tag. */
 const REGULAR_VISITS = 4;
@@ -189,7 +189,7 @@ async function writePasses(
       }
       return service.id;
     });
-    const priceMinor = plan.priceMajor * MINOR_PER_MAJOR;
+    const priceMinor = moneyFromMajor(plan.priceMajor, catalog.definition.currency).amountMinor;
     await tx
       .insertInto('passPlans')
       .values({

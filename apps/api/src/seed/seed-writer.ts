@@ -1,3 +1,4 @@
+import { offersMessenger } from '@mestechko/domain';
 import { sql, type Kysely, type Transaction } from 'kysely';
 import type { Database } from '../platform/db/database.js';
 import type { IdGenerator } from '../shared/application/ports.js';
@@ -12,7 +13,7 @@ import {
   type WrittenBooking,
 } from './messenger-clients.js';
 import { writeOperations } from './operations-writer.js';
-import type { DemoPerson } from './people.js';
+import type { DemoPerson } from './people/index.js';
 
 const BATCH_SIZE = 400;
 const MS_PER_MINUTE = 60_000;
@@ -53,6 +54,7 @@ async function writeCatalog(tx: Tx, catalog: BuiltCatalog, now: Date): Promise<v
       verticalId: definition.verticalId,
       countryCode: definition.countryCode,
       currency: definition.currency,
+      locale: definition.locale,
       rulesOverrides: JSON.stringify(definition.rulesOverrides ?? {}),
       isDemo: true,
       createdAt: now,
@@ -194,8 +196,11 @@ async function writeClients(
     customerId: string;
     chatId: string | null;
     messagingAllowedAt: Date | null;
+    languageTag: string;
     createdAt: Date;
   }[] = [];
+  // The clients of a business speak its language in their messengers.
+  const languageTag = catalog.definition.locale;
   const emulatedUsers: {
     userId: string;
     firstName: string;
@@ -220,6 +225,7 @@ async function writeClients(
         customerId,
         chatId: externalId,
         messagingAllowedAt: createdAt,
+        languageTag,
         createdAt,
       });
       emulatedUsers.push({
@@ -238,6 +244,7 @@ async function writeClients(
         customerId,
         chatId: null,
         messagingAllowedAt: null,
+        languageTag,
         createdAt,
       });
       messengerIds.telegram += 1;
@@ -351,7 +358,10 @@ export async function writeDemoBusiness(
     readonly messengerIds: MessengerIdCounters;
   },
 ): Promise<{ clients: number; bookings: number; maxClients: number; notifications: number }> {
-  const maxClients = pickMaxClients(input.bookings, input.now);
+  // Only a business whose clients are offered MAX has clients there.
+  const maxClients = offersMessenger(input.catalog.definition.locale, 'max')
+    ? pickMaxClients(input.bookings, input.now)
+    : new Set<number>();
   const bookings = withMaxSources(input.bookings, maxClients);
   return db.transaction().execute(async (tx) => {
     await sql`select set_config('app.business_id', ${input.catalog.businessId}, true)`.execute(tx);

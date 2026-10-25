@@ -9,6 +9,7 @@ export const porshenAuto: DemoBusiness = {
   verticalId: 'auto_service',
   countryCode: 'RU',
   currency: 'RUB',
+  locale: 'ru',
   owner: { email: 'owner@porshen.example', displayName: 'Геннадий Поршнев' },
   staffAccounts: [{ staffKey: 'sergey', email: 'sergey@porshen.example' }],
   locations: [

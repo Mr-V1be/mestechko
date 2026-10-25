@@ -1,15 +1,16 @@
 import {
   datesBetween,
+  emptyProductionCalendar,
   localDateOf,
   verticalRegistry,
   YearlyProductionCalendar,
-  type CalendarYear,
   type Clock,
+  type ProductionCalendar,
 } from '@mestechko/domain';
-import { createI18n } from '@mestechko/i18n';
 import { sql, type Kysely } from 'kysely';
 import type { Database } from '../platform/db/database.js';
 import { KyselyUnitOfWork } from '../platform/db/kysely-unit-of-work.js';
+import { loadTranslations } from '../platform/i18n/i18next-translations.js';
 import { ScryptPasswordHasher } from '../modules/identity/infrastructure/crypto-adapters.js';
 import { IsDayOffCalendarSource } from '../modules/scheduling/infrastructure/isdayoff-calendar-source.js';
 import { KyselyProductionCalendarStore } from '../modules/scheduling/infrastructure/kysely-production-calendar-store.js';
@@ -18,7 +19,7 @@ import { demoAccountEmails, demoAccountsOf, writeDemoAccounts } from './accounts
 import { buildCatalog } from './catalog-builder.js';
 import { DEMO_PASSWORD, demoBusinesses } from './definitions/index.js';
 import { generateHistory } from './history-generator.js';
-import { generatePeople } from './people.js';
+import { generatePeople } from './people/index.js';
 import { Random } from './random.js';
 import { writeDemoBusiness } from './seed-writer.js';
 
@@ -26,7 +27,6 @@ import { writeDemoBusiness } from './seed-writer.js';
 const HISTORY_DAYS = 120;
 const FUTURE_DAYS = 21;
 const CLIENTS_PER_BUSINESS = 360;
-const COUNTRY_CODE = 'RU';
 
 export interface SeedLogger {
   info(message: string): void;
@@ -68,64 +68,81 @@ async function removeDemoData(db: Kysely<Database>): Promise<void> {
     .execute();
 }
 
-/** Official calendars for the seeded period; without network the seed follows schedules only. */
-async function syncCalendars(
+/**
+ * The country's official calendar for the seeded period. Without network, or where the
+ * country has none, the business follows its schedules only.
+ */
+async function calendarOf(
   deps: SeedDependencies,
+  countryCode: string,
   years: readonly number[],
-): Promise<CalendarYear[]> {
+): Promise<ProductionCalendar> {
   const source = new IsDayOffCalendarSource(
     deps.calendarSource.baseUrl,
     deps.calendarSource.timeoutMs,
   );
+  if (!source.covers(countryCode)) {
+    return emptyProductionCalendar;
+  }
   const store = new KyselyProductionCalendarStore(new KyselyUnitOfWork(deps.db));
   for (const year of years) {
     try {
-      const calendar = await source.fetchYear(COUNTRY_CODE, year);
+      const calendar = await source.fetchYear(countryCode, year);
       await store.save(
-        COUNTRY_CODE,
+        countryCode,
         calendar,
         source.name,
         new Date(deps.clock.now().epochMilliseconds),
       );
     } catch (error) {
-      deps.logger.warn(`Production calendar ${String(year)} unavailable: ${String(error)}`);
+      deps.logger.warn(
+        `Production calendar ${countryCode} ${String(year)} unavailable: ${String(error)}`,
+      );
     }
   }
-  return store.load(COUNTRY_CODE, years);
+  return new YearlyProductionCalendar(await store.load(countryCode, years));
 }
 
 export async function runSeed(deps: SeedDependencies): Promise<void> {
-  const i18n = await createI18n({ defaultNamespace: 'catalog' });
-  const translate = (key: string): string => {
-    if (!i18n.exists(key)) {
-      throw new Error(`Missing translation ${key}`);
-    }
-    return i18n.t(key);
-  };
+  const translations = await loadTranslations();
   const now = deps.clock.now();
   const nowDate = new Date(now.epochMilliseconds);
   await removeDemoData(deps.db);
 
-  const seedDate = localDateOf(now.epochMilliseconds, 'Europe/Moscow');
-  const historyStart = seedDate.subtract({ days: HISTORY_DAYS });
-  const historyEnd = seedDate.add({ days: FUTURE_DAYS });
-  const years = [...new Set(datesBetween(historyStart, historyEnd).map((date) => date.year))];
-  const calendar = new YearlyProductionCalendar(await syncCalendars(deps, years));
   const hasher = new ScryptPasswordHasher();
   const passwordHash = await hasher.hash(DEMO_PASSWORD);
   const messengerIds = { telegram: 1, max: 1 };
+  const calendars = new Map<string, ProductionCalendar>();
 
   for (const definition of demoBusinesses) {
+    const home = definition.locations[0];
+    if (!home) {
+      throw new Error(`${definition.slug} has no location`);
+    }
+    // "Today" of a business is the date at its main location.
+    const seedDate = localDateOf(now.epochMilliseconds, home.timeZone);
+    const historyStart = seedDate.subtract({ days: HISTORY_DAYS });
+    const historyEnd = seedDate.add({ days: FUTURE_DAYS });
+    const years = [...new Set(datesBetween(historyStart, historyEnd).map((date) => date.year))];
+    const calendarKey = `${definition.countryCode}:${years.join(',')}`;
+    const calendar =
+      calendars.get(calendarKey) ?? (await calendarOf(deps, definition.countryCode, years));
+    calendars.set(calendarKey, calendar);
+    const catalogTexts = translations.in(definition.locale, 'catalog');
     const catalog = buildCatalog({
       definition,
       vertical: verticalRegistry.get(definition.verticalId),
       ids: deps.ids,
-      translate,
+      translate: (key) => catalogTexts.text(key),
       seedDate,
       historyStart,
     });
     const random = new Random(`${definition.slug}:${seedDate.toString()}`);
-    const people = generatePeople(random, CLIENTS_PER_BUSINESS, definition.femaleClientShare);
+    const people = generatePeople(random, CLIENTS_PER_BUSINESS, {
+      femaleShare: definition.femaleClientShare,
+      locale: definition.locale,
+      countryCode: definition.countryCode,
+    });
     const bookings = generateHistory({
       catalog,
       calendar,

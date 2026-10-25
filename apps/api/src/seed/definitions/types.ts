@@ -1,4 +1,4 @@
-import type { AbsenceKind, BookingRulesOverrides, CurrencyCode } from '@mestechko/domain';
+import type { AbsenceKind, BookingRulesOverrides, CurrencyCode, Locale } from '@mestechko/domain';
 
 /** Working hours of one day in a demo schedule: `['10:00', '20:00']` plus optional breaks. */
 export interface DemoDay {
@@ -55,6 +55,8 @@ export interface DemoBusiness {
   readonly verticalId: string;
   readonly countryCode: string;
   readonly currency: CurrencyCode;
+  /** The language of the business: its catalogue, its people and the demo it opens for. */
+  readonly locale: Locale;
   readonly rulesOverrides?: BookingRulesOverrides;
   readonly owner: { readonly email: string; readonly displayName: string };
   /** Staff members who sign in to the cabinet; the role sees only their own work. */

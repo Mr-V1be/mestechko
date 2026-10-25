@@ -9,6 +9,7 @@ export const chubBarbershop: DemoBusiness = {
   verticalId: 'barbershop',
   countryCode: 'RU',
   currency: 'RUB',
+  locale: 'ru',
   owner: { email: 'owner@chub.example', displayName: 'Ильдар Чубаров' },
   staffAccounts: [{ staffKey: 'artem', email: 'artem@chub.example' }],
   locations: [

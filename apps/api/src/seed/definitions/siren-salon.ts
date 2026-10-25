@@ -9,6 +9,7 @@ export const sirenSalon: DemoBusiness = {
   verticalId: 'beauty_salon',
   countryCode: 'RU',
   currency: 'RUB',
+  locale: 'ru',
   owner: { email: 'owner@siren.example', displayName: 'Вера Сиренева' },
   staffAccounts: [{ staffKey: 'maria', email: 'maria@siren.example' }],
   locations: [
