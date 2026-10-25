@@ -1,7 +1,9 @@
+import { useLocale } from '@mestechko/booking-ui';
+import { offersMessenger } from '@mestechko/domain';
 import { breakpoints, EmptyIllustration, Skeleton, StatePanel, useMediaQuery } from '@mestechko/ui';
 import { MessagesSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 import { useMaxChats } from '../../platform/api/max-emulator-queries';
 import { canOpen, useActiveMembership } from '../../platform/session/active-business';
 import { useSession } from '../../platform/session/session-context';
@@ -24,6 +26,11 @@ export function MaxEmulatorPage() {
   const membership = useActiveMembership(me);
   const wide = useMediaQuery(breakpoints.desktop);
   const chats = useMaxChats(businessId);
+  const { locale } = useLocale();
+  // Readers of a language without MAX are not offered it, so its emulator is not theirs.
+  if (!offersMessenger(locale, 'max')) {
+    return <Navigate to={`/b/${businessId}/schedule`} replace />;
+  }
   if (membership && !canOpen(membership, 'messengers')) {
     return (
       <PageContainer>

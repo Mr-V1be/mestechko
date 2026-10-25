@@ -1,6 +1,7 @@
-import { loader } from '../locales/ru.json';
+import type { Locale } from '@mestechko/domain';
 import { createFrame, shadowHost } from './embed-frame';
 import type { LoaderConfig } from './loader-config';
+import { initialLoaderLocale, loaderTextsOf } from './loader-texts';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -38,6 +39,7 @@ export interface Popup {
  * buttons with `data-mestechko-open`), closed by the cross, Escape or the backdrop.
  */
 export function mountPopup(config: LoaderConfig): Popup {
+  const locale = initialLoaderLocale();
   const { host, root } = shadowHost(config);
   host.dataset.launcher = '';
   const backdrop = document.createElement('div');
@@ -47,15 +49,25 @@ export function mountPopup(config: LoaderConfig): Popup {
   dialog.className = 'dialog';
   dialog.setAttribute('role', 'dialog');
   dialog.setAttribute('aria-modal', 'true');
-  dialog.setAttribute('aria-label', loader.title);
   const closeButton = document.createElement('button');
   closeButton.type = 'button';
   closeButton.className = 'close';
-  closeButton.setAttribute('aria-label', loader.close);
   closeButton.append(closeIcon());
   dialog.append(closeButton);
   backdrop.append(dialog);
   root.append(backdrop);
+
+  const launcher = config.launcher ? document.createElement('button') : null;
+  /** The script's own words, in the language the widget speaks. */
+  const label = (current: Locale) => {
+    const texts = loaderTextsOf(current);
+    dialog.setAttribute('aria-label', texts.title);
+    closeButton.setAttribute('aria-label', texts.close);
+    if (launcher) {
+      launcher.textContent = texts.open;
+    }
+  };
+  label(locale);
 
   let frame: HTMLIFrameElement | null = null;
   let returnFocus: HTMLElement | null = null;
@@ -67,7 +79,7 @@ export function mountPopup(config: LoaderConfig): Popup {
   const open = () => {
     // The frame loads on first use, so a page with the widget stays light.
     if (!frame) {
-      frame = createFrame(config, 'popup');
+      frame = createFrame(config, 'popup', locale, label);
       dialog.append(frame);
     }
     returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -86,11 +98,9 @@ export function mountPopup(config: LoaderConfig): Popup {
       close();
     }
   });
-  if (config.launcher) {
-    const launcher = document.createElement('button');
+  if (launcher) {
     launcher.type = 'button';
     launcher.className = 'launcher';
-    launcher.textContent = loader.open;
     launcher.addEventListener('click', open);
     root.append(launcher);
   }

@@ -1,16 +1,32 @@
 import { createApiClient, type ApiClient } from '@mestechko/contracts/client';
-import { createContext, use, type ReactNode } from 'react';
+import { createContext, use, useMemo, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';
 
-/** Cabinet requests authenticate with the same-origin session cookie. */
-const client = createApiClient({ baseUrl: appConfig.apiBaseUrl, credentials: 'same-origin' });
+const ApiContext = createContext<ApiClient | null>(null);
 
-const ApiContext = createContext<ApiClient>(client);
-
+/**
+ * Cabinet requests authenticate with the same-origin session cookie and ask for the
+ * reader's language, e.g. for the titles of an exported file.
+ */
 export function ApiProvider({ children }: { readonly children: ReactNode }) {
+  const { i18n } = useTranslation();
+  const client = useMemo(
+    () =>
+      createApiClient({
+        baseUrl: appConfig.apiBaseUrl,
+        credentials: 'same-origin',
+        language: () => i18n.language,
+      }),
+    [i18n],
+  );
   return <ApiContext value={client}>{children}</ApiContext>;
 }
 
 export function useApi(): ApiClient {
-  return use(ApiContext);
+  const client = use(ApiContext);
+  if (!client) {
+    throw new Error('useApi() must be used inside <ApiProvider>');
+  }
+  return client;
 }

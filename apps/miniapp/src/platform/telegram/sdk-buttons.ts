@@ -1,4 +1,4 @@
-import { backButton, mainButton } from '@tma.js/sdk-react';
+import { backButton, mainButton, settingsButton } from '@tma.js/sdk-react';
 import { useEffect, useEffectEvent } from 'react';
 
 function tokenColor(name: string): `#${string}` | undefined {
@@ -86,4 +86,24 @@ export function useBackButton(onBack: (() => void) | null): void {
       backButton.hide.ifAvailable();
     };
   }, [visible]);
+}
+
+/** «Settings» in Telegram's menu of the app, opening the app's own settings. */
+export function useSettingsButton(onOpen: () => void): void {
+  const handleOpen = useEffectEvent(() => {
+    onOpen();
+  });
+
+  useEffect(() => {
+    settingsButton.show.ifAvailable();
+    const off = settingsButton.onClick.ifAvailable(() => {
+      handleOpen();
+    });
+    return () => {
+      if (off.ok) {
+        off.data();
+      }
+      settingsButton.hide.ifAvailable();
+    };
+  }, []);
 }

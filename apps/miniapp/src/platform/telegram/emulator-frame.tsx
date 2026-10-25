@@ -13,7 +13,7 @@ import {
   useTheme,
   type ThemePreference,
 } from '@mestechko/ui';
-import { Check } from 'lucide-react';
+import { Check, ChevronRight, Settings } from 'lucide-react';
 import { useLayoutEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { emulatorChrome } from './emulator-chrome';
 import { useHost } from './host-context';
@@ -59,6 +59,10 @@ function DemoSettings({
   const { t } = useTranslation();
   const { preference, setPreference } = useTheme();
   const { demoTelegramTheme, setDemoTelegramTheme, leave } = useHost();
+  const { settingsButtonVisible } = useSyncExternalStore(
+    emulatorChrome.subscribe,
+    emulatorChrome.snapshot,
+  );
   const isCurrent = (option: ThemeOption): boolean =>
     option.telegram !== null
       ? option.telegram === demoTelegramTheme
@@ -76,6 +80,19 @@ function DemoSettings({
         </Button>
       }
     >
+      {settingsButtonVisible ? (
+        <ListGroup>
+          <ListItem
+            leading={<Settings aria-hidden="true" />}
+            title={t('settings.title')}
+            trailing={<ChevronRight aria-hidden="true" />}
+            onClick={() => {
+              onOpenChange(false);
+              emulatorChrome.pressSettingsButton();
+            }}
+          />
+        </ListGroup>
+      ) : null}
       <ListGroup title={t('emulator.theme')}>
         {themeOptions.map((option) => (
           <ListItem

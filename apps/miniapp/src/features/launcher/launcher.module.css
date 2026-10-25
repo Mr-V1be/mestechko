@@ -38,6 +38,10 @@
   gap: var(--space-3);
 }
 
+.brandEnd {
+  margin-inline-start: auto;
+}
+
 .title {
   font-size: var(--font-size-3xl);
 }

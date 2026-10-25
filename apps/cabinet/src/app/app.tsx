@@ -1,3 +1,4 @@
+import { DocumentLocale } from '@mestechko/booking-ui';
 import { isRetryableError } from '@mestechko/contracts/client';
 import { ThemeProvider, ToastProvider } from '@mestechko/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -126,6 +127,7 @@ export function App({ i18n }: { readonly i18n: i18n }) {
   );
   return (
     <I18nextProvider i18n={i18n}>
+      <DocumentLocale titleKey="meta.title" />
       <QueryClientProvider client={queryClient}>
         <ThemeProvider storageKey={THEME_STORAGE_KEY}>
           <ApiProvider>

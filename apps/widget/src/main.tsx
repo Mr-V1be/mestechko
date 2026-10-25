@@ -1,5 +1,6 @@
 import '@mestechko/ui/styles.css';
 import './embed.css';
+import { resolveBrowserLocale } from '@mestechko/booking-ui';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/app';
@@ -11,7 +12,7 @@ if (!root) {
   throw new Error('Root element is missing');
 }
 
-const i18n = await setUpI18n();
+const i18n = await setUpI18n(resolveBrowserLocale());
 
 createRoot(root).render(
   <StrictMode>

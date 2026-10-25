@@ -1,7 +1,8 @@
-import { loader } from '../locales/ru.json';
-import { WIDGET_MESSAGE_SOURCE } from '../embed/widget-messages';
+import type { Locale } from '@mestechko/domain';
+import { messageLocale, WIDGET_MESSAGE_SOURCE } from '../embed/widget-messages';
 import type { EmbedMode } from '../embed/embed-params';
 import { frameUrl, type LoaderConfig } from './loader-config';
+import { loaderTextsOf } from './loader-texts';
 import { shadowStyles } from './shadow-styles';
 
 const DARK_QUERY = '(prefers-color-scheme: dark)';
@@ -36,13 +37,19 @@ function isWidgetMessage(data: unknown): data is Record<string, unknown> {
 
 /**
  * The widget's frame. An inline frame grows to its content; both kinds announce a
- * booking to the site as a `mestechko:booked` event on the document.
+ * booking to the site as a `mestechko:booked` event on the document, and report the
+ * language the widget speaks to `onLocale`.
  */
-export function createFrame(config: LoaderConfig, mode: EmbedMode): HTMLIFrameElement {
+export function createFrame(
+  config: LoaderConfig,
+  mode: EmbedMode,
+  locale: Locale,
+  onLocale: (locale: Locale) => void = () => undefined,
+): HTMLIFrameElement {
   const frame = document.createElement('iframe');
   frame.className = 'frame';
   frame.src = frameUrl(config, mode);
-  frame.title = loader.title;
+  frame.title = loaderTextsOf(locale).title;
   frame.allow = 'payment';
   frame.referrerPolicy = 'strict-origin-when-cross-origin';
   window.addEventListener('message', (event: MessageEvent<unknown>) => {
@@ -54,6 +61,11 @@ export function createFrame(config: LoaderConfig, mode: EmbedMode): HTMLIFrameEl
       return;
     }
     const { type, height, status } = event.data;
+    const reported = type === 'locale' ? messageLocale(event.data.locale) : null;
+    if (reported) {
+      frame.title = loaderTextsOf(reported).title;
+      onLocale(reported);
+    }
     if (type === 'height' && mode === 'inline' && typeof height === 'number' && height > 0) {
       frame.style.height = `${String(Math.ceil(height))}px`;
     }

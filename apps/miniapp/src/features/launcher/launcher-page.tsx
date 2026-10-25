@@ -1,4 +1,12 @@
-import { DemoLinks, errorMessage, useVocabulary, VerticalIcon } from '@mestechko/booking-ui';
+import {
+  demoBusinessesIn,
+  DemoLinks,
+  errorMessage,
+  LanguageMenu,
+  useLocale,
+  useVocabulary,
+  VerticalIcon,
+} from '@mestechko/booking-ui';
 import type { DemoBusiness } from '@mestechko/contracts/client';
 import {
   Badge,
@@ -50,6 +58,7 @@ export function LauncherPage() {
   const navigate = useNavigate();
   const toast = useToast();
   const { launch } = useHost();
+  const { locale } = useLocale();
   const businesses = useDemoBusinesses();
   const telegramLaunch = useTelegramLaunch();
 
@@ -76,6 +85,9 @@ export function LauncherPage() {
           <div className={styles.brandRow}>
             <Logo name={t('common:brand.name')} />
             <Badge tone="outline">{t('common:brand.demo')}</Badge>
+            <span className={styles.brandEnd}>
+              <LanguageMenu />
+            </span>
           </div>
           <div className={styles.illustration}>
             <SpotIllustration />
@@ -90,7 +102,7 @@ export function LauncherPage() {
           ) : null}
           {businesses.data ? (
             <ListGroup title={t('launcher.listTitle')}>
-              {businesses.data.businesses.map((business) => (
+              {demoBusinessesIn(businesses.data.businesses, locale).map((business) => (
                 <BusinessRow
                   key={business.slug}
                   business={business}

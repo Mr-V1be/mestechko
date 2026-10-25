@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { messageLocale } from './widget-messages';
 import { WIDGET_MESSAGE_SOURCE, type WidgetMessage } from './widget-messages';
 
 /**
@@ -33,4 +35,15 @@ export function useAutoHeight(enabled: boolean): void {
       observer.disconnect();
     };
   }, [enabled]);
+}
+
+/** Tells the embedding page the widget's language, now and whenever the visitor switches. */
+export function useLocaleToHost(): void {
+  const { i18n } = useTranslation();
+  const locale = messageLocale(i18n.language);
+  useEffect(() => {
+    if (locale) {
+      postToHost({ type: 'locale', locale });
+    }
+  }, [locale]);
 }

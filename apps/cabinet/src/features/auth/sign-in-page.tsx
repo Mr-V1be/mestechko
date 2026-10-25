@@ -1,4 +1,4 @@
-import { DemoLinks } from '@mestechko/booking-ui';
+import { DemoLinks, LanguageMenu } from '@mestechko/booking-ui';
 import { Badge, Button, Logo, TextField } from '@mestechko/ui';
 import { useState, type SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -53,7 +53,10 @@ export function SignInPage() {
         <div className={styles.formColumn}>
           <div className={styles.mobileBrand}>
             <Logo name={t('common:brand.name')} />
-            {appConfig.demoMode ? <Badge tone="outline">{t('common:brand.demo')}</Badge> : null}
+            <div className={styles.brandActions}>
+              {appConfig.demoMode ? <Badge tone="outline">{t('common:brand.demo')}</Badge> : null}
+              <LanguageMenu />
+            </div>
           </div>
           <div className={styles.heading}>
             <h1 className={styles.title}>{t('signIn.title')}</h1>

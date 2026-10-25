@@ -1,5 +1,6 @@
 import { createFrame, shadowHost } from './embed-frame';
 import { loaderScript, readLoaderConfig } from './loader-config';
+import { initialLoaderLocale } from './loader-texts';
 import { mountPopup, type Popup } from './popup';
 
 /**
@@ -37,7 +38,7 @@ function inlineTargets(target: string | null, script: HTMLScriptElement): HTMLEl
 function start(script: HTMLScriptElement): void {
   const config = readLoaderConfig(script);
   if (!config) {
-    console.error('Местечко: укажите data-business на теге скрипта виджета.');
+    console.error('Mestechko widget: set data-business on the widget script tag.');
     return;
   }
   let popup: Popup | null = null;
@@ -48,7 +49,7 @@ function start(script: HTMLScriptElement): void {
   if (config.mode === 'inline') {
     for (const target of inlineTargets(config.target, script)) {
       const { host, root } = shadowHost(config);
-      root.append(createFrame(config, 'inline'));
+      root.append(createFrame(config, 'inline', initialLoaderLocale()));
       target.replaceChildren(host);
     }
   }

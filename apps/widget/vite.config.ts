@@ -33,9 +33,11 @@ function themeBoot(): Plugin {
 
 /**
  * The built embed script is a classic `widget.js`. In development it is served as a
- * stand-in that loads the loader's source as a module with the same attributes.
+ * stand-in that loads the loader's source as a module. A module has no current script,
+ * so the loader finds the site's own tag by its `data-mestechko` mark and reads its
+ * attributes and address from there, as on any real site.
  */
-const DEV_LOADER = `(function(){var s=document.currentScript;var m=document.createElement('script');m.type='module';m.src='/src/loader/widget.ts';Array.prototype.forEach.call(s.attributes,function(a){if(a.name.indexOf('data-')===0){m.setAttribute(a.name,a.value);}});document.head.appendChild(m);})();`;
+const DEV_LOADER = `(function(){var m=document.createElement('script');m.type='module';m.src='/src/loader/widget.ts';document.head.appendChild(m);})();`;
 
 function devLoader(): Plugin {
   return {
@@ -65,7 +67,7 @@ export default defineConfig(({ mode }) => ({
     target: 'es2022',
     sourcemap: true,
     rolldownOptions: {
-      input: { embed: 'embed.html', siren: 'demo/siren.html' },
+      input: { embed: 'embed.html', siren: 'demo/siren.html', marigold: 'demo/marigold.html' },
       output: {
         // Libraries change rarely: they get their own chunks and stay cached across releases.
         codeSplitting: {

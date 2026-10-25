@@ -8,8 +8,10 @@ import {
   mockTelegramEnv,
   retrieveLaunchParams,
   retrieveRawInitData,
+  settingsButton,
   themeParams,
 } from '@tma.js/sdk-react';
+import { browserLanguages } from '@mestechko/booking-ui';
 import { handleEmulatedCall } from './emulator-chrome';
 import { telegramDefaultThemes } from './telegram-palette';
 
@@ -37,6 +39,7 @@ function mountFeatures(): void {
   themeParams.mount.ifAvailable();
   mainButton.mount.ifAvailable();
   backButton.mount.ifAvailable();
+  settingsButton.mount.ifAvailable();
   miniApp.ready.ifAvailable();
 }
 
@@ -117,6 +120,22 @@ export function startHost(demoMode: boolean): HostStatus {
     return { status: 'ready', host: currentHost('native') };
   }
   return demoMode ? { status: 'launcher' } : { status: 'unsupported' };
+}
+
+/**
+ * The languages the host reports for the person: Telegram's app language inside
+ * Telegram (and in its emulator), the browser's languages on the demo launcher.
+ */
+export function hostLanguages(status: HostStatus): readonly string[] {
+  if (status.status !== 'ready') {
+    return browserLanguages();
+  }
+  try {
+    const language = retrieveLaunchParams().tgWebAppData?.user?.language_code;
+    return language ? [language] : [];
+  } catch {
+    return [];
+  }
 }
 
 /** Light touches on choices and results; silently absent where unsupported. */

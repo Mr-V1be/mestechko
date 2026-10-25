@@ -1,3 +1,4 @@
+import { LanguageMenu } from '@mestechko/booking-ui';
 import type { PublicBusiness } from '@mestechko/contracts/client';
 import { IconButton, Select } from '@mestechko/ui';
 import { ChevronLeft } from 'lucide-react';
@@ -40,6 +41,7 @@ export function FlowHeader({
             </p>
           ) : null}
         </div>
+        <LanguageMenu />
       </div>
       {business.locations.length > 1 && step === 'services' ? (
         <Select

@@ -1,3 +1,4 @@
+import { DocumentLocale } from '@mestechko/booking-ui';
 import { isRetryableError } from '@mestechko/contracts/client';
 import { ThemeProvider, ToastProvider } from '@mestechko/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -9,6 +10,7 @@ import { useHost } from '../platform/telegram/host-context';
 import { THEME_STORAGE_KEY } from './config';
 
 const RETRY_LIMIT = 2;
+const DOCUMENT_TITLE_KEY = 'meta.title';
 const STALE_MS = 30_000;
 
 function createQueryClient(): QueryClient {
@@ -44,6 +46,7 @@ export function AppProviders({
   const [queryClient] = useState(createQueryClient);
   return (
     <I18nextProvider i18n={i18n}>
+      <DocumentLocale titleKey={DOCUMENT_TITLE_KEY} />
       <QueryClientProvider client={queryClient}>
         <HostBound>
           <ToastProvider>{children}</ToastProvider>

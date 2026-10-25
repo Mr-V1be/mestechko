@@ -1,4 +1,4 @@
-import type { AccessArea } from '@mestechko/domain';
+import type { AccessArea, MessengerChannel } from '@mestechko/domain';
 import {
   BookOpenText,
   CalendarDays,
@@ -22,6 +22,8 @@ export interface NavigationSection {
   readonly pinned?: boolean;
   /** Tools of the demo itself, hidden outside demo mode. */
   readonly demoOnly?: boolean;
+  /** A section of one messenger, shown only in languages whose readers are offered it. */
+  readonly messenger?: MessengerChannel;
 }
 
 /** Sections of the cabinet. A new section is one entry here plus its route. */
@@ -46,5 +48,6 @@ export const navigationSections: readonly NavigationSection[] = [
     icon: MessagesSquare,
     area: 'messengers',
     demoOnly: true,
+    messenger: 'max',
   },
 ];

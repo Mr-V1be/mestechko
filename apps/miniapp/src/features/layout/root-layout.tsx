@@ -4,6 +4,7 @@ import { Navigate, Outlet, ScrollRestoration } from 'react-router';
 import { useHost } from '../../platform/telegram/host-context';
 import { EmulatorFrame } from '../../platform/telegram/emulator-frame';
 import { LauncherPage } from '../launcher/launcher-page';
+import { SettingsSheet } from '../preferences/settings-sheet';
 import styles from './layout.module.css';
 
 export function RootLayout() {
@@ -27,6 +28,7 @@ export function RootLayout() {
     <div className={styles.app}>
       <ScrollRestoration />
       <Outlet />
+      <SettingsSheet />
     </div>
   );
   return status.host.kind === 'emulated' ? <EmulatorFrame>{content}</EmulatorFrame> : content;

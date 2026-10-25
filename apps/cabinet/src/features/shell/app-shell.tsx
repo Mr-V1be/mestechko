@@ -1,4 +1,5 @@
-import { DemoLinks, VerticalIcon } from '@mestechko/booking-ui';
+import { DemoLinks, LanguageList, useLocale, VerticalIcon } from '@mestechko/booking-ui';
+import { offersMessenger, type Locale } from '@mestechko/domain';
 import type { Membership } from '@mestechko/contracts/client';
 import {
   Avatar,
@@ -105,14 +106,18 @@ function AccountSheet({
           />
         ))}
       </ListGroup>
+      <LanguageList />
       {appConfig.demoMode ? <DemoLinks links={appConfig.demoLinks} /> : null}
     </Sheet>
   );
 }
 
-function visibleSections(membership: Membership): NavigationSection[] {
+function visibleSections(membership: Membership, locale: Locale): NavigationSection[] {
   return navigationSections.filter(
-    (section) => canOpen(membership, section.area) && (!section.demoOnly || appConfig.demoMode),
+    (section) =>
+      canOpen(membership, section.area) &&
+      (!section.demoOnly || appConfig.demoMode) &&
+      (!section.messenger || offersMessenger(locale, section.messenger)),
   );
 }
 
@@ -142,7 +147,8 @@ function BottomNavigation({ membership }: { readonly membership: Membership }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
-  const sections = visibleSections(membership);
+  const { locale } = useLocale();
+  const sections = visibleSections(membership, locale);
   const pinned = sections.filter((section) => section.pinned);
   const rest = sections.filter((section) => !section.pinned);
   const current = location.pathname.split('/')[3] ?? '';
@@ -197,6 +203,7 @@ export function AppShell() {
   const membership = useActiveMembership(me);
   const [accountOpen, setAccountOpen] = useState(false);
   const roleLabel = useRoleLabel(membership?.business.vertical);
+  const { locale } = useLocale();
 
   useEffect(() => {
     if (membership) {
@@ -232,7 +239,7 @@ export function AppShell() {
           <BusinessSwitcher membership={membership} />
         </div>
         <nav className={styles.nav} aria-label={t('nav.label')}>
-          <NavigationLinks membership={membership} sections={visibleSections(membership)} />
+          <NavigationLinks membership={membership} sections={visibleSections(membership, locale)} />
         </nav>
         <div className={styles.sidebarFooter}>
           <div className={styles.account}>

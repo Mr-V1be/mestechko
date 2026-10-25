@@ -9,6 +9,8 @@ export interface EmulatorChromeState {
     readonly text: string;
   };
   readonly backButtonVisible: boolean;
+  /** The app asked for «Settings» in Telegram's menu. */
+  readonly settingsButtonVisible: boolean;
 }
 
 interface SdkEvent {
@@ -19,6 +21,7 @@ interface SdkEvent {
 const initialState: EmulatorChromeState = {
   mainButton: { visible: false, enabled: true, loading: false, text: '' },
   backButtonVisible: false,
+  settingsButtonVisible: false,
 };
 
 let state = initialState;
@@ -50,6 +53,9 @@ const eventHandlers: Readonly<Record<string, (params: unknown) => void>> = {
   },
   web_app_setup_back_button: (params) => {
     update({ ...state, backButtonVisible: record(params).is_visible === true });
+  },
+  web_app_setup_settings_button: (params) => {
+    update({ ...state, settingsButtonVisible: record(params).is_visible === true });
   },
   // An outside link opens in a new tab, as Telegram opens it in the browser.
   web_app_open_link: (params) => {
@@ -86,5 +92,8 @@ export const emulatorChrome = {
   },
   pressBackButton: (): void => {
     emitEvent('back_button_pressed');
+  },
+  pressSettingsButton: (): void => {
+    emitEvent('settings_button_pressed');
   },
 };

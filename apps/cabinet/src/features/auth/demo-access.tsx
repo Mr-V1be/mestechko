@@ -1,3 +1,4 @@
+import { demoBusinessesIn, useLocale } from '@mestechko/booking-ui';
 import type { DemoBusiness, Membership } from '@mestechko/contracts/client';
 import { Button, SegmentedControl, Select } from '@mestechko/ui';
 import { useState } from 'react';
@@ -13,8 +14,9 @@ type Role = Membership['role'];
 /** One-click entry to a demo business as any of its people: the owner or a staff member. */
 export function DemoAccess() {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const businesses = useDemoBusinesses(true);
-  const list = businesses.data?.businesses ?? [];
+  const list = demoBusinessesIn(businesses.data?.businesses ?? [], locale);
   const [slug, setSlug] = useState<string | null>(null);
   const business = list.find((candidate) => candidate.slug === slug) ?? list[0];
   if (!business) {

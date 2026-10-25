@@ -4,6 +4,7 @@ import {
   clientFileFormats,
   type ClientFileFormat,
 } from '@mestechko/contracts/client';
+import { useLocale } from '@mestechko/booking-ui';
 import { useToast, type MenuAction } from '@mestechko/ui';
 import type { TFunction } from 'i18next';
 import { FileSpreadsheet, FileText, type LucideIcon } from 'lucide-react';
@@ -45,9 +46,13 @@ export function importFailureMessage(t: TFunction, error: unknown): string {
     : errorMessage(t, error);
 }
 
-/** Downloads of the whole client base, one per format; the browser saves the file. */
+/**
+ * Downloads of the whole client base, one per format; the browser saves the file. The
+ * link names the reader's language, since the browser follows it with its own.
+ */
 export function useExportActions(businessId: string): MenuAction[] {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const api = useApi();
   const toast = useToast();
   return clientFileFormatIds.map((format) => {
@@ -57,7 +62,7 @@ export function useExportActions(businessId: string): MenuAction[] {
       key: `export-${format}`,
       label: t('clients:transfer.export', { format: name }),
       icon: <Icon aria-hidden="true" />,
-      href: api.href('exportClients', { params: { businessId }, query: { format } }),
+      href: api.href('exportClients', { params: { businessId }, query: { format, locale } }),
       download: true,
       onSelect: () => {
         toast.show({ title: t('clients:transfer.exportStarted', { format: name }) });

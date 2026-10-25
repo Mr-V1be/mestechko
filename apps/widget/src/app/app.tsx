@@ -4,7 +4,7 @@ import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rememberBooking, storedBooking, type StoredBooking } from '../embed/booking-tokens';
 import { attemptPath, freshFormPath, type EmbedParams } from '../embed/embed-params';
-import { postToHost, useAutoHeight } from '../embed/host-bridge';
+import { postToHost, useAutoHeight, useLocaleToHost } from '../embed/host-bridge';
 import { BookingFlow, type BookedResult } from '../features/flow/booking-flow';
 import type { PaymentStage } from '../features/result/booking-result';
 import { openCheckout, paysOutside } from '../embed/checkout-openers';
@@ -27,6 +27,7 @@ export function App({ i18n, params }: { readonly i18n: i18n; readonly params: Em
 function WidgetFrame({ params }: { readonly params: EmbedParams }) {
   const { t } = useTranslation();
   useAutoHeight(params.mode === 'inline');
+  useLocaleToHost();
   return (
     <div className={params.mode === 'popup' ? styles.popup : styles.card}>
       {params.business ? (

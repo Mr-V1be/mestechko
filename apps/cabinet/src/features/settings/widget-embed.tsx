@@ -11,7 +11,10 @@ type WidgetMode = (typeof widgetModes)[number];
 type WidgetTheme = (typeof widgetThemes)[number];
 
 /** Demo businesses that have a sample website with the widget on it. */
-const demoSites: Readonly<Record<string, string>> = { siren: '/demo/siren.html' };
+const demoSites: Readonly<Record<string, string>> = {
+  siren: '/demo/siren.html',
+  marigold: '/demo/marigold.html',
+};
 
 /** The snippet a site owner pastes into their page. */
 export function embedCode(slug: string, mode: WidgetMode, theme: WidgetTheme): string {
