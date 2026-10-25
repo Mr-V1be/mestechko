@@ -1,0 +1,21 @@
+{
+  "fileName": "Clients",
+  "columns": {
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "tags": "Tags",
+    "visits": "Visits",
+    "noShows": "No-shows",
+    "lastVisit": "Last visit",
+    "points": "Points",
+    "note": "Note"
+  },
+  "aliases": {
+    "name": ["Name", "Full name", "Client", "Client name", "Customer", "First and last name"],
+    "phone": ["Phone", "Phone number", "Mobile", "Mobile phone", "Cell", "Tel", "Telephone"],
+    "email": ["Email", "E-mail", "Email address"],
+    "tags": ["Tags", "Labels", "Tag"],
+    "note": ["Note", "Notes", "Comment", "Comments"]
+  }
+}

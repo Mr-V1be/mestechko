@@ -1,0 +1,108 @@
+{
+  "profile": {
+    "description": "I'll remind you of your booking a day and 2 hours before, help you reschedule or cancel it, and let you know when a time you're waiting for opens up.",
+    "shortDescription": "Booking reminders, rescheduling and cancellation, waitlist.",
+    "menuButton": "Book"
+  },
+  "commands": {
+    "start": "Turn on reminders",
+    "bookings": "My bookings",
+    "help": "What the bot can do"
+  },
+  "welcome": {
+    "title": "Hi, {{name}}!",
+    "lines": [
+      "I'll remind you of your bookings a day and 2 hours before.",
+      "You can reschedule or cancel a booking with the buttons under the message."
+    ]
+  },
+  "help": {
+    "title": "What the bot can do",
+    "lines": [
+      "Booking confirmations and reminders a day and 2 hours before.",
+      "Rescheduling and cancelling with buttons while there's enough time before the visit.",
+      "A message when a time from the waitlist opens up.",
+      "/bookings: your upcoming bookings."
+    ]
+  },
+  "unknown": {
+    "title": "I respond to buttons and commands",
+    "lines": ["/bookings: your bookings, /help: what the bot can do."]
+  },
+  "bookings": {
+    "title": "Your bookings",
+    "empty": "No upcoming bookings.",
+    "item": "{{date}}, {{time}} · {{business}}"
+  },
+  "card": {
+    "title": "Your booking",
+    "when": "{{date}}, {{start}}–{{end}}",
+    "where": "{{business}}, {{address}}",
+    "what": "{{services}}",
+    "staff": "{{role}}: {{name}}",
+    "total": "Total {{total}}",
+    "attendanceConfirmed": "You've confirmed your visit.",
+    "deadline": "You can reschedule or cancel online until {{deadline}}.",
+    "closed": "Online changes are closed. If your plans have changed, contact the business.",
+    "status": "Status: {{status}}",
+    "hold": {
+      "payment": "The time is yours until {{time}}: just pay the {{amount}} deposit in the app.",
+      "waitlist_offer": "The time is held for you until {{time}}."
+    }
+  },
+  "notice": {
+    "booking_created": "Booking confirmed",
+    "booking_rescheduled": "Booking rescheduled",
+    "booking_cancelled": "Booking cancelled",
+    "reminder_24h": "You have a booking tomorrow",
+    "reminder_2h": "You have a booking in 2 hours",
+    "waitlist_offer": "A time opened up"
+  },
+  "actions": {
+    "confirm_attendance": "I'll be there",
+    "reschedule": "Reschedule",
+    "cancel": "Cancel",
+    "open": "Open in the app",
+    "bookings": "My bookings",
+    "back": "Back",
+    "cancelConfirm": "Yes, cancel",
+    "keep": "Keep it",
+    "otherDay": "Another day",
+    "move": "Reschedule",
+    "acceptOffer": "Book",
+    "declineOffer": "Doesn't work"
+  },
+  "cancel": {
+    "title": "Cancel this booking?",
+    "consequence": "The time will be freed up for other clients to book."
+  },
+  "move": {
+    "chooseDay": "Choose a new day",
+    "chooseTime": "Open times, {{date}}",
+    "confirm": "Move to {{date}}, {{time}}?",
+    "sameStaff": "{{role}} and services stay the same, and the price won't go up.",
+    "noDays": "No openings in the coming days.",
+    "noTimes": "Fully booked this day."
+  },
+  "offer": {
+    "when": "{{date}}, {{time}}",
+    "total": "Price {{total}}",
+    "taken": "This time has already been taken. You're still on the waitlist.",
+    "declined": "Got it. I'll let you know if another time opens up.",
+    "closed": "The offer is no longer available.",
+    "kept": "The time is yours",
+    "holdsUntil": "I'm holding this time for you until {{time}}."
+  },
+  "notices": {
+    "attendanceConfirmed": "Thank you, see you soon!",
+    "cancelled": "Booking cancelled",
+    "moved": "Booking rescheduled",
+    "booked": "You're booked",
+    "tooLate": "Online changes are already closed",
+    "notFound": "Booking not found",
+    "slotTaken": "This time has already been taken",
+    "priceChanged": "The price for this time has changed",
+    "stale": "This button is out of date, open the booking again",
+    "failed": "That didn't work, please try again"
+  }
+}

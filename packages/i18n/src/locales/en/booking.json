@@ -1,0 +1,31 @@
+{
+  "status": {
+    "held": "On hold",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "no_show": "No-show",
+    "cancelled": "Cancelled"
+  },
+  "source": {
+    "telegram_mini_app": "Telegram",
+    "max_mini_app": "MAX",
+    "telegram_bot": "Telegram bot",
+    "max_bot": "MAX bot",
+    "cabinet": "Front desk",
+    "widget": "Website"
+  },
+  "holdReason": {
+    "payment": "Awaiting deposit",
+    "waitlist_offer": "Offered from the waitlist"
+  },
+  "picker": {
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "daysLabel": "Date",
+    "slotsLabel": "Available times",
+    "dayFullTitle": "Fully booked this day",
+    "dayFullDescription": "Dots under the dates mark days with an open spot.",
+    "weekFullTitle": "No openings this week",
+    "weekFullDescription": "Take a look at next week."
+  }
+}

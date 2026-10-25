@@ -1,0 +1,198 @@
+{
+  "signIn": {
+    "title": "Sign in to your dashboard",
+    "lead": "Your schedule, bookings, and clients in one place.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "demoTitle": "Demo access",
+    "demoLead": "Open the demo business without a password, as the owner or as a team member.",
+    "demoBusiness": "Business",
+    "demoRole": "Sign in as",
+    "personaAccess": {
+      "owner": "Sees the whole business: every team member's schedule and every booking.",
+      "admin": "Runs the schedule and bookings of the whole business.",
+      "staff": "Sees only their own schedule and bookings."
+    },
+    "demoSubmit": "Open the demo",
+    "showcase": {
+      "caption": "Clients book in Telegram, and the booking shows up in your schedule right away.",
+      "scheduleTitle": "Schedule",
+      "business": "Marigold",
+      "chooseTime": "Choose a time",
+      "summary": "{{staff}} · {{service}}",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "book": "Book · {{price}}",
+      "staff": {
+        "anna": {
+          "name": "Emma",
+          "title": "Stylist"
+        },
+        "maria": {
+          "name": "Olivia",
+          "title": "Colorist"
+        },
+        "olga": {
+          "name": "Mia",
+          "title": "Nail artist"
+        }
+      },
+      "clients": {
+        "alina": "Ashley M.",
+        "polina": "Paige K.",
+        "kirill": "Kevin A.",
+        "sofia": "Sophie O.",
+        "vera": "Victoria I.",
+        "daria": "Diana W."
+      }
+    },
+    "emailRequired": "Enter your email",
+    "passwordRequired": "Enter your password"
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin"
+  },
+  "nav": {
+    "label": "Sections",
+    "schedule": "Schedule",
+    "bookings": "Bookings",
+    "business": "Business",
+    "account": "Account",
+    "menu": "Menu",
+    "maxEmulator": "MAX emulator",
+    "clients": "Clients",
+    "team": "Team",
+    "catalog": "Services",
+    "loyalty": "Loyalty",
+    "reports": "Reports",
+    "settings": "Settings",
+    "more": "More"
+  },
+  "account": {
+    "theme": "Theme",
+    "signOut": "Sign out"
+  },
+  "schedule": {
+    "title": "Schedule",
+    "view": "View",
+    "day": "Day",
+    "week": "Week",
+    "axis": "Show",
+    "location": "Location",
+    "column": "Whose schedule",
+    "previous": "Previous",
+    "next": "Next",
+    "today": "Today",
+    "now": "Now",
+    "dayOff": "Day off",
+    "emptyTitle": "A free day",
+    "emptyDescription": "No bookings yet. Clients can book through Telegram.",
+    "noColumnsTitle": "Nobody works here",
+    "noColumnsDescription": "This location has no work schedules for the selected dates yet.",
+    "bookingLabel": "{{time}}, {{client}}: {{services}}",
+    "days": "Days",
+    "shownColumns": "{{what}}: {{from}}–{{to}} of {{total}}",
+    "previousColumns": "Previous columns",
+    "nextColumns": "Next columns"
+  },
+  "bookings": {
+    "title": "Bookings",
+    "period": "Period",
+    "status": "Status",
+    "allStatuses": "All statuses",
+    "staff": "Specialist",
+    "allStaff": "All",
+    "location": "Location",
+    "allLocations": "All locations",
+    "search": "Search",
+    "searchPlaceholder": "Client name or phone",
+    "columns": {
+      "when": "Date and time",
+      "client": "Client",
+      "services": "Services",
+      "status": "Status",
+      "total": "Total"
+    },
+    "emptyTitle": "No bookings found",
+    "emptyDescription": "Try another period or reset the filters.",
+    "resetFilters": "Reset filters",
+    "periods": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "thisWeek": "This week",
+      "nextWeek": "Next week",
+      "lastWeek": "Last week",
+      "last30": "Last 30 days",
+      "upcoming": "Next 60 days"
+    },
+    "filters": "Filters",
+    "filtersActive": "Filters: {{count}}",
+    "apply": "Show"
+  },
+  "details": {
+    "title": "Booking",
+    "client": "Client",
+    "call": "Call",
+    "when": "When",
+    "services": "Services",
+    "total": "Total",
+    "source": "Source",
+    "created": "Created {{when}}",
+    "comment": "Client's comment",
+    "attendanceConfirmed": "Will be there",
+    "historyTitle": "Changes",
+    "history": {
+      "rescheduled": "Rescheduled",
+      "cancelled": "Cancelled",
+      "attendance_confirmed": "Client confirmed the visit",
+      "confirmed": "Confirmed",
+      "completed": "Visit completed",
+      "no_show": "Client didn't show up"
+    },
+    "actor": {
+      "client": "Client",
+      "business": "Business",
+      "system": "Automatically"
+    },
+    "previousStart": "Was: {{when}}",
+    "previousStaff": "Was with: {{name}}"
+  },
+  "access": {
+    "title": "No access to this section",
+    "description": "Ask the business owner to give you access."
+  },
+  "crash": {
+    "title": "Something went wrong",
+    "description": "Reload the page. If that doesn't help, we already see the error in our logs.",
+    "reload": "Reload"
+  },
+  "channels": {
+    "telegram": "Telegram",
+    "max": "MAX"
+  },
+  "maxEmulator": {
+    "title": "MAX emulator",
+    "lead": "This is how clients see the bot's messages in MAX. You can press buttons and message the bot on a client's behalf.",
+    "chatsTitle": "Clients on MAX",
+    "emptyTitle": "No clients message you through MAX yet",
+    "emptyDescription": "When a client books through MAX, their chat with the bot will appear here.",
+    "notStarted": "The client hasn't started the bot yet",
+    "notStartedDescription": "The bot only messages people who started it. Press \"Start\" on the client's behalf.",
+    "start": "Start",
+    "noMessages": "No messages yet",
+    "messagePlaceholder": "Message to the bot",
+    "send": "Send",
+    "botName": "Mestechko",
+    "edited": "edited",
+    "openLink": "Open link",
+    "chooseChat": "Choose a client on the left to open the chat",
+    "back": "Back to clients",
+    "unavailableTitle": "The MAX emulator is off",
+    "unavailableDescription": "It only works in demo mode."
+  },
+  "meta": {
+    "title": "Mestechko · Dashboard"
+  }
+}

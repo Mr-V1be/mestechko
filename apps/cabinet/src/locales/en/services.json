@@ -1,0 +1,105 @@
+{
+  "title": "Services",
+  "addService": "Service",
+  "addCategory": "Category",
+  "listLabel": "Services by category",
+  "empty": {
+    "title": "No services yet",
+    "description": "Start with a category, such as Haircuts, and add services to it.",
+    "action": "Add category"
+  },
+  "emptyCategory": "No services in this category yet",
+  "count_one": "{{count}} service",
+  "count_other": "{{count}} services",
+  "from": "from {{value}}",
+  "performers": "Performed by: {{names}}",
+  "badges": {
+    "inactive": "Booking off",
+    "deposit": "Deposit {{percent}}%",
+    "incompatible_one": "Can't be combined with {{count}} service",
+    "incompatible_other": "Can't be combined with {{count}} services",
+    "noStaff": "Nobody to perform it"
+  },
+  "categoryMenu": {
+    "label": "Actions for category \"{{name}}\"",
+    "addService": "Add service",
+    "rename": "Rename",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
+  },
+  "serviceMenu": {
+    "label": "Actions for service \"{{name}}\"",
+    "edit": "Edit",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "deactivate": "Turn off booking",
+    "activate": "Turn on booking"
+  },
+  "moveFailed": "The order wasn't saved",
+  "category": {
+    "newTitle": "New category",
+    "renameTitle": "Category name",
+    "name": "Name",
+    "placeholder": "For example, Haircuts",
+    "create": "Add",
+    "save": "Save",
+    "created": "Category \"{{name}}\" added",
+    "renamed": "Category renamed",
+    "failed": "Couldn't save the category"
+  },
+  "activation": {
+    "title": "Turn off booking for \"{{name}}\"?",
+    "consequence": "Clients will no longer be able to book this service. Existing bookings stay in the schedule.",
+    "confirm": "Turn off booking",
+    "deactivated": "Booking for \"{{name}}\" turned off",
+    "activated": "Booking for \"{{name}}\" turned on",
+    "failed": "Couldn't change booking for the service"
+  },
+  "editor": {
+    "newTitle": "New service",
+    "notFound": "Service not found",
+    "notFoundDescription": "It may have been changed on another device. Refresh the list.",
+    "active": "Open for booking",
+    "activeOn": "Clients can book it",
+    "activeOff": "Clients don't see the service",
+    "name": "Name",
+    "namePlaceholder": "For example, Women's haircut",
+    "description": "Description",
+    "descriptionPlaceholder": "What the service includes",
+    "category": "Category",
+    "duration": "Duration",
+    "bufferBefore": "Buffer before",
+    "bufferAfter": "Buffer after",
+    "minutes": "min",
+    "price": "Price",
+    "noResource": "Not needed",
+    "ownDeposit": "Custom deposit",
+    "ruleDeposit": "As in settings: {{percent}}%",
+    "depositPercent": "Deposit share",
+    "percent": "%",
+    "staffInactive": "Not on the team",
+    "personalDuration": "Custom duration",
+    "personalPrice": "Custom price",
+    "noStaff": "No one on the team yet",
+    "incompatible": "Can't be combined with",
+    "noOtherServices": "No other services yet",
+    "create": "Add",
+    "save": "Save",
+    "created": "Service \"{{name}}\" added",
+    "saved": "Service \"{{name}}\" saved",
+    "failed": "Couldn't save the service",
+    "discard": {
+      "title": "Close without saving?",
+      "consequence": "These changes won't be saved: {{sections}}.",
+      "confirm": "Don't save",
+      "keep": "Go back"
+    },
+    "sections": {
+      "about": "name and description",
+      "timing": "duration",
+      "price": "price",
+      "deposit": "deposit",
+      "incompatible": "incompatible services"
+    }
+  }
+}

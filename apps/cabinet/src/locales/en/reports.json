@@ -1,0 +1,71 @@
+{
+  "title": "Reports",
+  "filters": {
+    "period": "Period",
+    "location": "Location",
+    "allLocations": "All locations",
+    "allStaff": "All"
+  },
+  "periods": {
+    "thisWeek": "This week",
+    "thisMonth": "This month",
+    "lastMonth": "Last month",
+    "last30": "Last 30 days",
+    "quarter": "Quarter"
+  },
+  "range": "{{from}} – {{to}}",
+  "comparedTo_one": "compared with the previous {{count}} day",
+  "comparedTo_other": "compared with the previous {{count}} days",
+  "metrics": {
+    "occupancy": {
+      "title": "Occupancy",
+      "part": "Booked",
+      "whole": "Working hours"
+    },
+    "revenue": {
+      "title": "Revenue"
+    },
+    "no_shows": {
+      "title": "No-shows",
+      "part": "Didn't show up",
+      "whole": "Expected visits"
+    },
+    "repeat_visits": {
+      "title": "Repeat visits",
+      "part": "Repeat",
+      "whole": "Visits"
+    }
+  },
+  "previous": "Before: {{value}}",
+  "noComparison": "No data to compare with",
+  "delta": {
+    "points": "{{value}} pp",
+    "percent": "{{value}}%"
+  },
+  "units": {
+    "hours": "{{value}} h"
+  },
+  "noValue": "—",
+  "view": {
+    "label": "View",
+    "chart": "Chart",
+    "table": "Table"
+  },
+  "table": {
+    "date": "Date",
+    "total": "Total",
+    "caption": "{{metric}} by day"
+  },
+  "staff": {
+    "caption": "Team performance",
+    "occupancy": "Occupancy",
+    "visits": "Visits",
+    "noShows": "No-shows",
+    "revenue": "Revenue",
+    "total": "Total",
+    "otherIncome": "Other income"
+  },
+  "emptyTitle": "No data for this period",
+  "emptyDescription": "Occupancy, revenue, and visits will appear here once working days have passed.",
+  "showDefault": "Show the last 30 days"
+}

@@ -1,0 +1,95 @@
+{
+  "title": "Loyalty",
+  "program": {
+    "title": "Loyalty program",
+    "off": "Off: points are neither awarded nor redeemed",
+    "kind": "How it works",
+    "example": "A {{price}} visit",
+    "save": "Save",
+    "reset": "Discard",
+    "saved": "Loyalty program saved",
+    "turnedOff": "Loyalty program turned off",
+    "failed": "Couldn't save the program",
+    "turnOff": {
+      "title": "Turn off the loyalty program?",
+      "consequence": "Clients will stop earning points and won't be able to pay with them. Points already earned are kept and work again once the program is back on.",
+      "confirm": "Turn off"
+    }
+  },
+  "kinds": {
+    "none": {
+      "title": "No program",
+      "rule": ""
+    },
+    "cashback_points": {
+      "title": "Points for visits",
+      "rule": "1 point = {{value}}"
+    }
+  },
+  "settings": {
+    "accrualPercent": "Points earned from each payment",
+    "maxRedeemPercent": "Share payable with points",
+    "percent": "%"
+  },
+  "outcomes": {
+    "earned": "Client earns",
+    "earnedValue_one": "+{{count}} point",
+    "earnedValue_other": "+{{count}} points",
+    "redeemable": "Payable with points",
+    "redeemableValue": "up to {{amount}}"
+  },
+  "plans": {
+    "title": "Packages",
+    "add": "Package",
+    "empty": {
+      "title": "No packages yet",
+      "description": "Sell visits in advance as a bundle, for example 4 manicures within 4 months.",
+      "action": "Create package"
+    },
+    "visits_one": "{{count}} visit",
+    "visits_other": "{{count}} visits",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "services_one": "{{count}} service",
+    "services_other": "{{count}} services",
+    "sold": "Sold: {{count}}",
+    "inactive": "Not for sale",
+    "menu": {
+      "label": "Actions for package \"{{name}}\"",
+      "edit": "Edit",
+      "stop": "Stop selling",
+      "resume": "Resume selling"
+    },
+    "stopped": "\"{{name}}\" is no longer for sale",
+    "resumed": "\"{{name}}\" is for sale again",
+    "failed": "Couldn't change the package"
+  },
+  "editor": {
+    "newTitle": "New package",
+    "soldNote": "Sold: {{count}}. Packages already sold keep their terms.",
+    "name": "Name",
+    "namePlaceholder": "For example, 4 manicures",
+    "visits": "Visits",
+    "validity": "Valid for, days",
+    "price": "Price",
+    "perVisit": "{{price}} per visit",
+    "active": "For sale",
+    "activeOn": "Can be sold on a client's card",
+    "activeOff": "New sales are closed",
+    "services": "Package services",
+    "noServices": "No services in the catalog yet",
+    "serviceOff": "booking off",
+    "create": "Create",
+    "save": "Save",
+    "created": "Package \"{{name}}\" created",
+    "saved": "Package \"{{name}}\" saved",
+    "failed": "Couldn't save the package",
+    "discard": {
+      "title": "Close without saving?",
+      "consequence": "Changes to the \"{{name}}\" package won't be saved.",
+      "consequenceNew": "The new package won't be created.",
+      "confirm": "Don't save",
+      "keep": "Go back"
+    }
+  }
+}

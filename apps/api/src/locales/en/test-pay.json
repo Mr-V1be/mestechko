@@ -1,0 +1,16 @@
+{
+  "title": "Test checkout",
+  "secure": "Secure payment",
+  "amount": "Amount due",
+  "testNotice": "Test payment: no money is charged and no card is needed.",
+  "pay": "Pay {{amount}}",
+  "cancel": "Cancel payment",
+  "closed": {
+    "succeeded": "This payment has already been made",
+    "cancelled": "This payment was cancelled or has expired"
+  },
+  "back": "Go back",
+  "notFound": "Payment not found",
+  "expiresIn_one": "Please pay within {{count}} minute",
+  "expiresIn_other": "Please pay within {{count}} minutes"
+}

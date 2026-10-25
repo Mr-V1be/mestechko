@@ -1,0 +1,130 @@
+{
+  "brand": {
+    "name": "Mestechko",
+    "tagline": "Got a spot?",
+    "demo": "Demo"
+  },
+  "actions": {
+    "back": "Back",
+    "close": "Close",
+    "retry": "Try again",
+    "continue": "Continue",
+    "more": "More",
+    "showMore": "Show more",
+    "signOut": "Sign out",
+    "today": "Today",
+    "previous": "Previous",
+    "next": "Next",
+    "cancel": "Cancel",
+    "save": "Save",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "theme": {
+    "label": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark",
+    "telegramLight": "Telegram, light",
+    "telegramDark": "Telegram, dark"
+  },
+  "language": {
+    "label": "Language",
+    "change": "Change language"
+  },
+  "duration": {
+    "hours_one": "{{count}} h",
+    "hours_other": "{{count}} h",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min"
+  },
+  "dayParts": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "any": "Any time"
+  },
+  "states": {
+    "loading": "Loading…",
+    "errorTitle": "Couldn't load this",
+    "offlineTitle": "Can't reach the server",
+    "offlineHint": "Check your connection and try again.",
+    "forbiddenTitle": "No access",
+    "forbiddenHint": "This section isn't available for your role.",
+    "notFoundTitle": "Nothing found"
+  },
+  "errors": {
+    "validation_failed": "Check the details you entered.",
+    "unauthenticated": "Please sign in again.",
+    "invalid_credentials": "Wrong email or password.",
+    "telegram_auth_invalid": "Couldn't verify your Telegram sign-in.",
+    "telegram_auth_expired": "Your Telegram session has expired. Open the app again.",
+    "forbidden": "You don't have permission to do this.",
+    "not_found": "We couldn't find what you're looking for.",
+    "slot_unavailable": "This time was just taken. Choose another one.",
+    "price_changed": "The price for this time has changed. Check it and confirm again.",
+    "idempotency_conflict": "This request is already being processed.",
+    "booking_changed": "The booking has changed. Refresh the screen and try again.",
+    "change_not_allowed": "Online changes for this booking are closed.",
+    "rate_limited": "Too many attempts. Please wait a moment.",
+    "internal": "Something went wrong. We're already looking into it.",
+    "dependency_unavailable": "The service is temporarily unavailable.",
+    "network_error": "Can't reach the server.",
+    "timeout": "The server is taking too long to respond.",
+    "unexpected_response": "The server sent an unexpected response.",
+    "impact_changed": "The schedule now affects different bookings than you saw. Check again.",
+    "reasons": {
+      "past": "This time has already passed.",
+      "beyond_horizon": "Bookings can't be made that far ahead.",
+      "off_grid": "The start time must be a multiple of five minutes.",
+      "not_qualified": "This specialist doesn't provide these services.",
+      "not_working": "This specialist isn't working that day.",
+      "outside_hours": "This is outside working hours or during a break.",
+      "staff_busy": "This specialist is busy at that time.",
+      "resource_busy": "No free place: chair, room or bay.",
+      "incompatible_services": "These services can't be booked together.",
+      "insufficient_balance": "The balance is too low.",
+      "pass_not_applicable": "The package doesn't cover this visit.",
+      "invalid_schedule": "This schedule isn't possible: check the dates and hours.",
+      "invalid_booking_rules": "These booking rules don't work together.",
+      "invalid_pass": "Check the package terms.",
+      "invalid_loyalty": "Percentages are whole numbers from 0 to 100.",
+      "not_awaiting_payment": "This booking isn't awaiting payment.",
+      "payment_closed": "The payment is already closed.",
+      "offer_closed": "The offer is no longer available.",
+      "missing_name_column": "The file has no name column.",
+      "closed": "This booking can no longer be changed."
+    }
+  },
+  "demo": {
+    "guestName": "Guest"
+  },
+  "validation": {
+    "required": "Fill in this field",
+    "tooLong": "{{max}} characters at most",
+    "range": "From {{min}} to {{max}}",
+    "min": "At least {{min}}",
+    "chooseSome": "Choose at least one"
+  },
+  "demoLinks": {
+    "title": "More in the demo",
+    "landing": {
+      "title": "Product website",
+      "description": "What Mestechko does, and pricing"
+    },
+    "cabinet": {
+      "title": "Business dashboard",
+      "description": "Schedule, clients, reports"
+    },
+    "miniapp": {
+      "title": "Client Mini App",
+      "description": "Booking as a client sees it"
+    },
+    "bot": {
+      "title": "Telegram bot",
+      "description": "Reminders, rescheduling and cancellation"
+    }
+  }
+}

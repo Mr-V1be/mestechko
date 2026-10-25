@@ -1,0 +1,81 @@
+{
+  "title": "Settings",
+  "sections": {
+    "name": "Name",
+    "booking": "Online booking",
+    "changes": "Rescheduling and cancellation",
+    "prepayment": "Deposit",
+    "waitlist": "Waitlist",
+    "widget": "Website booking widget"
+  },
+  "name": {
+    "label": "Business name"
+  },
+  "rules": {
+    "slotStepMinutes": "Booking time step",
+    "minLeadMinutes": "Minimum notice for booking",
+    "horizonDays": "Bookings open this far ahead",
+    "staffAssignment": "Who to assign when \"{{any}}\" is chosen",
+    "clientChangeCutoffMinutes": "Cutoff for client reschedules and cancellations",
+    "depositPercent": "Deposit, share of the price",
+    "paymentHoldMinutes": "Time to pay",
+    "waitlistOfferHoldMinutes": "How long a freed-up time waits for the client's answer"
+  },
+  "assignment": {
+    "balanced": "The one with the lightest load that day",
+    "first_listed": "In team list order"
+  },
+  "suffix": {
+    "minutes": "min",
+    "days": "days",
+    "percent": "%"
+  },
+  "amount": {
+    "minutes": "{{value}} min",
+    "days_one": "{{value}} day",
+    "days_other": "{{value}} days",
+    "percent": "{{value}}%"
+  },
+  "default": "Default: {{value}}",
+  "reset": "Reset",
+  "resetLabel": "Reset to the default: {{value}}",
+  "errors": {
+    "required": "Enter a value",
+    "nameRequired": "Enter a name",
+    "nameRejected": "The name is too long",
+    "range": "From {{min}} to {{max}}",
+    "rejected": "This value doesn't work"
+  },
+  "discard": "Discard changes",
+  "saved": "Settings saved",
+  "notSaved": "Settings weren't saved",
+  "leave": {
+    "title": "Unsaved changes",
+    "consequence_one": "{{count}} changed setting won't be saved.",
+    "consequence_other": "{{count}} changed settings won't be saved.",
+    "confirm": "Leave without saving",
+    "stay": "Stay"
+  },
+  "widget": {
+    "lead": "Let clients book right on your website: paste the code into the page. The site's styles and the widget's never mix, and open times are always up to date.",
+    "mode": "Display",
+    "modes": {
+      "inline": "Inside the page",
+      "popup": "Button with a pop-up"
+    },
+    "theme": "Theme",
+    "themes": {
+      "auto": "Match system",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "code": "Code for your website",
+    "inlineHint": "An element with the data-mestechko-widget attribute becomes the booking form; without one, the form appears right after the code.",
+    "popupHint": "A \"Book online\" button will appear. Your own site buttons open the booking form if you add the data-mestechko-open attribute to them.",
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "copyFailed": "Couldn't copy. Select the code manually",
+    "preview": "Open the booking form",
+    "demoSite": "Demo salon website with the widget"
+  }
+}

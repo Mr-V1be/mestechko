@@ -1,0 +1,86 @@
+{
+  "staff": {
+    "master": {
+      "one": "Specialist",
+      "many": "Specialists",
+      "any": "Any specialist",
+      "choose": "Choose a specialist",
+      "next": "Choose specialist"
+    },
+    "barber": {
+      "one": "Barber",
+      "many": "Barbers",
+      "any": "Any barber",
+      "choose": "Choose a barber",
+      "next": "Choose barber"
+    },
+    "doctor": {
+      "one": "Doctor",
+      "many": "Doctors",
+      "any": "Any doctor",
+      "choose": "Choose a doctor",
+      "next": "Choose doctor"
+    },
+    "mechanic": {
+      "one": "Mechanic",
+      "many": "Mechanics",
+      "any": "Any mechanic",
+      "choose": "Choose a mechanic",
+      "next": "Choose mechanic"
+    },
+    "coach": {
+      "one": "Coach",
+      "many": "Coaches",
+      "any": "Any coach",
+      "choose": "Choose a coach",
+      "next": "Choose coach"
+    }
+  },
+  "resource": {
+    "workplace": {
+      "one": "Workstation",
+      "many": "Workstations"
+    },
+    "chair": {
+      "one": "Chair",
+      "many": "Chairs"
+    },
+    "cabinet": {
+      "one": "Room",
+      "many": "Rooms"
+    },
+    "bay": {
+      "one": "Bay",
+      "many": "Bays"
+    },
+    "hall": {
+      "one": "Hall",
+      "many": "Halls"
+    }
+  },
+  "client": {
+    "client": {
+      "one": "Client",
+      "many": "Clients"
+    },
+    "patient": {
+      "one": "Patient",
+      "many": "Patients"
+    },
+    "student": {
+      "one": "Student",
+      "many": "Students"
+    }
+  },
+  "resourceType": {
+    "hair_chair": "Styling chair",
+    "nail_desk": "Nail station",
+    "pedicure_chair": "Pedicure chair",
+    "barber_chair": "Barber chair",
+    "treatment_room": "Treatment room",
+    "xray_room": "X-ray room",
+    "lift": "Lift",
+    "alignment_stand": "Alignment rack",
+    "gym_hall": "Hall"
+  }
+}

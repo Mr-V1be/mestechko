@@ -1,0 +1,85 @@
+{
+  "loader": {
+    "title": "Online booking",
+    "open": "Book online",
+    "close": "Close"
+  },
+  "header": {
+    "online": "Online booking",
+    "location": "Location",
+    "step": "Step {{current}} of {{total}}",
+    "back": "Back"
+  },
+  "steps": {
+    "services": "Services",
+    "staff": "Specialist",
+    "time": "Date and time",
+    "contact": "Contact details"
+  },
+  "services": {
+    "limit_one": "You can choose {{count}} service",
+    "limit_other": "You can choose up to {{count}} services",
+    "priceFrom": "from {{price}}",
+    "notTogether": "Not done together with your choice",
+    "incompatible": "Can't be combined with your choice: different specialists do them",
+    "emptyTitle": "Online booking is closed for now",
+    "emptyDescription": "Call the business and they'll book you by phone."
+  },
+  "staff": {
+    "nearest": "Next: {{when}}",
+    "noFree": "Fully booked for the next two weeks; you can choose a later time",
+    "anyDescription": "We'll find whoever is free at the time you choose"
+  },
+  "summary": {
+    "services_one": "{{count}} service",
+    "services_other": "{{count}} services",
+    "next": "Next",
+    "book": "Book",
+    "bookAndPay": "Book and pay {{amount}}"
+  },
+  "contact": {
+    "when": "When",
+    "total": "Total",
+    "deposit": "Deposit",
+    "depositHint": "The rest, {{rest}}, is paid at the venue",
+    "name": "Name",
+    "nameRequired": "Tell us what to call you",
+    "phone": "Phone",
+    "phoneHint": "We'll only call or text if something changes",
+    "demoPhoneHint": "Demo: any number like {{mask}} works, for example {{example}}",
+    "phoneInvalid": "Check the number: some digits are missing or there are extra characters",
+    "comment": "Comment",
+    "commentPlaceholder": "Anything we should know",
+    "consent": "I agree to the processing of my personal data for this booking",
+    "consentRequired": "We can't book you without your consent",
+    "slotTakenTitle": "This time was just taken",
+    "slotTakenDescription": "Choose another one: the schedule is already up to date.",
+    "priceChanged": "The price has changed. Check the amount and book again."
+  },
+  "result": {
+    "bookedTitle": "You're booked!",
+    "bookedLead": "See you {{date}} at {{time}}",
+    "paidTitle": "Payment received. You're booked!",
+    "awaitingTitle": "Awaiting deposit",
+    "awaiting": "We're holding the time until {{time}}. Once you pay {{amount}}, your booking is confirmed.",
+    "pay": "Pay {{amount}}",
+    "checking": "Checking the payment…",
+    "late": "The payment hasn't come through yet. If you've already paid, your booking will be confirmed automatically.",
+    "declinedTitle": "The payment didn't go through",
+    "declinedDescription": "The time has been released for others. You can book again if it's still free.",
+    "releasedTitle": "The booking didn't go through",
+    "releasedDescription": "The payment didn't arrive in time, so the time was released.",
+    "again": "Book again",
+    "lostTitle": "We couldn't find this booking",
+    "lostDescription": "It was made in another browser window. The booking details are in the message from the business.",
+    "deposit": "Deposit",
+    "depositPaid": "Paid",
+    "depositPending": "Awaiting payment",
+    "depositRefunded": "Refunded",
+    "outside": "The payment page opened in a new window. As soon as the payment goes through, your booking is confirmed here automatically. We're holding the time until {{time}}.",
+    "reopen": "Open payment"
+  },
+  "poweredBy": "Online booking by Mestechko",
+  "notFoundTitle": "The widget isn't set up",
+  "notFoundDescription": "We couldn't find the business to book with. Check the widget code on the website."
+}

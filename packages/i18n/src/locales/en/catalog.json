@@ -1,0 +1,108 @@
+{
+  "verticals": {
+    "beauty_salon": "Beauty salon",
+    "barbershop": "Barbershop",
+    "dental_clinic": "Dental clinic",
+    "auto_service": "Auto service"
+  },
+  "categories": {
+    "beauty_salon": { "hair": "Hair", "nails": "Nails", "brows": "Brows" },
+    "barbershop": { "haircuts": "Haircuts", "beard": "Beard and shave", "combo": "Combos" },
+    "dental_clinic": {
+      "diagnostics": "Diagnostics",
+      "therapy": "Treatment",
+      "hygiene": "Hygiene and cosmetic",
+      "surgery": "Surgery"
+    },
+    "auto_service": {
+      "maintenance": "Maintenance",
+      "tires": "Tires and wheels",
+      "diagnostics": "Diagnostics"
+    }
+  },
+  "services": {
+    "beauty_salon": {
+      "women_haircut": {
+        "name": "Women's haircut",
+        "description": "Wash, cut and style"
+      },
+      "men_haircut": {
+        "name": "Men's haircut",
+        "description": "Scissor and clipper cut, wash"
+      },
+      "hair_coloring": {
+        "name": "Single-process color",
+        "description": "Premium color with an after-color treatment"
+      },
+      "blowout": { "name": "Blowout", "description": "Smooth or curls, your choice" },
+      "gel_manicure": {
+        "name": "Gel manicure",
+        "description": "E-file manicure, removal and gel polish"
+      },
+      "classic_manicure": {
+        "name": "Classic manicure",
+        "description": "Cuticle trim, no polish"
+      },
+      "pedicure": { "name": "Pedicure", "description": "E-file pedicure with foot care" },
+      "brow_shaping": { "name": "Brow shaping", "description": "Wax or tweezers" },
+      "brow_tint": { "name": "Brow tint", "description": "Tint or henna" }
+    },
+    "barbershop": {
+      "mens_haircut": {
+        "name": "Men's haircut",
+        "description": "Consultation, wash, cut and style"
+      },
+      "clipper_cut": { "name": "Clipper cut", "description": "One guard all over" },
+      "kids_haircut": { "name": "Kids' haircut", "description": "For kids under 12" },
+      "beard_trim": { "name": "Beard trim", "description": "Shape, line-up and beard oil" },
+      "royal_shave": {
+        "name": "Royal shave",
+        "description": "Straight razor, hot towels"
+      },
+      "haircut_and_beard": {
+        "name": "Haircut and beard",
+        "description": "The full package at a better price"
+      }
+    },
+    "dental_clinic": {
+      "consultation": {
+        "name": "Dental consultation",
+        "description": "Exam, treatment plan and estimate"
+      },
+      "dental_xray": { "name": "Periapical X-ray", "description": "Digital X-ray of one tooth" },
+      "caries_treatment": {
+        "name": "Cavity filling",
+        "description": "Local anesthesia and a light-cured filling"
+      },
+      "professional_hygiene": {
+        "name": "Professional cleaning",
+        "description": "Ultrasonic scaling, Air Flow and polishing"
+      },
+      "whitening": { "name": "Teeth whitening", "description": "In-office whitening in one visit" },
+      "tooth_extraction": {
+        "name": "Tooth extraction",
+        "description": "Simple extraction under local anesthesia"
+      }
+    },
+    "auto_service": {
+      "oil_change": { "name": "Oil change", "description": "Oil and filter, fluid level check" },
+      "brake_pads": {
+        "name": "Brake pad replacement",
+        "description": "Front or rear axle"
+      },
+      "ac_service": {
+        "name": "A/C recharge",
+        "description": "Leak test and refrigerant recharge"
+      },
+      "tire_change": { "name": "Tire change", "description": "Four wheels with balancing" },
+      "wheel_alignment": {
+        "name": "Wheel alignment",
+        "description": "3D alignment, before and after printout"
+      },
+      "computer_diagnostics": {
+        "name": "Computer diagnostics",
+        "description": "Fault codes read from every module"
+      }
+    }
+  }
+}

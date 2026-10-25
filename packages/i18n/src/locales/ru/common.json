@@ -30,6 +30,10 @@
     "telegramLight": "Telegram, светлая",
     "telegramDark": "Telegram, тёмная"
   },
+  "language": {
+    "label": "Язык",
+    "change": "Сменить язык"
+  },
   "duration": {
     "hours_one": "{{count}} ч",
     "hours_few": "{{count}} ч",

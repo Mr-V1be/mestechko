@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "title": "Mestechko: online booking in Telegram",
+    "description": "Online booking for salons, barbershops, clinics and auto services: a Telegram Mini App, a bot with reminders and a dashboard with the schedule."
+  },
+  "nav": {
+    "label": "Sections",
+    "how": "How it works",
+    "surfaces": "Product",
+    "verticals": "Who it's for",
+    "pricing": "Pricing",
+    "theme": "Change theme",
+    "demo": "Try the demo"
+  },
+  "hero": {
+    "eyebrow": "Online booking in Telegram",
+    "title": "Got a spot?",
+    "lead": "Clients book in a minute, the bot reminds them of the visit, and you see everything in one schedule.",
+    "demo": "Try the demo",
+    "bot": "Open the bot",
+    "note": "The demo runs on fictional data, so click anything",
+    "visual": "The dashboard with the schedule and the client Mini App"
+  },
+  "demoChoice": {
+    "title": "What would you like to open?",
+    "cabinet": "Business dashboard",
+    "cabinetText": "Schedule, clients, reports: sign in as the owner or a specialist",
+    "miniapp": "Client Mini App",
+    "miniappText": "Book a visit at a demo beauty studio",
+    "close": "Close"
+  },
+  "journey": {
+    "title": "How it works",
+    "book": {
+      "title": "The client picks a spot",
+      "text": "Service, specialist and an open time, in a Mini App right inside Telegram."
+    },
+    "schedule": {
+      "title": "Straight into the schedule",
+      "text": "Drag a visit and the client is notified automatically."
+    },
+    "remind": {
+      "title": "The bot sends reminders",
+      "text": "A day and two hours before. Confirming, rescheduling and cancelling take one tap."
+    },
+    "prepay": {
+      "title": "Deposits",
+      "text": "The time is held while the client pays."
+    },
+    "waitlist": {
+      "title": "Waitlist",
+      "text": "When a time opens up, the first person in line gets it."
+    },
+    "noDouble": {
+      "title": "No double bookings",
+      "text": "One time, one booking, even when two people tap at once."
+    }
+  },
+  "surfaces": {
+    "title": "Your whole business in one place",
+    "cabinet": {
+      "title": "Dashboard",
+      "text": "Team and schedules, services and prices, clients, packages and reports.",
+      "points": {
+        "schedule": "Schedule by specialist and workstation",
+        "clients": "Client profiles, notes and no-shows",
+        "reports": "Occupancy, revenue and repeat visits"
+      }
+    },
+    "widget": {
+      "title": "Website widget",
+      "text": "One line of code, and clients book right on your website.",
+      "points": {
+        "embed": "Inline on the page or as a button with a pop-up",
+        "theme": "Light and dark theme",
+        "isolation": "The website's styles and the widget's never mix"
+      }
+    },
+    "max": {
+      "title": "Telegram bot",
+      "text": "One bot for every business: reminders, rescheduling and the waitlist.",
+      "points": {
+        "remind": "Reminders 24 and 2 hours before",
+        "buttons": "Reschedule and cancel with buttons",
+        "offer": "Invitations from the waitlist"
+      }
+    }
+  },
+  "verticals": {
+    "title": "Who it's for",
+    "lead": "Salons, barbershops, clinics and auto services each get their own words, services and rules.",
+    "words": "{{staff}} · {{resource}}"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "lead": "{{days}} days free on any plan",
+    "perMonth": "per month",
+    "everythingIn": "Everything in {{plan}}, plus:",
+    "recommended": "Recommended",
+    "staff_one": "Up to {{count}} team member",
+    "staff_other": "Up to {{count}} team members",
+    "staffUnlimited": "As many team members as you need",
+    "locations_one": "{{count}} location",
+    "locations_other": "{{count}} locations",
+    "locationsUnlimited": "As many locations as you need",
+    "plans": {
+      "start": { "name": "Start", "text": "For a solo specialist or a small studio" },
+      "team": { "name": "Team", "text": "For a salon or clinic with a team" },
+      "network": { "name": "Network", "text": "For several locations" }
+    },
+    "features": {
+      "miniapp_booking": "Booking in Telegram",
+      "bot_reminders": "Bot with reminders",
+      "schedule": "Schedule with drag and drop",
+      "client_cards": "Client profiles",
+      "prepayment": "Deposits",
+      "loyalty": "Points and packages",
+      "reports": "Reports",
+      "website_widget": "Website widget",
+      "many_locations": "Multiple locations",
+      "branch_reports": "Reports by location",
+      "priority_support": "Priority support"
+    },
+    "cta": "Try the demo"
+  },
+  "closing": {
+    "title": "See for yourself",
+    "lead": "The demo really works. The data is fictional and resets every night.",
+    "bot": "Open the bot in Telegram"
+  },
+  "footer": {
+    "rights": "© {{year}} Mestechko",
+    "demo": "Demo: the businesses, clients and bookings are fictional."
+  }
+}

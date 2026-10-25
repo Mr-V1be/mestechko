@@ -1,0 +1,200 @@
+{
+  "launcher": {
+    "title": "Got a spot?",
+    "lead": "Online booking inside Telegram. Choose a business and the client app opens.",
+    "listTitle": "Businesses",
+    "opening": "Opening…"
+  },
+  "unsupported": {
+    "title": "Open the app in Telegram",
+    "description": "Booking works inside Telegram: tap \"Book\" in the business's chat."
+  },
+  "emulator": {
+    "settings": "Demo settings",
+    "theme": "Theme",
+    "switchBusiness": "Switch business",
+    "hint": "This is how the app looks in Telegram. Telegram itself draws the bottom button and Back."
+  },
+  "nav": {
+    "myBookings": "My bookings",
+    "book": "Book"
+  },
+  "business": {
+    "chooseLocation": "Which location suits you?",
+    "notFoundTitle": "Business not found",
+    "notFoundDescription": "The link may be outdated. Open the app from the business's chat again.",
+    "missingTitle": "No business selected",
+    "missingDescription": "Open the app from the business's link."
+  },
+  "services": {
+    "title": "Choose services",
+    "limit_one": "Choose up to {{count}} service",
+    "limit_other": "Choose up to {{count}} services",
+    "priceFrom": "from {{price}}",
+    "emptyTitle": "Nothing to choose here yet",
+    "emptyDescription": "This location has no services for online booking. Try another location.",
+    "incompatible": "Can't be combined with your choice: different specialists do them",
+    "notTogether": "Not done together with your choice"
+  },
+  "staff": {
+    "nearest": "Next opening {{when}}",
+    "noTime": "No openings in the next two weeks",
+    "anyDescription": "We'll find someone who's free",
+    "emptyTitle": "No one can do these services together",
+    "emptyDescription": "Book them separately or choose others.",
+    "changeServices": "Change services"
+  },
+  "time": {
+    "title": "Choose a time",
+    "nextAvailable": "Next available day",
+    "continue": "Continue",
+    "waitlistHint": "No time that works?",
+    "waitlistJoin": "Join the waitlist"
+  },
+  "confirm": {
+    "title": "Review your booking",
+    "contactTitle": "Contact details",
+    "name": "Name",
+    "nameRequired": "Tell us what to call you",
+    "phone": "Phone",
+    "phoneHint": "We'll send a reminder and let you know if anything changes",
+    "phoneInvalid": "Check the number: some digits are missing or there are extra characters",
+    "comment": "Comment",
+    "commentPlaceholder": "Anything we should know",
+    "submit": "Book",
+    "slotTakenTitle": "This time was just taken",
+    "slotTakenDescription": "Choose another one: the schedule is already up to date.",
+    "assignedTitle": "We'll assign someone",
+    "assignedFallback": "If this time gets taken first, we'll find another specialist at no higher price.",
+    "priceRange": "Specialists free at this time charge {{range}}.",
+    "rule": {
+      "balanced": "We assign whoever has fewer bookings that day.",
+      "first_listed": "We assign the first one free, in the business's order."
+    },
+    "goneTitle": "This time is already taken",
+    "goneDescription": "Choose another one: the schedule is up to date.",
+    "chooseAnother": "Choose another time",
+    "priceChangedTitle": "The price has changed",
+    "priceChangedDescription": "Check the new amount and confirm your booking again.",
+    "submitAndPay": "Book and pay {{amount}}",
+    "deposit": "Deposit",
+    "depositHint": "The rest, {{rest}}, is paid at the venue"
+  },
+  "summary": {
+    "title": "Your booking",
+    "services_one": "{{count}} service",
+    "services_other": "{{count}} services",
+    "total": "Total",
+    "when": "When",
+    "where": "Where",
+    "nothingYet": "Choose services and your booking shows up here"
+  },
+  "bookings": {
+    "title": "My bookings",
+    "scopeLabel": "Which bookings to show",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "emptyUpcomingTitle": "No bookings yet",
+    "emptyUpcomingDescription": "We'll find you a spot in a minute.",
+    "emptyPastTitle": "Past visits will show up here",
+    "emptyPastDescription": "Your history starts with your first visit."
+  },
+  "booking": {
+    "createdTitle": "You're booked!",
+    "createdLead": "See you {{date}} at {{time}}",
+    "title": "Booking",
+    "when": "Date and time",
+    "where": "Address",
+    "services": "Services",
+    "total": "Total",
+    "comment": "Comment",
+    "done": "Done",
+    "notFoundTitle": "Booking not found",
+    "notFoundDescription": "It may have been made from another account.",
+    "reschedule": "Reschedule",
+    "cancel": "Cancel",
+    "confirmAttendance": "Confirm visit",
+    "attendanceConfirmed": "You've confirmed your visit",
+    "deadline": "You can reschedule or cancel online until {{when}}.",
+    "changesClosed": "Online rescheduling and cancellation close {{duration}} before the visit. If your plans have changed, contact the business.",
+    "cancelTitle": "Cancel this booking?",
+    "cancelConsequence": "The time will be freed up for other clients to book.",
+    "cancelConfirm": "Cancel booking",
+    "keep": "Keep booking",
+    "cancelled": "Booking cancelled",
+    "attendanceThanks": "Thank you! See you soon",
+    "rescheduled": "Booking rescheduled"
+  },
+  "when": {
+    "today": "today at {{time}}",
+    "tomorrow": "tomorrow at {{time}}",
+    "date": "{{date}} at {{time}}"
+  },
+  "crash": {
+    "title": "Something went wrong",
+    "description": "Restart the screen: your chosen services and time will be kept.",
+    "reload": "Restart"
+  },
+  "reschedule": {
+    "title": "Reschedule booking",
+    "current": "Now: {{when}}",
+    "sameTerms": "Same specialist and services, and the price won't go up.",
+    "submit": "Move to {{when}}",
+    "closedTitle": "It's too late to reschedule",
+    "closedDescription": "Online changes for this booking are closed."
+  },
+  "waitlist": {
+    "title": "Waitlist",
+    "lead": "We'll message you in Telegram if a time opens up on {{date}}.",
+    "dayPart": "Time of day",
+    "submit": "Join the waitlist",
+    "joined": "You're on the waitlist",
+    "joinedDescription": "We'll let you know when a time opens up",
+    "listTitle": "Waitlist",
+    "entry": "{{date}} · {{part}}",
+    "leave": "Leave the waitlist",
+    "left": "You've left the waitlist"
+  },
+  "notifications": {
+    "title": "Reminders in Telegram",
+    "description": "The bot will remind you of your visit and let you know when a time opens up.",
+    "enable": "Turn on"
+  },
+  "payment": {
+    "pay": "Pay {{amount}}",
+    "awaitingTitle": "Awaiting deposit",
+    "awaiting": "We're holding the time until {{time}}. Once you pay {{amount}}, your booking is confirmed; the rest, {{rest}}, is paid at the venue.",
+    "late": "The payment hasn't come through yet. If you've already paid, your booking will be confirmed automatically and you'll get a notification. We're holding the time until {{time}}.",
+    "checking": "Checking the payment…",
+    "paidTitle": "Payment received. You're booked!",
+    "declinedTitle": "The payment didn't go through",
+    "declinedDescription": "The time has been released for others. You can book again if it's still free.",
+    "bookAgain": "Book again",
+    "release": "Don't book",
+    "released": "Time released",
+    "line": {
+      "title": "Deposit",
+      "pending": "Awaiting payment",
+      "succeeded": "Paid",
+      "cancelled": "Not paid",
+      "refunded": "Refunded",
+      "refundedAmount": "Refunded {{amount}}"
+    },
+    "outsideTitle": "Awaiting payment",
+    "outside": "The payment page opened in your browser. As soon as the payment goes through, your booking is confirmed automatically. We're holding the time until {{time}}."
+  },
+  "offer": {
+    "title": "A time opened up and it's yours until {{time}}",
+    "lead": "Confirm and we'll book you. If it doesn't work, we'll offer this time to the next person in line.",
+    "leadWithDeposit": "Confirm and pay the {{amount}} deposit to secure your booking. If it doesn't work, we'll offer this time to the next person in line.",
+    "accept": "Book",
+    "decline": "Doesn't work",
+    "declined": "The time went to the next person in line"
+  },
+  "meta": {
+    "title": "Mestechko: booking"
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}

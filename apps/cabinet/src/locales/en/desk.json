@@ -1,0 +1,129 @@
+{
+  "newBooking": "New booking",
+  "create": {
+    "title": "New booking",
+    "submit": "Book",
+    "created": "Booking created",
+    "createdDescription": "{{client}}, {{when}}"
+  },
+  "client": {
+    "title": "Client",
+    "mode": "Client",
+    "existing": "Existing",
+    "new": "New",
+    "search": "Name or phone",
+    "searchPlaceholder": "Start typing",
+    "noMatches": "Nobody found. Add a new client.",
+    "name": "Name",
+    "phone": "Phone",
+    "phoneHint": "Optional. We'll find the client's card by number if they've been here before.",
+    "phoneInvalid": "Check the number",
+    "nameRequired": "Enter a name",
+    "pickRequired": "Choose a client"
+  },
+  "services": {
+    "title": "Services",
+    "required": "Choose at least one service",
+    "incompatible": "Can't be combined with the selected ones",
+    "noProviders": "Nobody performs these services together",
+    "priceFrom": "from {{price}}"
+  },
+  "when": {
+    "staff": "Specialist",
+    "date": "Date",
+    "time": "Time",
+    "free": "Specialist's open times",
+    "noFree": "No open times for clients. You can set the time manually.",
+    "timeRequired": "Enter a time"
+  },
+  "comment": "Comment",
+  "move": {
+    "title": "Reschedule booking",
+    "submit": "Reschedule",
+    "done": "Booking rescheduled",
+    "doneDescription": "{{when}}, {{staff}}",
+    "notify": "The client will be notified in {{channel}}.",
+    "undo": "Undo",
+    "undone": "Reschedule undone",
+    "priceKept": "The price stays the same: {{total}}."
+  },
+  "cancel": {
+    "action": "Cancel booking",
+    "title": "Cancel this booking?",
+    "consequence": "The time will open up for other clients.",
+    "notify": "The client will be notified in {{channel}}.",
+    "refund": "The {{amount}} deposit will be refunded to the client.",
+    "releaseHold": "The time will no longer be held, and the payment will be cancelled.",
+    "confirm": "Cancel booking",
+    "keep": "Keep booking",
+    "done": "Booking cancelled"
+  },
+  "noShow": {
+    "action": "No-show",
+    "title": "Client didn't show up?",
+    "consequence": "The visit will be marked as a no-show and added to the client's card.",
+    "depositKept": "The business keeps the {{amount}} deposit.",
+    "confirm": "Mark as no-show",
+    "done": "No-show marked"
+  },
+  "complete": {
+    "action": "Visit completed",
+    "title": "Close visit",
+    "total": "Price",
+    "prepaid": "Deposit",
+    "pass": "Package",
+    "noPass": "No package",
+    "passOption": "{{name}}, {{left}} left",
+    "points": "Pay with points",
+    "pointsBalance_one": "{{points}} point on balance, up to {{max}} can be redeemed",
+    "pointsBalance_other": "{{points}} points on balance, up to {{max}} can be redeemed",
+    "pointsAmount": "Points to redeem",
+    "due": "Due at the venue",
+    "earned_one": "We'll award {{points}} point",
+    "earned_other": "We'll award {{points}} points",
+    "refund": "We'll refund the {{amount}} deposit",
+    "passCovers": "The visit will be taken from the package",
+    "confirm": "Close visit",
+    "done": "Visit closed"
+  },
+  "details": {
+    "actions": "Actions",
+    "move": "Reschedule",
+    "hold": {
+      "payment": "Awaiting deposit until {{time}}",
+      "waitlist_offer": "Offered from the waitlist until {{time}}"
+    },
+    "deposit": "Deposit",
+    "payment": {
+      "pending": "pending",
+      "succeeded": "paid",
+      "cancelled": "cancelled",
+      "refunded": "refunded"
+    },
+    "refunded": "Refunded {{amount}}",
+    "settlement": "Visit payment",
+    "notifiedVia": "Notifications via {{channel}}"
+  },
+  "ledger": {
+    "points_accrual": "Points awarded",
+    "points_redemption": "Paid with points",
+    "points_adjustment": "Points adjustment",
+    "pass_sale": "Package sold",
+    "pass_visit": "Visit from package",
+    "pass_adjustment": "Package adjustment",
+    "prepayment": "Deposit",
+    "prepayment_refund": "Deposit refund",
+    "visit_payment": "Paid at the venue",
+    "pass_payment": "Package payment"
+  },
+  "channels": {
+    "telegram": "Telegram",
+    "max": "MAX"
+  },
+  "dropRefused": "Couldn't reschedule: {{reason}}",
+  "dragHint": "Drag the booking to reschedule it",
+  "points_one": "{{points}} point",
+  "points_other": "{{points}} points",
+  "visits_one": "{{count}} visit",
+  "visits_other": "{{count}} visits"
+}

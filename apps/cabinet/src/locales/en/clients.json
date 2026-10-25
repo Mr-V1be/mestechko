@@ -1,0 +1,231 @@
+{
+  "title": "Clients",
+  "add": "Add client",
+  "addShort": "Add",
+  "moreActions": "Import and export",
+  "toolbar": {
+    "search": "Search",
+    "searchPlaceholder": "Name, phone, or email",
+    "tag": "Tag",
+    "allTags": "All tags",
+    "tagOption": "{{tag}} · {{count}}",
+    "sort": "Sort"
+  },
+  "sort": {
+    "recent": "Recent",
+    "name": "By name"
+  },
+  "columns": {
+    "client": "Client",
+    "phone": "Phone",
+    "visits": "Visits",
+    "noShows": "No-shows",
+    "lastVisit": "Last visit",
+    "nextVisit": "Next visit"
+  },
+  "tableCaption": "Clients of the business",
+  "visits_one": "{{count}} visit",
+  "visits_other": "{{count}} visits",
+  "noShows_one": "{{count}} no-show",
+  "noShows_other": "{{count}} no-shows",
+  "noVisitsYet": "Hasn't visited yet",
+  "nextVisit": "Visit {{when}}",
+  "none": "—",
+  "dayTime": "{{day}}, {{time}}",
+  "emptyTitle": "No clients yet",
+  "emptyDescription": "Add your first client or import a list from a spreadsheet.",
+  "noResultsTitle": "Nobody found",
+  "noResultsDescription": "Check the spelling or reset the filters.",
+  "resetFilters": "Reset filters",
+  "tags": {
+    "label": "Tags",
+    "placeholder": "Add a tag",
+    "remove": "Remove tag \"{{tag}}\"",
+    "create": "New tag \"{{tag}}\"",
+    "limit": "Up to {{count}} tags, {{length}} characters each",
+    "saveFailed": "Tags weren't saved"
+  },
+  "form": {
+    "createTitle": "New client",
+    "editTitle": "Client profile",
+    "name": "Name",
+    "namePlaceholder": "How to address the client",
+    "nameRequired": "Enter a name",
+    "phone": "Phone",
+    "phoneInvalid": "We couldn't read this number. Example: {{example}}",
+    "phoneTaken": "Another client's card already has this number",
+    "openTaken": "Open card",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "emailInvalid": "Check the address: it needs an @ and a domain",
+    "create": "Add",
+    "save": "Save",
+    "created": "Client added",
+    "saved": "Profile saved"
+  },
+  "card": {
+    "back": "All clients",
+    "since": "Client since {{date}}",
+    "edit": "Edit",
+    "contacts": "Contacts",
+    "call": "Call",
+    "write": "Send email",
+    "addPhone": "Add phone",
+    "addEmail": "Add email",
+    "messenger": "Uses {{channel}}",
+    "stats": {
+      "visits": "Visits",
+      "noShows": "No-shows",
+      "cancellations": "Cancellations",
+      "spent": "Spent"
+    },
+    "upcoming": "Upcoming visits",
+    "noUpcoming": "No upcoming visits",
+    "history": "Visit history",
+    "noHistory": "No visits yet",
+    "showAll": "Show all ({{count}})",
+    "showLess": "Show less",
+    "visitDetails": "{{services}} · {{staff}}",
+    "notFoundTitle": "Client not found",
+    "notFoundDescription": "The card may have been deleted, or the link is wrong.",
+    "toList": "Back to clients"
+  },
+  "notes": {
+    "title": "Notes",
+    "new": "New note",
+    "placeholder": "What's important to remember about this client",
+    "add": "Add note",
+    "empty": "No notes yet",
+    "saving": "Saving…",
+    "delete": "Delete note",
+    "deleteTitle": "Delete this note?",
+    "deleteConsequence": "The note \"{{excerpt}}\" will disappear from the card for the whole team. It can't be restored.",
+    "deleted": "Note deleted",
+    "addFailed": "The note wasn't saved",
+    "deleteFailed": "Couldn't delete the note"
+  },
+  "loyalty": {
+    "title": "Points and packages",
+    "points": "Points",
+    "pointRate": "1 point = {{money}}",
+    "adjust": "Adjust points",
+    "passes": "Packages",
+    "noPasses": "No packages",
+    "sell": "Sell package",
+    "visitsLeft": "{{left}} of {{total}} left",
+    "validUntil": "until {{date}}",
+    "passStates": {
+      "active": "Active",
+      "used": "Used up",
+      "expired": "Expired"
+    },
+    "ledger": "Transaction history",
+    "noLedger": "No transactions yet"
+  },
+  "ledger": {
+    "reasons": {
+      "points_accrual": "Awarded for a visit",
+      "points_redemption": "Paid with points",
+      "points_adjustment": "Manual adjustment",
+      "pass_sale": "Package sale",
+      "pass_visit": "Visit from package",
+      "pass_adjustment": "Package adjustment",
+      "prepayment": "Deposit",
+      "prepayment_refund": "Deposit refund",
+      "visit_payment": "Visit payment",
+      "pass_payment": "Package payment"
+    },
+    "points_one": "{{sign}}{{value}} point",
+    "points_other": "{{sign}}{{value}} points",
+    "visits_one": "{{sign}}{{value}} visit",
+    "visits_other": "{{sign}}{{value}} visits",
+    "money": "{{sign}}{{value}}"
+  },
+  "points": {
+    "title": "Adjust points",
+    "description": "Balance: {{balance}}",
+    "direction": "Action",
+    "directions": {
+      "credit": "Award",
+      "debit": "Redeem"
+    },
+    "amount": "Points",
+    "amountRequired": "Enter the number of points",
+    "notEnough": "The balance is only {{balance}}",
+    "note": "Reason",
+    "notePlaceholder": "For example, an apology for the wait",
+    "noteRequired": "Add a reason. It stays in the transaction history",
+    "after": "New balance: {{balance}}",
+    "submit": {
+      "credit": "Award {{value}}",
+      "debit": "Redeem {{value}}"
+    },
+    "done": {
+      "credit": "Awarded {{value}}",
+      "debit": "Redeemed {{value}}"
+    }
+  },
+  "sellPass": {
+    "title": "Sell package",
+    "description": "The client pays at the front desk, and the package appears on their card right away.",
+    "plan": "Package",
+    "planOption": "{{name}}, {{price}}",
+    "visits": "Visits",
+    "validity_one": "{{count}} day, until {{date}}",
+    "validity_other": "{{count}} days, until {{date}}",
+    "validityLabel": "Valid for",
+    "price": "Price",
+    "submit": "Sell for {{price}}",
+    "noPlansTitle": "No packages for sale",
+    "noPlansDescription": "Packages are created in the Loyalty section.",
+    "openLoyalty": "Open Loyalty",
+    "sold": "Package \"{{name}}\" sold"
+  },
+  "transfer": {
+    "formats": {
+      "csv": "CSV",
+      "xlsx": "Excel"
+    },
+    "export": "Export to {{format}}",
+    "exportStarted": "Downloading the client list as {{format}}",
+    "import": "Import from file"
+  },
+  "import": {
+    "title": "Import clients",
+    "lead": "A CSV or Excel (.xlsx) spreadsheet with column names in the first row:",
+    "columns": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "tags": "Tags",
+      "note": "Note"
+    },
+    "columnHints": {
+      "name": "required",
+      "phone": "updates the card if the client already exists",
+      "email": "",
+      "tags": "comma-separated",
+      "note": "added to the card"
+    },
+    "pick": "Choose file",
+    "pickAnother": "Another file",
+    "checking": "Checking \"{{file}}\"…",
+    "fileLabel": "File \"{{file}}\"",
+    "created": "To add",
+    "updated": "To update",
+    "rejected": "To skip",
+    "rejectedTitle": "Skipped rows",
+    "rejectedRow": "Row {{row}}",
+    "reasons": {
+      "missing_name": "no name",
+      "invalid_phone": "phone not recognized",
+      "invalid_email": "invalid email",
+      "invalid_tags": "more than 20 tags or a tag is too long"
+    },
+    "nothingToImport": "The file has no rows that can be imported.",
+    "submit": "Import",
+    "done": "Import complete: {{created}} added, {{updated}} updated",
+    "wrongType": "Use a CSV or Excel (.xlsx) file.",
+    "tooLarge": "The file is larger than {{size}} MB. Split it into parts."
+  }
+}
