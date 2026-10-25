@@ -50,6 +50,7 @@ export interface NewTestPayment {
   readonly currency: string;
   readonly description: string;
   readonly returnUrl: string;
+  readonly locale: TestPayPayment['locale'];
   readonly metadata: Readonly<Record<string, string>>;
   readonly expiresAt: Date;
 }

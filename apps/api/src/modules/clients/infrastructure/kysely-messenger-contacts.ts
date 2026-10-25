@@ -1,4 +1,4 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import { isLocale, type MessengerChannel } from '@mestechko/domain';
 import { sql } from 'kysely';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import type {
@@ -16,7 +16,7 @@ export class KyselyMessengerContacts implements MessengerContacts {
   async allow(
     channel: MessengerChannel,
     externalId: string,
-    chatId: string,
+    chat: { readonly chatId: string; readonly languageTag: string | null },
     now: Date,
   ): Promise<string> {
     return this.unitOfWork.inPlatform(async () => {
@@ -25,8 +25,9 @@ export class KyselyMessengerContacts implements MessengerContacts {
         .platform()
         .updateTable('customerIdentities')
         .set((eb) => ({
-          chatId,
+          chatId: chat.chatId,
           messagingAllowedAt: eb.fn.coalesce('messagingAllowedAt', eb.val(now)),
+          ...(chat.languageTag ? { languageTag: chat.languageTag } : {}),
         }))
         .where('channel', '=', channel)
         .where('externalId', '=', externalId)
@@ -60,13 +61,26 @@ export class KyselyMessengerContacts implements MessengerContacts {
     const row = await this.unitOfWork
       .platform()
       .selectFrom('customerIdentities')
-      .select(['externalId', 'chatId'])
-      .where('customerId', '=', customerId)
-      .where('channel', '=', channel)
-      .where('messagingAllowedAt', 'is not', null)
-      .orderBy('createdAt', 'desc')
+      .innerJoin('customers', 'customers.id', 'customerIdentities.customerId')
+      .select([
+        'customerIdentities.externalId',
+        'customerIdentities.chatId',
+        'customerIdentities.languageTag',
+        'customers.locale',
+      ])
+      .where('customerIdentities.customerId', '=', customerId)
+      .where('customerIdentities.channel', '=', channel)
+      .where('customerIdentities.messagingAllowedAt', 'is not', null)
+      .orderBy('customerIdentities.createdAt', 'desc')
       .executeTakeFirst();
-    return row?.chatId ? { externalId: row.externalId, chatId: row.chatId } : null;
+    return row?.chatId
+      ? {
+          externalId: row.externalId,
+          chatId: row.chatId,
+          chosenLocale: isLocale(row.locale) ? row.locale : null,
+          languageTag: row.languageTag,
+        }
+      : null;
   }
 
   async preferredChannel(customerId: string): Promise<MessengerChannel | null> {

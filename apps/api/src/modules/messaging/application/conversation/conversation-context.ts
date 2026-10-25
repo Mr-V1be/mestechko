@@ -1,9 +1,14 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import type { Locale, MessengerChannel } from '@mestechko/domain';
 import type { ClientIdentity } from '../../../booking/application/client/client-bookings.js';
 import type { ChangeOrigin } from '../../../booking/application/lifecycle/client-booking-changes.js';
 import type { BusinessContext } from '../../../tenancy/application/business-context.js';
 import type { InboundPerson } from '../channel.js';
 import type { BusinessCard } from '../composer/bot-messages.js';
+
+/** The person behind an update, with the language to answer them in. */
+export interface Speaker extends InboundPerson {
+  readonly locale: Locale;
+}
 
 /** The person who pressed, as a client of the business the button belongs to. */
 export function identityIn(

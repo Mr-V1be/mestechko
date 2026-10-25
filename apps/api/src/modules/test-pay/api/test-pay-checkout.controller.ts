@@ -9,14 +9,17 @@ import {
   Post,
   Redirect,
 } from '@nestjs/common';
+import type { Locale } from '@mestechko/domain';
 import { APP_CONFIG, type AppConfig } from '../../../platform/config/app-config.js';
 import type { Clock } from '../../../shared/application/ports.js';
 import { CLOCK } from '../../../shared/application/ports.js';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
+import { RequestLocale } from '../../../platform/http/request-locale.js';
+import { TRANSLATIONS, type Translations } from '../../../shared/application/translations.js';
 import { TestPayEmulator, TestPayRefusal } from '../application/test-pay-emulator.js';
-import { renderCheckoutPage, type CheckoutTexts } from './checkout-page.js';
+import { renderCheckoutPage } from './checkout-page.js';
 
-export const TEST_PAY_TEXTS = Symbol('TEST_PAY_TEXTS');
+const TEST_PAY_NAMESPACE = 'test-pay';
 const MS_PER_MINUTE = 60_000;
 const SEE_OTHER = 303;
 
@@ -26,18 +29,23 @@ export class TestPayCheckoutController {
   constructor(
     @Inject(APP_CONFIG) private readonly config: AppConfig,
     @Inject(TestPayEmulator) private readonly emulator: TestPayEmulator,
-    @Inject(TEST_PAY_TEXTS) private readonly texts: CheckoutTexts,
+    @Inject(TRANSLATIONS) private readonly translations: Translations,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   @Get(':paymentId')
   @Header('content-type', 'text/html; charset=utf-8')
   @Header('cache-control', 'no-store')
-  async page(@Param('paymentId') paymentId: string): Promise<string> {
+  async page(
+    @Param('paymentId') paymentId: string,
+    @RequestLocale() requestLocale: Locale,
+  ): Promise<string> {
     this.assertEnabled();
     const payment = await this.emulator.find(paymentId);
     if (!payment) {
-      throw new NotFoundException(this.texts.text('notFound'));
+      throw new NotFoundException(
+        this.translations.in(requestLocale, TEST_PAY_NAMESPACE).text('notFound'),
+      );
     }
     const open = this.emulator.isOpen(payment);
     return renderCheckoutPage(
@@ -55,7 +63,7 @@ export class TestPayCheckoutController {
         returnUrl: payment.returnUrl,
         actionBase: `${this.config.payments.test.checkoutBaseUrl}/checkout/${payment.id}`,
       },
-      this.texts,
+      this.translations.in(payment.locale, TEST_PAY_NAMESPACE),
     );
   }
 

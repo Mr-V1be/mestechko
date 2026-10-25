@@ -6,7 +6,7 @@ import {
 } from '@mestechko/domain';
 import type { Selectable } from 'kysely';
 import { z } from 'zod';
-import { currencyCode } from '../../../platform/db/column-parsers.js';
+import { currencyCode, localeCode } from '../../../platform/db/column-parsers.js';
 import type { Businesses } from '../../../platform/db/generated/database.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import type {
@@ -48,6 +48,7 @@ function toRecord(row: Selectable<Businesses>): BusinessRecord {
     verticalId: row.verticalId,
     countryCode: row.countryCode,
     currency: currencyCode(row.currency),
+    locale: localeCode(row.locale),
     rulesOverrides: rulesOverridesSchema.parse(
       row.rulesOverrides,
     ) as BusinessRecord['rulesOverrides'],

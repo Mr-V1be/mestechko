@@ -17,7 +17,11 @@ const POLL_SECONDS = 25;
 const RETRY_DELAY_MS = 5_000;
 const COMMAND = /^\/([a-z_]+)(?:\s+(.+))?$/i;
 
-function personOf(user: MaxUser, chatId: number | null | undefined): InboundPerson | null {
+function personOf(
+  user: MaxUser,
+  chatId: number | null | undefined,
+  locale: string | null | undefined,
+): InboundPerson | null {
   if (user.is_bot || chatId === null || chatId === undefined) {
     return null;
   }
@@ -25,6 +29,7 @@ function personOf(user: MaxUser, chatId: number | null | undefined): InboundPers
     externalId: String(user.user_id),
     chatId: String(chatId),
     firstName: user.first_name ?? user.name ?? '',
+    languageTag: locale ?? null,
   };
 }
 
@@ -32,18 +37,20 @@ function personOf(user: MaxUser, chatId: number | null | undefined): InboundPers
 export function inboundOf(update: MaxUpdate): InboundEvent | null {
   switch (update.update_type) {
     case 'bot_started': {
-      const person = personOf(update.user, update.chat_id);
+      const person = personOf(update.user, update.chat_id, update.user_locale);
       return person
         ? { kind: 'started', channel: CHANNEL, person, payload: update.payload ?? null }
         : null;
     }
     case 'bot_stopped': {
-      const person = personOf(update.user, update.chat_id);
+      const person = personOf(update.user, update.chat_id, null);
       return person ? { kind: 'stopped', channel: CHANNEL, person } : null;
     }
     case 'message_created': {
       const sender = update.message.sender;
-      const person = sender ? personOf(sender, update.message.recipient.chat_id) : null;
+      const person = sender
+        ? personOf(sender, update.message.recipient.chat_id, update.user_locale)
+        : null;
       if (!person) {
         return null;
       }
@@ -58,7 +65,7 @@ export function inboundOf(update: MaxUpdate): InboundEvent | null {
     }
     case 'message_callback': {
       const chatId = update.message?.recipient.chat_id;
-      const person = personOf(update.callback.user, chatId);
+      const person = personOf(update.callback.user, chatId, update.user_locale);
       if (!person || !update.callback.payload) {
         return null;
       }

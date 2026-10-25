@@ -110,6 +110,7 @@ export class CatalogQueries {
         return {
           slug: record.slug,
           name: record.name,
+          locale: record.locale,
           vertical: verticalSummaryOf(context.vertical),
           address: locations[0]?.address ?? '',
           personas: holders.map((holder) => ({

@@ -14,6 +14,8 @@ export const routeManifest = {
   getMiniAppBooking: { method: 'GET', path: '/v1/miniapp/businesses/:slug/bookings/:bookingId', status: 200, auth: 'telegram', response: 'json', upload: false },
   getMiniAppProfile: { method: 'GET', path: '/v1/miniapp/businesses/:slug/profile', status: 200, auth: 'telegram', response: 'json', upload: false },
   getMiniAppNotifications: { method: 'GET', path: '/v1/miniapp/notifications', status: 200, auth: 'telegram', response: 'json', upload: false },
+  getMiniAppPreferences: { method: 'GET', path: '/v1/miniapp/preferences', status: 200, auth: 'telegram', response: 'json', upload: false },
+  updateMiniAppPreferences: { method: 'PUT', path: '/v1/miniapp/preferences', status: 200, auth: 'telegram', response: 'json', upload: false },
   cancelMiniAppBooking: { method: 'POST', path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/cancel', status: 200, auth: 'telegram', response: 'json', upload: false },
   getRescheduleOptions: { method: 'GET', path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/reschedule-options', status: 200, auth: 'telegram', response: 'json', upload: false },
   rescheduleMiniAppBooking: { method: 'POST', path: '/v1/miniapp/businesses/:slug/bookings/:bookingId/reschedule', status: 200, auth: 'telegram', response: 'json', upload: false },

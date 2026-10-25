@@ -1,5 +1,5 @@
 import type { WidgetBooking } from '@mestechko/contracts';
-import type { Clock, Money } from '@mestechko/domain';
+import type { Clock, Locale, Money } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { RateLimiter } from '../../../../shared/application/rate-limits.js';
@@ -34,6 +34,8 @@ export interface WebsiteBookingCommand {
   readonly contact: { readonly name: string; readonly phone: string };
   readonly comment: string | null;
   readonly returnPath: string;
+  /** The visitor's language, for the payment page a prepayment opens. */
+  readonly locale: Locale;
 }
 
 /**
@@ -118,7 +120,13 @@ export class WebsiteBookings {
     const bookingId = placed.placement.id;
     const token = this.tokens.issue(bookingId);
     const checkout = placed.placement.awaitsPayment
-      ? await this.checkoutOf(context, placed.clientId, bookingId, command.returnPath)
+      ? await this.checkoutOf(
+          context,
+          placed.clientId,
+          bookingId,
+          command.returnPath,
+          command.locale,
+        )
       : null;
     return {
       booking: await this.view(context, bookingId),
@@ -140,6 +148,7 @@ export class WebsiteBookings {
     clientId: string,
     bookingId: string,
     returnPath: string,
+    locale: Locale,
   ): Promise<OpenCheckout> {
     const found = await this.unitOfWork.inTenant(
       context.business.id,
@@ -158,6 +167,7 @@ export class WebsiteBookings {
       context.business.name,
       { clientId, ...found },
       returnPath,
+      locale,
     );
     return page.checkout;
   }

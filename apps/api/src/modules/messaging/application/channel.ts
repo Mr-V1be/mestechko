@@ -27,6 +27,8 @@ export interface InboundPerson {
   /** Chat the bot answers in; for private chats usually the same as the account. */
   readonly chatId: string;
   readonly firstName: string;
+  /** The language of the person's messenger app (BCP 47), when the messenger tells it. */
+  readonly languageTag: string | null;
 }
 
 /** A button press the adapter must acknowledge. */

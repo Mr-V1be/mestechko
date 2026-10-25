@@ -78,6 +78,7 @@ export class TestPayProvider implements PaymentProvider {
         amount: { value_minor: request.amount.amountMinor, currency: request.amount.currency },
         description: request.description,
         return_url: request.returnUrl,
+        locale: request.locale,
         metadata: request.metadata,
         expires_at: request.expiresAt.toISOString(),
       }),

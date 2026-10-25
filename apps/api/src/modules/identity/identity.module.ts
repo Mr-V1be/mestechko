@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import type { Clock, VerticalRegistry } from '@mestechko/domain';
-import { sharedResources } from '@mestechko/i18n';
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import type { AuthKind } from '@mestechko/contracts';
@@ -10,6 +9,7 @@ import {
   type AuthenticatorRegistry,
 } from '../../platform/http/principal.js';
 import { RATE_LIMITER, type RateLimiter } from '../../shared/application/rate-limits.js';
+import { TRANSLATIONS, type Translations } from '../../shared/application/translations.js';
 import { CLOCK, ID_GENERATOR, type IdGenerator } from '../../shared/application/ports.js';
 import {
   BUSINESS_DIRECTORY,
@@ -127,14 +127,9 @@ import { TmaTelegramLaunch } from './infrastructure/tma-telegram-launch.js';
         businesses: BusinessDirectory,
         signer: TelegramLaunchSigner,
         config: AppConfig,
-      ) =>
-        new CreateDemoTelegramLaunch(
-          businesses,
-          signer,
-          config.demo.enabled,
-          sharedResources.ru.common.demo.guestName,
-        ),
-      inject: [BUSINESS_DIRECTORY, TELEGRAM_LAUNCH_SIGNER, APP_CONFIG],
+        translations: Translations,
+      ) => new CreateDemoTelegramLaunch(businesses, signer, config.demo.enabled, translations),
+      inject: [BUSINESS_DIRECTORY, TELEGRAM_LAUNCH_SIGNER, APP_CONFIG, TRANSLATIONS],
     },
     {
       provide: SESSION_COOKIE_SETTINGS,

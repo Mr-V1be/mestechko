@@ -11,6 +11,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { timingSafeEqual } from 'node:crypto';
+import { fallbackLocale, localeIds } from '@mestechko/domain';
 import { z } from 'zod';
 import { APP_CONFIG, type AppConfig } from '../../../platform/config/app-config.js';
 import { TestPayEmulator, TestPayRefusal } from '../application/test-pay-emulator.js';
@@ -24,6 +25,8 @@ const createSchema = z.object({
   amount: amountSchema,
   description: z.string().min(1).max(250),
   return_url: z.string().min(1).max(2000),
+  /** The language of the hosted page; like real providers, a default when the shop sends none. */
+  locale: z.enum(localeIds).default(fallbackLocale),
   metadata: z.record(z.string(), z.string().max(200)),
   expires_at: z.iso.datetime({ offset: true }),
 });
@@ -64,6 +67,7 @@ export class TestPayApiController {
         currency: input.amount.currency,
         description: input.description,
         returnUrl: input.return_url,
+        locale: input.locale,
         metadata: input.metadata,
         expiresAt: new Date(input.expires_at),
       }),

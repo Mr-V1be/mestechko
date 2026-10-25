@@ -1,4 +1,5 @@
 import type { ClientFileFormat } from '@mestechko/contracts';
+import type { Locale } from '@mestechko/domain';
 
 export type SpreadsheetCell = string | number | null;
 
@@ -12,9 +13,12 @@ export type SpreadsheetCodecs = Readonly<Record<ClientFileFormat, SpreadsheetCod
 
 /** Words of the spreadsheet columns, from the translation system. */
 export interface TransferTexts {
-  readonly fileName: string;
-  column(key: TransferColumn): string;
-  /** Header titles that name the column in files people bring. */
+  /** The name of an exported file and its column titles, in the reader's language. */
+  exported(locale: Locale): {
+    readonly fileName: string;
+    column(key: TransferColumn): string;
+  };
+  /** Header titles that name the column in files people bring, in any language. */
   aliases(key: ImportColumn): readonly string[];
 }
 

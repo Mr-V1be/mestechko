@@ -11,7 +11,12 @@ function personOf(context: Context): InboundPerson | null {
   if (!from || from.is_bot || chat?.type !== 'private') {
     return null;
   }
-  return { externalId: String(from.id), chatId: String(chat.id), firstName: from.first_name };
+  return {
+    externalId: String(from.id),
+    chatId: String(chat.id),
+    firstName: from.first_name,
+    languageTag: from.language_code ?? null,
+  };
 }
 
 /**
@@ -52,6 +57,7 @@ export function wireTelegramUpdates(
         externalId: String(query.from.id),
         chatId: String(message.chat.id),
         firstName: query.from.first_name,
+        languageTag: query.from.language_code ?? null,
       },
       data: query.data,
       action: {

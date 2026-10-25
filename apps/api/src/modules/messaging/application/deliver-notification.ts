@@ -1,4 +1,4 @@
-import { isNotificationStale, type Clock } from '@mestechko/domain';
+import { isNotificationStale, resolveLocale, type Clock, type Locale } from '@mestechko/domain';
 import type { JobHandler } from '../../../shared/application/job-queue.js';
 import type { ClientBookings } from '../../booking/application/client/client-bookings.js';
 import type { MessengerContacts } from '../../clients/application/ports.js';
@@ -10,14 +10,15 @@ import type {
 import type { BusinessContextResolver } from '../../tenancy/application/business-context.js';
 import type { WaitlistOffers } from '../../waitlist/application/waitlist-offers.js';
 import { MessengerDeliveryError, type MessengerChannels, type OutboundMessage } from './channel.js';
-import type { BotMessages } from './composer/bot-messages.js';
+import type { BotMessageBook } from './composer/bot-messages.js';
 import { businessCardOf } from './conversation/conversation-context.js';
 
 type Composed = { readonly message: OutboundMessage } | { readonly skip: SkipReason };
 
 /**
  * Delivers one claimed message. What it says is composed now, from the current state:
- * a booking that changed since the message was planned makes it obsolete.
+ * a booking that changed since the message was planned makes it obsolete. It is
+ * written in the recipient's language: the one they chose, otherwise their messenger's.
  */
 export class DeliverNotification implements JobHandler<{ notificationId: string }> {
   constructor(
@@ -27,7 +28,7 @@ export class DeliverNotification implements JobHandler<{ notificationId: string 
     private readonly businesses: BusinessContextResolver,
     private readonly bookings: ClientBookings,
     private readonly offers: WaitlistOffers,
-    private readonly messages: BotMessages,
+    private readonly messages: BotMessageBook,
     private readonly clock: Clock,
   ) {}
 
@@ -51,7 +52,10 @@ export class DeliverNotification implements JobHandler<{ notificationId: string 
       await this.store.markSkipped(notification.id, 'no_permission', now);
       return;
     }
-    const composed = await this.compose(notification);
+    const composed = await this.compose(
+      notification,
+      resolveLocale([address.chosenLocale, address.languageTag]),
+    );
     if ('skip' in composed) {
       await this.store.markSkipped(notification.id, composed.skip, now);
       return;
@@ -71,9 +75,10 @@ export class DeliverNotification implements JobHandler<{ notificationId: string 
     }
   }
 
-  private async compose(notification: NotificationRecord): Promise<Composed> {
+  private async compose(notification: NotificationRecord, locale: Locale): Promise<Composed> {
     const context = await this.businesses.byId(notification.businessId);
     const business = businessCardOf(context);
+    const messages = this.messages.in(locale);
     if (
       notification.waitlistEntryId &&
       notification.offerStartsAt &&
@@ -89,7 +94,7 @@ export class DeliverNotification implements JobHandler<{ notificationId: string 
         return { skip: 'offer_closed' };
       }
       return {
-        message: this.messages.offer(business, {
+        message: messages.offer(business, {
           entryId: offer.entry.id,
           startsAt: offer.startsAt,
           total: { amountMinor: offer.totalMinor, currency: context.business.currency },
@@ -111,6 +116,6 @@ export class DeliverNotification implements JobHandler<{ notificationId: string 
     if (booking?.version !== notification.bookingVersion) {
       return { skip: 'booking_changed' };
     }
-    return { message: this.messages.notification(notification.kind, business, booking) };
+    return { message: messages.notification(notification.kind, business, booking) };
   }
 }

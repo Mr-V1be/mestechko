@@ -1,10 +1,17 @@
-import { checkoutPresentations, type CheckoutPresentation } from '@mestechko/domain';
+import { checkoutPresentations, type CheckoutPresentation, type Locale } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import type { PaymentProvider, PaymentStore } from './ports.js';
 
 /** Paths of our own site only: the payment page must not send payers elsewhere. */
 const RETURN_PATH = /^\/(?!\/)[\w\-./?=&%]*$/;
+
+/** The neutral page in the payer's language: it opens in a browser that may speak another. */
+function withLocale(pageUrl: string, locale: Locale): string {
+  const url = new URL(pageUrl);
+  url.searchParams.set('locale', locale);
+  return url.toString();
+}
 
 /**
  * Opens the provider's payment page for a pending prepayment. The provider is called
@@ -30,6 +37,8 @@ export class PaymentCheckout {
     readonly paymentId: string;
     readonly description: string;
     readonly returnUrl: string;
+    /** The payer's language, for the provider's page and the neutral page after it. */
+    readonly locale: Locale;
     readonly expiresAt: Date;
     readonly now: Date;
   }): Promise<OpenCheckout> {
@@ -39,7 +48,7 @@ export class PaymentCheckout {
     const presentation = this.provider.presentation;
     const returnUrl = checkoutPresentations[presentation].returnsToApp
       ? input.returnUrl
-      : this.returnPageUrl;
+      : this.returnPageUrl && withLocale(this.returnPageUrl, input.locale);
     if (returnUrl === null) {
       throw new Error('PAYMENTS_RETURN_PAGE_URL is required for a payment page outside the app');
     }
@@ -64,6 +73,7 @@ export class PaymentCheckout {
       amount: { amountMinor: payment.amountMinor, currency: payment.currency },
       description: input.description,
       returnUrl,
+      locale: input.locale,
       metadata: { businessId: input.businessId, paymentId: payment.id },
       expiresAt: input.expiresAt,
     });

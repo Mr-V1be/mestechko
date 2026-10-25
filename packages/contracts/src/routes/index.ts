@@ -9,6 +9,7 @@ import * as cabinet from './cabinet/schedule.js';
 import * as settings from './cabinet/settings.js';
 import * as team from './cabinet/team.js';
 import * as miniapp from './client/miniapp-bookings.js';
+import * as preferences from './client/miniapp-preferences.js';
 import * as waitlist from './client/miniapp-waitlist.js';
 import * as catalog from './client/public-catalog.js';
 import * as widget from './client/widget.js';
@@ -26,6 +27,8 @@ export const apiRoutes = {
   getMiniAppBooking: miniapp.getMiniAppBooking,
   getMiniAppProfile: miniapp.getMiniAppProfile,
   getMiniAppNotifications: miniapp.getMiniAppNotifications,
+  getMiniAppPreferences: preferences.getMiniAppPreferences,
+  updateMiniAppPreferences: preferences.updateMiniAppPreferences,
   cancelMiniAppBooking: miniapp.cancelMiniAppBooking,
   getRescheduleOptions: miniapp.getRescheduleOptions,
   rescheduleMiniAppBooking: miniapp.rescheduleMiniAppBooking,

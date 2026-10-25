@@ -15,19 +15,27 @@ const messageSchema = z.object({
   body: z.object({ mid: z.string(), text: z.string().nullable().optional() }),
 });
 
+/** The language of the person's MAX app (IETF BCP 47), sent with what they do. */
+const userLocale = z.string().nullable().optional();
+
 export const maxUpdateSchema = z.discriminatedUnion('update_type', [
   z.object({
     update_type: z.literal('bot_started'),
     chat_id: z.number().int(),
     user: userSchema,
     payload: z.string().nullable().optional(),
+    user_locale: userLocale,
   }),
   z.object({
     update_type: z.literal('bot_stopped'),
     chat_id: z.number().int(),
     user: userSchema,
   }),
-  z.object({ update_type: z.literal('message_created'), message: messageSchema }),
+  z.object({
+    update_type: z.literal('message_created'),
+    message: messageSchema,
+    user_locale: userLocale,
+  }),
   z.object({
     update_type: z.literal('message_callback'),
     callback: z.object({
@@ -36,6 +44,7 @@ export const maxUpdateSchema = z.discriminatedUnion('update_type', [
       user: userSchema,
     }),
     message: messageSchema.nullable().optional(),
+    user_locale: userLocale,
   }),
 ]);
 

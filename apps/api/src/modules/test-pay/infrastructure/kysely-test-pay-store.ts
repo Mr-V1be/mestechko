@@ -1,4 +1,5 @@
 import { sql } from 'kysely';
+import { localeCode } from '../../../platform/db/column-parsers.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import type { TestPayEvent, TestPayPayment, TestPayStore } from '../application/ports.js';
 
@@ -9,13 +10,15 @@ const paymentColumns = [
   'currency',
   'description',
   'returnUrl',
+  'locale',
   'status',
   'refundedMinor',
   'expiresAt',
 ] as const;
 
-type PaymentRow = Omit<TestPayPayment, 'metadata' | 'status'> & {
+type PaymentRow = Omit<TestPayPayment, 'metadata' | 'status' | 'locale'> & {
   readonly status: string;
+  readonly locale: string;
   readonly metadata: string;
 };
 
@@ -23,6 +26,7 @@ function toPayment(row: PaymentRow): TestPayPayment {
   return {
     ...row,
     status: row.status as TestPayPayment['status'],
+    locale: localeCode(row.locale),
     // Read as text: the camel-case plugin would rename keys inside JSON.
     metadata: JSON.parse(row.metadata) as Record<string, string>,
   };
@@ -46,6 +50,7 @@ export class KyselyTestPayStore implements TestPayStore {
         currency: payment.currency,
         description: payment.description,
         returnUrl: payment.returnUrl,
+        locale: payment.locale,
         metadata: JSON.stringify(payment.metadata),
         status: payment.status,
         refundedMinor: 0,

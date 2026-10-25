@@ -15,6 +15,7 @@ import { CLOCK, ID_GENERATOR } from '../shared/application/ports.js';
 import { UNIT_OF_WORK } from '../shared/application/unit-of-work.js';
 import { APP_CONFIG, type AppConfig } from './config/app-config.js';
 import { createDatabase, DATABASE, type Database } from './db/database.js';
+import { loadTranslations } from './i18n/i18next-translations.js';
 import { KyselyUnitOfWork } from './db/kysely-unit-of-work.js';
 import { Heartbeat } from './observability/heartbeat.js';
 import { loggingParams } from './observability/logging.js';
@@ -23,6 +24,7 @@ import { TELEMETRY, type Telemetry } from './observability/telemetry.js';
 import { BullMqJobQueue } from './queue/bullmq-job-queue.js';
 import { JobWorkers } from './queue/job-workers.js';
 import { RATE_LIMITER } from '../shared/application/rate-limits.js';
+import { TRANSLATIONS } from '../shared/application/translations.js';
 import { createRedis, REDIS } from './redis/redis.js';
 import { RedisRateLimiter } from './redis/redis-rate-limiter.js';
 import { SystemClock, UuidV7Generator } from './system-clock.js';
@@ -93,6 +95,7 @@ export class PlatformModule {
           inject: [REDIS],
         },
         { provide: JOB_DEFINITIONS, useValue: jobs },
+        { provide: TRANSLATIONS, useFactory: loadTranslations },
         JobWorkers,
         Heartbeat,
         PlatformLifecycle,
@@ -108,6 +111,7 @@ export class PlatformModule {
         REDIS,
         RATE_LIMITER,
         JOB_QUEUE,
+        TRANSLATIONS,
       ],
     };
   }

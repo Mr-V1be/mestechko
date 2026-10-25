@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { createI18n } from '@mestechko/i18n';
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import { JOB_QUEUE, type JobQueue } from '../../shared/application/job-queue.js';
@@ -9,10 +8,8 @@ import {
   type Clock,
   type IdGenerator,
 } from '../../shared/application/ports.js';
-import testPay from '../../locales/ru/test-pay.json' with { type: 'json' };
-import { TEST_PAY_TEXTS, TestPayCheckoutController } from './api/test-pay-checkout.controller.js';
+import { TestPayCheckoutController } from './api/test-pay-checkout.controller.js';
 import { TestPayApiController } from './api/test-pay-api.controller.js';
-import type { CheckoutTexts } from './api/checkout-page.js';
 import { TEST_PAY_STORE, type TestPayStore } from './application/ports.js';
 import {
   DeliverTestPayEvent,
@@ -22,23 +19,6 @@ import {
 } from './application/test-pay-emulator.js';
 import { HttpWebhookSender } from './infrastructure/http-webhook-sender.js';
 import { KyselyTestPayStore } from './infrastructure/kysely-test-pay-store.js';
-
-async function loadTexts(): Promise<CheckoutTexts> {
-  const i18n = await createI18n({
-    defaultNamespace: 'test-pay',
-    resources: { ru: { 'test-pay': testPay } },
-  });
-  return {
-    locale: i18n.language,
-    text: (key, values) => {
-      const count = typeof values?.count === 'number' ? values.count : undefined;
-      if (!i18n.exists(key, count === undefined ? undefined : { count })) {
-        throw new Error(`Missing payment page text ${key}`);
-      }
-      return i18n.t(key, { ...values });
-    },
-  };
-}
 
 /**
  * An emulator of the test payment provider for the demo: its API, its hosted payment
@@ -63,7 +43,6 @@ async function loadTexts(): Promise<CheckoutTexts> {
       ) => new TestPayEmulator(store, queue, ids, clock, config.payments.test.checkoutBaseUrl),
       inject: [TEST_PAY_STORE, JOB_QUEUE, ID_GENERATOR, CLOCK, APP_CONFIG],
     },
-    { provide: TEST_PAY_TEXTS, useFactory: loadTexts },
     {
       provide: testPayHandlerTokens.deliver,
       useFactory: (store: TestPayStore, config: AppConfig, clock: Clock) =>

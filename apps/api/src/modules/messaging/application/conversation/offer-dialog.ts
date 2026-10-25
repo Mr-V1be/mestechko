@@ -1,10 +1,10 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import type { Locale, MessengerChannel } from '@mestechko/domain';
 import type { WaitlistOffers } from '../../../waitlist/application/waitlist-offers.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
 import type { BotAction } from '../action-data.js';
-import type { ActionReply, InboundPerson } from '../channel.js';
-import type { BotMessages } from '../composer/bot-messages.js';
-import { businessCardOf, identityIn } from './conversation-context.js';
+import type { ActionReply } from '../channel.js';
+import type { BotMessageBook } from '../composer/bot-messages.js';
+import { businessCardOf, identityIn, type Speaker } from './conversation-context.js';
 
 type OfferTarget = Extract<BotAction, { entryId: string }>;
 
@@ -13,14 +13,15 @@ export class OfferDialog {
   constructor(
     private readonly businesses: BusinessContextResolver,
     private readonly offers: WaitlistOffers,
-    private readonly messages: BotMessages,
+    private readonly book: BotMessageBook,
   ) {}
 
   async accept(
     channel: MessengerChannel,
-    person: InboundPerson,
+    person: Speaker,
     target: OfferTarget,
   ): Promise<ActionReply> {
+    const messages = this.book.in(person.locale);
     const context = await this.businesses.byId(target.businessId);
     const booking = await this.offers.accept(
       identityIn(target.businessId, channel, person),
@@ -30,18 +31,18 @@ export class OfferDialog {
     const card = businessCardOf(context);
     return booking.hold
       ? {
-          replace: this.messages.booking(card, booking, this.messages.text('offer.kept'), []),
+          replace: messages.booking(card, booking, messages.text('offer.kept'), []),
           notice: null,
         }
       : {
-          replace: this.messages.notification('booking_created', card, booking),
-          notice: this.messages.notice('booked'),
+          replace: messages.notification('booking_created', card, booking),
+          notice: messages.notice('booked'),
         };
   }
 
   async decline(
     channel: MessengerChannel,
-    person: InboundPerson,
+    person: Speaker,
     target: OfferTarget,
   ): Promise<ActionReply> {
     await this.offers.decline(
@@ -49,10 +50,11 @@ export class OfferDialog {
       target.entryId,
       new Date(target.start),
     );
+    const messages = this.book.in(person.locale);
     return {
       replace: {
-        title: this.messages.text('notice.waitlist_offer'),
-        lines: [this.messages.text('offer.declined')],
+        title: messages.text('notice.waitlist_offer'),
+        lines: [messages.text('offer.declined')],
         buttons: [],
       },
       notice: null,
@@ -60,11 +62,12 @@ export class OfferDialog {
   }
 
   /** The offer can no longer be taken: someone was faster or the wish was withdrawn. */
-  gone(reason: 'taken' | 'closed'): ActionReply {
+  gone(reason: 'taken' | 'closed', locale: Locale): ActionReply {
+    const messages = this.book.in(locale);
     return {
       replace: {
-        title: this.messages.text('notice.waitlist_offer'),
-        lines: [this.messages.text(`offer.${reason}`)],
+        title: messages.text('notice.waitlist_offer'),
+        lines: [messages.text(`offer.${reason}`)],
         buttons: [],
       },
       notice: null,

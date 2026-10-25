@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { createI18n } from '@mestechko/i18n';
-import crm from '../../locales/ru/crm.json' with { type: 'json' };
+import { localeIds } from '@mestechko/domain';
 import {
   CLOCK,
   ID_GENERATOR,
   type Clock,
   type IdGenerator,
 } from '../../shared/application/ports.js';
+import { TRANSLATIONS, type Translations } from '../../shared/application/translations.js';
 import { CabinetBookings } from '../booking/application/cabinet/cabinet-bookings.js';
 import { BookingModule } from '../booking/booking.module.js';
 import { CATALOG_STORE, type CatalogStore } from '../catalog/application/catalog-store.js';
@@ -30,15 +30,20 @@ import {
 } from './application/spreadsheets.js';
 import { spreadsheetCodecs } from './infrastructure/spreadsheet-codecs.js';
 
-async function loadTransferTexts(): Promise<TransferTexts> {
-  const i18n = await createI18n({ defaultNamespace: 'crm', resources: { ru: { crm } } });
+const CRM_NAMESPACE = 'crm';
+
+/** Exported files speak the reader's language; imported ones may come in any of them. */
+function transferTextsOf(translations: Translations): TransferTexts {
   return {
-    fileName: i18n.t('fileName'),
-    column: (key: TransferColumn) => i18n.t(`columns.${key}`),
-    aliases: (key: ImportColumn) => {
-      const value: unknown = i18n.t(`aliases.${key}`, { returnObjects: true });
-      return Array.isArray(value) ? value.filter((alias) => typeof alias === 'string') : [];
+    exported: (locale) => {
+      const texts = translations.in(locale, CRM_NAMESPACE);
+      return {
+        fileName: texts.text('fileName'),
+        column: (key: TransferColumn) => texts.text(`columns.${key}`),
+      };
     },
+    aliases: (key: ImportColumn) =>
+      localeIds.flatMap((locale) => translations.in(locale, CRM_NAMESPACE).lines(`aliases.${key}`)),
   };
 }
 
@@ -48,7 +53,7 @@ async function loadTransferTexts(): Promise<TransferTexts> {
   controllers: [CabinetClientsController],
   providers: [
     { provide: SPREADSHEET_CODECS, useValue: spreadsheetCodecs },
-    { provide: TRANSFER_TEXTS, useFactory: loadTransferTexts },
+    { provide: TRANSFER_TEXTS, useFactory: transferTextsOf, inject: [TRANSLATIONS] },
     {
       provide: ClientCards,
       useFactory: (

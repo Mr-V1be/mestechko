@@ -1,5 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
-import { messengerBookingSource } from '@mestechko/domain';
+import { messengerBookingSource, type Locale } from '@mestechko/domain';
 import {
   cancelMiniAppBooking,
   confirmMiniAppAttendance,
@@ -17,6 +17,7 @@ import {
 import { TelegramClient } from '../../../platform/http/auth.guard.js';
 import { clientContactOf } from '../../clients/application/client-contact-policy.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
+import { RequestLocale } from '../../../platform/http/request-locale.js';
 import type { TelegramUser } from '../../../platform/http/principal.js';
 import { ClientBookings, type ClientIdentity } from '../application/client/client-bookings.js';
 import { CreateClientBooking } from '../application/client/create-client-booking.js';
@@ -152,11 +153,13 @@ export class MiniAppBookingsController {
   async startPayment(
     @ContractInput() input: RouteInput<typeof startMiniAppPayment>,
     @TelegramClient() user: TelegramUser,
+    @RequestLocale() locale: Locale,
   ): Promise<RouteResult<typeof startMiniAppPayment>> {
     const { checkout, booking } = await this.prepaid.startCheckout(
       identityOf(input.params.slug, user),
       input.params.bookingId,
       input.body.returnPath,
+      locale,
     );
     return { checkoutUrl: checkout.url, checkoutPresentation: checkout.presentation, booking };
   }

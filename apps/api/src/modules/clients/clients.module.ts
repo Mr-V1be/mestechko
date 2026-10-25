@@ -1,6 +1,13 @@
 import { Module } from '@nestjs/common';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
-import { ID_GENERATOR, type IdGenerator } from '../../shared/application/ports.js';
+import {
+  CLOCK,
+  ID_GENERATOR,
+  type Clock,
+  type IdGenerator,
+} from '../../shared/application/ports.js';
+import { MiniAppPreferencesController } from './api/miniapp-preferences.controller.js';
+import { ClientPreferences } from './application/client-preferences.js';
 import {
   CLIENT_DIRECTORY,
   CUSTOMER_IDENTITIES,
@@ -16,6 +23,7 @@ import {
 import { KyselyMessengerContacts } from './infrastructure/kysely-messenger-contacts.js';
 
 @Module({
+  controllers: [MiniAppPreferencesController],
   providers: [
     {
       provide: CUSTOMER_IDENTITIES,
@@ -38,6 +46,12 @@ import { KyselyMessengerContacts } from './infrastructure/kysely-messenger-conta
       useFactory: (unitOfWork: KyselyUnitOfWork, identities: CustomerIdentities) =>
         new KyselyMessengerContacts(unitOfWork, identities),
       inject: [KyselyUnitOfWork, CUSTOMER_IDENTITIES],
+    },
+    {
+      provide: ClientPreferences,
+      useFactory: (identities: CustomerIdentities, clock: Clock) =>
+        new ClientPreferences(identities, clock),
+      inject: [CUSTOMER_IDENTITIES, CLOCK],
     },
   ],
   exports: [CUSTOMER_IDENTITIES, CLIENT_DIRECTORY, CLIENT_CRM_STORE, MESSENGER_CONTACTS],

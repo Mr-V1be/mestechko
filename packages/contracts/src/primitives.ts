@@ -4,6 +4,7 @@ import {
   bookingSourceIds,
   bookingStatusIds,
   currencies,
+  localeIds,
   roleIds,
   type CurrencyCode,
 } from '@mestechko/domain';
@@ -27,6 +28,9 @@ export const phoneSchema = z
   .refine((value) => isValidPhoneNumber(value) || isDemoPhone(value), {
     message: 'Invalid phone number',
   });
+
+/** A language the platform speaks, e.g. `en`. */
+export const localeSchema = z.enum(localeIds);
 
 export const currencySchema = z.enum(Object.keys(currencies) as [CurrencyCode, ...CurrencyCode[]]);
 export const moneySchema = z.object({

@@ -1,12 +1,14 @@
 /**
  * Configures the Telegram bot's profile from the translation system: commands,
- * description, short description and the menu button. The avatar and name are left
- * as the owner set them. The token is read from the environment and never printed.
+ * description, short description and the menu button, in every language the platform
+ * speaks. Telegram shows the default set to people whose language has none of its own,
+ * so the default is the fallback language. The avatar and name are left as the owner
+ * set them. The token is read from the environment and never printed.
  */
-import { supportedLocales } from '@mestechko/i18n';
+import { fallbackLocale, localeIds, type Locale } from '@mestechko/domain';
 import { Api } from 'grammy';
 import { loadConfig } from '../platform/config/app-config.js';
-import { loadBotTexts } from '../modules/messaging/infrastructure/i18n-bot-texts.js';
+import { loadTranslations } from '../platform/i18n/i18next-translations.js';
 
 const COMMANDS = ['start', 'bookings', 'help'] as const;
 
@@ -17,31 +19,42 @@ if (!token) {
   process.exit(1);
 }
 const api = new Api(token, { apiRoot: config.telegram.apiRoot });
-const texts = await loadBotTexts();
+const translations = await loadTranslations();
+const texts = (locale: Locale) => translations.in(locale, 'bot');
 const me = await api.getMe();
 
-const commands = COMMANDS.map((command) => ({
-  command,
-  description: texts.text(`commands.${command}`),
-}));
-// The default set serves every language; each supported locale also gets its own.
-for (const language of [undefined, ...supportedLocales]) {
-  const scope = language ? { language_code: language } : {};
-  await api.setMyCommands(commands, scope);
-  await api.setMyDescription(texts.text('profile.description'), scope);
-  await api.setMyShortDescription(texts.text('profile.shortDescription'), scope);
+const profiles: readonly { readonly scope: { language_code?: Locale }; readonly locale: Locale }[] =
+  [
+    { scope: {}, locale: fallbackLocale },
+    ...localeIds.map((locale) => ({ scope: { language_code: locale }, locale })),
+  ];
+for (const { scope, locale } of profiles) {
+  const bot = texts(locale);
+  await api.setMyCommands(
+    COMMANDS.map((command) => ({ command, description: bot.text(`commands.${command}`) })),
+    scope,
+  );
+  await api.setMyDescription(bot.text('profile.description'), scope);
+  await api.setMyShortDescription(bot.text('profile.shortDescription'), scope);
 }
 
+// The menu button has one text for every chat: the fallback language's.
 const miniApp = config.miniApp.publicUrl;
 await api.setChatMenuButton({
   menu_button: miniApp
-    ? { type: 'web_app', text: texts.text('profile.menuButton'), web_app: { url: miniApp } }
+    ? {
+        type: 'web_app',
+        text: texts(fallbackLocale).text('profile.menuButton'),
+        web_app: { url: miniApp },
+      }
     : { type: 'commands' },
 });
 
-console.warn(`Configured @${me.username}: ${String(commands.length)} commands, description,`);
+console.warn(
+  `Configured @${me.username}: ${String(COMMANDS.length)} commands, description and short description in ${localeIds.join(', ')},`,
+);
 console.warn(
   miniApp
-    ? `short description and a menu button opening ${miniApp}.`
-    : 'short description; the menu button lists commands until MINIAPP_PUBLIC_URL is set.',
+    ? `and a menu button opening ${miniApp}.`
+    : 'the menu button lists commands until MINIAPP_PUBLIC_URL is set.',
 );

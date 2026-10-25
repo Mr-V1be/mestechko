@@ -4,6 +4,7 @@ import type {
   CurrencyCode,
   HoldReason,
   InstantInterval,
+  Locale,
   Occupancy,
 } from '@mestechko/domain';
 
@@ -173,12 +174,14 @@ export interface ExpiredHolds {
 export const EXPIRED_HOLDS = Symbol('EXPIRED_HOLDS');
 
 /** How a prepayment is described on the payment page, in the client's language. */
+/** What a payment is for, as the payer reads it on the provider's page and receipts. */
 export interface PaymentDescriptions {
   describe(input: {
     readonly businessName: string;
     readonly serviceNames: readonly string[];
     readonly startsAt: Date;
     readonly timeZone: string;
+    readonly locale: Locale;
   }): string;
 }
 

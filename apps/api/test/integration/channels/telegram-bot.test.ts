@@ -122,6 +122,27 @@ describe('Telegram bot', () => {
     expect((await bookingOf(initData, booking.id)).attendanceConfirmed).toBe(true);
   });
 
+  it("speaks the client's language: the one they chose, otherwise their Telegram's", async () => {
+    nextUser += 1;
+    const chat = new TelegramChat(app, telegram, nextUser, 'en');
+    await chat.send('/start');
+    expect(chat.lastText()).toContain('Hi, ');
+
+    const initData = await launchAs(app, tenant.slug, nextUser);
+    const chosen = await app.inject({
+      method: 'PUT',
+      url: '/v1/miniapp/preferences',
+      headers: { authorization: `tma ${initData}` },
+      payload: { locale: 'ru' },
+    });
+    expect(chosen.json()).toEqual({ locale: 'ru' });
+    await chat.send('/help');
+    expect(chat.lastText()).toContain('Что умеет бот');
+    await bookOn(initData, dateInDays(6));
+    await jobs.drain();
+    expect(chat.lastText()).toContain('Запись подтверждена');
+  });
+
   it('moves a booking with buttons: day, time, confirmation', async () => {
     const { chat, initData } = await client();
     await chat.send('/start');

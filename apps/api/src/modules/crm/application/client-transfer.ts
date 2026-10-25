@@ -8,7 +8,7 @@ import {
   type ServedFile,
   type UploadedFile,
 } from '@mestechko/contracts';
-import { localDateOf, type Clock } from '@mestechko/domain';
+import { localDateOf, type Clock, type Locale } from '@mestechko/domain';
 import { z } from 'zod';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';
@@ -57,9 +57,13 @@ export class ClientTransfer {
     private readonly clock: Clock,
   ) {}
 
-  /** Every client with their visits and points, in batches so memory stays flat. */
-  async export(format: ClientFileFormat, timeZone: string): Promise<ServedFile> {
-    const rows: SpreadsheetCell[][] = [exportColumns.map((column) => this.texts.column(column))];
+  /**
+   * Every client with their visits and points, in batches so memory stays flat. The file's
+   * name and column titles are in the reader's language.
+   */
+  async export(format: ClientFileFormat, timeZone: string, locale: Locale): Promise<ServedFile> {
+    const texts = this.texts.exported(locale);
+    const rows: SpreadsheetCell[][] = [exportColumns.map((column) => texts.column(column))];
     for (let after: string | null = null; ;) {
       const batch = await this.store.batchAfter(after, EXPORT_BATCH);
       const ids = batch.map((client) => client.id);
@@ -90,7 +94,7 @@ export class ClientTransfer {
     }
     const { mediaType, extension } = clientFileFormats[format];
     return {
-      fileName: `${this.texts.fileName}.${extension}`,
+      fileName: `${texts.fileName}.${extension}`,
       mediaType,
       content: await this.codecs[format].write(rows),
     };

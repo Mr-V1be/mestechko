@@ -1,11 +1,9 @@
 import type { Money } from '@mestechko/domain';
 import { formatMoney } from '@mestechko/i18n';
+import type { Translator } from '../../../shared/application/translations.js';
 
-/** Texts of the payment page, from the translation system. */
-export interface CheckoutTexts {
-  readonly locale: string;
-  text(key: string, values?: Readonly<Record<string, string | number>>): string;
-}
+/** Texts of the payment page in the payer's language. */
+export type CheckoutTexts = Translator;
 
 export interface CheckoutPageModel {
   readonly paymentId: string;

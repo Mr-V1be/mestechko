@@ -139,6 +139,7 @@ export interface Businesses {
   currency: string;
   id: string;
   isDemo: boolean;
+  locale: string;
   name: string;
   rulesOverrides: Json;
   slug: string;
@@ -195,12 +196,14 @@ export interface CustomerIdentities {
   createdAt: Timestamp;
   customerId: string;
   externalId: string;
+  languageTag: string | null;
   messagingAllowedAt: Timestamp | null;
 }
 
 export interface Customers {
   createdAt: Timestamp;
   id: string;
+  locale: string | null;
 }
 
 export interface LedgerEntries {
@@ -487,6 +490,7 @@ export interface TestPayPayments {
   expiresAt: Timestamp;
   id: string;
   idempotencyKey: string;
+  locale: string;
   metadata: Json;
   refundedMinor: number;
   returnUrl: string;

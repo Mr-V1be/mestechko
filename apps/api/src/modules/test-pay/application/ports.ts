@@ -1,3 +1,5 @@
+import type { Locale } from '@mestechko/domain';
+
 /** A payment as the test provider keeps it. */
 export interface TestPayPayment {
   readonly id: string;
@@ -6,6 +8,8 @@ export interface TestPayPayment {
   readonly currency: string;
   readonly description: string;
   readonly returnUrl: string;
+  /** The language of the payment page: the payer's. */
+  readonly locale: Locale;
   readonly metadata: Readonly<Record<string, string>>;
   readonly status: 'pending' | 'succeeded' | 'cancelled';
   readonly refundedMinor: number;

@@ -1,5 +1,5 @@
 import type { ClientBooking } from '@mestechko/contracts';
-import type { Clock } from '@mestechko/domain';
+import type { Clock, Locale } from '@mestechko/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { ClientDirectory, CustomerIdentities } from '../../../clients/application/ports.js';
@@ -41,11 +41,12 @@ export class PrepaidBookings {
     private readonly clock: Clock,
   ) {}
 
-  /** The payment page of the client's held booking. */
+  /** The payment page of the client's held booking, in the client's language. */
   async startCheckout(
     identity: ClientIdentity,
     bookingId: string,
     returnPath: string,
+    locale: Locale,
   ): Promise<{ checkout: OpenCheckout; booking: ClientBooking }> {
     const context = await this.businesses.resolve(identity.business);
     const customerId = await this.customers.find(identity.channel, identity.externalUserId);
@@ -62,7 +63,7 @@ export class PrepaidBookings {
     if (!found) {
       throw notFound('Booking');
     }
-    return this.openPage(context.business.id, context.business.name, found, returnPath);
+    return this.openPage(context.business.id, context.business.name, found, returnPath, locale);
   }
 
   /** Opens the payment page for a booking known to the caller, e.g. on a website. */
@@ -75,6 +76,7 @@ export class PrepaidBookings {
       readonly payment: Awaited<ReturnType<Prepayments['ofBooking']>>;
     },
     returnPath: string,
+    locale: Locale,
   ): Promise<{ checkout: OpenCheckout; booking: ClientBooking }> {
     const { view, payment } = found;
     if (!view.hold || payment?.status !== 'pending') {
@@ -90,8 +92,10 @@ export class PrepaidBookings {
         serviceNames: view.services.map((service) => service.name),
         startsAt: view.startsAt,
         timeZone: view.location.timeZone,
+        locale,
       }),
       returnUrl: returnPath,
+      locale,
       expiresAt: view.hold.expiresAt,
       now: new Date(this.clock.now().epochMilliseconds),
     });

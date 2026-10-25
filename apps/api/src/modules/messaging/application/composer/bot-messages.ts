@@ -3,13 +3,14 @@ import {
   bookingActionIds,
   notificationKinds,
   type BookingAction,
+  type Locale,
   type NotificationKind,
   type VerticalDefinition,
 } from '@mestechko/domain';
 import { formatInstant, formatLocalDate, formatMoney } from '@mestechko/i18n';
+import type { Translations, Translator } from '../../../../shared/application/translations.js';
 import { encodeAction } from '../action-data.js';
 import type { ButtonTone, OutboundButton, OutboundMessage } from '../channel.js';
-import type { BotTexts } from './bot-texts.js';
 
 /** What a message needs to know about the business it speaks for. */
 export interface BusinessCard {
@@ -52,10 +53,33 @@ function rows<T>(items: readonly T[], size: number): T[][] {
   );
 }
 
-/** Renders every message of the bot from translations; no channel markup here. */
+/** The bot's namespace of texts; shared namespaces are reached with their prefix. */
+const BOT_NAMESPACE = 'bot';
+
+/** The bot's messages in every language: each person reads their own. */
+export class BotMessageBook {
+  private readonly composers = new Map<Locale, BotMessages>();
+
+  constructor(
+    private readonly translations: Translations,
+    private readonly miniAppUrl: string | null,
+  ) {}
+
+  in(locale: Locale): BotMessages {
+    const known = this.composers.get(locale);
+    if (known) {
+      return known;
+    }
+    const composer = new BotMessages(this.translations.in(locale, BOT_NAMESPACE), this.miniAppUrl);
+    this.composers.set(locale, composer);
+    return composer;
+  }
+}
+
+/** Renders every message of the bot in one language; no channel markup here. */
 export class BotMessages {
   constructor(
-    private readonly texts: BotTexts,
+    private readonly texts: Translator,
     private readonly miniAppUrl: string | null,
   ) {}
 

@@ -6,12 +6,16 @@ export const WEBHOOK_SECRET = 'test-webhook-secret-0123456789abcdefghij';
 /** Unique across runs: the bot remembers update ids it has handled. */
 let updateId = Date.now();
 
-/** A Telegram user in a private chat with the bot, driven through the webhook. */
+/**
+ * A Telegram user in a private chat with the bot, driven through the webhook. Their
+ * Telegram is in Russian unless the test says otherwise.
+ */
 export class TelegramChat {
   constructor(
     private readonly app: NestFastifyApplication,
     private readonly telegram: MockTelegram,
     readonly userId: number,
+    private readonly languageCode = 'ru',
   ) {}
 
   get chatId(): string {
@@ -19,7 +23,12 @@ export class TelegramChat {
   }
 
   private get user() {
-    return { id: this.userId, is_bot: false, first_name: 'Клиент' };
+    return {
+      id: this.userId,
+      is_bot: false,
+      first_name: 'Клиент',
+      language_code: this.languageCode,
+    };
   }
 
   async send(text: string): Promise<void> {

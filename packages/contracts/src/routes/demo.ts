@@ -1,10 +1,12 @@
 import { z } from 'zod';
-import { roleSchema, slugSchema, verticalSummarySchema } from '../primitives.js';
+import { localeSchema, roleSchema, slugSchema, verticalSummarySchema } from '../primitives.js';
 import { defineRoute } from '../route.js';
 
 export const demoBusinessSchema = z.object({
   slug: slugSchema,
   name: z.string(),
+  /** The language the business presents itself in; a demo shows its own language's businesses. */
+  locale: localeSchema,
   vertical: verticalSummarySchema,
   address: z.string(),
   /** Roles a visitor can sign in as, with the person behind each. */

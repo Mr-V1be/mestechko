@@ -62,7 +62,7 @@ describe('a payment page outside the app', () => {
     const opened = await app.inject({
       method: 'POST',
       url: `/v1/miniapp/businesses/${tenant.slug}/bookings/${held.id}/payment`,
-      headers: { authorization: `tma ${initData}` },
+      headers: { authorization: `tma ${initData}`, 'accept-language': 'ru' },
       payload: { returnPath: `/b/${tenant.slug}/bookings/${held.id}?payment=return` },
     });
     expect(opened.statusCode).toBe(200);
@@ -73,11 +73,14 @@ describe('a payment page outside the app', () => {
     expect(checkoutPresentation).toBe('external');
 
     const answer = await app.inject({ method: 'POST', url: `${checkoutUrl}/pay` });
-    expect(answer.headers.location).toBe(returnPage);
+    // The neutral page opens in a browser of its own, so its address carries the payer's language.
+    expect(answer.headers.location).toBe(`${returnPage}?locale=ru`);
     await jobs.drain();
-    const page = await app.inject({ method: 'GET', url: '/v1/payments/return' });
+    const page = await app.inject({ method: 'GET', url: '/v1/payments/return?locale=ru' });
     expect(page.headers['content-type']).toContain('text/html');
     expect(page.body).toContain('Оплата завершена');
+    const english = await app.inject({ method: 'GET', url: '/v1/payments/return?locale=en' });
+    expect(english.body).toContain('Payment complete');
     const booking = await app.inject({
       method: 'GET',
       url: `/v1/miniapp/businesses/${tenant.slug}/bookings/${held.id}`,

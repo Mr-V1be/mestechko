@@ -49,6 +49,8 @@ export interface ApiClientOptions {
   readonly credentials?: RequestInit['credentials'];
   /** Value of the Authorization header, evaluated per request. */
   readonly authorization?: () => string | null;
+  /** The language the reader chose, sent as `Accept-Language` with every request. */
+  readonly language?: () => string | null;
   readonly timeoutMs?: number;
 }
 
@@ -142,6 +144,10 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
       const authorization = options.authorization?.();
       if (authorization) {
         headers.set('authorization', authorization);
+      }
+      const language = options.language?.();
+      if (language) {
+        headers.set('accept-language', language);
       }
       const file = route.upload ? input.file : undefined;
       const hasBody = input.body !== undefined;

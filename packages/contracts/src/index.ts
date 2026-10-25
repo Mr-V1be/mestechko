@@ -11,6 +11,7 @@ export * from './routes/index.js';
 export * from './routes/client/public-catalog.js';
 export * from './routes/client/miniapp-bookings.js';
 export * from './routes/client/miniapp-waitlist.js';
+export * from './routes/client/miniapp-preferences.js';
 export * from './routes/client/widget.js';
 export * from './routes/auth.js';
 export * from './routes/demo.js';

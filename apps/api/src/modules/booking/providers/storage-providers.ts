@@ -1,6 +1,7 @@
 import type { Provider } from '@nestjs/common';
 import { APP_CONFIG, type AppConfig } from '../../../platform/config/app-config.js';
 import { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
+import { TRANSLATIONS } from '../../../shared/application/translations.js';
 import { CABINET_BOOKING_QUERIES } from '../application/cabinet/ports.js';
 import { BOOKING_LIFECYCLE_STORE } from '../application/lifecycle/ports.js';
 import {
@@ -14,7 +15,7 @@ import {
   STAFF_VISITS,
 } from '../application/ports.js';
 import { HmacBookingTokens } from '../infrastructure/hmac-booking-tokens.js';
-import { loadPaymentDescriptions } from '../infrastructure/i18n-payment-descriptions.js';
+import { paymentDescriptionsOf } from '../infrastructure/i18n-payment-descriptions.js';
 import { KyselyExpiredHolds } from '../infrastructure/kysely-expired-holds.js';
 import { KyselyStaffVisits } from '../infrastructure/kysely-staff-visits.js';
 import { KyselyBookingLifecycleStore } from '../infrastructure/kysely-booking-lifecycle-store.js';
@@ -53,5 +54,5 @@ export const bookingStorageProviders: Provider[] = [
     useFactory: (config: AppConfig) => new HmacBookingTokens(config.widget.signingKey),
     inject: [APP_CONFIG],
   },
-  { provide: PAYMENT_DESCRIPTIONS, useFactory: loadPaymentDescriptions },
+  { provide: PAYMENT_DESCRIPTIONS, useFactory: paymentDescriptionsOf, inject: [TRANSLATIONS] },
 ];

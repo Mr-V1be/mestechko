@@ -43,6 +43,7 @@ export async function createTenant(
         verticalId: options.verticalId ?? 'beauty_salon',
         countryCode: 'RU',
         currency: 'RUB',
+        locale: 'ru',
         rulesOverrides: JSON.stringify({ minLeadMinutes: 0 }),
         isDemo: false,
         createdAt: now,

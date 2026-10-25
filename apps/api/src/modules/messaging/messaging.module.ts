@@ -6,6 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
 import { REDIS } from '../../platform/redis/redis.js';
 import { CLOCK } from '../../shared/application/ports.js';
+import { TRANSLATIONS, type Translations } from '../../shared/application/translations.js';
 import { ClientBookings } from '../booking/application/client/client-bookings.js';
 import { ClientBookingChanges } from '../booking/application/lifecycle/client-booking-changes.js';
 import { RescheduleOptions } from '../booking/application/lifecycle/reschedule-options.js';
@@ -31,8 +32,7 @@ import {
   MessengerChannels,
   type MessengerChannelAdapter,
 } from './application/channel.js';
-import { BotMessages } from './application/composer/bot-messages.js';
-import { BOT_TEXTS, type BotTexts } from './application/composer/bot-texts.js';
+import { BotMessageBook } from './application/composer/bot-messages.js';
 import { BookingDialog } from './application/conversation/booking-dialog.js';
 import { BotConversation } from './application/conversation/bot-conversation.js';
 import { OfferDialog } from './application/conversation/offer-dialog.js';
@@ -44,7 +44,6 @@ import {
 } from './application/notification-settings.js';
 import { UPDATE_DEDUPLICATOR, type UpdateDeduplicator } from './application/update-deduplicator.js';
 import { ConfigMessengerLinks } from './infrastructure/config-messenger-links.js';
-import { loadBotTexts } from './infrastructure/i18n-bot-texts.js';
 import { MaxBotApi } from './infrastructure/max/max-bot-api.js';
 import { MaxChannel } from './infrastructure/max/max-channel.js';
 import { MaxUpdatesPoller } from './infrastructure/max/max-updates.js';
@@ -84,7 +83,7 @@ const conversationProviders: Provider[] = [
       reschedule: RescheduleOptions,
       customers: CustomerIdentities,
       contacts: MessengerContacts,
-      messages: BotMessages,
+      messages: BotMessageBook,
       clock: Clock,
     ) =>
       new BookingDialog(
@@ -104,7 +103,7 @@ const conversationProviders: Provider[] = [
       RescheduleOptions,
       CUSTOMER_IDENTITIES,
       MESSENGER_CONTACTS,
-      BotMessages,
+      BotMessageBook,
       CLOCK,
     ],
   },
@@ -113,24 +112,26 @@ const conversationProviders: Provider[] = [
     useFactory: (
       businesses: BusinessContextResolver,
       offers: WaitlistOffers,
-      messages: BotMessages,
+      messages: BotMessageBook,
     ) => new OfferDialog(businesses, offers, messages),
-    inject: [BusinessContextResolver, WaitlistOffers, BotMessages],
+    inject: [BusinessContextResolver, WaitlistOffers, BotMessageBook],
   },
   {
     provide: BotConversation,
     useFactory: (
       channels: MessengerChannels,
       contacts: MessengerContacts,
-      messages: BotMessages,
+      identities: CustomerIdentities,
+      messages: BotMessageBook,
       bookings: BookingDialog,
       offers: OfferDialog,
       clock: Clock,
-    ) => new BotConversation(channels, contacts, messages, bookings, offers, clock),
+    ) => new BotConversation(channels, contacts, identities, messages, bookings, offers, clock),
     inject: [
       MESSENGER_CHANNELS,
       MESSENGER_CONTACTS,
-      BotMessages,
+      CUSTOMER_IDENTITIES,
+      BotMessageBook,
       BookingDialog,
       OfferDialog,
       CLOCK,
@@ -188,12 +189,11 @@ const runtimeProviders: Provider[] = [
   imports: [TenancyModule, ClientsModule, NotificationsModule, BookingModule, WaitlistModule],
   controllers: [TelegramWebhookController, MiniAppNotificationsController],
   providers: [
-    { provide: BOT_TEXTS, useFactory: loadBotTexts },
     {
-      provide: BotMessages,
-      useFactory: (texts: BotTexts, config: AppConfig) =>
-        new BotMessages(texts, config.miniApp.publicUrl),
-      inject: [BOT_TEXTS, APP_CONFIG],
+      provide: BotMessageBook,
+      useFactory: (translations: Translations, config: AppConfig) =>
+        new BotMessageBook(translations, config.miniApp.publicUrl),
+      inject: [TRANSLATIONS, APP_CONFIG],
     },
     {
       provide: MAX_API,
@@ -233,7 +233,7 @@ const runtimeProviders: Provider[] = [
         businesses: BusinessContextResolver,
         bookings: ClientBookings,
         offers: WaitlistOffers,
-        messages: BotMessages,
+        messages: BotMessageBook,
         clock: Clock,
       ) =>
         new DeliverNotification(
@@ -253,13 +253,13 @@ const runtimeProviders: Provider[] = [
         BusinessContextResolver,
         ClientBookings,
         WaitlistOffers,
-        BotMessages,
+        BotMessageBook,
         CLOCK,
       ],
     },
     ...conversationProviders,
     ...runtimeProviders,
   ],
-  exports: [MESSENGER_CHANNELS, BotMessages, BotConversation],
+  exports: [MESSENGER_CHANNELS, BotMessageBook, BotConversation],
 })
 export class MessagingModule {}

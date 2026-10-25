@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
-import { defaultLocale } from '@mestechko/i18n';
-import payments from '../../locales/ru/payments.json' with { type: 'json' };
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
-import { PaymentReturnController, RETURN_PAGE_TEXTS } from './api/payment-return.controller.js';
-import type { ReturnPageTexts } from './api/payment-return-page.js';
+import { PaymentReturnController } from './api/payment-return.controller.js';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import { JOB_QUEUE, type JobQueue } from '../../shared/application/job-queue.js';
 import {
@@ -34,10 +31,6 @@ import { createPaymentProvider } from './infrastructure/payment-providers.js';
   imports: [LoyaltyModule],
   controllers: [PaymentReturnController],
   providers: [
-    {
-      provide: RETURN_PAGE_TEXTS,
-      useValue: { locale: defaultLocale, ...payments.returned } satisfies ReturnPageTexts,
-    },
     {
       provide: PAYMENT_PROVIDER,
       useFactory: (config: AppConfig, clock: Clock) => createPaymentProvider(config, clock),

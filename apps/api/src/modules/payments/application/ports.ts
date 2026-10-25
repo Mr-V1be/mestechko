@@ -1,4 +1,10 @@
-import type { CheckoutPresentation, CurrencyCode, Money, PaymentStatus } from '@mestechko/domain';
+import type {
+  CheckoutPresentation,
+  CurrencyCode,
+  Locale,
+  Money,
+  PaymentStatus,
+} from '@mestechko/domain';
 
 /** What the payment page needs to take a prepayment. */
 export interface CheckoutRequest {
@@ -8,6 +14,8 @@ export interface CheckoutRequest {
   readonly description: string;
   /** Where the payer returns after paying or giving up: a path of the app, or the neutral page. */
   readonly returnUrl: string;
+  /** The payer's language: the provider's page speaks it. */
+  readonly locale: Locale;
   /** Echoed back in notifications; tells us whose payment it is. */
   readonly metadata: PaymentMetadata;
   /** The payment page stops accepting payment after this. */

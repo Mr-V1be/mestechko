@@ -127,12 +127,18 @@ describe('client CRM', () => {
 
     const exported = await app.inject({
       method: 'GET',
-      url: url('/clients/export?format=xlsx'),
+      url: url('/clients/export?format=xlsx&locale=ru'),
       headers,
     });
     expect(exported.headers['content-disposition']).toContain('attachment');
     const rows = await readSheet(exported.rawPayload);
     expect(rows[0]?.[0]).toBe('Имя');
+    const english = await app.inject({
+      method: 'GET',
+      url: url('/clients/export?format=csv'),
+      headers: { ...headers, 'accept-language': 'en-US,en;q=0.9' },
+    });
+    expect(english.body.split('\n')[0]).toContain('Name');
     expect(
       rows
         .slice(1)

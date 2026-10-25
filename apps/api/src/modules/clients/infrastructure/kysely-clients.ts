@@ -1,4 +1,4 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import { isLocale, type Locale, type MessengerChannel } from '@mestechko/domain';
 import { sql } from 'kysely';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
@@ -48,6 +48,51 @@ export class KyselyCustomerIdentities implements CustomerIdentities {
       .values({ channel, externalId, customerId, createdAt: now })
       .execute();
     return customerId;
+  }
+
+  async chosenLocale(channel: MessengerChannel, externalId: string): Promise<Locale | null> {
+    const row = await this.unitOfWork
+      .platform()
+      .selectFrom('customerIdentities')
+      .innerJoin('customers', 'customers.id', 'customerIdentities.customerId')
+      .select('customers.locale')
+      .where('customerIdentities.channel', '=', channel)
+      .where('customerIdentities.externalId', '=', externalId)
+      .executeTakeFirst();
+    // A language the platform no longer speaks counts as no choice.
+    return isLocale(row?.locale) ? row.locale : null;
+  }
+
+  async chooseLocale(
+    channel: MessengerChannel,
+    externalId: string,
+    locale: Locale,
+    now: Date,
+  ): Promise<void> {
+    await this.unitOfWork.inPlatform(async () => {
+      const customerId = await this.ensure(channel, externalId, now);
+      await this.unitOfWork
+        .platform()
+        .updateTable('customers')
+        .set({ locale })
+        .where('id', '=', customerId)
+        .execute();
+    });
+  }
+
+  async recordLanguage(
+    channel: MessengerChannel,
+    externalId: string,
+    languageTag: string,
+  ): Promise<void> {
+    await this.unitOfWork
+      .platform()
+      .updateTable('customerIdentities')
+      .set({ languageTag })
+      .where('channel', '=', channel)
+      .where('externalId', '=', externalId)
+      .where((eb) => eb('languageTag', 'is distinct from', languageTag))
+      .execute();
   }
 }
 

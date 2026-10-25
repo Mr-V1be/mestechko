@@ -4,6 +4,7 @@ import {
   instantSchema,
   intParam,
   localDateSchema,
+  localeSchema,
   moneySchema,
   pageCursorSchema,
   pageOf,
@@ -211,7 +212,11 @@ export const exportClients = defineRoute({
   auth: 'session',
   status: 200,
   params: cabinetParamsSchema,
-  query: z.object({ format: z.enum(clientFileFormatIds) }),
+  query: z.object({
+    format: z.enum(clientFileFormatIds),
+    /** The language of the file's name and column titles; the browser follows this link itself. */
+    locale: localeSchema.optional(),
+  }),
   response: fileSpec(clientFileMediaTypes, MAX_IMPORT_BYTES * 4),
 });
 

@@ -1,6 +1,8 @@
 import { randomInt } from 'node:crypto';
+import type { Locale } from '@mestechko/domain';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { BusinessDirectory } from '../../tenancy/application/business-directory.js';
+import type { Translations } from '../../../shared/application/translations.js';
 import type { TelegramLaunchSigner } from './ports.js';
 
 /**
@@ -20,16 +22,23 @@ export interface DemoLaunch {
   readonly startParam: string;
 }
 
-/** Lets the client app run outside Telegram in demo mode with genuinely signed launch data. */
+/**
+ * Lets the client app run outside Telegram in demo mode with genuinely signed launch data.
+ * The emulated Telegram speaks the visitor's language, as their own Telegram would.
+ */
 export class CreateDemoTelegramLaunch {
   constructor(
     private readonly businesses: BusinessDirectory,
     private readonly signer: TelegramLaunchSigner,
     private readonly enabled: boolean,
-    private readonly guestName: string,
+    private readonly translations: Translations,
   ) {}
 
-  async execute(businessSlug: string, demoUserId: string | null): Promise<DemoLaunch> {
+  async execute(
+    businessSlug: string,
+    demoUserId: string | null,
+    locale: Locale,
+  ): Promise<DemoLaunch> {
     const business = this.enabled ? await this.businesses.findBySlug(businessSlug) : null;
     if (!business?.isDemo) {
       throw new ApplicationError('not_found', 'Demo business not found');
@@ -41,7 +50,13 @@ export class CreateDemoTelegramLaunch {
         ? demoUserId
         : String(randomInt(DEMO_USER_ID_RANGE.min, DEMO_USER_ID_RANGE.max));
     const initData = this.signer.sign({
-      user: { id, firstName: this.guestName, lastName: null, username: null, languageCode: 'ru' },
+      user: {
+        id,
+        firstName: this.translations.in(locale, 'common').text('demo.guestName'),
+        lastName: null,
+        username: null,
+        languageCode: locale,
+      },
       startParam: business.slug,
     });
     return { initData, demoUserId: id, startParam: business.slug };

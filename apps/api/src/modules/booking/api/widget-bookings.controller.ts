@@ -5,8 +5,10 @@ import {
   type RouteInput,
   type RouteResult,
 } from '@mestechko/contracts';
+import type { Locale } from '@mestechko/domain';
 import type { FastifyRequest } from 'fastify';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
+import { RequestLocale } from '../../../platform/http/request-locale.js';
 import { WebsiteBookings } from '../application/client/website-bookings.js';
 
 /** Bookings from the widget on the business's website: no account, limited per visitor. */
@@ -18,6 +20,7 @@ export class WidgetBookingsController {
   create(
     @ContractInput() input: RouteInput<typeof createWidgetBooking>,
     @Req() request: FastifyRequest,
+    @RequestLocale() locale: Locale,
   ): Promise<RouteResult<typeof createWidgetBooking>> {
     return this.bookings.create({
       slug: input.params.slug,
@@ -31,6 +34,7 @@ export class WidgetBookingsController {
       contact: input.body.contact,
       comment: input.body.comment,
       returnPath: input.body.returnPath,
+      locale,
     });
   }
 

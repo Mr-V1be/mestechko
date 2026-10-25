@@ -10,6 +10,7 @@ export { clientFileFormats, clientFileFormatIds, clientSorts } from './routes/ca
 export type * from './routes/client/public-catalog.js';
 export type * from './routes/client/miniapp-bookings.js';
 export type * from './routes/client/miniapp-waitlist.js';
+export type * from './routes/client/miniapp-preferences.js';
 export type * from './routes/client/widget.js';
 export type * from './routes/auth.js';
 export type * from './routes/demo.js';

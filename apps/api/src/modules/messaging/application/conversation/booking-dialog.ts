@@ -6,9 +6,9 @@ import type { RescheduleOptions } from '../../../booking/application/lifecycle/r
 import type { CustomerIdentities, MessengerContacts } from '../../../clients/application/ports.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
 import type { BotAction } from '../action-data.js';
-import type { ActionReply, InboundPerson, OutboundMessage } from '../channel.js';
-import type { BotMessages, BusinessCard } from '../composer/bot-messages.js';
-import { businessCardOf, chatOrigin, identityIn } from './conversation-context.js';
+import type { ActionReply, OutboundMessage } from '../channel.js';
+import type { BotMessageBook, BotMessages, BusinessCard } from '../composer/bot-messages.js';
+import { businessCardOf, chatOrigin, identityIn, type Speaker } from './conversation-context.js';
 
 type BookingTarget = Extract<BotAction, { bookingId: string }>;
 
@@ -28,12 +28,12 @@ export class BookingDialog {
     private readonly rescheduleOptions: RescheduleOptions,
     private readonly customers: CustomerIdentities,
     private readonly contacts: MessengerContacts,
-    private readonly messages: BotMessages,
+    private readonly book: BotMessageBook,
     private readonly clock: Clock,
   ) {}
 
   /** Upcoming bookings across every business the person is a client of. */
-  async list(channel: MessengerChannel, person: InboundPerson): Promise<OutboundMessage> {
+  async list(channel: MessengerChannel, person: Speaker): Promise<OutboundMessage> {
     const customerId = await this.customers.find(channel, person.externalId);
     const businessIds = customerId ? await this.contacts.businessesOf(customerId) : [];
     const entries = await Promise.all(
@@ -48,7 +48,7 @@ export class BookingDialog {
         return page.items.map((booking) => ({ business: businessCardOf(context), booking }));
       }),
     );
-    return this.messages.bookings(
+    return this.book.in(person.locale).bookings(
       entries
         .flat()
         .sort((a, b) => a.booking.start.localeCompare(b.booking.start))
@@ -56,12 +56,14 @@ export class BookingDialog {
     );
   }
 
-  async open(channel: MessengerChannel, person: InboundPerson, target: BookingTarget) {
+  async open(channel: MessengerChannel, person: Speaker, target: BookingTarget) {
+    const messages = this.book.in(person.locale);
     const { business, booking } = await this.load(channel, person, target);
-    return this.replace(this.messages.booking(business, booking, this.messages.text('card.title')));
+    return this.replace(messages, messages.booking(business, booking, messages.text('card.title')));
   }
 
-  async attend(channel: MessengerChannel, person: InboundPerson, target: BookingTarget) {
+  async attend(channel: MessengerChannel, person: Speaker, target: BookingTarget) {
+    const messages = this.book.in(person.locale);
     const business = await this.business(target.businessId);
     const booking = await this.changes.confirmAttendance(
       identityIn(target.businessId, channel, person),
@@ -69,23 +71,27 @@ export class BookingDialog {
       chatOrigin(channel),
     );
     return this.replace(
-      this.messages.booking(business, booking, this.messages.text('card.title')),
+      messages,
+      messages.booking(business, booking, messages.text('card.title')),
       'attendanceConfirmed',
     );
   }
 
-  async cancelAsk(channel: MessengerChannel, person: InboundPerson, target: BookingTarget) {
+  async cancelAsk(channel: MessengerChannel, person: Speaker, target: BookingTarget) {
+    const messages = this.book.in(person.locale);
     const { business, booking } = await this.load(channel, person, target);
     if (!booking.actions.cancel) {
       return this.replace(
-        this.messages.booking(business, booking, this.messages.text('card.title')),
+        messages,
+        messages.booking(business, booking, messages.text('card.title')),
         'tooLate',
       );
     }
-    return this.replace(this.messages.cancelQuestion(business, booking));
+    return this.replace(messages, messages.cancelQuestion(business, booking));
   }
 
-  async cancel(channel: MessengerChannel, person: InboundPerson, target: BookingTarget) {
+  async cancel(channel: MessengerChannel, person: Speaker, target: BookingTarget) {
+    const messages = this.book.in(person.locale);
     const business = await this.business(target.businessId);
     const booking = await this.changes.cancel(
       identityIn(target.businessId, channel, person),
@@ -93,16 +99,19 @@ export class BookingDialog {
       chatOrigin(channel),
     );
     return this.replace(
-      this.messages.notification('booking_cancelled', business, booking),
+      messages,
+      messages.notification('booking_cancelled', business, booking),
       'cancelled',
     );
   }
 
-  async moveDays(channel: MessengerChannel, person: InboundPerson, target: BookingTarget) {
+  async moveDays(channel: MessengerChannel, person: Speaker, target: BookingTarget) {
+    const messages = this.book.in(person.locale);
     const { business, booking } = await this.load(channel, person, target);
     if (!booking.actions.reschedule) {
       return this.replace(
-        this.messages.booking(business, booking, this.messages.text('card.title')),
+        messages,
+        messages.booking(business, booking, messages.text('card.title')),
         'tooLate',
       );
     }
@@ -116,14 +125,15 @@ export class BookingDialog {
       .filter((day) => day.slots.some((slot) => slot.start !== booking.start))
       .map((day) => day.date)
       .slice(0, MOVE_DAYS_SHOWN);
-    return this.replace(this.messages.chooseDay(business, booking, dates));
+    return this.replace(messages, messages.chooseDay(business, booking, dates));
   }
 
   async moveTimes(
     channel: MessengerChannel,
-    person: InboundPerson,
+    person: Speaker,
     target: Extract<BotAction, { kind: 'move_times' }>,
   ) {
+    const messages = this.book.in(person.locale);
     const { business, booking } = await this.load(channel, person, target);
     const options = await this.rescheduleOptions.days(
       identityIn(target.businessId, channel, person),
@@ -134,23 +144,25 @@ export class BookingDialog {
       .filter((slot) => slot.start !== booking.start)
       .map((slot) => Date.parse(slot.start))
       .slice(0, MOVE_TIMES_SHOWN);
-    return this.replace(this.messages.chooseTime(business, booking, target.date, starts));
+    return this.replace(messages, messages.chooseTime(business, booking, target.date, starts));
   }
 
   async moveAsk(
     channel: MessengerChannel,
-    person: InboundPerson,
+    person: Speaker,
     target: Extract<BotAction, { kind: 'move_ask' }>,
   ) {
+    const messages = this.book.in(person.locale);
     const { business, booking } = await this.load(channel, person, target);
-    return this.replace(this.messages.confirmMove(business, booking, target.start));
+    return this.replace(messages, messages.confirmMove(business, booking, target.start));
   }
 
   async move(
     channel: MessengerChannel,
-    person: InboundPerson,
+    person: Speaker,
     target: Extract<BotAction, { kind: 'move' }>,
   ) {
+    const messages = this.book.in(person.locale);
     const business = await this.business(target.businessId);
     const booking = await this.changes.reschedule(
       identityIn(target.businessId, channel, person),
@@ -159,14 +171,15 @@ export class BookingDialog {
       chatOrigin(channel),
     );
     return this.replace(
-      this.messages.notification('booking_rescheduled', business, booking),
+      messages,
+      messages.notification('booking_rescheduled', business, booking),
       'moved',
     );
   }
 
   private async load(
     channel: MessengerChannel,
-    person: InboundPerson,
+    person: Speaker,
     target: BookingTarget,
   ): Promise<{ business: BusinessCard; booking: ClientBooking }> {
     const [business, booking] = await Promise.all([
@@ -180,7 +193,11 @@ export class BookingDialog {
     return businessCardOf(await this.businesses.byId(businessId));
   }
 
-  private replace(message: OutboundMessage, notice: string | null = null): ActionReply {
-    return { replace: message, notice: notice ? this.messages.notice(notice) : null };
+  private replace(
+    messages: BotMessages,
+    message: OutboundMessage,
+    notice: string | null = null,
+  ): ActionReply {
+    return { replace: message, notice: notice ? messages.notice(notice) : null };
   }
 }

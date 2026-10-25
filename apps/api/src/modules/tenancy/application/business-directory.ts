@@ -1,4 +1,4 @@
-import type { BookingRulesOverrides, CurrencyCode, RoleId } from '@mestechko/domain';
+import type { BookingRulesOverrides, CurrencyCode, Locale, RoleId } from '@mestechko/domain';
 
 export interface BusinessRecord {
   readonly id: string;
@@ -7,6 +7,8 @@ export interface BusinessRecord {
   readonly verticalId: string;
   readonly countryCode: string;
   readonly currency: CurrencyCode;
+  /** The language the business presents itself in: its catalogue and the demo it opens. */
+  readonly locale: Locale;
   readonly rulesOverrides: BookingRulesOverrides;
   readonly isDemo: boolean;
 }

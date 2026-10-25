@@ -1,4 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
+import type { Locale } from '@mestechko/domain';
 import {
   addClientNote,
   adjustClientPoints,
@@ -16,6 +17,7 @@ import {
 } from '@mestechko/contracts';
 import { CurrentBusinessAccess, SessionUser } from '../../../platform/http/auth.guard.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
+import { RequestLocale } from '../../../platform/http/request-locale.js';
 import type { BusinessAccess } from '../../../shared/application/business-access.js';
 import { UNIT_OF_WORK, type UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import type { CabinetActor } from '../../loyalty/application/loyalty-admin.js';
@@ -130,10 +132,16 @@ export class CabinetClientsController {
   export(
     @ContractInput() input: RouteInput<typeof exportClients>,
     @CurrentBusinessAccess() access: BusinessAccess,
+    @RequestLocale() requestLocale: Locale,
   ): Promise<RouteResult<typeof exportClients>> {
     return this.inTenant(
       access,
-      async () => this.transfer.export(input.query.format, await this.catalog.homeTimeZone()),
+      async () =>
+        this.transfer.export(
+          input.query.format,
+          await this.catalog.homeTimeZone(),
+          input.query.locale ?? requestLocale,
+        ),
       true,
     );
   }

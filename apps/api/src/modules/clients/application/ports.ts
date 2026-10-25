@@ -1,4 +1,4 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import type { Locale, MessengerChannel } from '@mestechko/domain';
 
 export interface ClientRecord {
   readonly id: string;
@@ -27,6 +27,17 @@ export interface CustomerIdentities {
   /** Customer of a messenger account, created on first contact. Safe under concurrency. */
   ensure(channel: MessengerChannel, externalId: string, now: Date): Promise<string>;
   find(channel: MessengerChannel, externalId: string): Promise<string | null>;
+  /** The language the person chose to be spoken to in, wherever they chose it. */
+  chosenLocale(channel: MessengerChannel, externalId: string): Promise<Locale | null>;
+  /** Keeps the person's choice of language; they become a customer if they were not one. */
+  chooseLocale(
+    channel: MessengerChannel,
+    externalId: string,
+    locale: Locale,
+    now: Date,
+  ): Promise<void>;
+  /** Keeps the language the messenger reports for a known account, when it changed. */
+  recordLanguage(channel: MessengerChannel, externalId: string, languageTag: string): Promise<void>;
 }
 
 /** A client card with the messenger account the client uses. */
@@ -53,10 +64,14 @@ export interface ClientDirectory {
   ): Promise<ClientRecord>;
 }
 
-/** Where a messenger delivers messages to a person who allowed it. */
+/** Where a messenger delivers messages to a person who allowed it, and in what language. */
 export interface MessagingAddress {
   readonly externalId: string;
   readonly chatId: string;
+  /** The language the person chose, if they did. */
+  readonly chosenLocale: Locale | null;
+  /** The language the messenger last reported for the account. */
+  readonly languageTag: string | null;
 }
 
 /**
@@ -64,8 +79,16 @@ export interface MessagingAddress {
  * stops when they block it.
  */
 export interface MessengerContacts {
-  /** Records the permission; the person becomes a customer if they were not one yet. */
-  allow(channel: MessengerChannel, externalId: string, chatId: string, now: Date): Promise<string>;
+  /**
+   * Records the permission and the language the messenger reports; the person becomes
+   * a customer if they were not one yet.
+   */
+  allow(
+    channel: MessengerChannel,
+    externalId: string,
+    chat: { readonly chatId: string; readonly languageTag: string | null },
+    now: Date,
+  ): Promise<string>;
   revoke(channel: MessengerChannel, externalId: string): Promise<void>;
   isAllowed(channel: MessengerChannel, externalId: string): Promise<boolean>;
   addressOf(customerId: string, channel: MessengerChannel): Promise<MessagingAddress | null>;
