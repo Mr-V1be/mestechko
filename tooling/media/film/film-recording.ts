@@ -17,11 +17,15 @@ import {
   focusChat,
   openBusyDayAhead,
   openMaxChat,
-  openSalonMiniApp,
+  openDemoMiniApp,
   rehearseDrag,
   signInCabinet,
   tap,
 } from '../scenes.ts';
+import { sceneScripts } from '../scene-scripts.ts';
+
+/** The film shows the Russian demo, as its cards and voice are written for it. */
+const script = sceneScripts.ru;
 import { Screencast } from './screencast.ts';
 
 export const filmDevices = {
@@ -62,8 +66,8 @@ async function deviceContext(browser: Browser, device: FilmDevice): Promise<Brow
     viewport: filmDevices[device],
     deviceScaleFactor: 2,
     colorScheme: 'light',
-    locale: 'ru-RU',
-    timezoneId: 'Europe/Moscow',
+    locale: script.browserLocale,
+    timezoneId: script.timeZone,
   });
   await context.addInitScript(() => {
     window.localStorage.setItem('mst-cabinet-theme', 'light');
@@ -95,11 +99,11 @@ async function capture(
 async function recordBooking(sources: FilmSources, device: FilmDevice): Promise<string> {
   const phone = await deviceContext(sources.browser, device);
   const page = await phone.newPage();
-  await openSalonMiniApp(page, sources.miniapp);
+  await openDemoMiniApp(page, sources.miniapp, script);
   const file = await capture(page, sources, clipKey('booking', device), async () => {
     await beat(page, 900);
-    await chooseUpToTime(page, 'Укладка');
-    await bookFirstStart(page, CLIENT_NAME);
+    await chooseUpToTime(page, script.services.loop, script);
+    await bookFirstStart(page, script, CLIENT_NAME);
     await beat(page, 2400);
   });
   await phone.close();
@@ -119,7 +123,7 @@ async function recordSchedule(sources: FilmSources, device: FilmDevice): Promise
   }
   const screen = await deviceContext(sources.browser, device);
   const page = await screen.newPage();
-  const business = await signInCabinet(page, sources.cabinet);
+  const business = await signInCabinet(page, sources.cabinet, script);
   await page.goto(`${business}/schedule?date=${date}`);
   await page.locator(VISIT_BLOCKS).first().waitFor();
   await page.waitForLoadState('networkidle');
@@ -141,7 +145,7 @@ async function recordReminder(sources: FilmSources, device: FilmDevice): Promise
   const deskPage = await desk.newPage();
   const reminder = await prepareReminder(
     deskPage,
-    await signInCabinet(deskPage, sources.cabinet),
+    await signInCabinet(deskPage, sources.cabinet, script),
     sources.database,
   );
   await desk.close();
@@ -149,7 +153,7 @@ async function recordReminder(sources: FilmSources, device: FilmDevice): Promise
   const page = await phone.newPage();
   await openMaxChat(
     page,
-    await signInCabinet(page, sources.cabinet),
+    await signInCabinet(page, sources.cabinet, script),
     reminder.clientName,
     reminder.title,
   );
@@ -166,14 +170,14 @@ async function recordReminder(sources: FilmSources, device: FilmDevice): Promise
 async function recordDrag(sources: FilmSources, device: FilmDevice): Promise<string> {
   const screen = await deviceContext(sources.browser, device);
   const page = await screen.newPage();
-  await openBusyDayAhead(page, await signInCabinet(page, sources.cabinet));
-  const rehearsed = await rehearseDrag(page);
+  await openBusyDayAhead(page, await signInCabinet(page, sources.cabinet, script), script);
+  const rehearsed = await rehearseDrag(page, script);
   if (rehearsed === null) {
     throw new Error('No visit on screen can be dragged to free time');
   }
   const file = await capture(page, sources, clipKey('drag', device), async () => {
     await beat(page, 1200);
-    await dragToFreeTime(page, rehearsed);
+    await dragToFreeTime(page, rehearsed, script);
     await beat(page, 3000);
   });
   await screen.close();

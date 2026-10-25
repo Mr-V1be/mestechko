@@ -2,8 +2,9 @@
  * Media recorded from the real apps on a clean demo (see
  * `../screenshots/scratch-stack.ts`):
  *
- *   pnpm media:landing [--only screens,booking,drag,remind] [--skip-build]
- *     screens and loops of the product site, saved next to the site's files;
+ *   pnpm media:landing [--locale ru|en] [--only screens,booking,drag,remind] [--skip-build]
+ *     screens and loops of the product site in one of its languages, saved next to the
+ *     site's files under `media/<locale>`;
  *   pnpm media:film [--skip-build]
  *     the silent product film in two formats, saved to docs/case/video.
  */
@@ -32,6 +33,7 @@ const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: {
     out: { type: 'string' },
+    locale: { type: 'string' },
     only: { type: 'string' },
     'skip-build': { type: 'boolean', default: false },
   },
@@ -57,6 +59,7 @@ await withScratchStack({ apps: job.apps, build: !values['skip-build'] }, () => {
       ...(name === 'landing' ? ['--widget', scratchUrls.widget] : []),
       ...(values.out ? ['--out', values.out] : []),
       ...(values.only && name === 'landing' ? ['--only', values.only] : []),
+      ...(values.locale && name === 'landing' ? ['--locale', values.locale] : []),
     ],
     process.env,
   );

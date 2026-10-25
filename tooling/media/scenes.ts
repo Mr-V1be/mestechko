@@ -3,6 +3,7 @@
  * Each scene leaves the app where a viewer would want to see it.
  */
 import type { Locator, Page } from 'playwright';
+import type { SceneScript } from './scene-scripts.ts';
 
 const MAX_WEEKS_AHEAD = 4;
 /** A pause long enough to read what just changed. */
@@ -19,59 +20,79 @@ export async function tap(page: Page, target: Locator): Promise<void> {
   await target.click();
 }
 
-export async function signInCabinet(page: Page, base: string): Promise<string> {
+export async function signInCabinet(
+  page: Page,
+  base: string,
+  script: SceneScript,
+): Promise<string> {
   await page.goto(`${base}/sign-in`);
-  await page.getByRole('button', { name: 'Войти в демо' }).click();
+  await page.getByRole('button', { name: script.words.demoSignIn }).click();
   await page.waitForURL(/\/schedule/);
   await page.waitForLoadState('networkidle');
   return page.url().replace(/(\/b\/[^/]+)\/.*$/, '$1');
 }
 
-/** The demo launcher opens the salon's Mini App as Telegram would. */
-export async function openSalonMiniApp(page: Page, base: string): Promise<void> {
+/** The demo launcher opens the demo business's Mini App as Telegram would. */
+export async function openDemoMiniApp(
+  page: Page,
+  base: string,
+  script: SceneScript,
+): Promise<void> {
   await page.goto(`${base}/`);
-  await page.getByText('Сирень', { exact: true }).click();
-  await page.waitForURL(/\/b\/siren$/);
-  await page.getByText('Сирень на Пятницкой').click();
+  await page.getByText(script.business.name, { exact: true }).click();
+  await page.waitForURL(new RegExp(`/b/${script.business.slug}$`));
+  await page.getByText(script.business.location).click();
   await page.waitForURL(/\/services/);
   await page.waitForLoadState('networkidle');
 }
 
 /** From the services to the time step, with the free starts of the week on screen. */
-export async function chooseUpToTime(page: Page, service: string): Promise<void> {
+export async function chooseUpToTime(
+  page: Page,
+  service: string,
+  script: SceneScript,
+): Promise<void> {
   await tap(page, page.getByText(service, { exact: true }));
   await beat(page, 500);
-  await tap(page, page.getByRole('button', { name: 'Выбрать мастера' }));
+  await tap(page, page.getByRole('button', { name: script.words.chooseStaff }));
   await page.waitForURL(/\/staff/);
   await page.waitForLoadState('networkidle');
   await beat(page, 600);
-  await tap(page, page.getByText('Любой мастер'));
+  await tap(page, page.getByText(script.words.anyStaff));
   await page.waitForURL(/\/time/);
-  const slots = page.getByRole('radio').filter({ hasText: /^\d\d:\d\d$/ });
+  await firstWeekWithTime(page, script);
+}
+
+/** Moves through the weeks until free starts are on screen. */
+async function firstWeekWithTime(page: Page, script: SceneScript): Promise<void> {
+  const slots = page.getByRole('radio').filter({ hasText: script.slot });
   for (let week = 0; week < MAX_WEEKS_AHEAD; week += 1) {
-    await slots.first().or(page.getByText('На этой неделе мест нет')).waitFor();
+    await slots.first().or(page.getByText(script.words.weekFull)).waitFor();
     if ((await slots.count()) > 0) {
       break;
     }
-    await tap(page, page.getByRole('button', { name: 'Следующая неделя' }).first());
+    await tap(page, page.getByRole('button', { name: script.words.nextWeek }).first());
   }
   await page.waitForLoadState('networkidle');
 }
 
-const scheduleDate = (daysAhead: number) =>
-  new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Moscow' }).format(
-    Date.now() + daysAhead * 86_400_000,
-  );
+const scheduleDate = (daysAhead: number, timeZone: string) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone }).format(Date.now() + daysAhead * 86_400_000);
 
 /**
  * The busiest of the next few days in the schedule where a visit on screen can still be
  * dragged to free time: a full day shows the product best.
  */
-export async function openBusyDayAhead(page: Page, business: string, days = 5): Promise<void> {
+export async function openBusyDayAhead(
+  page: Page,
+  business: string,
+  script: SceneScript,
+  days = 5,
+): Promise<void> {
   const visits = page.locator('[data-column-key] button');
   let busiest: { readonly date: string; readonly count: number } | null = null;
   for (let ahead = 1; ahead <= days; ahead += 1) {
-    const date = scheduleDate(ahead);
+    const date = scheduleDate(ahead, script.timeZone);
     await page.goto(`${business}/schedule?date=${date}`);
     await visits.first().waitFor();
     await page.waitForLoadState('networkidle');
@@ -89,24 +110,30 @@ export async function openBusyDayAhead(page: Page, business: string, days = 5): 
 }
 
 /** The client books the first free start and lands on the celebration. */
-export async function bookFirstStart(page: Page, contactName?: string): Promise<void> {
-  const slots = page.getByRole('radio').filter({ hasText: /^\d\d:\d\d$/ });
+export async function bookFirstStart(
+  page: Page,
+  script: SceneScript,
+  contactName?: string,
+): Promise<void> {
+  const slots = page.getByRole('radio').filter({ hasText: script.slot });
   await beat(page, 600);
   await tap(page, slots.first());
   await beat(page, 600);
-  await tap(page, page.getByRole('button', { name: 'Продолжить' }));
+  await tap(page, page.getByRole('button', { name: script.words.continue }));
   await page.waitForURL(/\/confirm/);
-  await page.waitForFunction(() =>
-    document.querySelector<HTMLInputElement>('input[type="tel"]')?.value.startsWith('+7 0'),
+  await page.waitForFunction(
+    (prefix) =>
+      document.querySelector<HTMLInputElement>('input[type="tel"]')?.value.startsWith(prefix),
+    script.demoPhonePrefix,
   );
   if (contactName) {
-    const name = page.getByLabel('Имя');
+    const name = page.getByLabel(script.words.name);
     await tap(page, name);
     await name.fill('');
     await name.pressSequentially(contactName, { delay: 55 });
   }
   await beat(page, 900);
-  await tap(page, page.getByRole('button', { name: 'Записаться' }));
+  await tap(page, page.getByRole('button', { name: script.words.book }));
   await page.waitForURL(/created=1/);
   await page.waitForLoadState('networkidle');
 }
@@ -177,10 +204,8 @@ function planDrags(page: Page): Promise<DragPlan[]> {
   });
 }
 
-const MOVED = 'Запись перенесена';
-
 /** Drags along `plan`; `true` when the desk took the move, `false` when it was refused. */
-async function dragAlong(page: Page, plan: DragPlan): Promise<boolean> {
+async function dragAlong(page: Page, plan: DragPlan, script: SceneScript): Promise<boolean> {
   await page.mouse.move(plan.x - 120, plan.grabY + 80);
   await page.mouse.move(plan.x, plan.grabY, { steps: 12 });
   await beat(page, 400);
@@ -189,8 +214,8 @@ async function dragAlong(page: Page, plan: DragPlan): Promise<boolean> {
   await beat(page, 500);
   await page.mouse.up();
   // The occupancy on screen is the staff member's; a chair may still be taken then.
-  const moved = page.getByText(MOVED).first();
-  await moved.or(page.getByText(/^Не перенесли/).first()).waitFor();
+  const moved = page.getByText(script.words.moved).first();
+  await moved.or(page.getByText(script.words.moveRefused).first()).waitFor();
   return moved.isVisible();
 }
 
@@ -199,12 +224,12 @@ async function dragAlong(page: Page, plan: DragPlan): Promise<boolean> {
  * takes it back with «Вернуть» and reloads the day. Returns that visit's plan number,
  * `null` when no visit on screen can move.
  */
-export async function rehearseDrag(page: Page): Promise<number | null> {
+export async function rehearseDrag(page: Page, script: SceneScript): Promise<number | null> {
   const plans = await planDrags(page);
   for (const [index, plan] of plans.entries()) {
-    const taken = await dragAlong(page, plan);
+    const taken = await dragAlong(page, plan, script);
     if (taken) {
-      await page.getByRole('button', { name: 'Вернуть' }).first().click();
+      await page.getByRole('button', { name: script.words.undo }).first().click();
       await page.waitForLoadState('networkidle');
     }
     await page.reload();
@@ -218,9 +243,13 @@ export async function rehearseDrag(page: Page): Promise<number | null> {
 }
 
 /** The front desk drags a visit to free time, as rehearsed; fails if the desk refuses. */
-export async function dragToFreeTime(page: Page, planNumber: number): Promise<void> {
+export async function dragToFreeTime(
+  page: Page,
+  planNumber: number,
+  script: SceneScript,
+): Promise<void> {
   const plan = (await planDrags(page))[planNumber];
-  if (!plan || !(await dragAlong(page, plan))) {
+  if (!plan || !(await dragAlong(page, plan, script))) {
     throw new Error('The rehearsed drag did not go through');
   }
 }
@@ -302,8 +331,45 @@ export async function focusChat(page: Page, clientName: string): Promise<void> {
 }
 
 /** The waitlist sheet over the time step: the client asks to hear about a freed time. */
-export async function openWaitlist(page: Page): Promise<void> {
-  await tap(page, page.getByRole('button', { name: 'Встать в лист ожидания' }).first());
-  await page.getByRole('dialog').getByText('Лист ожидания').first().waitFor();
+export async function openWaitlist(page: Page, script: SceneScript): Promise<void> {
+  await tap(page, page.getByRole('button', { name: script.words.waitlistJoin }).first());
+  await page.getByRole('dialog').getByText(script.words.waitlistTitle).first().waitFor();
   await beat(page, 600);
+}
+
+/** The client's upcoming bookings in the Mini App, with the visit of `service` on screen. */
+export async function openMyBookings(
+  page: Page,
+  script: SceneScript,
+  service: string,
+): Promise<void> {
+  await page.getByRole('link', { name: script.words.myBookings }).click();
+  await page.waitForURL(/\/bookings$/);
+  await page.getByRole('button').filter({ hasText: service }).first().waitFor();
+  await page.waitForLoadState('networkidle');
+}
+
+/** From the list, the client moves a visit of `service` to another free time in a few taps. */
+export async function rescheduleInMiniApp(
+  page: Page,
+  script: SceneScript,
+  service: string,
+): Promise<void> {
+  await tap(page, page.getByRole('button').filter({ hasText: service }).first());
+  await page.waitForURL(/\/bookings\/[^/]+$/);
+  await beat(page, 900);
+  await tap(page, page.getByRole('button', { name: script.words.reschedule }));
+  await page.waitForURL(/\/reschedule$/);
+  await firstWeekWithTime(page, script);
+  const slots = page.getByRole('radio').filter({ hasText: script.slot });
+  // Another time of the visit's day when there is one, otherwise the next week's first.
+  if ((await slots.count()) < 2) {
+    await tap(page, page.getByRole('button', { name: script.words.nextWeek }).first());
+    await firstWeekWithTime(page, script);
+  }
+  await beat(page, 700);
+  await tap(page, (await slots.count()) < 2 ? slots.first() : slots.nth(1));
+  await beat(page, 700);
+  await tap(page, page.getByRole('button', { name: script.words.rescheduleSubmit }));
+  await page.getByText(script.words.rescheduled).first().waitFor();
 }

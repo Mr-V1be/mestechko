@@ -1,15 +1,16 @@
 /**
- * Screens and short loops of the real apps for the product site, both themes.
+ * Screens and short loops of the real apps for the product site, both themes, in one
+ * language of the site: its demo business, its words and its clock.
  *
  *   node tooling/media/landing-media.ts --cabinet URL --miniapp URL --widget URL \
- *     --database mestechko_screenshots [--out apps/landing/public/media]
+ *     --database mestechko_screenshots [--locale ru|en] [--out apps/landing/public/media/<locale>]
  */
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
-import { browserLaunchOptions } from '../screenshots/browser.ts';
+import { sceneScripts, type SceneLocale } from './scene-scripts.ts';
 import { cursorScript } from './cursor.ts';
 import { posterOf, toLoop, toWebp } from './ffmpeg.ts';
 import { prepareReminder } from './reminder.ts';
@@ -21,10 +22,12 @@ import {
   dragToFreeTime,
   focusChat,
   openBusyDayAhead,
+  openDemoMiniApp,
   openMaxChat,
-  openSalonMiniApp,
+  openMyBookings,
   openWaitlist,
   rehearseDrag,
+  rescheduleInMiniApp,
   signInCabinet,
 } from './scenes.ts';
 
@@ -34,10 +37,16 @@ const { values } = parseArgs({
     miniapp: { type: 'string' },
     widget: { type: 'string' },
     database: { type: 'string', default: 'mestechko_screenshots' },
-    out: { type: 'string', default: 'apps/landing/public/media' },
+    locale: { type: 'string', default: 'ru' },
+    out: { type: 'string' },
     only: { type: 'string' },
   },
 });
+if (!Object.hasOwn(sceneScripts, values.locale)) {
+  throw new Error(`No scenes for the language ${values.locale}`);
+}
+const script = sceneScripts[values.locale as SceneLocale];
+const out = values.out ?? `apps/landing/public/media/${script.locale}`;
 const cabinet = values.cabinet ?? 'http://127.0.0.1:46220';
 const miniapp = values.miniapp ?? 'http://127.0.0.1:46230';
 const widget = values.widget ?? 'http://127.0.0.1:46240';
@@ -46,7 +55,7 @@ type Theme = (typeof themes)[number];
 const PHONE = { width: 390, height: 844 };
 const LAPTOP = { width: 1280, height: 800 };
 const scratch = mkdtempSync(join(tmpdir(), 'mestechko-media-'));
-mkdirSync(values.out, { recursive: true });
+mkdirSync(out, { recursive: true });
 
 const storageFor = (theme: Theme) => ({
   'mst-cabinet-theme': theme,
@@ -63,8 +72,8 @@ async function context(
     viewport: size,
     deviceScaleFactor: record ? 1 : 2,
     colorScheme: theme,
-    locale: 'ru-RU',
-    timezoneId: 'Europe/Moscow',
+    locale: script.browserLocale,
+    timezoneId: script.timeZone,
     ...(record ? { recordVideo: { dir: scratch, size } } : {}),
   });
   await created.addInitScript((entries: Record<string, string>) => {
@@ -83,7 +92,7 @@ async function shot(page: Page, name: string, theme: Theme): Promise<void> {
   await page.waitForTimeout(500);
   const png = join(scratch, `${name}-${theme}.png`);
   await page.screenshot({ path: png });
-  toWebp(png, join(values.out, `${name}-${theme}.webp`));
+  toWebp(png, join(out, `${name}-${theme}.webp`));
 }
 
 /** Records `scene`, keeps the part after `ready` and saves it as a loop with a poster. */
@@ -108,26 +117,29 @@ async function loop(
   if (!webm) {
     throw new Error(`No recording for ${name}`);
   }
-  const mp4 = join(values.out, `${name}-${theme}.mp4`);
+  const mp4 = join(out, `${name}-${theme}.mp4`);
   toLoop(webm, mp4, sceneAt, length);
-  posterOf(mp4, join(values.out, `${name}-${theme}.webp`));
+  posterOf(mp4, join(out, `${name}-${theme}.webp`));
 }
 
 const wanted = (name: string) => !values.only || values.only.split(',').includes(name);
 
-const browser = await chromium.launch(browserLaunchOptions);
+const browser = await chromium.launch({
+  args: ['--mute-audio', `--lang=${script.browserLocale}`],
+  env: { ...process.env, LANGUAGE: script.locale },
+});
 const reminded: string[] = [];
 try {
   for (const theme of themes) {
     const laptop = await context(browser, theme, LAPTOP, false);
     const page = await laptop.newPage();
-    const business = await signInCabinet(page, cabinet);
+    const business = await signInCabinet(page, cabinet, script);
     if (wanted('screens')) {
       await shot(page, 'cabinet-schedule', theme);
       await page.goto(`${business}/reports`);
-      await page.getByText('Загрузка').first().waitFor();
+      await page.getByText(script.words.occupancy).first().waitFor();
       await shot(page, 'cabinet-reports', theme);
-      await page.goto(`${widget}/demo/siren.html`);
+      await page.goto(`${widget}${script.business.site}`);
       await page.locator('#booking').evaluate((element) => {
         element.scrollIntoView({ block: 'start' });
       });
@@ -138,10 +150,10 @@ try {
     if (wanted('screens')) {
       const phone = await context(browser, theme, PHONE, false);
       const mini = await phone.newPage();
-      await openSalonMiniApp(mini, miniapp);
-      await chooseUpToTime(mini, 'Женская стрижка');
+      await openDemoMiniApp(mini, miniapp, script);
+      await chooseUpToTime(mini, script.services.screen, script);
       await shot(mini, 'miniapp-time', theme);
-      await openWaitlist(mini);
+      await openWaitlist(mini, script);
       await shot(mini, 'miniapp-waitlist', theme);
       await phone.close();
     }
@@ -152,11 +164,11 @@ try {
         'loop-booking',
         theme,
         PHONE,
-        (page) => openSalonMiniApp(page, miniapp),
+        (page) => openDemoMiniApp(page, miniapp, script),
         async (page) => {
           await beat(page, 700);
-          await chooseUpToTime(page, 'Укладка');
-          await bookFirstStart(page);
+          await chooseUpToTime(page, script.services.loop, script);
+          await bookFirstStart(page, script);
           await beat(page, 1800);
         },
       );
@@ -170,8 +182,8 @@ try {
         theme,
         LAPTOP,
         async (page) => {
-          await openBusyDayAhead(page, await signInCabinet(page, cabinet));
-          const found = await rehearseDrag(page);
+          await openBusyDayAhead(page, await signInCabinet(page, cabinet, script), script);
+          const found = await rehearseDrag(page, script);
           if (found === null) {
             throw new Error('No visit on screen can be dragged to free time');
           }
@@ -179,16 +191,37 @@ try {
         },
         async (page) => {
           await beat(page, 600);
-          await dragToFreeTime(page, rehearsed);
+          await dragToFreeTime(page, rehearsed, script);
           await beat(page, 2200);
         },
       );
     }
 
-    if (wanted('remind')) {
+    if (wanted('remind') && script.reminder === 'miniapp') {
+      // Where MAX is not offered, the client answers in the Mini App a reminder opens.
+      await loop(
+        browser,
+        'loop-remind',
+        theme,
+        PHONE,
+        async (page) => {
+          await openDemoMiniApp(page, miniapp, script);
+          await chooseUpToTime(page, script.services.screen, script);
+          await bookFirstStart(page, script);
+          await openMyBookings(page, script, script.services.screen);
+        },
+        async (page) => {
+          await beat(page, 1200);
+          await rescheduleInMiniApp(page, script, script.services.screen);
+          await beat(page, 2200);
+        },
+      );
+    }
+
+    if (wanted('remind') && script.reminder === 'max') {
       const setup = await context(browser, theme, LAPTOP, false);
       const desk = await setup.newPage();
-      const business = await signInCabinet(desk, cabinet);
+      const business = await signInCabinet(desk, cabinet, script);
       // Each theme answers a reminder of its own visit: an answered one is final.
       const reminder = await prepareReminder(desk, business, values.database, reminded);
       reminded.push(reminder.bookingId);
@@ -198,7 +231,7 @@ try {
         const emulator = await desk.newPage();
         await openMaxChat(
           emulator,
-          await signInCabinet(emulator, cabinet),
+          await signInCabinet(emulator, cabinet, script),
           reminder.clientName,
           reminder.title,
         );
@@ -213,7 +246,7 @@ try {
         async (page) => {
           await openMaxChat(
             page,
-            await signInCabinet(page, cabinet),
+            await signInCabinet(page, cabinet, script),
             reminder.clientName,
             reminder.title,
           );
@@ -231,4 +264,4 @@ try {
   await browser.close();
   rmSync(scratch, { recursive: true, force: true });
 }
-console.log(`Media saved to ${values.out}`);
+console.log(`Media saved to ${out}`);
