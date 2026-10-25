@@ -21,6 +21,9 @@ export class ProviderResponseError extends Error {
   }
 }
 
+/** Countries isdayoff.ru publishes production calendars for. */
+const COVERED_COUNTRIES: ReadonlySet<string> = new Set(['RU', 'BY', 'KZ', 'UZ']);
+
 export class IsDayOffCalendarSource implements ProductionCalendarSource {
   readonly name = 'isdayoff.ru';
 
@@ -29,6 +32,10 @@ export class IsDayOffCalendarSource implements ProductionCalendarSource {
     private readonly timeoutMs: number,
     private readonly fetchImpl: typeof fetch = globalThis.fetch.bind(globalThis),
   ) {}
+
+  covers(countryCode: string): boolean {
+    return COVERED_COUNTRIES.has(countryCode);
+  }
 
   async fetchYear(countryCode: string, year: number): Promise<CalendarYear> {
     const url = new URL('/api/getdata', this.baseUrl);

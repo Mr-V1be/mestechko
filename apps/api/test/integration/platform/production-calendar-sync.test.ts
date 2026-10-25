@@ -35,7 +35,7 @@ describe('production calendar synchronisation', () => {
     const store = new KyselyProductionCalendarStore(databases.unitOfWork);
     let served = year('public_holiday');
     const sync = new SyncProductionCalendar(
-      { name: 'fake', fetchYear: () => Promise.resolve(served) },
+      { name: 'fake', covers: () => true, fetchYear: () => Promise.resolve(served) },
       store,
       { now: () => Temporal.Now.instant() },
     );

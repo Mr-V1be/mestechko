@@ -66,13 +66,15 @@ export class SyncProductionCalendar implements JobHandler<
 export class RefreshProductionCalendars implements JobHandler<Record<string, never>> {
   constructor(
     private readonly businesses: BusinessDirectory,
+    private readonly source: Pick<ProductionCalendarSource, 'covers'>,
     private readonly queue: JobQueue,
     private readonly clock: Clock,
   ) {}
 
   async handle(): Promise<void> {
     const currentYear = Number(this.clock.now().toString().slice(0, 4));
-    for (const countryCode of await this.businesses.listCountryCodes()) {
+    const countries = await this.businesses.listCountryCodes();
+    for (const countryCode of countries.filter((country) => this.source.covers(country))) {
       for (const year of [currentYear, currentYear + 1]) {
         await this.queue.enqueue(
           productionCalendarSyncJob,

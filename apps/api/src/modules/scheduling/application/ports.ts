@@ -37,6 +37,11 @@ export interface ProductionCalendarStore {
 /** External provider of official calendars. */
 export interface ProductionCalendarSource {
   readonly name: string;
+  /**
+   * Whether the source publishes the country's calendar. Businesses elsewhere (the US
+   * has no production calendar) follow their staff schedules alone.
+   */
+  covers(countryCode: string): boolean;
   fetchYear(countryCode: string, year: number): Promise<CalendarYear>;
 }
 

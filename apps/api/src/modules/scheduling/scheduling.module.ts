@@ -65,11 +65,16 @@ import { KyselyWorkCalendarReader } from './infrastructure/kysely-work-calendar-
     },
     {
       provide: ProductionCalendars,
-      useFactory: (store: ProductionCalendarStore, queue: JobQueue, logger: PinoLogger) => {
+      useFactory: (
+        store: ProductionCalendarStore,
+        source: ProductionCalendarSource,
+        queue: JobQueue,
+        logger: PinoLogger,
+      ) => {
         logger.setContext(ProductionCalendars.name);
-        return new ProductionCalendars(store, queue, logger);
+        return new ProductionCalendars(store, source, queue, logger);
       },
-      inject: [PRODUCTION_CALENDAR_STORE, JOB_QUEUE, PinoLogger],
+      inject: [PRODUCTION_CALENDAR_STORE, PRODUCTION_CALENDAR_SOURCE, JOB_QUEUE, PinoLogger],
     },
     {
       provide: productionCalendarHandlerTokens.sync,
@@ -82,9 +87,13 @@ import { KyselyWorkCalendarReader } from './infrastructure/kysely-work-calendar-
     },
     {
       provide: productionCalendarHandlerTokens.refresh,
-      useFactory: (businesses: BusinessDirectory, queue: JobQueue, clock: Clock) =>
-        new RefreshProductionCalendars(businesses, queue, clock),
-      inject: [BUSINESS_DIRECTORY, JOB_QUEUE, CLOCK],
+      useFactory: (
+        businesses: BusinessDirectory,
+        source: ProductionCalendarSource,
+        queue: JobQueue,
+        clock: Clock,
+      ) => new RefreshProductionCalendars(businesses, source, queue, clock),
+      inject: [BUSINESS_DIRECTORY, PRODUCTION_CALENDAR_SOURCE, JOB_QUEUE, CLOCK],
     },
     CalendarSyncBootstrap,
   ],
