@@ -12,7 +12,8 @@
     "./theme-boot": "./src/theme/theme-boot.ts",
     "./tokens/scale.css": "./src/styles/tokens/scale.css",
     "./tokens/color.css": "./src/styles/tokens/color.css",
-    "./app-base": "./src/build/app-base.ts"
+    "./app-base": "./src/build/app-base.ts",
+    "./locale-boot": "./src/build/locale-boot.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",

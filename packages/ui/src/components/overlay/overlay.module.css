@@ -305,6 +305,15 @@
   color: var(--color-danger);
 }
 
+/* A choice fills the row; the mark of the current one sits at its end. */
+.menuChoice {
+  flex: 1;
+}
+
+.menuChoiceMark {
+  display: inline-flex;
+}
+
 .menuDanger svg {
   color: var(--color-danger);
 }

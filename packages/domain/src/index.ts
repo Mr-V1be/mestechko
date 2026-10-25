@@ -33,6 +33,7 @@ export * from './verticals/definitions/index.js';
 
 export * from './access/roles.js';
 export * from './money/money.js';
+export * from './locales/locales.js';
 export * from './channels/messenger-channels.js';
 export * from './time/day-parts.js';
 export * from './booking/client-changes.js';

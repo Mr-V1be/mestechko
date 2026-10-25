@@ -52,6 +52,11 @@ export {
   type DialogProps,
 } from './components/overlay/dialog';
 export { Menu, type MenuAction, type MenuProps } from './components/overlay/menu';
+export {
+  ChoiceMenu,
+  type ChoiceMenuOption,
+  type ChoiceMenuProps,
+} from './components/overlay/choice-menu';
 export { DataTable, type DataColumn, type DataTableProps } from './components/data/data-table';
 export { StatTile, type StatTileProps } from './components/data/stat-tile';
 export { BarChart, type BarChartProps, type BarPoint } from './components/data/bar-chart';

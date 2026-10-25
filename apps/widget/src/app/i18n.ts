@@ -1,14 +1,10 @@
-import { createI18n } from '@mestechko/i18n';
+import { createAppI18n, localeLoader } from '@mestechko/booking-ui';
+import type { Locale } from '@mestechko/domain';
 import type { i18n } from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import widget from '../locales/ru.json';
 
-export async function setUpI18n(): Promise<i18n> {
-  const instance = await createI18n({
-    defaultNamespace: 'widget',
-    resources: { ru: { widget } },
-  });
-  instance.use(initReactI18next);
-  initReactI18next.init(instance);
-  return instance;
+/** One namespace per language: `locales/<locale>.json`. */
+const files = import.meta.glob('../locales/*.json', { import: 'default' });
+
+export function setUpI18n(locale: Locale): Promise<i18n> {
+  return createAppI18n({ locale, defaultNamespace: 'widget', load: localeLoader(files, 'widget') });
 }

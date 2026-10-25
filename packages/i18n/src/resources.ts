@@ -1,16 +1,16 @@
-import booking from './locales/ru/booking.json' with { type: 'json' };
-import catalog from './locales/ru/catalog.json' with { type: 'json' };
-import common from './locales/ru/common.json' with { type: 'json' };
-import terms from './locales/ru/terms.json' with { type: 'json' };
-
-export const supportedLocales = ['ru'] as const;
-export type Locale = (typeof supportedLocales)[number];
-export const defaultLocale: Locale = 'ru';
+import type { Locale } from '@mestechko/domain';
 
 /** Namespaces shared by every application. */
-export const sharedResources = {
-  ru: { common, terms, booking, catalog },
-} as const satisfies Record<Locale, Record<string, object>>;
+export const sharedNamespaces = ['common', 'terms', 'booking', 'catalog'] as const;
+export type SharedNamespace = (typeof sharedNamespaces)[number];
 
-export type SharedNamespace = keyof (typeof sharedResources)[Locale];
-export const sharedNamespaces = Object.keys(sharedResources[defaultLocale]) as SharedNamespace[];
+export type SharedResources = Readonly<Record<SharedNamespace, object>>;
+
+/**
+ * The shared texts of each language, one module per language: a bundle carries only the
+ * languages a visitor actually reads, and a new language does not grow the others.
+ */
+export const sharedResourceLoaders: Readonly<Record<Locale, () => Promise<SharedResources>>> = {
+  en: async () => (await import('./locales/en/index.js')).default,
+  ru: async () => (await import('./locales/ru/index.js')).default,
+};
