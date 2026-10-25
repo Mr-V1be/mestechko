@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Marigold Studio, hair and nails in Brooklyn (demo)</title>
+    <link rel="stylesheet" href="./marigold.css" />
+  </head>
+  <body>
+    <div class="demo-note" role="note">
+      A demo website of a fictional studio: this is how the Mestechko widget looks on a business's
+      own site.
+    </div>
+    <header class="site-header">
+      <a class="logo" href="#top"
+        ><span class="logo-mark" aria-hidden="true"></span>Marigold<span class="logo-sub"
+          >studio</span
+        ></a
+      >
+      <nav class="nav" aria-label="Site sections">
+        <a href="#services">Services</a>
+        <a href="#booking">Book</a>
+        <a href="#visit">Visit</a>
+      </nav>
+      <button class="cta cta-small" type="button" data-mestechko-open>Book now</button>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-text">
+          <p class="kicker">Williamsburg · Park Slope</p>
+          <h1>Cut, color and nails, booked in a minute</h1>
+          <p class="lead">
+            Pick your stylist and an open time right here. We send a reminder before your visit and
+            let you know if anything changes.
+          </p>
+          <div class="hero-actions">
+            <button class="cta" type="button" data-mestechko-open>Book online</button>
+            <a class="link" href="#services">Services and prices</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="sun sun-1"></div>
+          <div class="sun sun-2"></div>
+          <div class="hero-card">
+            <p class="hero-card-title">Next opening</p>
+            <p class="hero-card-time">Today, evening</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="services">
+        <h2>Services</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Hair</h3>
+            <p>Women's and men's cuts, blowouts and single-process color.</p>
+          </article>
+          <article class="card">
+            <h3>Nails</h3>
+            <p>Gel and classic manicures, pedicures.</p>
+          </article>
+          <article class="card">
+            <h3>Brows</h3>
+            <p>Brow shaping and tinting.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section booking" id="booking">
+        <div class="booking-text">
+          <h2>Book online</h2>
+          <p>
+            Open times update instantly: if a slot is taken, you see it before you book. Color
+            services take a 30% deposit, the rest is paid at the studio.
+          </p>
+        </div>
+        <div class="booking-widget" data-mestechko-widget></div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="visit">
+      <div>
+        <p class="logo logo-footer">Marigold<span class="logo-sub">studio</span></p>
+        <p>214 Bedford Ave, Brooklyn, NY · Tue to Sat, 10 AM to 9 PM</p>
+      </div>
+      <p class="footer-note">
+        Demo page. Bookings from the widget show up in the Mestechko dashboard.
+      </p>
+    </footer>
+
+    <!-- The embed code from the dashboard's settings, as the studio pasted it. -->
+    <script src="../widget.js" data-mestechko data-business="marigold" async></script>
+  </body>
+</html>
