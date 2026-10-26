@@ -24,12 +24,16 @@ async function openVisitToClose(page: Page, business: string): Promise<boolean> 
     await page.goto(`${business}/schedule${query}`);
     await page.waitForLoadState('networkidle');
     // A narrow board pages through its columns: visits of the other pages are in the
-    // document but cannot be clicked.
+    // document but cannot be clicked. The earliest start first: those are the ones that began.
     const onScreen = await visitBlocks(page).evaluateAll((blocks) =>
-      blocks.flatMap((block, index) => {
-        const rect = block.getBoundingClientRect();
-        return rect.left >= 0 && rect.right <= window.innerWidth ? [index] : [];
-      }),
+      blocks
+        .flatMap((block, index) => {
+          const rect = block.getBoundingClientRect();
+          const start = /\d\d:\d\d/.exec(block.textContent ?? '')?.[0] ?? '';
+          return rect.left >= 0 && rect.right <= window.innerWidth ? [{ index, start }] : [];
+        })
+        .sort((a, b) => a.start.localeCompare(b.start))
+        .map((visit) => visit.index),
     );
     for (const index of onScreen.slice(0, MAX_VISITS_TO_TRY)) {
       await visitBlocks(page).nth(index).click();
