@@ -43,6 +43,7 @@
     "screenshots": "node --env-file-if-exists=.env tooling/screenshots/run.ts",
     "media:landing": "node --env-file-if-exists=.env tooling/media/run.ts landing",
     "media:film": "node --env-file-if-exists=.env tooling/media/run.ts film",
+    "brand:assets": "node tooling/brand/assets.ts",
     "contracts:generate": "pnpm --filter @slotwise/contracts generate"
   },
   "devDependencies": {

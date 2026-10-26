@@ -3,10 +3,10 @@
  * the opening and closing cards, and for each moment a background (words, device
  * shadow) and a bezel that goes over the recording, transparent where the screen is.
  */
-import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Browser } from 'playwright';
-import { root } from '../../screenshots/scratch-stack.ts';
+import { colorTokens, productFontFaces } from '../../brand/brand-page.ts';
+import { lockupSvg, markSvg, wordmarkAsText } from '../../brand/brand-svg.ts';
 import type { FilmClip } from './film-recording.ts';
 import {
   deviceBox,
@@ -29,34 +29,18 @@ export interface FilmCards {
   readonly scenes: readonly SceneLayers[];
 }
 
-const FONT_DIR = join(root, 'packages/ui/node_modules/@fontsource-variable/nunito/files');
-const fontRanges = {
-  cyrillic: 'U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116',
-  latin:
-    'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212',
-} as const;
-
-const fontFaces = Object.entries(fontRanges)
-  .map(([subset, range]) => {
-    const font = readFileSync(join(FONT_DIR, `nunito-${subset}-wght-normal.woff2`)).toString(
-      'base64',
-    );
-    return `@font-face{font-family:'Nunito Variable';font-weight:200 1000;src:url(data:font/woff2;base64,${font}) format('woff2');unicode-range:${range};}`;
-  })
-  .join('');
-const colors = readFileSync(join(root, 'packages/ui/src/styles/tokens/color.css'), 'utf8');
-const brandMark = (size: number) =>
-  `<svg width="${String(size)}" height="${String(size)}" viewBox="0 0 32 32"><rect x="2" y="4" width="28" height="24" rx="10" fill="#ff6a13"/><circle cx="22.5" cy="11" r="3.5" fill="#22242a"/></svg>`;
+/** The cards' title size; the opening card's wordmark is drawn as text of this size. */
+const CARD_TITLE_SIZE = 112;
 
 const px = (value: number) => `${String(value)}px`;
 const place = (box: Box) =>
   `left:${px(box.x)};top:${px(box.y)};width:${px(box.width)};height:${px(box.height)}`;
 
-const styles = `${fontFaces}${colors}
+const styles = `${productFontFaces}${colorTokens}
 *{box-sizing:border-box;margin:0}
 body{position:relative;overflow:hidden;font-family:'Nunito Variable',sans-serif;color:var(--color-text);background:transparent}
 .bg{position:absolute;inset:0;background:radial-gradient(ellipse at 88% 0%,var(--color-accent-soft),transparent 58%),var(--color-canvas)}
-.brand{position:absolute;display:flex;align-items:center;gap:14px;font-size:30px;font-weight:800}
+.brand{position:absolute;display:flex}
 .copy{position:absolute;display:flex;flex-direction:column;justify-content:center;gap:26px}
 .copy.center{align-items:center;text-align:center}
 .steps{display:flex;gap:10px}.steps i{width:40px;height:6px;border-radius:3px;background:var(--color-border)}.steps i.on{background:var(--color-accent)}
@@ -67,7 +51,7 @@ body{position:relative;overflow:hidden;font-family:'Nunito Variable',sans-serif;
 .bezel{position:absolute;border:solid var(--color-device)}
 .base{position:absolute;border-radius:0 0 26px 26px;background:linear-gradient(#e3e5e9,#9da1aa)}
 .card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;padding:0 140px;text-align:center}
-.card .title{font-size:112px}.card .text{max-width:1180px;font-size:40px}
+.card .title{font-size:${px(CARD_TITLE_SIZE)}}.card .text{max-width:1180px;font-size:40px}
 .card .footnote{margin-top:12px;font-size:34px;font-weight:800}`;
 
 function page(format: FilmFormat, body: string): string {
@@ -100,7 +84,7 @@ function sceneBackground(format: FilmFormat, clip: FilmClip, index: number, tota
   return page(
     format,
     `<div class="bg"></div>
-     <div class="brand" style="${brandAt}">${brandMark(40)}Местечко</div>
+     <div class="brand" style="${brandAt}">${lockupSvg(30)}</div>
      <div class="copy ${layout.align}" style="${place(layout.copy)}">
        <div class="steps">${steps}</div>
        <div class="who">${copy.who}</div>
@@ -121,10 +105,11 @@ function sceneBezel(format: FilmFormat, clip: FilmClip): string {
   );
 }
 
-function card(format: FilmFormat, title: string, text: string, footnote?: string): string {
+/** A card under the big mark: `heading` is markup, the wordmark or a title. */
+function card(format: FilmFormat, heading: string, text: string, footnote?: string): string {
   return page(
     format,
-    `<div class="bg"></div><div class="card">${brandMark(150)}<div class="title">${title}</div>
+    `<div class="bg"></div><div class="card">${markSvg(150)}${heading}
      <div class="text">${text}</div>${footnote ? `<div class="footnote">${footnote}</div>` : ''}</div>`,
   );
 }
@@ -155,8 +140,11 @@ export async function renderCards(
     });
   }
   const cards: FilmCards = {
-    intro: await draw(card(format, intro.title, intro.text), 'intro'),
-    outro: await draw(card(format, outro.title, outro.text, outro.footnote), 'outro'),
+    intro: await draw(card(format, wordmarkAsText(CARD_TITLE_SIZE), intro.text), 'intro'),
+    outro: await draw(
+      card(format, `<div class="title">${outro.title}</div>`, outro.text, outro.footnote),
+      'outro',
+    ),
     scenes,
   };
   await context.close();

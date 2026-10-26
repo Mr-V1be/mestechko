@@ -3,7 +3,6 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--color-text);
-  text-decoration: none;
 }
 
 .mark {
@@ -12,7 +11,7 @@
   height: var(--size-avatar-sm);
 }
 
-.seat {
+.slot {
   fill: var(--color-accent);
 }
 
@@ -20,11 +19,27 @@
   fill: var(--color-on-accent);
 }
 
+/* The artwork's own height in em (artwork.ts): its letters match text of this font size. */
+.wordmark {
+  flex: none;
+  width: auto;
+  height: 0.78em;
+  font-size: var(--font-size-lg);
+}
+
+.letters {
+  fill: currentColor;
+}
+
+.tittle {
+  fill: var(--color-accent);
+}
+
 .inverse {
   color: var(--color-on-accent);
 }
 
-.inverse .seat {
+.inverse .slot {
   fill: var(--color-on-accent);
 }
 
@@ -32,8 +47,7 @@
   fill: var(--color-accent);
 }
 
-.wordmark {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-heavy);
-  letter-spacing: var(--letter-spacing-tight);
+/* On the accent the dot of the i takes the letters' color, like the rest of the word. */
+.inverse .tittle {
+  fill: currentColor;
 }

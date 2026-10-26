@@ -21,7 +21,7 @@ import { BookingSummary, BookingSummaryBar } from './booking-summary';
 import { ANY_STAFF, useBookingSelection } from './selection';
 import waitlistStyles from '../waitlist/waitlist.module.css';
 
-/** Pick a day of the week, then a free start time: the "местечко". */
+/** Pick a day of the week, then a free start time: the slot. */
 export function TimePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();

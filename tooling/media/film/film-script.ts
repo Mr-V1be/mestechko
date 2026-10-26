@@ -1,6 +1,9 @@
 /** What the film says, card by card. Silent film: the words are on screen. */
 import type { FilmSceneId } from './film-recording.ts';
 
+/** The bot's handle is shown only when a bot is configured: the username is not fixed. */
+const botUsername = process.env.TELEGRAM_BOT_USERNAME;
+
 export interface SceneCopy {
   /** Who acts in this moment. */
   readonly who: string;
@@ -10,7 +13,6 @@ export interface SceneCopy {
 
 export const filmScript = {
   intro: {
-    title: 'Местечко',
     text: 'Онлайн-запись для салонов, барбершопов, клиник и автосервисов — в Telegram и MAX',
     seconds: 4,
   },
@@ -39,7 +41,7 @@ export const filmScript = {
   outro: {
     title: 'Попробуйте демо',
     text: 'Кабинет заведения и Mini App клиента — на вымышленных данных',
-    footnote: 'Бот в Telegram: @mestechko_zapis_bot',
+    footnote: botUsername ? `Бот в Telegram: @${botUsername}` : undefined,
     seconds: 5,
   },
   /** Crossfade between cards and moments. */

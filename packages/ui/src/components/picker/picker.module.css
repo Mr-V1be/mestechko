@@ -21,7 +21,7 @@
   gap: var(--space-2);
 }
 
-/* An "местечко": a soft seat that a dot drops into when it is taken by you. */
+/* A free slot: a soft seat that a dot drops into once the slot is yours, as in the mark. */
 .slot {
   position: relative;
   display: grid;

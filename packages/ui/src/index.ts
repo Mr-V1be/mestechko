@@ -71,7 +71,7 @@ export { ToastProvider, useToast, type ToastTone } from './components/overlay/to
 export { StatePanel, type StatePanelProps } from './components/state/state-panel';
 export { TimeGrid, type TimeGridGroup, type TimeGridProps } from './components/picker/time-grid';
 export { DateStrip, type DateStripDay, type DateStripProps } from './components/picker/date-strip';
-export { Logo, LogoMark } from './components/brand/logo';
+export { Logo, LogoMark, Wordmark } from './components/brand/logo';
 export { breakpoints, useMediaQuery } from './hooks/use-media-query';
 export {
   CelebrationIllustration,

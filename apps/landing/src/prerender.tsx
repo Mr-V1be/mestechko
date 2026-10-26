@@ -5,6 +5,7 @@ import { App } from './app/app';
 import { siteConfig } from './app/config';
 import { setUpI18n } from './app/i18n';
 import { pagePaths } from './app/page-locale';
+import { shareImage } from './app/share-image';
 
 export interface RenderedPage {
   readonly locale: Locale;
@@ -22,8 +23,8 @@ const escape = (value: string): string =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
 
-const pageUrl = (locale: Locale): string =>
-  new URL(pagePaths[locale], `${siteConfig.siteUrl.replace(/\/+$/, '')}/`).href;
+const siteRoot = `${siteConfig.siteUrl.replace(/\/+$/, '')}/`;
+const pageUrl = (locale: Locale): string => new URL(pagePaths[locale], siteRoot).href;
 
 /** A language's page as HTML for the build: visible before any script runs. */
 async function renderPage(locale: Locale): Promise<RenderedPage> {
@@ -38,6 +39,11 @@ async function renderPage(locale: Locale): Promise<RenderedPage> {
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${description}" />`,
     `<meta property="og:locale" content="${locale}" />`,
+    `<meta property="og:image" content="${new URL(shareImage.path(locale), siteRoot).href}" />`,
+    `<meta property="og:image:width" content="${String(shareImage.width)}" />`,
+    `<meta property="og:image:height" content="${String(shareImage.height)}" />`,
+    `<meta property="og:image:alt" content="${title}" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
     `<link rel="canonical" href="${pageUrl(locale)}" />`,
     ...languages.map(
       (language) => `<link rel="alternate" hreflang="${language}" href="${pageUrl(language)}" />`,

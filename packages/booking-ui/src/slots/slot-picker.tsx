@@ -69,7 +69,7 @@ export interface SlotPickerProps {
   readonly fallback?: ReactNode;
 }
 
-/** A week of days and the free starts of the chosen one: the "местечко" to pick. */
+/** A week of days and the free starts of the chosen one: the slot to pick. */
 export function SlotPicker({
   timeZone,
   today,
