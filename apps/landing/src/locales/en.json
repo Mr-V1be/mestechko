@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Mestechko: online booking in Telegram",
+    "title": "{{brand}}: online booking in Telegram",
     "description": "Online booking for salons, barbershops, clinics and auto services: a Telegram Mini App, a bot with reminders and a dashboard with the schedule."
   },
   "nav": {
@@ -129,7 +129,7 @@
     "bot": "Open the bot in Telegram"
   },
   "footer": {
-    "rights": "© {{year}} Mestechko",
+    "rights": "© {{year}} {{brand}}",
     "demo": "Demo: the businesses, clients and bookings are fictional."
   }
 }

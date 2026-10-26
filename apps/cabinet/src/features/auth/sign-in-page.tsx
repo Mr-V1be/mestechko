@@ -1,3 +1,4 @@
+import { brandName } from '@slotwise/i18n';
 import { DemoLinks, LanguageMenu } from '@slotwise/booking-ui';
 import { Badge, Button, Logo, TextField } from '@slotwise/ui';
 import { useState, type SyntheticEvent } from 'react';
@@ -42,7 +43,7 @@ export function SignInPage() {
   return (
     <div className={styles.page}>
       <aside className={styles.brandPanel}>
-        <Logo name={t('common:brand.name')} tone="inverse" />
+        <Logo name={brandName} tone="inverse" />
         <ProductShowcase />
         <div className={styles.brandText}>
           <p className={styles.brandTitle}>{t('common:brand.tagline')}</p>
@@ -52,7 +53,7 @@ export function SignInPage() {
       <main className={styles.formPanel}>
         <div className={styles.formColumn}>
           <div className={styles.mobileBrand}>
-            <Logo name={t('common:brand.name')} />
+            <Logo name={brandName} />
             <div className={styles.brandActions}>
               {appConfig.demoMode ? <Badge tone="outline">{t('common:brand.demo')}</Badge> : null}
               <LanguageMenu />

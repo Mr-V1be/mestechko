@@ -1,4 +1,4 @@
-/** Texts of the page, from the translation system. */
+/** Texts of the page, from the translation system, and the product's name. */
 export interface ReturnPageTexts {
   readonly locale: string;
   readonly title: string;

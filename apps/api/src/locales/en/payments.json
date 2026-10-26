@@ -3,7 +3,6 @@
   "returned": {
     "title": "Payment complete",
     "lead": "Go back to Telegram or the business's website: your booking status will update by itself.",
-    "close": "You can close this tab.",
-    "brand": "Mestechko"
+    "close": "You can close this tab."
   }
 }

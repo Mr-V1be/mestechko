@@ -1,3 +1,4 @@
+import { brandName } from '@slotwise/i18n';
 import { Logo } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import styles from './chrome.module.css';
@@ -10,7 +11,7 @@ export function SiteFooter() {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerInner}>
-        <Logo name={t('common:brand.name')} />
+        <Logo name={brandName} />
         <p className={styles.footerText}>{t('footer.demo')}</p>
         <p className={styles.footerText}>{t('footer.rights', { year: BUILD_YEAR })}</p>
       </div>

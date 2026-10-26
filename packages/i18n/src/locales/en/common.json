@@ -1,6 +1,5 @@
 {
   "brand": {
-    "name": "Mestechko",
     "tagline": "Got a spot?",
     "demo": "Demo"
   },
@@ -112,7 +111,7 @@
     "title": "More in the demo",
     "landing": {
       "title": "Product website",
-      "description": "What Mestechko does, and pricing"
+      "description": "What {{brand}} does, and pricing"
     },
     "cabinet": {
       "title": "Business dashboard",

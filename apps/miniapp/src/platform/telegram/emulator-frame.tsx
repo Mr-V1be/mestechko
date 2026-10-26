@@ -1,3 +1,4 @@
+import { brandName } from '@slotwise/i18n';
 import { DemoLinks } from '@slotwise/booking-ui';
 import { appConfig } from '../../app/config';
 import { useTranslation } from 'react-i18next';
@@ -147,7 +148,7 @@ export function EmulatorFrame({ children }: { readonly children: ReactNode }) {
           ) : null}
         </span>
         <div className={styles.topBarCenter}>
-          <Logo name={t('common:brand.name')} />
+          <Logo name={brandName} />
           <Badge tone="outline">{t('common:brand.demo')}</Badge>
         </div>
         <span className={styles.slot}>

@@ -1,5 +1,6 @@
 import { useFormat } from '@slotwise/booking-ui';
 import type { MaxEmulatorMessage } from '@slotwise/contracts/client';
+import { brandName } from '@slotwise/i18n';
 import {
   Avatar,
   Badge,
@@ -151,7 +152,7 @@ export function ChatPanel({
         <Avatar name={data?.chat.clientName ?? ''} size="sm" />
         <div className={styles.panelTitle}>
           <p className={styles.panelName}>{data?.chat.clientName}</p>
-          <p className={styles.panelBot}>{t('maxEmulator.botName')}</p>
+          <p className={styles.panelBot}>{brandName}</p>
         </div>
         <Badge tone="outline">{t('channels.max')}</Badge>
       </header>

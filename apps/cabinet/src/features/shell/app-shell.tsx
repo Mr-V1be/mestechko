@@ -1,3 +1,4 @@
+import { brandName } from '@slotwise/i18n';
 import { DemoLinks, LanguageList, useLocale, VerticalIcon } from '@slotwise/booking-ui';
 import { offersMessenger, type Locale } from '@slotwise/domain';
 import type { Membership } from '@slotwise/contracts/client';
@@ -228,7 +229,7 @@ export function AppShell() {
       <aside className={styles.sidebar}>
         <div className={styles.brand}>
           <span className={styles.wordmark}>
-            <Logo name={t('common:brand.name')} />
+            <Logo name={brandName} />
           </span>
           <span className={styles.markOnly}>
             <LogoMark />

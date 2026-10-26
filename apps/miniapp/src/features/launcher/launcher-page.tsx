@@ -1,3 +1,4 @@
+import { brandName } from '@slotwise/i18n';
 import {
   demoBusinessesIn,
   DemoLinks,
@@ -83,7 +84,7 @@ export function LauncherPage() {
       <div className={styles.inner}>
         <section className={styles.hero}>
           <div className={styles.brandRow}>
-            <Logo name={t('common:brand.name')} />
+            <Logo name={brandName} />
             <Badge tone="outline">{t('common:brand.demo')}</Badge>
             <span className={styles.brandEnd}>
               <LanguageMenu />

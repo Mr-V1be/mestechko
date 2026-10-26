@@ -1,5 +1,6 @@
 import { Controller, Get, Header, Inject, Query } from '@nestjs/common';
 import { isLocale, type Locale } from '@slotwise/domain';
+import { brandName } from '@slotwise/i18n';
 import { RequestLocale } from '../../../platform/http/request-locale.js';
 import { TRANSLATIONS, type Translations } from '../../../shared/application/translations.js';
 import { renderReturnPage } from './payment-return-page.js';
@@ -23,7 +24,7 @@ export class PaymentReturnController {
       title: texts.text('returned.title'),
       lead: texts.text('returned.lead'),
       close: texts.text('returned.close'),
-      brand: texts.text('returned.brand'),
+      brand: brandName,
     });
   }
 }

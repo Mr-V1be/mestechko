@@ -192,7 +192,7 @@
     "declined": "The time went to the next person in line"
   },
   "meta": {
-    "title": "Mestechko: booking"
+    "title": "{{brand}}: booking"
   },
   "settings": {
     "title": "Settings"

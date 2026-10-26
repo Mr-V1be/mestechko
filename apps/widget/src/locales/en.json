@@ -79,7 +79,7 @@
     "outside": "The payment page opened in a new window. As soon as the payment goes through, your booking is confirmed here automatically. We're holding the time until {{time}}.",
     "reopen": "Open payment"
   },
-  "poweredBy": "Online booking by Mestechko",
+  "poweredBy": "Online booking by {{brand}}",
   "notFoundTitle": "The widget isn't set up",
   "notFoundDescription": "We couldn't find the business to book with. Check the widget code on the website."
 }

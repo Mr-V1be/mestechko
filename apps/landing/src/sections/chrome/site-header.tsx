@@ -1,3 +1,4 @@
+import { brandName } from '@slotwise/i18n';
 import { LanguageMenu } from '@slotwise/booking-ui';
 import { Button, IconButton, Logo, LogoMark, useTheme } from '@slotwise/ui';
 import { Moon, Sun } from 'lucide-react';
@@ -15,10 +16,10 @@ export function SiteHeader({ onDemo }: { readonly onDemo: () => void }) {
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        <a href="#top" className={styles.brand} aria-label={t('common:brand.name')}>
+        <a href="#top" className={styles.brand} aria-label={brandName}>
           {/* A phone keeps the mark alone, so the language and the demo fit beside it. */}
           <span className={styles.wordmark}>
-            <Logo name={t('common:brand.name')} />
+            <Logo name={brandName} />
           </span>
           <span className={styles.markOnly}>
             <LogoMark />

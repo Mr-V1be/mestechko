@@ -1,9 +1,9 @@
 /**
- * Configures the Telegram bot's profile from the translation system: commands,
+ * Configures the Telegram bot's profile from the translation system: name, commands,
  * description, short description and the menu button, in every language the platform
  * speaks. Telegram shows the default set to people whose language has none of its own,
- * so the default is the fallback language. The avatar and name are left as the owner
- * set them. The token is read from the environment and never printed.
+ * so the default is the fallback language. The avatar is left as the owner set it. The
+ * token is read from the environment and never printed.
  */
 import { fallbackLocale, localeIds, type Locale } from '@slotwise/domain';
 import { Api } from 'grammy';
@@ -30,6 +30,7 @@ const profiles: readonly { readonly scope: { language_code?: Locale }; readonly 
   ];
 for (const { scope, locale } of profiles) {
   const bot = texts(locale);
+  await api.setMyName(bot.text('profile.name'), scope);
   await api.setMyCommands(
     COMMANDS.map((command) => ({ command, description: bot.text(`commands.${command}`) })),
     scope,
@@ -51,7 +52,7 @@ await api.setChatMenuButton({
 });
 
 console.warn(
-  `Configured @${me.username}: ${String(COMMANDS.length)} commands, description and short description in ${localeIds.join(', ')},`,
+  `Configured @${me.username}: name, ${String(COMMANDS.length)} commands, description and short description in ${localeIds.join(', ')},`,
 );
 console.warn(
   miniApp

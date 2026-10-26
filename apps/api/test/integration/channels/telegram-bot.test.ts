@@ -1,4 +1,5 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { brandName } from '@slotwise/i18n';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { dispatchNotificationsJob } from '../../../src/modules/notifications/application/notification-jobs.js';
 import { DEMO_USER_BASE, book, dateInDays, launchAs, slotsOn } from '../support/booking-client.js';
@@ -75,7 +76,7 @@ describe('Telegram bot', () => {
         TELEGRAM_UPDATES_MODE: 'webhook',
         TELEGRAM_WEBHOOK_URL: 'https://api.example.test/v1/telegram/webhook',
         TELEGRAM_WEBHOOK_SECRET: WEBHOOK_SECRET,
-        TELEGRAM_BOT_USERNAME: 'mestechko_test_bot',
+        TELEGRAM_BOT_USERNAME: 'slotwise_test_bot',
       },
     });
     tenant = await createTenant(databases.admin, { staffCount: 1, chairs: 2 });
@@ -137,7 +138,7 @@ describe('Telegram bot', () => {
     });
     expect(chosen.json()).toEqual({ locale: 'ru' });
     await chat.send('/help');
-    expect(chat.lastText()).toContain('Что умеет бот');
+    expect(chat.lastText()).toContain(`Что умеет ${brandName}`);
     await bookOn(initData, dateInDays(6));
     await jobs.drain();
     expect(chat.lastText()).toContain('Запись подтверждена');
@@ -274,7 +275,7 @@ describe('Telegram bot', () => {
     });
     expect(status.json()).toEqual({
       enabled: false,
-      connectUrl: 'https://t.me/mestechko_test_bot?start=notify',
+      connectUrl: 'https://t.me/slotwise_test_bot?start=notify',
     });
   });
 

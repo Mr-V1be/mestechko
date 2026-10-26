@@ -1,4 +1,5 @@
 import type { Clock } from '@slotwise/domain';
+import { brandName } from '@slotwise/i18n';
 import { z } from 'zod';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { EmulatedMessage, EmulatorStore } from './ports.js';
@@ -6,8 +7,8 @@ import type { EmulatedMessage, EmulatorStore } from './ports.js';
 /** The bot the emulator plays host to; MAX would report its own ids. */
 export const EMULATED_BOT = {
   user_id: 1,
-  first_name: 'Местечко',
-  username: 'mestechko_bot',
+  first_name: brandName,
+  username: 'slotwise_bot',
   is_bot: true,
 } as const;
 

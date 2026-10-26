@@ -1,23 +1,24 @@
 {
   "profile": {
-    "description": "I'll remind you of your booking a day and 2 hours before, help you reschedule or cancel it, and let you know when a time you're waiting for opens up.",
-    "shortDescription": "Booking reminders, rescheduling and cancellation, waitlist.",
-    "menuButton": "Book"
+    "name": "{{brand}}",
+    "description": "{{brand}} is online booking for salons, clinics and services. I'll remind you of your booking a day and 2 hours before, help you reschedule or cancel it, and let you know when a time you're waiting for opens up.",
+    "shortDescription": "{{brand}}: booking reminders, rescheduling and cancellation, waitlist.",
+    "menuButton": "Open {{brand}}"
   },
   "commands": {
     "start": "Turn on reminders",
     "bookings": "My bookings",
-    "help": "What the bot can do"
+    "help": "What {{brand}} can do"
   },
   "welcome": {
     "title": "Hi, {{name}}!",
     "lines": [
-      "I'll remind you of your bookings a day and 2 hours before.",
+      "This is {{brand}}. I'll remind you of your bookings a day and 2 hours before.",
       "You can reschedule or cancel a booking with the buttons under the message."
     ]
   },
   "help": {
-    "title": "What the bot can do",
+    "title": "What {{brand}} can do",
     "lines": [
       "Booking confirmations and reminders a day and 2 hours before.",
       "Rescheduling and cancelling with buttons while there's enough time before the visit.",
@@ -27,7 +28,7 @@
   },
   "unknown": {
     "title": "I respond to buttons and commands",
-    "lines": ["/bookings: your bookings, /help: what the bot can do."]
+    "lines": ["/bookings: your bookings, /help: what {{brand}} can do."]
   },
   "bookings": {
     "title": "Your bookings",

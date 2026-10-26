@@ -184,7 +184,6 @@
     "noMessages": "No messages yet",
     "messagePlaceholder": "Message to the bot",
     "send": "Send",
-    "botName": "Mestechko",
     "edited": "edited",
     "openLink": "Open link",
     "chooseChat": "Choose a client on the left to open the chat",
@@ -193,6 +192,6 @@
     "unavailableDescription": "It only works in demo mode."
   },
   "meta": {
-    "title": "Mestechko · Dashboard"
+    "title": "{{brand}} · Dashboard"
   }
 }

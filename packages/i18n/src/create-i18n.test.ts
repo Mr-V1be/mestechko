@@ -1,8 +1,12 @@
 import type { Locale } from '@slotwise/domain';
 import { describe, expect, it } from 'vitest';
+import { brandName } from './brand.js';
 import { createI18n } from './create-i18n.js';
 
-const cabinet = { ru: { title: 'Кабинет' }, en: { title: 'Dashboard' } } as const;
+const cabinet = {
+  ru: { title: 'Кабинет', product: '{{brand}} — кабинет' },
+  en: { title: 'Dashboard', product: '{{brand}} · Dashboard' },
+} as const;
 const load = (locale: Locale) => Promise.resolve({ cabinet: cabinet[locale] });
 
 describe('application namespaces', () => {
@@ -17,6 +21,13 @@ describe('application namespaces', () => {
     await i18n.changeLanguage('en');
     expect(i18n.t('title')).toBe('Dashboard');
     expect(i18n.t('catalog:verticals.barbershop')).toBe('Barbershop');
+  });
+
+  it('name the product in every language', async () => {
+    const i18n = await createI18n({ locale: 'ru', defaultNamespace: 'cabinet', load });
+    expect(i18n.t('product')).toBe(`${brandName} — кабинет`);
+    await i18n.changeLanguage('en');
+    expect(i18n.t('product')).toBe(`${brandName} · Dashboard`);
   });
 
   it('never replace a shared one', async () => {

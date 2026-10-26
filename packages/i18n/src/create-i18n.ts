@@ -1,5 +1,6 @@
 import { isLocale, localeIds, type Locale } from '@slotwise/domain';
 import i18next, { type BackendModule, type i18n } from 'i18next';
+import { brandName } from './brand.js';
 import { sharedNamespaces, sharedResourceLoaders } from './resources.js';
 
 /** Texts of one language: namespaces by name. */
@@ -71,7 +72,8 @@ export async function createI18n(options: CreateI18nOptions): Promise<i18n> {
     partialBundledLanguages: true,
     ns: Object.keys(bundled[options.locale] ?? {}),
     defaultNS: options.defaultNamespace,
-    interpolation: { escapeValue: false },
+    // `{{brand}}` in any text is the product's name.
+    interpolation: { escapeValue: false, defaultVariables: { brand: brandName } },
     returnNull: false,
   });
   return instance;
