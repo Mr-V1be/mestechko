@@ -179,8 +179,10 @@ pnpm test:integration  # PostgreSQL и Redis: брони, изоляция те�
                        # бот на тестовом Bot API: напоминания, явка, перенос, отмена, лист ожидания
 pnpm screenshots       # скриншоты сайта, Mini App, кабинета и виджета: 390/768/1280 во всех
                        # темах на чистой базе из seed (своя БД, API, превью)
+pnpm screenshots:case  # экраны кейса (docs/case/screenshots) из этого набора
 pnpm media:landing     # экраны и ролики для сайта продукта на чистой базе (--locale ru|en)
 pnpm media:film        # фильм о продукте 1920×1080 и 1080×1920 в docs/case/video
+pnpm brand:assets      # иконки приложений, картинки для ссылок (из экранов сайта) и для бота
 ```
 
 Нагрузочный тест — k6 из Docker-образа `grafana/k6` по продакшен-стеку, сценарий

@@ -41,6 +41,7 @@
     "gate:locales": "node tooling/gates/locales.ts",
     "gate": "pnpm gate:limits && pnpm gate:tokens && pnpm gate:locales && pnpm format:check && pnpm lint && pnpm typecheck && pnpm contracts:check && pnpm test",
     "screenshots": "node --env-file-if-exists=.env tooling/screenshots/run.ts",
+    "screenshots:case": "node tooling/screenshots/case-shots.ts",
     "media:landing": "node --env-file-if-exists=.env tooling/media/run.ts landing",
     "media:film": "node --env-file-if-exists=.env tooling/media/run.ts film",
     "brand:assets": "node tooling/brand/assets.ts",
