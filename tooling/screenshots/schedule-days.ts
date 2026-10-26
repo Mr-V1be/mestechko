@@ -7,6 +7,12 @@ import type { Locator, Page } from 'playwright';
 
 /** How far ahead to look for a day with what a scenario needs. */
 const MAX_DAYS_AHEAD = 4;
+/**
+ * How long a day gets to show its visits. The schedule loads them after the click, and the
+ * page's load state says nothing about requests made after it loaded.
+ */
+const DAY_SETTLE_MS = 3_000;
+const POLL_MS = 250;
 
 /**
  * Indexes of the matches within the screen's width. A narrow board pages through its
@@ -21,15 +27,22 @@ async function indexesOnScreen(target: Locator): Promise<number[]> {
   );
 }
 
+/** Whether `target` shows a match on screen while the day settles. */
+async function appearsOnScreen(target: Locator): Promise<boolean> {
+  const deadline = Date.now() + DAY_SETTLE_MS;
+  do {
+    if ((await indexesOnScreen(target)).length > 0) {
+      return true;
+    }
+    await new Promise((resolve) => setTimeout(resolve, POLL_MS));
+  } while (Date.now() < deadline);
+  return false;
+}
+
 /** Steps the schedule forward until `target` has a match on screen, a few days at most. */
 export async function stepToDayWith(page: Page, target: Locator): Promise<void> {
-  await page.waitForLoadState('networkidle');
-  for (let day = 0; day < MAX_DAYS_AHEAD; day += 1) {
-    if ((await indexesOnScreen(target)).length > 0) {
-      return;
-    }
+  for (let day = 0; !(await appearsOnScreen(target)) && day < MAX_DAYS_AHEAD; day += 1) {
     await page.getByRole('button', { name: 'Вперёд' }).click();
-    await page.waitForLoadState('networkidle');
   }
 }
 
