@@ -29,7 +29,7 @@ function visitsOnScreen(page: Page): Promise<number[]> {
     blocks
       .flatMap((block, index) => {
         const rect = block.getBoundingClientRect();
-        const start = /\d\d:\d\d/.exec(block.textContent ?? '')?.[0] ?? '';
+        const start = /\d\d:\d\d/.exec(block.textContent)?.[0] ?? '';
         return rect.left >= 0 && rect.right <= window.innerWidth ? [{ index, start }] : [];
       })
       .sort((a, b) => a.start.localeCompare(b.start))
