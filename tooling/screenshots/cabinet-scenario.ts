@@ -1,7 +1,7 @@
 import type { Session } from './browser.ts';
 import { fail, stall } from './browser.ts';
+import { firstOnScreen, stepToDayWith } from './schedule-days.ts';
 
-const MAX_DAYS_AHEAD = 4;
 const SCROLL_SETTLE_MS = 600;
 
 /** Front-desk paths of the cabinet: sign-in, schedule and bookings, plus their states. */
@@ -16,10 +16,9 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
   await page.waitForURL(/\/schedule/);
   await shot('02-schedule-loading', { settle: false });
   await releaseSchedule();
-  await page
-    .getByRole('button', { name: /^\d\d:\d\d/ })
-    .first()
-    .waitFor();
+  const visits = page.getByRole('button', { name: /^\d\d:\d\d/ });
+  await stepToDayWith(page, visits);
+  await visits.first().waitFor();
   await shot('03-schedule-day');
   const nextColumns = page.getByRole('button', { name: 'Следующие колонки' });
   if (await nextColumns.isVisible()) {
@@ -36,10 +35,7 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
   await shot('05-schedule-week');
   await page.getByRole('button', { name: 'День' }).click();
 
-  await page
-    .getByRole('button', { name: /^\d\d:\d\d/ })
-    .first()
-    .click();
+  await (await firstOnScreen(page, visits)).click();
   await page.getByRole('dialog').waitFor();
   await shot('06-booking-details');
   await page.keyboard.press('Escape');
@@ -92,13 +88,7 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
   await page.getByRole('option', { name: /Эмаль/ }).click();
   await page.getByRole('button', { name: 'Войти в демо' }).click();
   await page.waitForURL(/\/schedule/);
-  await page.waitForLoadState('networkidle');
-  // The demo clock moves on: step to the nearest day with visits.
-  const visits = page.getByRole('button', { name: /^\d\d:\d\d/ });
-  for (let day = 0; day < MAX_DAYS_AHEAD && (await visits.count()) === 0; day += 1) {
-    await page.getByRole('button', { name: 'Вперёд' }).click();
-    await page.waitForLoadState('networkidle');
-  }
+  await stepToDayWith(page, visits);
   await shot('12-schedule-dental');
 
   // The MAX emulator: a client's chat with the bot, buttons pressed as the client.
@@ -134,11 +124,7 @@ export async function captureCabinet(session: Session, base: string): Promise<vo
   await shot('13-sign-in-staff');
   await page.getByRole('button', { name: 'Войти в демо' }).click();
   await page.waitForURL(/\/schedule/);
-  await page.waitForLoadState('networkidle');
-  for (let day = 0; day < MAX_DAYS_AHEAD && (await visits.count()) === 0; day += 1) {
-    await page.getByRole('button', { name: 'Вперёд' }).click();
-    await page.waitForLoadState('networkidle');
-  }
+  await stepToDayWith(page, visits);
   await shot('14-staff-schedule');
   await page.getByRole('link', { name: 'Записи' }).first().click();
   await page.waitForURL(/\/bookings/);

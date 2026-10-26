@@ -1,5 +1,6 @@
 import type { Page } from 'playwright';
 import type { Session } from './browser.ts';
+import { firstOnScreen } from './schedule-days.ts';
 
 const SETTLE_MS = 600;
 /** Visits to look through for one the desk can close (it began, nobody marked it yet). */
@@ -63,7 +64,8 @@ export async function captureCabinetManagement(session: Session, base: string): 
   await sheet.waitFor({ state: 'detached' });
 
   // Moving through the form, and what cancelling will cause: a visit still ahead.
-  await page.locator('[data-column-key] button[class*="draggable"]').first().click();
+  const aheadOfTime = page.locator('[data-column-key] button[class*="draggable"]');
+  await (await firstOnScreen(page, aheadOfTime)).click();
   await page.getByRole('dialog').waitFor();
   await page.getByRole('button', { name: 'Перенести', exact: true }).click();
   await page.getByRole('dialog', { name: 'Перенести запись' }).waitFor();

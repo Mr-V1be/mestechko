@@ -43,6 +43,13 @@ export async function captureMiniApp(session: Session, base: string): Promise<vo
     }
     await page.getByRole('button', { name: 'Следующая неделя' }).first().click();
   }
+  // A visit today may already be too close to change online; on the next open day the
+  // reschedule and cancel paths below stay open whatever the hour.
+  const openDays = page.getByRole('radiogroup').first().getByRole('radio', { disabled: false });
+  if ((await openDays.count()) > 1) {
+    await openDays.nth(1).click();
+    await slots.first().waitFor();
+  }
   await shot('06-time');
   await slots.first().click();
   await shot('07-time-selected');
