@@ -34,7 +34,7 @@ const vite = (app: string, port: number, title: string, readyPath = '/'): StandS
 export const standServices: readonly StandService[] = [
   {
     name: 'api',
-    title: 'API, фоновые задачи, бот Telegram (long polling) и бот MAX',
+    title: 'API, фоновые задачи, бот MAX и бот Telegram, если задан его токен',
     cwd: `${root}apps/api`,
     command: process.execPath,
     args: [
