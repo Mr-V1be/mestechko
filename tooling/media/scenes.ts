@@ -79,34 +79,47 @@ async function firstWeekWithTime(page: Page, script: SceneScript): Promise<void>
 const scheduleDate = (daysAhead: number, timeZone: string) =>
   new Intl.DateTimeFormat('en-CA', { timeZone }).format(Date.now() + daysAhead * 86_400_000);
 
+/** How many days ahead to look for the fullest one. */
+const DAYS_AHEAD = 5;
+
 /**
- * The busiest of the next few days in the schedule where a visit on screen can still be
- * dragged to free time: a full day shows the product best.
+ * The busiest of the next few days in the schedule, among the days `fits` accepts: a full
+ * day shows the product best.
  */
-export async function openBusyDayAhead(
+export async function openBusiestDayAhead(
   page: Page,
   business: string,
   script: SceneScript,
-  days = 5,
+  fits: (page: Page) => Promise<boolean> = () => Promise.resolve(true),
 ): Promise<void> {
   const visits = page.locator('[data-column-key] button');
   let busiest: { readonly date: string; readonly count: number } | null = null;
-  for (let ahead = 1; ahead <= days; ahead += 1) {
+  for (let ahead = 1; ahead <= DAYS_AHEAD; ahead += 1) {
     const date = scheduleDate(ahead, script.timeZone);
     await page.goto(`${business}/schedule?date=${date}`);
     await visits.first().waitFor();
     await page.waitForLoadState('networkidle');
     const count = await visits.count();
-    if (count > (busiest?.count ?? -1) && (await planDrags(page)).length > 0) {
+    if (count > (busiest?.count ?? -1) && (await fits(page))) {
       busiest = { date, count };
     }
   }
   if (!busiest) {
-    throw new Error(`No day in the next ${String(days)} has free time to drag a visit to`);
+    throw new Error(`No day in the next ${String(DAYS_AHEAD)} fits the scene`);
   }
   await page.goto(`${business}/schedule?date=${busiest.date}`);
   await visits.first().waitFor();
   await page.waitForLoadState('networkidle');
+}
+
+/** The busiest day ahead where a visit on screen can still be dragged to free time. */
+export function openBusyDayAhead(page: Page, business: string, script: SceneScript): Promise<void> {
+  return openBusiestDayAhead(
+    page,
+    business,
+    script,
+    async (day) => (await planDrags(day)).length > 0,
+  );
 }
 
 /** The client books the first free start and lands on the celebration. */

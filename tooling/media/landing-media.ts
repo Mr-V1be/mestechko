@@ -21,6 +21,7 @@ import {
   chooseUpToTime,
   dragToFreeTime,
   focusChat,
+  openBusiestDayAhead,
   openBusyDayAhead,
   openDemoMiniApp,
   openMaxChat,
@@ -135,6 +136,7 @@ try {
     const page = await laptop.newPage();
     const business = await signInCabinet(page, cabinet, script);
     if (wanted('screens')) {
+      await openBusiestDayAhead(page, business, script);
       await shot(page, 'cabinet-schedule', theme);
       await page.goto(`${business}/reports`);
       await page.getByText(script.words.occupancy).first().waitFor();
