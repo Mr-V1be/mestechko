@@ -7,7 +7,7 @@
   },
   "unsupported": {
     "title": "Open the app in Telegram",
-    "description": "Booking works inside Telegram: tap \"Book\" in the business's chat."
+    "description": "Booking works inside Telegram: open the app with the menu button in the {{brand}} bot's chat."
   },
   "emulator": {
     "settings": "Demo settings",
