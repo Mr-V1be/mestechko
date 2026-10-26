@@ -16,16 +16,16 @@ function config(scriptSrc: string): LoaderConfig {
 
 describe('the widget frame', () => {
   it('opens next to the script on a name of its own', () => {
-    expect(frameUrl(config('https://widget.mestechko.example/widget.js'), 'inline')).toBe(
-      'https://widget.mestechko.example/embed.html?business=siren&theme=auto&mode=inline',
+    expect(frameUrl(config('https://widget.slotwise.example/widget.js'), 'inline')).toBe(
+      'https://widget.slotwise.example/embed.html?business=siren&theme=auto&mode=inline',
     );
   });
 
   it('opens next to the script under a path of a shared name', () => {
-    const shared = config('https://mestechko.example/widget/widget.js');
-    expect(shared.origin).toBe('https://mestechko.example');
+    const shared = config('https://slotwise.example/widget/widget.js');
+    expect(shared.origin).toBe('https://slotwise.example');
     expect(frameUrl(shared, 'popup')).toBe(
-      'https://mestechko.example/widget/embed.html?business=siren&theme=auto&mode=popup',
+      'https://slotwise.example/widget/embed.html?business=siren&theme=auto&mode=popup',
     );
   });
 

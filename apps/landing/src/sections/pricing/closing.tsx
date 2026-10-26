@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../../app/config';
 import styles from './closing.module.css';
 
-/** The last word: the demo to try and the bot to open. */
+/** The last word: the demo to try and, once there is one, the bot to open. */
 export function Closing({ onDemo }: { readonly onDemo: () => void }) {
   const { t } = useTranslation();
+  const { botUrl } = siteConfig;
   return (
     <section className={styles.closing}>
       <div className={styles.inner}>
@@ -17,10 +18,12 @@ export function Closing({ onDemo }: { readonly onDemo: () => void }) {
           <Button size="lg" variant="secondary" onClick={onDemo}>
             {t('nav.demo')}
           </Button>
-          <a className={styles.bot} href={siteConfig.botUrl} target="_blank" rel="noopener">
-            <Send aria-hidden="true" />
-            {t('closing.bot')}
-          </a>
+          {botUrl ? (
+            <a className={styles.bot} href={botUrl} target="_blank" rel="noopener">
+              <Send aria-hidden="true" />
+              {t('closing.bot')}
+            </a>
+          ) : null}
         </div>
       </div>
     </section>

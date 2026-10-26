@@ -12,6 +12,7 @@ import {
 } from '../platform/observability/heartbeat-file.js';
 import { QUEUE_PREFIX } from '../platform/queue/bullmq-job-queue.js';
 import { createRedis } from '../platform/redis/redis.js';
+import { systemNameOf } from '../platform/system-name.js';
 import { demoResetSettingsFrom, resetDemo } from '../seed/demo-reset.js';
 
 const QUEUE_NAME = 'demo-reset';
@@ -34,7 +35,7 @@ const log = (message: string, fields: Record<string, unknown> = {}) => {
   console.log(JSON.stringify({ time: new Date().toISOString(), msg: message, ...fields }));
 };
 
-const connection = createRedis(settings.REDIS_URL, 'mestechko-demo-reset');
+const connection = createRedis(settings.REDIS_URL, systemNameOf('demo-reset'));
 const queue = new Queue(QUEUE_NAME, { connection, prefix: QUEUE_PREFIX });
 await queue.upsertJobScheduler(
   SCHEDULER_ID,

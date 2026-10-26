@@ -19,7 +19,7 @@ const cli = require.resolve('kysely-codegen/dist/cli/bin.js');
 const outFile = fileURLToPath(new URL('../platform/db/generated/database.ts', import.meta.url));
 const verify = process.argv.includes('--verify');
 
-const scratch = mkdtempSync(join(tmpdir(), 'mestechko-codegen-'));
+const scratch = mkdtempSync(join(tmpdir(), 'slotwise-codegen-'));
 const generated = join(scratch, 'database.ts');
 try {
   execFileSync(

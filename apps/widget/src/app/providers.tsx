@@ -12,7 +12,7 @@ const RETRY_LIMIT = 2;
 const DOCUMENT_TITLE_KEY = 'loader.title';
 const STALE_MS = 30_000;
 /** The widget keeps no theme of its own: the embedding page decides, or the system does. */
-const THEME_STORAGE_KEY = 'mst-widget-theme';
+const THEME_STORAGE_KEY = 'slotwise-widget-theme';
 
 function createQueryClient(): QueryClient {
   return new QueryClient({

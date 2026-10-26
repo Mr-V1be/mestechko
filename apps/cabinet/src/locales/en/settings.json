@@ -70,8 +70,8 @@
       "dark": "Dark"
     },
     "code": "Code for your website",
-    "inlineHint": "An element with the data-mestechko-widget attribute becomes the booking form; without one, the form appears right after the code.",
-    "popupHint": "A \"Book online\" button will appear. Your own site buttons open the booking form if you add the data-mestechko-open attribute to them.",
+    "inlineHint": "An element with the data-slotwise-widget attribute becomes the booking form; without one, the form appears right after the code.",
+    "popupHint": "A \"Book online\" button will appear. Your own site buttons open the booking form if you add the data-slotwise-open attribute to them.",
     "copy": "Copy code",
     "copied": "Code copied",
     "copyFailed": "Couldn't copy. Select the code manually",

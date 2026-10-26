@@ -14,7 +14,7 @@ export default defineConfig({
     lib: {
       entry: 'src/loader/widget.ts',
       formats: ['iife'],
-      name: 'MestechkoWidget',
+      name: 'SlotwiseWidget',
       fileName: () => 'widget.js',
     },
   },

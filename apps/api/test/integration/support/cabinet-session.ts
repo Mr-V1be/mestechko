@@ -59,6 +59,6 @@ export async function cabinetHeaders(
   if (response.statusCode !== 200) {
     throw new Error(`Demo sign-in failed: ${response.body}`);
   }
-  const cookie = response.cookies.find((entry) => entry.name === 'mst_session');
-  return { cookie: `mst_session=${cookie?.value ?? ''}` };
+  const cookie = response.cookies.find((entry) => entry.name === 'slotwise_session');
+  return { cookie: `slotwise_session=${cookie?.value ?? ''}` };
 }

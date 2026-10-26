@@ -28,6 +28,7 @@ import { TRANSLATIONS } from '../shared/application/translations.js';
 import { createRedis, REDIS } from './redis/redis.js';
 import { RedisRateLimiter } from './redis/redis-rate-limiter.js';
 import { SystemClock, UuidV7Generator } from './system-clock.js';
+import { SYSTEM_NAME, systemNameOf } from './system-name.js';
 
 const STATEMENT_TIMEOUT_MS = 10_000;
 
@@ -71,7 +72,7 @@ export class PlatformModule {
             createDatabase({
               url: config.database.url,
               poolMax: config.database.poolMax,
-              applicationName: `mestechko-${config.roles.join('-')}`,
+              applicationName: systemNameOf(config.roles.join('-')),
               statementTimeoutMs: STATEMENT_TIMEOUT_MS,
             }),
         },
@@ -83,7 +84,7 @@ export class PlatformModule {
         { provide: UNIT_OF_WORK, useExisting: KyselyUnitOfWork },
         { provide: CLOCK, useFactory: () => new SystemClock() },
         { provide: ID_GENERATOR, useFactory: () => new UuidV7Generator() },
-        { provide: REDIS, useFactory: () => createRedis(config.redis.url, 'mestechko') },
+        { provide: REDIS, useFactory: () => createRedis(config.redis.url, SYSTEM_NAME) },
         {
           provide: JOB_QUEUE,
           useFactory: (redis: Redis) => new BullMqJobQueue(redis),

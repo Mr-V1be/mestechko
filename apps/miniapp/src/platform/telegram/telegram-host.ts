@@ -31,7 +31,7 @@ export interface EmulatedLaunch {
   readonly startParam: string;
 }
 
-const EMULATED_LAUNCH_KEY = 'mst-emulated-launch';
+const EMULATED_LAUNCH_KEY = 'slotwise-emulated-launch';
 const MINI_APPS_VERSION = '9.1';
 
 function mountFeatures(): void {

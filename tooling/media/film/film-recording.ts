@@ -70,8 +70,8 @@ async function deviceContext(browser: Browser, device: FilmDevice): Promise<Brow
     timezoneId: script.timeZone,
   });
   await context.addInitScript(() => {
-    window.localStorage.setItem('mst-cabinet-theme', 'light');
-    window.localStorage.setItem('mst-miniapp-theme', 'light');
+    window.localStorage.setItem('slotwise-cabinet-theme', 'light');
+    window.localStorage.setItem('slotwise-miniapp-theme', 'light');
   });
   await context.addInitScript(cursorScript);
   return context;

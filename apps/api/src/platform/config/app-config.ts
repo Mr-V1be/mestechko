@@ -1,6 +1,7 @@
 import { checkoutPresentationIds, type CheckoutPresentation } from '@slotwise/domain';
 import { z } from 'zod';
 import { DEFAULT_HEARTBEAT_FILE } from '../observability/heartbeat-file.js';
+import { systemNameOf } from '../system-name.js';
 
 /**
  * Roles of a process: `api` serves HTTP, `worker` runs queued jobs, `bot` consumes
@@ -88,7 +89,7 @@ const environmentSchema = z
     LOG_LEVEL: z.enum(logLevels).default('info'),
     METRICS_ENABLED: flag.default(true),
     OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
-    OTEL_SERVICE_NAME: z.string().default('mestechko-api'),
+    OTEL_SERVICE_NAME: z.string().default(systemNameOf('api')),
     HEARTBEAT_FILE: z.string().min(1).default(DEFAULT_HEARTBEAT_FILE),
   })
   .refine((env) => !env.DEMO_MODE || env.TELEGRAM_DEMO_SIGNING_KEY !== undefined, {

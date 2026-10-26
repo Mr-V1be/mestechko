@@ -1,4 +1,5 @@
 import type { Redis } from 'ioredis';
+import { redisKeyOf } from '../../../platform/system-name.js';
 import type { UpdateDeduplicator } from '../application/update-deduplicator.js';
 
 /** Messengers stop redelivering long before a day passes. */
@@ -9,7 +10,7 @@ export class RedisUpdateDeduplicator implements UpdateDeduplicator {
 
   async firstTime(key: string): Promise<boolean> {
     const result = await this.redis.set(
-      `mestechko:update:${key}`,
+      redisKeyOf('update', key),
       '1',
       'EX',
       REMEMBER_SECONDS,
@@ -19,6 +20,6 @@ export class RedisUpdateDeduplicator implements UpdateDeduplicator {
   }
 
   async forget(key: string): Promise<void> {
-    await this.redis.del(`mestechko:update:${key}`);
+    await this.redis.del(redisKeyOf('update', key));
   }
 }

@@ -14,7 +14,7 @@ import http from 'k6/http';
 import { check } from 'k6';
 import { Counter } from 'k6/metrics';
 
-const BASE_URL = __ENV.BASE_URL || 'https://miniapp.mestechko.localhost:46291/api';
+const BASE_URL = __ENV.BASE_URL || 'https://miniapp.slotwise.localhost:46291/api';
 const BUSINESS = __ENV.BUSINESS || 'siren';
 const RATE = Number(__ENV.RATE || 50);
 const DURATION = __ENV.DURATION || '60s';

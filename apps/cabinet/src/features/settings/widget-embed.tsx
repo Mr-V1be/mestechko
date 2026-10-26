@@ -20,14 +20,14 @@ const demoSites: Readonly<Record<string, string>> = {
 export function embedCode(slug: string, mode: WidgetMode, theme: WidgetTheme): string {
   const attributes = [
     `src="${appConfig.widgetBaseUrl}/widget.js"`,
-    'data-mestechko',
+    'data-slotwise',
     `data-business="${slug}"`,
     ...(mode === 'popup' ? ['data-mode="popup"'] : []),
     ...(theme === 'auto' ? [] : [`data-theme="${theme}"`]),
     'async',
   ];
   const script = `<script ${attributes.join(' ')}></script>`;
-  return mode === 'inline' ? `<div data-mestechko-widget></div>\n${script}` : script;
+  return mode === 'inline' ? `<div data-slotwise-widget></div>\n${script}` : script;
 }
 
 /** The booking widget for the business's own website: how it looks and the code. */

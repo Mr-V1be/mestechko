@@ -36,7 +36,7 @@ export function useDemoContacts(): boolean {
 export function useClientContact(slug: string, countryCode: string) {
   const profile = useProfile(slug);
   const demo = useDemoContacts();
-  const [contact, setContact] = useContactDraft(`mst-contact:${slug}`, () => null);
+  const [contact, setContact] = useContactDraft(`slotwise-contact:${slug}`, () => null);
   useEffect(() => {
     if (profile.data && !contact.name && !contact.phone) {
       const user = telegramUser();

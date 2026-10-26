@@ -10,6 +10,7 @@ import styles from './hero.module.css';
 export function Hero({ onDemo }: { readonly onDemo: () => void }) {
   const { t } = useTranslation();
   const { shots } = useSiteMedia();
+  const { botUrl } = siteConfig;
   return (
     <section id="top" className={styles.hero}>
       <div className={styles.inner}>
@@ -24,16 +25,18 @@ export function Hero({ onDemo }: { readonly onDemo: () => void }) {
             <Button size="lg" onClick={onDemo}>
               {t('hero.demo')}
             </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              icon={<Send />}
-              onClick={() => {
-                window.open(siteConfig.botUrl, '_blank', 'noopener');
-              }}
-            >
-              {t('hero.bot')}
-            </Button>
+            {botUrl ? (
+              <Button
+                size="lg"
+                variant="secondary"
+                icon={<Send />}
+                onClick={() => {
+                  window.open(botUrl, '_blank', 'noopener');
+                }}
+              >
+                {t('hero.bot')}
+              </Button>
+            ) : null}
           </div>
           <p className={styles.note}>{t('hero.note')}</p>
         </div>

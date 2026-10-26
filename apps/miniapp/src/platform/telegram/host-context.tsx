@@ -14,7 +14,7 @@ import {
   type TelegramDefaultTheme,
 } from './telegram-palette';
 
-const DEMO_TELEGRAM_THEME_KEY = 'mst-demo-telegram-theme';
+const DEMO_TELEGRAM_THEME_KEY = 'slotwise-demo-telegram-theme';
 
 interface HostContextValue {
   readonly status: HostStatus;

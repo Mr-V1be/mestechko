@@ -7,6 +7,7 @@ import {
   type RateLimitPolicyId,
   type ThrottleVerdict,
 } from '../../shared/application/rate-limits.js';
+import { redisKeyOf } from '../system-name.js';
 
 const MS_PER_SECOND = 1_000;
 
@@ -20,7 +21,7 @@ export class RedisRateLimiter implements RateLimiter {
         policy,
         new RateLimiterRedis({
           storeClient: redis,
-          keyPrefix: `mestechko:${policy}`,
+          keyPrefix: redisKeyOf(policy),
           points: rateLimitPolicies[policy].points,
           duration: rateLimitPolicies[policy].windowSeconds,
         }),

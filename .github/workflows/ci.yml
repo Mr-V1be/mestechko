@@ -38,12 +38,12 @@ jobs:
       postgres:
         image: postgres:18.6-alpine
         env:
-          POSTGRES_DB: mestechko
-          POSTGRES_USER: mestechko
+          POSTGRES_DB: slotwise
+          POSTGRES_USER: slotwise
           POSTGRES_PASSWORD: ci-postgres-password
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U mestechko -d mestechko"
+          --health-cmd "pg_isready -U slotwise -d slotwise"
           --health-interval 5s --health-timeout 3s --health-retries 20
       redis:
         image: redis:8.10.2-alpine
@@ -52,8 +52,8 @@ jobs:
           --health-cmd "redis-cli ping"
           --health-interval 5s --health-timeout 3s --health-retries 20
     env:
-      DATABASE_ADMIN_URL: postgres://mestechko:ci-postgres-password@127.0.0.1:5432/mestechko
-      DATABASE_URL: postgres://mestechko_app:ci-app-password@127.0.0.1:5432/mestechko
+      DATABASE_ADMIN_URL: postgres://slotwise:ci-postgres-password@127.0.0.1:5432/slotwise
+      DATABASE_URL: postgres://slotwise_app:ci-app-password@127.0.0.1:5432/slotwise
       REDIS_URL: redis://127.0.0.1:6379/0
     steps:
       - uses: actions/checkout@v7
@@ -83,11 +83,11 @@ jobs:
           sed -E 's/^([A-Z_]+)=$/\1=ci-placeholder/' .env.production.example > "$RUNNER_TEMP/ci.env"
           docker compose --env-file "$RUNNER_TEMP/ci.env" -f docker-compose.prod.yml --profile demo config --quiet
       - name: API image (api, worker, bot, migrations, demo reset)
-        run: docker build -f deploy/docker/api.Dockerfile -t mestechko/api:ci .
+        run: docker build -f deploy/docker/api.Dockerfile -t slotwise/api:ci .
       - name: Web images
         run: |
           for app in landing cabinet miniapp widget; do
-            docker build -f deploy/docker/web.Dockerfile --build-arg APP="$app" -t "mestechko/$app:ci" .
+            docker build -f deploy/docker/web.Dockerfile --build-arg APP="$app" -t "slotwise/$app:ci" .
           done
       - name: Edge image
-        run: docker build -f deploy/docker/edge.Dockerfile -t mestechko/edge:ci .
+        run: docker build -f deploy/docker/edge.Dockerfile -t slotwise/edge:ci .

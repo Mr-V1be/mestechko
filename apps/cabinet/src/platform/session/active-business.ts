@@ -2,7 +2,7 @@ import type { Me, Membership } from '@slotwise/contracts/client';
 import type { AccessArea } from '@slotwise/domain';
 import { useParams } from 'react-router';
 
-const LAST_BUSINESS_KEY = 'mst-cabinet-business';
+const LAST_BUSINESS_KEY = 'slotwise-cabinet-business';
 
 export function rememberBusiness(businessId: string): void {
   try {

@@ -2,14 +2,15 @@
  * Drops and recreates a scratch database on the same server, e.g. the one the
  * screenshot pipeline seeds from scratch. The working database is never touched.
  *
- *   node … recreate-database.ts --database mestechko_screenshots
+ *   node … recreate-database.ts --database slotwise_screenshots
  */
 import { sql } from 'kysely';
 import { parseArgs } from 'node:util';
 import { createDatabase } from '../platform/db/database.js';
+import { SYSTEM_NAME, systemNameOf } from '../platform/system-name.js';
 import { adminEnvironmentFrom } from './admin-database.js';
 
-const SCRATCH_NAME = /^mestechko_[a-z0-9_]+$/;
+const SCRATCH_NAME = new RegExp(`^${SYSTEM_NAME}_[a-z0-9_]+$`);
 
 const { values } = parseArgs({ options: { database: { type: 'string' } } });
 const environment = adminEnvironmentFrom();
@@ -24,7 +25,7 @@ server.pathname = '/postgres';
 const db = createDatabase<unknown>({
   url: server.toString(),
   poolMax: 1,
-  applicationName: 'mestechko-cli',
+  applicationName: systemNameOf('cli'),
 });
 try {
   await sql`drop database if exists ${sql.id(target)} with (force)`.execute(db);

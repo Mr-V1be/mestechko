@@ -21,4 +21,4 @@ export const demoBusinesses = [
  * members (`<name>@<slug>.example`, see `staffAccounts`).
  * Demo credentials only; production accounts never use seeds.
  */
-export const DEMO_PASSWORD = 'mestechko-demo';
+export const DEMO_PASSWORD = 'slotwise-demo';

@@ -9,7 +9,7 @@ import {
 } from '../../src/platform/observability/heartbeat-file.js';
 
 describe('heartbeat file', () => {
-  const directory = mkdtempSync(join(tmpdir(), 'mestechko-heartbeat-'));
+  const directory = mkdtempSync(join(tmpdir(), 'slotwise-heartbeat-'));
   const file = join(directory, 'heartbeat');
 
   afterEach(() => {

@@ -10,7 +10,7 @@ const DARK_QUERY = '(prefers-color-scheme: dark)';
 /** A host element with its own shadow root, styled and themed for the widget. */
 export function shadowHost(config: LoaderConfig): { host: HTMLElement; root: ShadowRoot } {
   const host = document.createElement('div');
-  host.className = 'mestechko-widget';
+  host.className = 'slotwise-widget';
   const root = host.attachShadow({ mode: 'open' });
   const style = document.createElement('style');
   style.textContent = shadowStyles;
@@ -37,7 +37,7 @@ function isWidgetMessage(data: unknown): data is Record<string, unknown> {
 
 /**
  * The widget's frame. An inline frame grows to its content; both kinds announce a
- * booking to the site as a `mestechko:booked` event on the document, and report the
+ * booking to the site as a `slotwise:booked` event on the document, and report the
  * language the widget speaks to `onLocale`.
  */
 export function createFrame(
@@ -71,7 +71,7 @@ export function createFrame(
     }
     if (type === 'booked') {
       document.dispatchEvent(
-        new CustomEvent('mestechko:booked', { detail: { business: config.business, status } }),
+        new CustomEvent('slotwise:booked', { detail: { business: config.business, status } }),
       );
     }
   });

@@ -125,8 +125,8 @@ describe('tenant isolation', () => {
       payload: { email, password: PASSWORD },
     });
     expect(signIn.statusCode).toBe(200);
-    const cookie = signIn.cookies.find((entry) => entry.name === 'mst_session');
-    const headers = { cookie: `mst_session=${cookie?.value ?? ''}` };
+    const cookie = signIn.cookies.find((entry) => entry.name === 'slotwise_session');
+    const headers = { cookie: `slotwise_session=${cookie?.value ?? ''}` };
     const today = new Date().toISOString().slice(0, 10);
     const own = await app.inject({
       method: 'GET',

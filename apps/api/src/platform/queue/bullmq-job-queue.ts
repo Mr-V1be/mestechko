@@ -6,8 +6,10 @@ import type {
   JobQueue,
   ScheduleOptions,
 } from '../../shared/application/job-queue.js';
+import { SYSTEM_NAME } from '../system-name.js';
 
-export const QUEUE_PREFIX = 'mestechko';
+/** Queues live in the product's namespace: `slotwise:<queue>:…`. */
+export const QUEUE_PREFIX = SYSTEM_NAME;
 const DAY_SECONDS = 86_400;
 const RETAINED_COMPLETED_JOBS = 1_000;
 const FAILED_RETENTION_DAYS = 7;

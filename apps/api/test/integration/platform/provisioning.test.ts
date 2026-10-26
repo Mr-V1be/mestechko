@@ -11,10 +11,10 @@ import {
  * superuser: CREATEROLE to create the application role, BYPASSRLS for migrations and the
  * demo reset. Provisioning runs on every rollout, so it must succeed again and again there.
  */
-const DATABASE = 'mestechko_test_shared';
-const OWNER = { role: 'mestechko_test_shared_owner', password: 'test-shared-owner-password' };
-const APPLICATION_ROLE = 'mestechko_test_shared_app';
-const SUPERUSER_ROLE = 'mestechko_test_superuser_app';
+const DATABASE = 'slotwise_test_shared';
+const OWNER = { role: 'slotwise_test_shared_owner', password: 'test-shared-owner-password' };
+const APPLICATION_ROLE = 'slotwise_test_shared_app';
+const SUPERUSER_ROLE = 'slotwise_test_superuser_app';
 
 function connectionUrl(role: string, password: string): string {
   const url = new URL(inject('testAdminUrl'));
@@ -25,7 +25,7 @@ function connectionUrl(role: string, password: string): string {
 }
 
 function connect(url: string): Kysely<unknown> {
-  return createDatabase<unknown>({ url, poolMax: 1, applicationName: 'mestechko-test' });
+  return createDatabase<unknown>({ url, poolMax: 1, applicationName: 'slotwise-test' });
 }
 
 async function asServerAdmin(work: (server: Kysely<unknown>) => Promise<void>): Promise<void> {

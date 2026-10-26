@@ -32,14 +32,14 @@ interface ThemeSetup {
 }
 
 const miniAppThemes: Readonly<Record<string, ThemeSetup>> = {
-  light: { colorScheme: 'light', storage: { 'mst-miniapp-theme': 'light' } },
-  dark: { colorScheme: 'dark', storage: { 'mst-miniapp-theme': 'dark' } },
-  'telegram-dark': { colorScheme: 'dark', storage: { 'mst-demo-telegram-theme': 'dark' } },
+  light: { colorScheme: 'light', storage: { 'slotwise-miniapp-theme': 'light' } },
+  dark: { colorScheme: 'dark', storage: { 'slotwise-miniapp-theme': 'dark' } },
+  'telegram-dark': { colorScheme: 'dark', storage: { 'slotwise-demo-telegram-theme': 'dark' } },
 };
 
 const cabinetThemes: Readonly<Record<string, ThemeSetup>> = {
-  light: { colorScheme: 'light', storage: { 'mst-cabinet-theme': 'light' } },
-  dark: { colorScheme: 'dark', storage: { 'mst-cabinet-theme': 'dark' } },
+  light: { colorScheme: 'light', storage: { 'slotwise-cabinet-theme': 'light' } },
+  dark: { colorScheme: 'dark', storage: { 'slotwise-cabinet-theme': 'dark' } },
 };
 
 /** The website follows the visitor's system theme, and so does the widget on it. */
@@ -55,9 +55,9 @@ const landingThemes: Readonly<Record<string, ThemeSetup>> = Object.fromEntries(
     {
       colorScheme: theme,
       storage: {
-        'mst-landing-theme': theme,
-        'mst-cabinet-theme': theme,
-        'mst-miniapp-theme': theme,
+        'slotwise-landing-theme': theme,
+        'slotwise-cabinet-theme': theme,
+        'slotwise-miniapp-theme': theme,
       },
     },
   ]),

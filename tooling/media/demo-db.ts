@@ -5,7 +5,7 @@
 import { spawnSync } from 'node:child_process';
 
 export function psql(database: string, statement: string): string {
-  const admin = new URL(process.env.DATABASE_ADMIN_URL ?? 'postgres://mestechko@localhost/');
+  const admin = new URL(process.env.DATABASE_ADMIN_URL ?? 'postgres://slotwise@localhost/');
   const result = spawnSync(
     'docker',
     [

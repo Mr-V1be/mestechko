@@ -4,6 +4,7 @@ import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { CreateClientBooking } from '../../../src/modules/booking/application/client/create-client-booking.js';
 import { ScryptPasswordHasher } from '../../../src/modules/identity/infrastructure/crypto-adapters.js';
+import { MAX_UPDATES_MARKER_KEY } from '../../../src/modules/messaging/infrastructure/max/max-updates.js';
 import { UuidV7Generator } from '../../../src/platform/system-clock.js';
 import { FIXTURE_PRICE, firstSlotTomorrow } from '../support/booking-client.js';
 import { InlineJobQueue } from '../support/inline-job-queue.js';
@@ -87,7 +88,7 @@ describe('MAX channel through the emulator', () => {
     const port = await freePort();
     // The bot remembers where it stopped reading; this test's emulator starts afresh.
     const redis = new Redis(testRedisUrl());
-    await redis.del('mestechko:max:updates-marker');
+    await redis.del(MAX_UPDATES_MARKER_KEY);
     redis.disconnect();
     databases = openTestDatabases();
     app = await createTestApp({
@@ -155,8 +156,8 @@ describe('MAX channel through the emulator', () => {
       url: '/v1/auth/demo-sessions',
       payload: { businessSlug: tenant.slug, role: 'owner' },
     });
-    const cookie = session.cookies.find((entry) => entry.name === 'mst_session');
-    headers = { cookie: `mst_session=${cookie?.value ?? ''}` };
+    const cookie = session.cookies.find((entry) => entry.name === 'slotwise_session');
+    headers = { cookie: `slotwise_session=${cookie?.value ?? ''}` };
   });
 
   afterAll(async () => {

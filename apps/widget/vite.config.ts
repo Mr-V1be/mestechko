@@ -9,7 +9,7 @@ import {
 } from 'vite';
 
 /** The API the dev and preview servers proxy to; the screenshot pipeline runs its own. */
-const API_TARGET = process.env.MESTECHKO_API_URL ?? 'http://127.0.0.1:46210';
+const API_TARGET = process.env.SLOTWISE_API_URL ?? 'http://127.0.0.1:46210';
 
 const apiProxy: Record<string, ProxyOptions> = {
   '/api': { target: API_TARGET, rewrite: (path) => path.replace(/^\/api/, '') },
@@ -25,7 +25,7 @@ const THEME_BOOT = `(function(){var t=new URLSearchParams(location.search).get('
 
 function themeBoot(): Plugin {
   return {
-    name: 'mestechko-widget-theme-boot',
+    name: 'slotwise-widget-theme-boot',
     transformIndexHtml: (html) =>
       html.replace('<!--theme-boot-->', `<script>${THEME_BOOT}</script>`),
   };
@@ -34,14 +34,14 @@ function themeBoot(): Plugin {
 /**
  * The built embed script is a classic `widget.js`. In development it is served as a
  * stand-in that loads the loader's source as a module. A module has no current script,
- * so the loader finds the site's own tag by its `data-mestechko` mark and reads its
+ * so the loader finds the site's own tag by its `data-slotwise` mark and reads its
  * attributes and address from there, as on any real site.
  */
 const DEV_LOADER = `(function(){var m=document.createElement('script');m.type='module';m.src='/src/loader/widget.ts';document.head.appendChild(m);})();`;
 
 function devLoader(): Plugin {
   return {
-    name: 'mestechko-widget-dev-loader',
+    name: 'slotwise-widget-dev-loader',
     apply: 'serve',
     configureServer: (server) => {
       server.middlewares.use('/widget.js', (_request, response) => {

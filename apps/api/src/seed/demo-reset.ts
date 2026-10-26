@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { createDatabase } from '../platform/db/database.js';
 import { SystemClock, UuidV7Generator } from '../platform/system-clock.js';
+import { systemNameOf } from '../platform/system-name.js';
 import { runSeed, type SeedLogger } from './run-seed.js';
 
 const SEED_POOL_SIZE = 4;
@@ -42,7 +43,7 @@ export async function resetDemo(settings: DemoResetSettings, logger: SeedLogger)
   const db = createDatabase({
     url: settings.adminUrl,
     poolMax: SEED_POOL_SIZE,
-    applicationName: 'mestechko-seed',
+    applicationName: systemNameOf('seed'),
   });
   const started = performance.now();
   try {

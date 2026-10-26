@@ -24,7 +24,7 @@ export function loaderScript(): HTMLScriptElement | null {
   const current = document.currentScript;
   return current instanceof HTMLScriptElement
     ? current
-    : document.querySelector<HTMLScriptElement>('script[data-mestechko]');
+    : document.querySelector<HTMLScriptElement>('script[data-slotwise]');
 }
 
 export function readLoaderConfig(script: HTMLScriptElement): LoaderConfig | null {

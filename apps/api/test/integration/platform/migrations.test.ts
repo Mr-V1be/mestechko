@@ -5,7 +5,7 @@ import { createDatabase } from '../../../src/platform/db/database.js';
 import { migrateToLatest, MIGRATIONS_SCHEMA } from '../../../src/platform/db/migrator.js';
 import { migrations } from '../../../src/platform/db/migrations/index.js';
 
-const SCRATCH_DATABASE = 'mestechko_test_migrations';
+const SCRATCH_DATABASE = 'slotwise_test_migrations';
 
 describe('migrations', () => {
   it('apply from scratch, roll back completely and apply again', async () => {
@@ -13,7 +13,7 @@ describe('migrations', () => {
     const server = createDatabase({
       url: serverUrl.toString(),
       poolMax: 1,
-      applicationName: 'mestechko-test',
+      applicationName: 'slotwise-test',
     });
     await sql`drop database if exists ${sql.id(SCRATCH_DATABASE)} with (force)`.execute(server);
     await sql`create database ${sql.id(SCRATCH_DATABASE)}`.execute(server);
@@ -23,7 +23,7 @@ describe('migrations', () => {
     const db = createDatabase<unknown>({
       url: serverUrl.toString(),
       poolMax: 1,
-      applicationName: 'mestechko-test',
+      applicationName: 'slotwise-test',
     });
     try {
       const tables = async () =>

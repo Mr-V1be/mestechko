@@ -1,7 +1,7 @@
 import { isLocale, type Locale } from '@slotwise/domain';
 
 /** Marks messages from the widget among everything else the embedding page receives. */
-export const WIDGET_MESSAGE_SOURCE = 'mestechko-widget';
+export const WIDGET_MESSAGE_SOURCE = 'slotwise-widget';
 
 /** What the widget tells the embedding page; never personal data. */
 export type WidgetMessage =

@@ -11,7 +11,7 @@ import {
 import { THEME_STORAGE_KEY } from './src/app/theme-storage.ts';
 
 /** The API the dev and preview servers proxy to; the screenshot pipeline runs its own. */
-const API_TARGET = process.env.MESTECHKO_API_URL ?? 'http://127.0.0.1:46210';
+const API_TARGET = process.env.SLOTWISE_API_URL ?? 'http://127.0.0.1:46210';
 
 const apiProxy: Record<string, ProxyOptions> = {
   '/api': { target: API_TARGET, rewrite: (path) => path.replace(/^\/api/, '') },
@@ -22,7 +22,7 @@ const apiProxy: Record<string, ProxyOptions> = {
 /** Applies the stored theme before the first paint. */
 function themeBoot(): Plugin {
   return {
-    name: 'mestechko-theme-boot',
+    name: 'slotwise-theme-boot',
     transformIndexHtml: (html) =>
       html.replace('<!--theme-boot-->', `<script>${themeBootScript(THEME_STORAGE_KEY)}</script>`),
   };

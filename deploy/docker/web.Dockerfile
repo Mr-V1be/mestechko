@@ -11,11 +11,11 @@ ENV PATH=$PNPM_HOME:$PATH
 RUN corepack enable
 WORKDIR /repo
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
-RUN --mount=type=cache,id=mestechko-pnpm,target=/pnpm/store pnpm fetch
+RUN --mount=type=cache,id=slotwise-pnpm,target=/pnpm/store pnpm fetch
 COPY . .
 ARG APP
 RUN test -n "$APP" || (echo "Pass --build-arg APP=landing|cabinet|miniapp|widget" && exit 1)
-RUN --mount=type=cache,id=mestechko-pnpm,target=/pnpm/store \
+RUN --mount=type=cache,id=slotwise-pnpm,target=/pnpm/store \
     pnpm install --offline --frozen-lockfile --filter "@slotwise/${APP}..."
 # Public addresses are part of the bundle: Vite reads them at build time.
 ARG VITE_API_BASE_URL=/api

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ConfigurationError, loadConfig } from '../../src/platform/config/app-config.js';
 
 const required = {
-  DATABASE_URL: 'postgres://app:secret-password@127.0.0.1:46201/mestechko',
+  DATABASE_URL: 'postgres://app:secret-password@127.0.0.1:46201/slotwise',
   REDIS_URL: 'redis://127.0.0.1:46202/0',
   TEST_PAY_SECRET_KEY: 'test-pay-secret-key-0123456789',
   TEST_PAY_WEBHOOK_SECRET: 'test-pay-webhook-secret-0123456789',

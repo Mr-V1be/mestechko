@@ -16,12 +16,12 @@ export function openTestDatabases(): TestDatabases {
   const admin = createDatabase({
     url: inject('testAdminUrl'),
     poolMax: 4,
-    applicationName: 'mestechko-test-admin',
+    applicationName: 'slotwise-test-admin',
   });
   const app = createDatabase({
     url: inject('testAppUrl'),
     poolMax: 10,
-    applicationName: 'mestechko-test-app',
+    applicationName: 'slotwise-test-app',
   });
   return {
     admin,

@@ -45,9 +45,9 @@ const defaults: Record<string, () => string> = {
   LOG_LEVEL: () => 'info',
   POSTGRES_PASSWORD: () => postgresPassword,
   DATABASE_ADMIN_URL: () =>
-    `postgres://mestechko:${encodeURIComponent(postgresPassword)}@127.0.0.1:46201/mestechko`,
+    `postgres://slotwise:${encodeURIComponent(postgresPassword)}@127.0.0.1:46201/slotwise`,
   DATABASE_URL: () =>
-    `postgres://mestechko_app:${encodeURIComponent(appPassword)}@127.0.0.1:46201/mestechko`,
+    `postgres://slotwise_app:${encodeURIComponent(appPassword)}@127.0.0.1:46201/slotwise`,
   DATABASE_POOL_MAX: () => '10',
   REDIS_PASSWORD: () => redisPassword,
   REDIS_URL: () => `redis://:${encodeURIComponent(redisPassword)}@127.0.0.1:46202/0`,
@@ -72,14 +72,13 @@ const defaults: Record<string, () => string> = {
   ISDAYOFF_BASE_URL: () => 'https://isdayoff.ru',
   EXTERNAL_HTTP_TIMEOUT_MS: () => '5000',
   METRICS_ENABLED: () => 'true',
-  OTEL_SERVICE_NAME: () => 'mestechko-api',
+  OTEL_SERVICE_NAME: () => 'slotwise-api',
   VITE_API_BASE_URL: () => '/api',
   VITE_DEMO_MODE: () => 'true',
   VITE_WIDGET_BASE_URL: () => 'http://127.0.0.1:46240',
   VITE_LANDING_URL: () => 'http://127.0.0.1:46250',
   VITE_CABINET_URL: () => 'http://127.0.0.1:46220',
   VITE_MINIAPP_URL: () => 'http://127.0.0.1:46230',
-  VITE_BOT_URL: () => 'https://t.me/mestechko_zapis_bot',
 };
 
 const output = readFileSync(examplePath, 'utf8')

@@ -3,7 +3,7 @@
  * language of the site: its demo business, its words and its clock.
  *
  *   node tooling/media/landing-media.ts --cabinet URL --miniapp URL --widget URL \
- *     --database mestechko_screenshots [--locale ru|en] [--out apps/landing/public/media/<locale>]
+ *     --database slotwise_screenshots [--locale ru|en] [--out apps/landing/public/media/<locale>]
  */
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -36,7 +36,7 @@ const { values } = parseArgs({
     cabinet: { type: 'string' },
     miniapp: { type: 'string' },
     widget: { type: 'string' },
-    database: { type: 'string', default: 'mestechko_screenshots' },
+    database: { type: 'string', default: 'slotwise_screenshots' },
     locale: { type: 'string', default: 'ru' },
     out: { type: 'string' },
     only: { type: 'string' },
@@ -54,12 +54,12 @@ const themes = ['light', 'dark'] as const;
 type Theme = (typeof themes)[number];
 const PHONE = { width: 390, height: 844 };
 const LAPTOP = { width: 1280, height: 800 };
-const scratch = mkdtempSync(join(tmpdir(), 'mestechko-media-'));
+const scratch = mkdtempSync(join(tmpdir(), 'slotwise-media-'));
 mkdirSync(out, { recursive: true });
 
 const storageFor = (theme: Theme) => ({
-  'mst-cabinet-theme': theme,
-  'mst-miniapp-theme': theme,
+  'slotwise-cabinet-theme': theme,
+  'slotwise-miniapp-theme': theme,
 });
 
 async function context(

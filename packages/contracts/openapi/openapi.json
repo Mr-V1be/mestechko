@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Mestechko API",
+    "title": "Slotwise API",
     "version": "1.0.0",
     "description": "Error codes: validation_failed, unauthenticated, invalid_credentials, telegram_auth_invalid, telegram_auth_expired, forbidden, not_found, slot_unavailable, price_changed, idempotency_conflict, booking_changed, change_not_allowed, impact_changed, rate_limited, internal, dependency_unavailable"
   },
@@ -28040,7 +28040,7 @@
       "session": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "mst_session"
+        "name": "slotwise_session"
       },
       "telegram": {
         "type": "apiKey",

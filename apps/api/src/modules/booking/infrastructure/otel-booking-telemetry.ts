@@ -1,5 +1,6 @@
 import { metrics, type Counter } from '@opentelemetry/api';
 import type { BookingSource } from '@slotwise/domain';
+import { SYSTEM_NAME } from '../../../platform/system-name.js';
 import type { BookingTelemetry } from '../application/ports.js';
 
 export class OtelBookingTelemetry implements BookingTelemetry {
@@ -7,7 +8,7 @@ export class OtelBookingTelemetry implements BookingTelemetry {
   private readonly conflicts: Counter;
 
   constructor() {
-    const meter = metrics.getMeter('mestechko.booking');
+    const meter = metrics.getMeter(`${SYSTEM_NAME}.booking`);
     this.created = meter.createCounter('bookings_created', {
       description: 'Bookings created by clients',
     });

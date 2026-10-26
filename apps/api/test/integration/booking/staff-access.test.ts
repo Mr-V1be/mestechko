@@ -49,8 +49,8 @@ describe('staff role in the cabinet', () => {
       payload: { businessSlug: tenant.slug, role },
     });
     expect(response.statusCode).toBe(200);
-    const cookie = response.cookies.find((entry) => entry.name === 'mst_session');
-    return { cookie: `mst_session=${cookie?.value ?? ''}` };
+    const cookie = response.cookies.find((entry) => entry.name === 'slotwise_session');
+    return { cookie: `slotwise_session=${cookie?.value ?? ''}` };
   }
 
   beforeAll(async () => {

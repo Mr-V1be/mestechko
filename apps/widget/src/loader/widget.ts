@@ -6,27 +6,27 @@ import { mountPopup, type Popup } from './popup';
 /**
  * The booking widget's embed script. A site adds it with its business:
  *
- *   <div data-mestechko-widget></div>
- *   <script src="https://…/widget.js" data-mestechko data-business="siren" async></script>
+ *   <div data-slotwise-widget></div>
+ *   <script src="https://…/widget.js" data-slotwise data-business="siren" async></script>
  *
  * Inline (default) renders the form in place; `data-mode="popup"` opens it in a dialog
- * from a floating button or any element with `data-mestechko-open`. `data-theme` is
+ * from a floating button or any element with `data-slotwise-open`. `data-theme` is
  * `auto`, `light` or `dark`. The form lives in a frame, so the site's styles and the
  * widget's never mix.
  */
-interface MestechkoApi {
+interface SlotwiseApi {
   readonly open: () => void;
   readonly close: () => void;
 }
 
 declare global {
   interface Window {
-    Mestechko?: MestechkoApi;
+    Slotwise?: SlotwiseApi;
   }
 }
 
 function inlineTargets(target: string | null, script: HTMLScriptElement): HTMLElement[] {
-  const marked = [...document.querySelectorAll<HTMLElement>(target ?? '[data-mestechko-widget]')];
+  const marked = [...document.querySelectorAll<HTMLElement>(target ?? '[data-slotwise-widget]')];
   if (marked.length > 0) {
     return marked;
   }
@@ -38,7 +38,7 @@ function inlineTargets(target: string | null, script: HTMLScriptElement): HTMLEl
 function start(script: HTMLScriptElement): void {
   const config = readLoaderConfig(script);
   if (!config) {
-    console.error('Mestechko widget: set data-business on the widget script tag.');
+    console.error('Slotwise widget: set data-business on the widget script tag.');
     return;
   }
   let popup: Popup | null = null;
@@ -54,10 +54,10 @@ function start(script: HTMLScriptElement): void {
     }
   }
   // Popup buttons work in both modes; the dialog is created on the first press.
-  if (config.mode === 'popup' || document.querySelector('[data-mestechko-open]')) {
+  if (config.mode === 'popup' || document.querySelector('[data-slotwise-open]')) {
     ensurePopup();
   }
-  window.Mestechko = {
+  window.Slotwise = {
     open: () => {
       ensurePopup().open();
     },

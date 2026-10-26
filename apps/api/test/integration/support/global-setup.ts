@@ -4,7 +4,7 @@ import { createDatabase } from '../../../src/platform/db/database.js';
 import { migrateToLatest } from '../../../src/platform/db/migrator.js';
 import { provisionApplicationRole } from '../../../src/platform/db/provisioning.js';
 
-const TEST_DATABASE = 'mestechko_test';
+const TEST_DATABASE = 'slotwise_test';
 
 declare module 'vitest' {
   export interface ProvidedContext {
@@ -29,7 +29,7 @@ export default async function setup(project: TestProject): Promise<void> {
   const server = createDatabase({
     url: adminUrl,
     poolMax: 1,
-    applicationName: 'mestechko-test-setup',
+    applicationName: 'slotwise-test-setup',
   });
   await sql`drop database if exists ${sql.id(TEST_DATABASE)} with (force)`.execute(server);
   await sql`create database ${sql.id(TEST_DATABASE)}`.execute(server);
@@ -40,7 +40,7 @@ export default async function setup(project: TestProject): Promise<void> {
   const admin = createDatabase<unknown>({
     url: testAdminUrl,
     poolMax: 2,
-    applicationName: 'mestechko-test-setup',
+    applicationName: 'slotwise-test-setup',
   });
   await provisionApplicationRole(admin, testAppUrl);
   await migrateToLatest(admin);

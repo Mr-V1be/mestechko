@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-export const SESSION_COOKIE = 'mst_session';
+export const SESSION_COOKIE = 'slotwise_session';
 
 export interface SessionCookieSettings {
   readonly secure: boolean;

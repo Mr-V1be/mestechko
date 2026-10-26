@@ -1,9 +1,10 @@
 import { stat, writeFile } from 'node:fs/promises';
+import { systemNameOf } from '../system-name.js';
 
 /** How often a process without HTTP proves it is alive, and how stale a proof may get. */
 export const HEARTBEAT_INTERVAL_MS = 15_000;
 export const HEARTBEAT_MAX_AGE_MS = HEARTBEAT_INTERVAL_MS * 3;
-export const DEFAULT_HEARTBEAT_FILE = '/tmp/mestechko-heartbeat';
+export const DEFAULT_HEARTBEAT_FILE = `/tmp/${systemNameOf('heartbeat')}`;
 
 /** Writes the moment of a successful check; the container's health check reads its age. */
 export async function beat(file: string): Promise<void> {

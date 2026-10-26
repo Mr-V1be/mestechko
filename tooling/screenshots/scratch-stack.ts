@@ -7,7 +7,7 @@ import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 export const root = fileURLToPath(new URL('../../', import.meta.url));
-export const SCRATCH_DATABASE = 'mestechko_screenshots';
+export const SCRATCH_DATABASE = 'slotwise_screenshots';
 /** Its own Redis database: queues and bot state never mix with development. */
 const SCRATCH_REDIS_DB = '3';
 export const scratchPorts = {
@@ -57,7 +57,7 @@ export const scratchEnv: NodeJS.ProcessEnv = {
   MAX_API_BASE_URL: `${api}/max-emulator`,
   LOG_LEVEL: 'warn',
   METRICS_ENABLED: 'false',
-  MESTECHKO_API_URL: api,
+  SLOTWISE_API_URL: api,
   // The test payment provider sends webhooks to this API and payers back through the apps.
   TEST_PAY_API_URL: `${api}/test-pay/api`,
   TEST_PAY_WEBHOOK_URL: `${api}/v1/payments/webhooks/test`,

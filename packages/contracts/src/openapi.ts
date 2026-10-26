@@ -5,7 +5,7 @@ import { isFileSpec, type AuthKind, type FileSpec, type RouteSpec } from './rout
 type JsonObject = Record<string, unknown>;
 
 const securitySchemes: Record<Exclude<AuthKind, 'none'>, JsonObject> = {
-  session: { type: 'apiKey', in: 'cookie', name: 'mst_session' },
+  session: { type: 'apiKey', in: 'cookie', name: 'slotwise_session' },
   telegram: {
     type: 'apiKey',
     in: 'header',
@@ -103,7 +103,7 @@ export function buildOpenApiDocument(routes: Readonly<Record<string, RouteSpec>>
   return {
     openapi: '3.1.0',
     info: {
-      title: 'Mestechko API',
+      title: 'Slotwise API',
       version: '1.0.0',
       description: `Error codes: ${Object.keys(apiErrors).join(', ')}`,
     },

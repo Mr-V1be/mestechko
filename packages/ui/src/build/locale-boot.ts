@@ -2,7 +2,7 @@
  * Where a visitor's choice of language is kept. The web apps share it, so on one site
  * the product site, the dashboard and the widget speak the language picked in any of them.
  */
-export const LOCALE_STORAGE_KEY = 'mst-locale';
+export const LOCALE_STORAGE_KEY = 'slotwise-locale';
 
 export interface LocalePages {
   /** The site's base path, e.g. `/` or `/site/`. */

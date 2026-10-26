@@ -11,7 +11,7 @@ import { THEME_STORAGE_KEY } from './src/app/theme-storage.ts';
 /** Applies the stored or system theme and opens the visitor's language before the first paint. */
 function headBoot(base: string): Plugin {
   return {
-    name: 'mestechko-head-boot',
+    name: 'slotwise-head-boot',
     transformIndexHtml: (html) =>
       html
         .replace(

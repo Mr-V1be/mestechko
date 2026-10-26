@@ -52,7 +52,7 @@ describe('production calendar synchronisation', () => {
   it('collapses repeated requests for the same year into one pending job', async () => {
     const url = new URL(process.env.REDIS_URL ?? '');
     url.pathname = `/${TEST_REDIS_DB}`;
-    const redis = createRedis(url.toString(), 'mestechko-test');
+    const redis = createRedis(url.toString(), 'slotwise-test');
     const jobs = new BullMqJobQueue(redis);
     const inspector = new Queue(productionCalendarSyncJob.name, {
       connection: redis,

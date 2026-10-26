@@ -25,8 +25,8 @@ const { values } = parseArgs({
 });
 
 const themes = {
-  light: { colorScheme: 'light', storage: { 'mst-cabinet-theme': 'light' } },
-  dark: { colorScheme: 'dark', storage: { 'mst-cabinet-theme': 'dark' } },
+  light: { colorScheme: 'light', storage: { 'slotwise-cabinet-theme': 'light' } },
+  dark: { colorScheme: 'dark', storage: { 'slotwise-cabinet-theme': 'dark' } },
 } as const;
 
 const problems: Problem[] = [];

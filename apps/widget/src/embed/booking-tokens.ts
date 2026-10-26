@@ -11,7 +11,7 @@ export interface StoredBooking {
   readonly checkoutPresentation: CheckoutPresentation | null;
 }
 
-const KEY_PREFIX = 'mst-widget-attempt:';
+const KEY_PREFIX = 'slotwise-widget-attempt:';
 
 export function rememberBooking(attemptId: string, booking: StoredBooking): void {
   try {

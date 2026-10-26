@@ -7,12 +7,13 @@ import type { Redis } from 'ioredis';
 import type { PinoLogger } from 'nestjs-pino';
 import type { MessengerChannel } from '@slotwise/domain';
 import type { AppConfig } from '../../../../platform/config/app-config.js';
+import { redisKeyOf } from '../../../../platform/system-name.js';
 import type { InboundEvent, InboundPerson } from '../../application/channel.js';
 import type { BotConversation } from '../../application/conversation/bot-conversation.js';
 import type { MaxBotApi, MaxUpdate, MaxUser } from './max-bot-api.js';
 
 const CHANNEL: MessengerChannel = 'max';
-const MARKER_KEY = 'mestechko:max:updates-marker';
+export const MAX_UPDATES_MARKER_KEY = redisKeyOf('max', 'updates-marker');
 const POLL_SECONDS = 25;
 const RETRY_DELAY_MS = 5_000;
 const COMMAND = /^\/([a-z_]+)(?:\s+(.+))?$/i;
@@ -121,7 +122,7 @@ export class MaxUpdatesPoller
   private async run(): Promise<void> {
     while (!this.stop.signal.aborted) {
       try {
-        const stored = await this.redis.get(MARKER_KEY);
+        const stored = await this.redis.get(MAX_UPDATES_MARKER_KEY);
         const batch = await this.api.updates(
           stored === null ? null : Number(stored),
           POLL_SECONDS,
@@ -131,7 +132,7 @@ export class MaxUpdatesPoller
           await this.deliver(update);
         }
         if (batch.marker !== null) {
-          await this.redis.set(MARKER_KEY, String(batch.marker));
+          await this.redis.set(MAX_UPDATES_MARKER_KEY, String(batch.marker));
         }
       } catch (error) {
         if (this.stopped()) {

@@ -36,7 +36,7 @@ export interface Popup {
 
 /**
  * The widget in a dialog over the site: a floating button (unless the site has its own
- * buttons with `data-mestechko-open`), closed by the cross, Escape or the backdrop.
+ * buttons with `data-slotwise-open`), closed by the cross, Escape or the backdrop.
  */
 export function mountPopup(config: LoaderConfig): Popup {
   const locale = initialLoaderLocale();
@@ -106,7 +106,7 @@ export function mountPopup(config: LoaderConfig): Popup {
   }
   document.addEventListener('click', (event) => {
     const trigger =
-      event.target instanceof Element ? event.target.closest('[data-mestechko-open]') : null;
+      event.target instanceof Element ? event.target.closest('[data-slotwise-open]') : null;
     if (trigger) {
       event.preventDefault();
       open();

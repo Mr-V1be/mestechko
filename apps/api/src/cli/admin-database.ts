@@ -1,6 +1,7 @@
 import type { Kysely } from 'kysely';
 import { z } from 'zod';
 import { createDatabase } from '../platform/db/database.js';
+import { systemNameOf } from '../platform/system-name.js';
 
 const ADMIN_POOL_SIZE = 4;
 
@@ -18,5 +19,5 @@ export function adminEnvironmentFrom(source: NodeJS.ProcessEnv = process.env) {
 }
 
 export function createAdminDatabase<T = unknown>(url: string): Kysely<T> {
-  return createDatabase<T>({ url, poolMax: ADMIN_POOL_SIZE, applicationName: 'mestechko-cli' });
+  return createDatabase<T>({ url, poolMax: ADMIN_POOL_SIZE, applicationName: systemNameOf('cli') });
 }

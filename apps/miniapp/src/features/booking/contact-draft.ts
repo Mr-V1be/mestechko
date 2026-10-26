@@ -40,7 +40,7 @@ export function useContactDraft(key: string, initial: () => ContactDraft | null)
 
 /** One idempotency key per attempted booking, so repeated presses never book twice. */
 export function idempotencyKeyFor(selectionKey: string): string {
-  const storageKey = `mst-idempotency:${selectionKey}`;
+  const storageKey = `slotwise-idempotency:${selectionKey}`;
   try {
     const existing = window.sessionStorage.getItem(storageKey);
     if (existing) {

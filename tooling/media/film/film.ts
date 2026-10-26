@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 import { browserLaunchOptions } from '../../screenshots/browser.ts';
+import { SCRATCH_DATABASE } from '../../screenshots/scratch-stack.ts';
 import { ffmpeg } from '../ffmpeg.ts';
 import { renderCards } from './film-cards.ts';
 import { filmFormatIds, filmFormats } from './film-layout.ts';
@@ -27,7 +28,7 @@ const { values } = parseArgs({
   options: {
     cabinet: { type: 'string', default: 'http://127.0.0.1:46220' },
     miniapp: { type: 'string', default: 'http://127.0.0.1:46230' },
-    database: { type: 'string', default: 'mestechko_screenshots' },
+    database: { type: 'string', default: SCRATCH_DATABASE },
     out: { type: 'string', default: 'docs/case/video' },
     keep: { type: 'boolean', default: false },
   },
@@ -38,7 +39,7 @@ const MAX_SECONDS = 75;
 const POSTER_AT_SECONDS = 9;
 
 mkdirSync(values.out, { recursive: true });
-const work = mkdtempSync(join(tmpdir(), 'mestechko-film-'));
+const work = mkdtempSync(join(tmpdir(), 'slotwise-film-'));
 const browser = await chromium.launch(browserLaunchOptions);
 try {
   const wanted = new Set<ClipKey>(
@@ -66,7 +67,7 @@ try {
       return clip;
     });
     const cards = await renderCards(browser, format, clips, work);
-    const film = join(values.out, `mestechko-${String(width)}x${String(height)}.mp4`);
+    const film = join(values.out, `slotwise-${String(width)}x${String(height)}.mp4`);
     const seconds = montage(format, cards, clips, film);
     if (seconds < MIN_SECONDS || seconds > MAX_SECONDS) {
       throw new Error(

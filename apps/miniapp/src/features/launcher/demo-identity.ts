@@ -1,4 +1,4 @@
-const DEMO_USER_KEY = 'mst-demo-user';
+const DEMO_USER_KEY = 'slotwise-demo-user';
 
 /** The same demo visitor across visits, so "my bookings" keeps its history. */
 export function storedDemoUserId(): string | null {
