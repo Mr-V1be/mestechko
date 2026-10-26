@@ -6,7 +6,7 @@ import {
   ledgerReasonIds,
   messengerChannelIds,
   paymentStatusIds,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { z } from 'zod';
 import {
   bookingSourceSchema,

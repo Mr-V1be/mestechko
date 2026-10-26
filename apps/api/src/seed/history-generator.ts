@@ -19,7 +19,7 @@ import {
   type Occupancy,
   type PlainDate,
   type ProductionCalendar,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { BuiltCatalog, BuiltService, BuiltStaff } from './catalog-builder.js';
 import { attendanceRisk, dayDemand, startWeight } from './demand-model.js';
 import { demoPopulations } from './people/index.js';

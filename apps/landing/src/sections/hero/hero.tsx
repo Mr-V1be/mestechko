@@ -1,4 +1,4 @@
-import { Button, DeviceFrame } from '@mestechko/ui';
+import { Button, DeviceFrame } from '@slotwise/ui';
 import { Send, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../../app/config';

@@ -1,4 +1,4 @@
-import { Button, LogoMark } from '@mestechko/ui';
+import { Button, LogoMark } from '@slotwise/ui';
 import { Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../../app/config';

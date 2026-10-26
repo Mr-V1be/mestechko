@@ -3,7 +3,7 @@ import {
   type Money,
   type BookingScope,
   type ClientBooking,
-} from '@mestechko/contracts/client';
+} from '@slotwise/contracts/client';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApi } from './api-context';
 

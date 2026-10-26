@@ -1,5 +1,5 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common';
-import { resolveLocale, type Locale } from '@mestechko/domain';
+import { resolveLocale, type Locale } from '@slotwise/domain';
 import type { FastifyRequest } from 'fastify';
 
 const QUALITY = /^q=([01](?:\.\d{0,3})?)$/;

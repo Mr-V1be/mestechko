@@ -1,4 +1,4 @@
-import { currencies, type CurrencyCode } from '@mestechko/domain';
+import { currencies, type CurrencyCode } from '@slotwise/domain';
 
 /** Prices are typed in roubles and stored in kopecks: whole minor units, never floats. */
 export function toMinor(major: number, currency: CurrencyCode): number {

@@ -1,4 +1,4 @@
-import { useFormat, useVocabulary } from '@mestechko/booking-ui';
+import { useFormat, useVocabulary } from '@slotwise/booking-ui';
 import { CalendarClock, MapPin, Scissors, UserRound } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import { Button, Sheet } from '@mestechko/ui';
+import { Button, Sheet } from '@slotwise/ui';
 import { useId, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { errorMessage } from '../../common/error-message';

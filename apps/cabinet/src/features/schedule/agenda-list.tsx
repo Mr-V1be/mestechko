@@ -1,6 +1,6 @@
-import { BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
-import type { getSchedule, RouteResult } from '@mestechko/contracts/client';
-import { ListGroup, ListItem } from '@mestechko/ui';
+import { BookingStatusBadge, useFormat } from '@slotwise/booking-ui';
+import type { getSchedule, RouteResult } from '@slotwise/contracts/client';
+import { ListGroup, ListItem } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { addDays, localDateOf } from './timeline-model';
 import styles from './schedule.module.css';

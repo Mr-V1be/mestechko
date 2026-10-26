@@ -1,5 +1,5 @@
 {
-  "name": "@mestechko/booking-ui",
+  "name": "@slotwise/booking-ui",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -14,10 +14,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@mestechko/contracts": "workspace:*",
-    "@mestechko/domain": "workspace:*",
-    "@mestechko/i18n": "workspace:*",
-    "@mestechko/ui": "workspace:*",
+    "@slotwise/contracts": "workspace:*",
+    "@slotwise/domain": "workspace:*",
+    "@slotwise/i18n": "workspace:*",
+    "@slotwise/ui": "workspace:*",
     "libphonenumber-js": "1.13.14",
     "lucide-react": "1.50.0"
   },

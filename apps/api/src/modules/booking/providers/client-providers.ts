@@ -1,5 +1,5 @@
 import type { Provider } from '@nestjs/common';
-import type { Clock } from '@mestechko/domain';
+import type { Clock } from '@slotwise/domain';
 import { AVATAR_URLS, type AvatarUrls } from '../../../shared/application/avatar-urls.js';
 import { CLOCK, ID_GENERATOR, type IdGenerator } from '../../../shared/application/ports.js';
 import { UNIT_OF_WORK, type UnitOfWork } from '../../../shared/application/unit-of-work.js';

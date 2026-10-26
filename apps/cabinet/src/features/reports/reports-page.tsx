@@ -1,6 +1,6 @@
-import { apiAssetUrl, useFormat, useVocabulary } from '@mestechko/booking-ui';
-import type { BusinessReport, CabinetStaff } from '@mestechko/contracts/client';
-import { Avatar, Button, EmptyIllustration, StatePanel } from '@mestechko/ui';
+import { apiAssetUrl, useFormat, useVocabulary } from '@slotwise/booking-ui';
+import type { BusinessReport, CabinetStaff } from '@slotwise/contracts/client';
+import { Avatar, Button, EmptyIllustration, StatePanel } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router';

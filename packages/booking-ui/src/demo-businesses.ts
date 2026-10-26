@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 
 /**
  * The demo businesses shown to a reader: those of the reader's language, so the demo

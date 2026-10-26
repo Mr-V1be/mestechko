@@ -4,7 +4,7 @@ import type {
   Locale,
   Money,
   PaymentStatus,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 
 /** What the payment page needs to take a prepayment. */
 export interface CheckoutRequest {

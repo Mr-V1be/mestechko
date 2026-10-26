@@ -1,5 +1,5 @@
-import type { ApiErrorCode } from '@mestechko/contracts';
-import { resolveLocale, type Clock, type MessengerChannel } from '@mestechko/domain';
+import type { ApiErrorCode } from '@slotwise/contracts';
+import { resolveLocale, type Clock, type MessengerChannel } from '@slotwise/domain';
 import { ApplicationError } from '../../../../shared/application/application-error.js';
 import type { CustomerIdentities, MessengerContacts } from '../../../clients/application/ports.js';
 import { decodeAction, type BotAction, type BotActionKind } from '../action-data.js';

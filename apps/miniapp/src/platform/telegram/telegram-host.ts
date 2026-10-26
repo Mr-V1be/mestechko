@@ -11,7 +11,7 @@ import {
   settingsButton,
   themeParams,
 } from '@tma.js/sdk-react';
-import { browserLanguages } from '@mestechko/booking-ui';
+import { browserLanguages } from '@slotwise/booking-ui';
 import { handleEmulatedCall } from './emulator-chrome';
 import { telegramDefaultThemes } from './telegram-palette';
 

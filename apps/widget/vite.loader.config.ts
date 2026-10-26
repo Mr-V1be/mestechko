@@ -5,7 +5,7 @@ import { defaultClientConditions, defineConfig } from 'vite';
  * name, no modules, no dependencies of its own.
  */
 export default defineConfig({
-  resolve: { conditions: ['@mestechko/source', ...defaultClientConditions] },
+  resolve: { conditions: ['@slotwise/source', ...defaultClientConditions] },
   build: {
     target: 'es2019',
     outDir: 'dist',

@@ -1,5 +1,5 @@
-import type { Membership, ScheduleAxis } from '@mestechko/contracts/client';
-import type { BookingStatus } from '@mestechko/domain';
+import type { Membership, ScheduleAxis } from '@slotwise/contracts/client';
+import type { BookingStatus } from '@slotwise/domain';
 import {
   keepPreviousData,
   useInfiniteQuery,

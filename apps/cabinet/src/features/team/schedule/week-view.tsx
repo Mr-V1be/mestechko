@@ -1,5 +1,5 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { DayHours, SchedulePatternView } from '@mestechko/contracts/client';
+import { useFormat } from '@slotwise/booking-ui';
+import type { DayHours, SchedulePatternView } from '@slotwise/contracts/client';
 import { clsx } from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { addDays } from '../../schedule/timeline-model';

@@ -1,5 +1,5 @@
-import { formatPhone, phoneHint } from '@mestechko/booking-ui';
-import { ApiError, normalizePhone } from '@mestechko/contracts/client';
+import { formatPhone, phoneHint } from '@slotwise/booking-ui';
+import { ApiError, normalizePhone } from '@slotwise/contracts/client';
 import { useState } from 'react';
 import { appConfig } from '../../../app/config';
 import { fieldErrorsOf } from '../../common/error-message';

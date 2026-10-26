@@ -1,7 +1,7 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { ClientCard, ClientPass, Membership } from '@mestechko/contracts/client';
-import { MINOR_PER_POINT } from '@mestechko/domain';
-import { Badge, ListGroup, ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { ClientCard, ClientPass, Membership } from '@slotwise/contracts/client';
+import { MINOR_PER_POINT } from '@slotwise/domain';
+import { Badge, ListGroup, ListItem } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { Coins, Pencil, Plus, Ticket } from 'lucide-react';
 import { useState } from 'react';

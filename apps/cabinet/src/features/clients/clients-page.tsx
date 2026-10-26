@@ -1,4 +1,4 @@
-import { clientSorts, type Membership } from '@mestechko/contracts/client';
+import { clientSorts, type Membership } from '@slotwise/contracts/client';
 import {
   Button,
   EmptyIllustration,
@@ -6,7 +6,7 @@ import {
   StatePanel,
   breakpoints,
   useMediaQuery,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { FileUp, UserPlus } from 'lucide-react';
 import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { CabinetStaff } from '@mestechko/contracts/client';
-import { Select, TextField, TimeGrid } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { CabinetStaff } from '@slotwise/contracts/client';
+import { Select, TextField, TimeGrid } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useFreeStarts } from '../../platform/api/desk-queries';
 import styles from './desk.module.css';

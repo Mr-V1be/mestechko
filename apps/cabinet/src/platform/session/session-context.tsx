@@ -1,4 +1,4 @@
-import type { Me } from '@mestechko/contracts/client';
+import type { Me } from '@slotwise/contracts/client';
 import { createContext, use } from 'react';
 
 export const SessionContext = createContext<Me | null>(null);

@@ -1,5 +1,5 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { CabinetCatalog, ServiceAdmin, TeamMember } from '@mestechko/contracts/client';
+import { useFormat } from '@slotwise/booking-ui';
+import type { CabinetCatalog, ServiceAdmin, TeamMember } from '@slotwise/contracts/client';
 import {
   Badge,
   Button,
@@ -9,7 +9,7 @@ import {
   NumberField,
   Sheet,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSetTeamMemberServices } from '../../../platform/api/team-queries';

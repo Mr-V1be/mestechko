@@ -1,4 +1,4 @@
-import { offersMessenger } from '@mestechko/domain';
+import { offersMessenger } from '@slotwise/domain';
 import { sql, type Kysely, type Transaction } from 'kysely';
 import type { Database } from '../platform/db/database.js';
 import type { IdGenerator } from '../shared/application/ports.js';

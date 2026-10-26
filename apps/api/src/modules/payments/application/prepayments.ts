@@ -1,4 +1,4 @@
-import { canMovePaymentTo, paymentStatuses, type Money } from '@mestechko/domain';
+import { canMovePaymentTo, paymentStatuses, type Money } from '@slotwise/domain';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { LedgerBook } from '../../loyalty/application/ledger-book.js';
 import type { PaymentRecord, PaymentStore, ProviderEvent } from './ports.js';

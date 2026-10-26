@@ -1,5 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 import {
   addClientNote,
   adjustClientPoints,
@@ -14,7 +14,7 @@ import {
   updateClient,
   type RouteInput,
   type RouteResult,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import { CurrentBusinessAccess, SessionUser } from '../../../platform/http/auth.guard.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import { RequestLocale } from '../../../platform/http/request-locale.js';

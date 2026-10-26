@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { Location, StaffAssignmentView } from '@mestechko/contracts/client';
-import { Badge, Button, StatePanel } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { Location, StaffAssignmentView } from '@slotwise/contracts/client';
+import { Badge, Button, StatePanel } from '@slotwise/ui';
 import { CalendarCog } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Section } from '../member/section';

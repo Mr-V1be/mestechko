@@ -1,4 +1,4 @@
-import type { Clock, Locale, MessengerChannel } from '@mestechko/domain';
+import type { Clock, Locale, MessengerChannel } from '@slotwise/domain';
 import type { CustomerIdentities } from './ports.js';
 
 /** A person's own settings, kept with them across businesses: the language they read. */

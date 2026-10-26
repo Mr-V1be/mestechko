@@ -1,5 +1,5 @@
-import type { BookingScope, ClientBooking } from '@mestechko/contracts';
-import type { Clock, MessengerChannel } from '@mestechko/domain';
+import type { BookingScope, ClientBooking } from '@slotwise/contracts';
+import type { Clock, MessengerChannel } from '@slotwise/domain';
 import { notFound } from '../../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type {

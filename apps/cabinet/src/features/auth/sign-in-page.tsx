@@ -1,5 +1,5 @@
-import { DemoLinks, LanguageMenu } from '@mestechko/booking-ui';
-import { Badge, Button, Logo, TextField } from '@mestechko/ui';
+import { DemoLinks, LanguageMenu } from '@slotwise/booking-ui';
+import { Badge, Button, Logo, TextField } from '@slotwise/ui';
 import { useState, type SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useLocation, useNavigate } from 'react-router';

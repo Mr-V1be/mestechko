@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { verticalRegistry } from '@mestechko/domain';
+import { verticalRegistry } from '@slotwise/domain';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
 import { CLOCK, type Clock } from '../../shared/application/ports.js';
 import { CabinetSettingsController } from './api/cabinet-settings.controller.js';

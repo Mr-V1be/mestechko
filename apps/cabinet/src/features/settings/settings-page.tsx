@@ -1,5 +1,5 @@
-import { useVocabulary } from '@mestechko/booking-ui';
-import { Skeleton } from '@mestechko/ui';
+import { useVocabulary } from '@slotwise/booking-ui';
+import { Skeleton } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { useOverview } from '../../platform/api/queries';

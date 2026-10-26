@@ -1,4 +1,4 @@
-import { Logo } from '@mestechko/ui';
+import { Logo } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import styles from './chrome.module.css';
 

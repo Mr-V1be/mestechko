@@ -1,5 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
-import { messengerBookingSource, type Locale } from '@mestechko/domain';
+import { messengerBookingSource, type Locale } from '@slotwise/domain';
 import {
   cancelMiniAppBooking,
   confirmMiniAppAttendance,
@@ -13,7 +13,7 @@ import {
   type ClientBooking,
   type RouteInput,
   type RouteResult,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import { TelegramClient } from '../../../platform/http/auth.guard.js';
 import { clientContactOf } from '../../clients/application/client-contact-policy.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';

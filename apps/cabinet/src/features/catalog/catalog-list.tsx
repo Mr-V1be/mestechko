@@ -1,11 +1,11 @@
-import { useFormat } from '@mestechko/booking-ui';
-import { apiAssetUrl } from '@mestechko/booking-ui';
+import { useFormat } from '@slotwise/booking-ui';
+import { apiAssetUrl } from '@slotwise/booking-ui';
 import type {
   CabinetCatalog,
   CategoryAdmin,
   ServiceAdmin,
   TeamMemberSummary,
-} from '@mestechko/contracts/client';
+} from '@slotwise/contracts/client';
 import {
   AvatarGroup,
   Badge,
@@ -14,7 +14,7 @@ import {
   ListItem,
   Menu,
   type MenuAction,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { clsx } from 'clsx';
 import {
   ArrowDown,

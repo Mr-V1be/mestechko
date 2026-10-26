@@ -3,7 +3,7 @@ import {
   staffAssignmentStrategyIds,
   type BookingRulesOverrides,
   type RoleId,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { Selectable } from 'kysely';
 import { z } from 'zod';
 import { currencyCode, localeCode } from '../../../platform/db/column-parsers.js';

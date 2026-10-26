@@ -1,4 +1,4 @@
-import type { AbsenceKind, BookingRulesOverrides, CurrencyCode, Locale } from '@mestechko/domain';
+import type { AbsenceKind, BookingRulesOverrides, CurrencyCode, Locale } from '@slotwise/domain';
 
 /** Working hours of one day in a demo schedule: `['10:00', '20:00']` plus optional breaks. */
 export interface DemoDay {

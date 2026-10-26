@@ -1,5 +1,5 @@
-import { useFormat } from '@mestechko/booking-ui';
-import { IconButton } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import { IconButton } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef, type CSSProperties } from 'react';

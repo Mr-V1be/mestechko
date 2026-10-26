@@ -3,7 +3,7 @@ import type {
   WaitlistOfferStatus,
   WaitlistStatus,
   WaitlistWindow,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 
 export interface NewWaitlistEntry {
   readonly id: string;

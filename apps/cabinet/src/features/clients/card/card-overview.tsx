@@ -1,6 +1,6 @@
-import { formatPhone, useFormat } from '@mestechko/booking-ui';
-import type { ClientCard } from '@mestechko/contracts/client';
-import { ListGroup, ListItem, StatTile } from '@mestechko/ui';
+import { formatPhone, useFormat } from '@slotwise/booking-ui';
+import type { ClientCard } from '@slotwise/contracts/client';
+import { ListGroup, ListItem, StatTile } from '@slotwise/ui';
 import { CalendarCheck, CalendarX, Mail, Phone, UserX, Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import styles from './card.module.css';

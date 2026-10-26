@@ -1,5 +1,5 @@
-import type { PassPlan } from '@mestechko/contracts/client';
-import type { CurrencyCode } from '@mestechko/domain';
+import type { PassPlan } from '@slotwise/contracts/client';
+import type { CurrencyCode } from '@slotwise/domain';
 import type { PassPlanBody } from '../../platform/api/loyalty-queries';
 import { checkChosen, checkNumber, checkText, type FieldProblem } from '../common/field-checks';
 import { toMajor, toMinor } from '../common/money';

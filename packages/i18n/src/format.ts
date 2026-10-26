@@ -1,4 +1,4 @@
-import { currencies, type CurrencyCode, type Money } from '@mestechko/domain';
+import { currencies, type CurrencyCode, type Money } from '@slotwise/domain';
 
 const MINUTES_PER_HOUR = 60;
 const formatterCache = new Map<string, Intl.DateTimeFormat | Intl.NumberFormat>();

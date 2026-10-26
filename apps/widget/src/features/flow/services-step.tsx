@@ -1,7 +1,7 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { ServiceCategory } from '@mestechko/contracts/client';
-import { incompatibleWith, type IncompatiblePair } from '@mestechko/domain';
-import { Checkbox, EmptyIllustration, ListGroup, ListItem, StatePanel } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { ServiceCategory } from '@slotwise/contracts/client';
+import { incompatibleWith, type IncompatiblePair } from '@slotwise/domain';
+import { Checkbox, EmptyIllustration, ListGroup, ListItem, StatePanel } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import styles from './widget.module.css';
 

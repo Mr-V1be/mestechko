@@ -5,8 +5,8 @@ import {
   SlotPicker,
   todayIn,
   WEEK_DAYS,
-} from '@mestechko/booking-ui';
-import { Button } from '@mestechko/ui';
+} from '@slotwise/booking-ui';
+import { Button } from '@slotwise/ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router';

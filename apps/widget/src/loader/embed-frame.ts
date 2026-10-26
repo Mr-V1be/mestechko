@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 import { messageLocale, WIDGET_MESSAGE_SOURCE } from '../embed/widget-messages';
 import type { EmbedMode } from '../embed/embed-params';
 import { frameUrl, type LoaderConfig } from './loader-config';

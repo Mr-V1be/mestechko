@@ -1,7 +1,7 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { CabinetCatalog, ServiceAdmin } from '@mestechko/contracts/client';
-import type { CurrencyCode } from '@mestechko/domain';
-import { ListGroup, ListItem, NumberField, Select, Switch, TextField } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { CabinetCatalog, ServiceAdmin } from '@slotwise/contracts/client';
+import type { CurrencyCode } from '@slotwise/domain';
+import { ListGroup, ListItem, NumberField, Select, Switch, TextField } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { problemText } from '../../common/field-checks';
 import { minorDigits } from '../../common/money';

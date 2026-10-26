@@ -2,7 +2,7 @@ import type {
   CabinetBookingDetails,
   DeskClient,
   VisitSettlementOptions,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import {
   businessBookingActions,
   explainUnavailable,
@@ -13,7 +13,7 @@ import {
   type BusinessBookingAction,
   type Clock,
   type VisitState,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { BusinessAccess } from '../../../../shared/application/business-access.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';

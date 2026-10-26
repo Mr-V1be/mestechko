@@ -3,7 +3,7 @@ import type {
   ScheduleChange as ScheduleChangeInput,
   TeamMember,
   TeamMemberSummary,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import {
   applyScheduleChange,
   localDateOf,
@@ -12,7 +12,7 @@ import {
   type Clock,
   type PlainDate,
   type StaffWorkCalendar,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../shared/application/avatar-urls.js';
 import { definedFields, type Patch } from '../../../shared/application/patch.js';

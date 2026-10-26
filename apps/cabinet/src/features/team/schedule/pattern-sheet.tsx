@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { Location } from '@mestechko/contracts/client';
-import { Button, Checkbox, ListGroup, ListItem, Select, Sheet, TextField } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { Location } from '@slotwise/contracts/client';
+import { Button, Checkbox, ListGroup, ListItem, Select, Sheet, TextField } from '@slotwise/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { errorMessage, fieldErrorsOf } from '../../common/error-message';

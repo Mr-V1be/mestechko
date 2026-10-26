@@ -1,4 +1,4 @@
-import { openBookingStatuses, type BookingStatus, type HoldReason } from '@mestechko/domain';
+import { openBookingStatuses, type BookingStatus, type HoldReason } from '@slotwise/domain';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';

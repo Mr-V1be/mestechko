@@ -1,4 +1,4 @@
-import { loyaltyKindIds, type LoyaltyKind, type LoyaltySettings } from '@mestechko/domain';
+import { loyaltyKindIds, type LoyaltyKind, type LoyaltySettings } from '@slotwise/domain';
 
 /** Percentages a business sets for its program. */
 export type ProgramSetting = Exclude<keyof LoyaltySettings, 'kind'>;

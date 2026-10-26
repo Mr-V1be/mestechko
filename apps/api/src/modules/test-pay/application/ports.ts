@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 
 /** A payment as the test provider keeps it. */
 export interface TestPayPayment {

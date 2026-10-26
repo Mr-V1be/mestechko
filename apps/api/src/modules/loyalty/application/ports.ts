@@ -5,7 +5,7 @@ import type {
   LoyaltySettings,
   PassPlan,
   PlainDate,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 
 export interface NewLedgerEntry {
   readonly id: string;

@@ -1,5 +1,5 @@
-import type { ServiceAdmin } from '@mestechko/contracts/client';
-import type { CurrencyCode } from '@mestechko/domain';
+import type { ServiceAdmin } from '@slotwise/contracts/client';
+import type { CurrencyCode } from '@slotwise/domain';
 import { useMutation } from '@tanstack/react-query';
 import {
   useCreateService,

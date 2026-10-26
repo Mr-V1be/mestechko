@@ -1,4 +1,4 @@
-import { staffAssignmentStrategyIds } from '@mestechko/domain';
+import { staffAssignmentStrategyIds } from '@slotwise/domain';
 import { z } from 'zod';
 import { defineRoute } from '../../route.js';
 import { cabinetParamsSchema } from './schedule.js';

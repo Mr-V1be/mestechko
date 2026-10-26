@@ -1,5 +1,5 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { MaxEmulatorMessage } from '@mestechko/contracts/client';
+import { useFormat } from '@slotwise/booking-ui';
+import type { MaxEmulatorMessage } from '@slotwise/contracts/client';
 import {
   Avatar,
   Badge,
@@ -9,7 +9,7 @@ import {
   StatePanel,
   TextField,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { ArrowLeft, ExternalLink, Play, SendHorizontal } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';

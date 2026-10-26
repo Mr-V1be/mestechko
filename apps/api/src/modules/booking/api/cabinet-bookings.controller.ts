@@ -5,7 +5,7 @@ import {
   listCabinetBookings,
   type RouteInput,
   type RouteResult,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import { CurrentBusinessAccess } from '../../../platform/http/auth.guard.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import type { BusinessAccess } from '../../../shared/application/business-access.js';

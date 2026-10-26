@@ -1,4 +1,4 @@
-import { useLocale } from '@mestechko/booking-ui';
+import { useLocale } from '@slotwise/booking-ui';
 import { siteMediaOf, type SiteMedia } from './media';
 
 /** The product's screens and loops captured in the page's language. */

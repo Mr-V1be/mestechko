@@ -1,6 +1,6 @@
-import { demoBusinessesIn, useLocale } from '@mestechko/booking-ui';
-import type { DemoBusiness, Membership } from '@mestechko/contracts/client';
-import { Button, SegmentedControl, Select } from '@mestechko/ui';
+import { demoBusinessesIn, useLocale } from '@slotwise/booking-ui';
+import type { DemoBusiness, Membership } from '@slotwise/contracts/client';
+import { Button, SegmentedControl, Select } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

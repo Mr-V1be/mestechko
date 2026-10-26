@@ -1,4 +1,4 @@
-import { useFormat } from '@mestechko/booking-ui';
+import { useFormat } from '@slotwise/booking-ui';
 import { useTranslation } from 'react-i18next';
 import { localDateOf, todayIn } from '../schedule/timeline-model';
 

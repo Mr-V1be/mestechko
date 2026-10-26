@@ -3,9 +3,9 @@ import {
   clientFileFormatIds,
   clientFileFormats,
   type ClientFileFormat,
-} from '@mestechko/contracts/client';
-import { useLocale } from '@mestechko/booking-ui';
-import { useToast, type MenuAction } from '@mestechko/ui';
+} from '@slotwise/contracts/client';
+import { useLocale } from '@slotwise/booking-ui';
+import { useToast, type MenuAction } from '@slotwise/ui';
 import type { TFunction } from 'i18next';
 import { FileSpreadsheet, FileText, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

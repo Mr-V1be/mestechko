@@ -3,7 +3,7 @@ import type {
   DeskClient,
   getSchedule,
   RouteResult,
-} from '@mestechko/contracts/client';
+} from '@slotwise/contracts/client';
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { useApi } from './api-context';
 import { queryKeys } from './queries';

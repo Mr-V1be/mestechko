@@ -1,10 +1,4 @@
-import {
-  apiAssetUrl,
-  errorMessage,
-  hasCode,
-  useFormat,
-  useVocabulary,
-} from '@mestechko/booking-ui';
+import { apiAssetUrl, errorMessage, hasCode, useFormat, useVocabulary } from '@slotwise/booking-ui';
 import {
   Avatar,
   Button,
@@ -15,7 +9,7 @@ import {
   StatePanel,
   TextField,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { Users, Wallet } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

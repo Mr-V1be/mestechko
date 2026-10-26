@@ -1,5 +1,5 @@
-import { isLocale, resolveLocale, type Locale } from '@mestechko/domain';
-import { LOCALE_STORAGE_KEY } from '@mestechko/ui/locale-boot';
+import { isLocale, resolveLocale, type Locale } from '@slotwise/domain';
+import { LOCALE_STORAGE_KEY } from '@slotwise/ui/locale-boot';
 
 export { LOCALE_STORAGE_KEY };
 

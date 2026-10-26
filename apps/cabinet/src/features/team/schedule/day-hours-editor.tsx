@@ -1,5 +1,5 @@
-import type { DayHours } from '@mestechko/contracts/client';
-import { Button, IconButton, TimeRangeField } from '@mestechko/ui';
+import type { DayHours } from '@slotwise/contracts/client';
+import { Button, IconButton, TimeRangeField } from '@slotwise/ui';
 import { Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {

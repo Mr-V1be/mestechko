@@ -39,7 +39,7 @@ export const standServices: readonly StandService[] = [
     command: process.execPath,
     args: [
       '--env-file-if-exists=../../.env',
-      '--conditions=@mestechko/source',
+      '--conditions=@slotwise/source',
       '--import',
       'tsx',
       'src/main.ts',

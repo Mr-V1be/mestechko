@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { CabinetBookingDetails } from '@mestechko/contracts/client';
-import { useToast } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { CabinetBookingDetails } from '@slotwise/contracts/client';
+import { useToast } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useMoveBooking, type MoveInput } from '../../platform/api/desk-queries';
 import { errorMessage } from '../common/error-message';

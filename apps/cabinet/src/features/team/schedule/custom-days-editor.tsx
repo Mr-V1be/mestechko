@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { DayHours } from '@mestechko/contracts/client';
-import { NumberField, SegmentedControl, Switch } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { DayHours } from '@slotwise/contracts/client';
+import { NumberField, SegmentedControl, Switch } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { weekdayDate } from './dates';

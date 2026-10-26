@@ -1,6 +1,6 @@
-import { errorMessage } from '@mestechko/booking-ui';
-import { checkoutPresentations, type CheckoutPresentation } from '@mestechko/domain';
-import { useToast } from '@mestechko/ui';
+import { errorMessage } from '@slotwise/booking-ui';
+import { checkoutPresentations, type CheckoutPresentation } from '@slotwise/domain';
+import { useToast } from '@slotwise/ui';
 import { openLink } from '@tma.js/sdk-react';
 import { useTranslation } from 'react-i18next';
 import { useStartPayment } from '../../platform/api/payment-queries';

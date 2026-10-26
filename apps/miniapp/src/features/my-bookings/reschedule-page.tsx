@@ -8,8 +8,8 @@ import {
   todayIn,
   useFormat,
   WEEK_DAYS,
-} from '@mestechko/booking-ui';
-import { StatePanel, useToast } from '@mestechko/ui';
+} from '@slotwise/booking-ui';
+import { StatePanel, useToast } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';

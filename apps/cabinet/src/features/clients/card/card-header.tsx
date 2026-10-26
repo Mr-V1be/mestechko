@@ -1,5 +1,5 @@
-import type { ClientSummary } from '@mestechko/contracts/client';
-import { Avatar, Badge, Button, IconButton, useToast } from '@mestechko/ui';
+import type { ClientSummary } from '@slotwise/contracts/client';
+import { Avatar, Badge, Button, IconButton, useToast } from '@slotwise/ui';
 import { ArrowLeft, MessageCircle, Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateClientTags } from '../../../platform/api/clients-queries';

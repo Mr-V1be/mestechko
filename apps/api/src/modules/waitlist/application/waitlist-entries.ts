@@ -1,11 +1,11 @@
-import type { WaitlistEntry } from '@mestechko/contracts';
+import type { WaitlistEntry } from '@slotwise/contracts';
 import {
   localDateOf,
   Temporal,
   waitlistWindowOf,
   type Clock,
   type DayPart,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';

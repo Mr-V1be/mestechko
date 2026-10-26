@@ -1,4 +1,4 @@
-import { fallbackLocale, isLocale, type Locale } from '@mestechko/domain';
+import { fallbackLocale, isLocale, type Locale } from '@slotwise/domain';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { storeLocale } from './browser-locale';

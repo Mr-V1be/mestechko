@@ -1,5 +1,5 @@
-import type { ClientBooking } from '@mestechko/contracts';
-import type { Clock, Locale } from '@mestechko/domain';
+import type { ClientBooking } from '@slotwise/contracts';
+import type { Clock, Locale } from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { ClientDirectory, CustomerIdentities } from '../../../clients/application/ports.js';

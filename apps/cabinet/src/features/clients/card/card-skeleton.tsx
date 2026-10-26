@@ -1,4 +1,4 @@
-import { Skeleton } from '@mestechko/ui';
+import { Skeleton } from '@slotwise/ui';
 import { PageContainer } from '../../common/page-header';
 import styles from './card.module.css';
 

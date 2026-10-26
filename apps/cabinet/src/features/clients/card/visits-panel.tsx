@@ -1,6 +1,6 @@
-import { apiAssetUrl, BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
-import type { CabinetBookingRow, ClientCard } from '@mestechko/contracts/client';
-import { Avatar, Button, ListGroup, ListItem } from '@mestechko/ui';
+import { apiAssetUrl, BookingStatusBadge, useFormat } from '@slotwise/booking-ui';
+import type { CabinetBookingRow, ClientCard } from '@slotwise/contracts/client';
+import { Avatar, Button, ListGroup, ListItem } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../../app/config';

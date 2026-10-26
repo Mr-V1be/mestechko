@@ -1,6 +1,6 @@
-import type { BusinessReport, ReportFacts } from '@mestechko/contracts/client';
-import { metricValue, reportMetrics, type ReportMetric } from '@mestechko/domain';
-import { BarChart, DataTable, SegmentedControl, type DataColumn } from '@mestechko/ui';
+import type { BusinessReport, ReportFacts } from '@slotwise/contracts/client';
+import { metricValue, reportMetrics, type ReportMetric } from '@slotwise/domain';
+import { BarChart, DataTable, SegmentedControl, type DataColumn } from '@slotwise/ui';
 import { ChartColumn, Table2 } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';

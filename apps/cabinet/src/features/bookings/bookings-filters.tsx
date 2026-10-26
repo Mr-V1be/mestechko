@@ -1,6 +1,6 @@
-import type { CabinetStaff, Location } from '@mestechko/contracts/client';
-import { bookingStatusIds, type BookingStatus } from '@mestechko/domain';
-import { Button, Select, Sheet, TextField, breakpoints, useMediaQuery } from '@mestechko/ui';
+import type { CabinetStaff, Location } from '@slotwise/contracts/client';
+import { bookingStatusIds, type BookingStatus } from '@slotwise/domain';
+import { Button, Select, Sheet, TextField, breakpoints, useMediaQuery } from '@slotwise/ui';
 import { SlidersHorizontal } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
-import { useVocabulary } from '@mestechko/booking-ui';
-import { bookingStatusIds } from '@mestechko/domain';
+import { useVocabulary } from '@slotwise/booking-ui';
+import { bookingStatusIds } from '@slotwise/domain';
 import {
   Button,
   EmptyIllustration,
@@ -7,7 +7,7 @@ import {
   StatePanel,
   breakpoints,
   useMediaQuery,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router';

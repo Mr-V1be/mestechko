@@ -1,4 +1,4 @@
-import { calendarYear, type CalendarDayKind, type CalendarYear } from '@mestechko/domain';
+import { calendarYear, type CalendarDayKind, type CalendarYear } from '@slotwise/domain';
 import type { ProductionCalendarSource } from '../application/ports.js';
 
 /**

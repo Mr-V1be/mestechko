@@ -1,7 +1,7 @@
-import { apiAssetUrl, useFormat } from '@mestechko/booking-ui';
-import type { BusinessReport, CabinetStaff, ReportFacts } from '@mestechko/contracts/client';
-import { emptyFacts, metricValue } from '@mestechko/domain';
-import { Avatar, DataTable, type DataColumn } from '@mestechko/ui';
+import { apiAssetUrl, useFormat } from '@slotwise/booking-ui';
+import type { BusinessReport, CabinetStaff, ReportFacts } from '@slotwise/contracts/client';
+import { emptyFacts, metricValue } from '@slotwise/domain';
+import { Avatar, DataTable, type DataColumn } from '@slotwise/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';

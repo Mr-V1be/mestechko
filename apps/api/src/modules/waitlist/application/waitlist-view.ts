@@ -1,5 +1,5 @@
-import type { WaitlistEntry } from '@mestechko/contracts';
-import { dayPartIds, dayParts } from '@mestechko/domain';
+import type { WaitlistEntry } from '@slotwise/contracts';
+import { dayPartIds, dayParts } from '@slotwise/domain';
 import type { WaitlistEntryView } from './ports.js';
 
 /** The client's view of a wish: a part of the day is named, the whole day is `null`. */

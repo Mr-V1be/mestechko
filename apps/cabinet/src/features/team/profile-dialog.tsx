@@ -1,5 +1,5 @@
-import type { TeamMember } from '@mestechko/contracts/client';
-import { Button, Dialog, TextField, useToast } from '@mestechko/ui';
+import type { TeamMember } from '@slotwise/contracts/client';
+import { Button, Dialog, TextField, useToast } from '@slotwise/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {

@@ -1,4 +1,4 @@
-import { Dialog, ListGroup, ListItem } from '@mestechko/ui';
+import { Dialog, ListGroup, ListItem } from '@slotwise/ui';
 import { CalendarDays, ChevronRight, Smartphone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../../app/config';

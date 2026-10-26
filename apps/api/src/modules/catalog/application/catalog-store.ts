@@ -1,4 +1,4 @@
-import type { IncompatiblePair } from '@mestechko/domain';
+import type { IncompatiblePair } from '@slotwise/domain';
 import type { StaffServiceTerms } from './catalog-reader.js';
 
 export interface StaffRecord {

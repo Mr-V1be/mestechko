@@ -1,5 +1,5 @@
-import type { CabinetStaff, Location } from '@mestechko/contracts/client';
-import { Select } from '@mestechko/ui';
+import type { CabinetStaff, Location } from '@slotwise/contracts/client';
+import { Select } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { reportPeriodIds, type ReportPeriodId } from './report-periods';
 import styles from './reports.module.css';

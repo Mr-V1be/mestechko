@@ -1,6 +1,6 @@
-import { apiAssetUrl } from '@mestechko/booking-ui';
-import type { TeamMember } from '@mestechko/contracts/client';
-import { Avatar, Badge, ConfirmDialog, IconButton, Switch, useToast } from '@mestechko/ui';
+import { apiAssetUrl } from '@slotwise/booking-ui';
+import type { TeamMember } from '@slotwise/contracts/client';
+import { Avatar, Badge, ConfirmDialog, IconButton, Switch, useToast } from '@slotwise/ui';
 import { ChevronLeft, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

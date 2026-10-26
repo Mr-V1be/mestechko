@@ -1,5 +1,5 @@
-import { useVocabulary } from '@mestechko/booking-ui';
-import { Button, EmptyIllustration, StatePanel, breakpoints, useMediaQuery } from '@mestechko/ui';
+import { useVocabulary } from '@slotwise/booking-ui';
+import { Button, EmptyIllustration, StatePanel, breakpoints, useMediaQuery } from '@slotwise/ui';
 import { UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';

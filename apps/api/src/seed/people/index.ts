@@ -1,5 +1,5 @@
-import type { Locale } from '@mestechko/domain';
-import { demoPhoneRangeOf } from '@mestechko/contracts';
+import type { Locale } from '@slotwise/domain';
+import { demoPhoneRangeOf } from '@slotwise/contracts';
 import type { Random } from '../random.js';
 import { englishPopulation } from './en.js';
 import type { DemoPopulation } from './population.js';

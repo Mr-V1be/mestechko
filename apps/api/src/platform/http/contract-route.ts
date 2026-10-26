@@ -13,7 +13,7 @@ import type {
   RouteInput,
   RouteSpec,
   UploadedFile,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import type { FastifyRequest } from 'fastify';
 import type { z } from 'zod';
 import { ApplicationError } from '../../shared/application/application-error.js';

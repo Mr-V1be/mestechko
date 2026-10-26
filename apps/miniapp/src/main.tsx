@@ -1,6 +1,6 @@
-import '@mestechko/ui/styles.css';
-import { storedLocale } from '@mestechko/booking-ui';
-import { resolveLocale } from '@mestechko/domain';
+import '@slotwise/ui/styles.css';
+import { storedLocale } from '@slotwise/booking-ui';
+import { resolveLocale } from '@slotwise/domain';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/app';

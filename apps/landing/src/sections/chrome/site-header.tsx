@@ -1,5 +1,5 @@
-import { LanguageMenu } from '@mestechko/booking-ui';
-import { Button, IconButton, Logo, LogoMark, useTheme } from '@mestechko/ui';
+import { LanguageMenu } from '@slotwise/booking-ui';
+import { Button, IconButton, Logo, LogoMark, useTheme } from '@slotwise/ui';
 import { Moon, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { pageUrlOf } from '../../app/page-locale';

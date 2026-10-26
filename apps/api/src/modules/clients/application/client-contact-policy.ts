@@ -1,4 +1,4 @@
-import { isDemoPhone } from '@mestechko/contracts';
+import { isDemoPhone } from '@slotwise/contracts';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { ClientContact } from './ports.js';
 

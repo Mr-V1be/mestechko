@@ -1,4 +1,4 @@
-import type { Clock } from '@mestechko/domain';
+import type { Clock } from '@slotwise/domain';
 import { z } from 'zod';
 import {
   defineJob,

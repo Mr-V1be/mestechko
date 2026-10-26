@@ -1,4 +1,4 @@
-import type { CabinetBookingDetails, CabinetBookingRow } from '@mestechko/contracts';
+import type { CabinetBookingDetails, CabinetBookingRow } from '@slotwise/contracts';
 import {
   bookingSources,
   businessBookingActionIds,
@@ -8,7 +8,7 @@ import {
   type BookingStatus,
   type Clock,
   type MessengerChannel,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { BusinessAccess } from '../../../../shared/application/business-access.js';

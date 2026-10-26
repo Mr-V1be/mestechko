@@ -1,5 +1,5 @@
-import type { ClientSummary } from '@mestechko/contracts/client';
-import { useToast } from '@mestechko/ui';
+import type { ClientSummary } from '@slotwise/contracts/client';
+import { useToast } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBusinessRegion, useUpdateClientProfile } from '../../../platform/api/clients-queries';

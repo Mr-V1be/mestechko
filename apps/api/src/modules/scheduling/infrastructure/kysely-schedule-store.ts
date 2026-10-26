@@ -1,5 +1,5 @@
 import { sql } from 'kysely';
-import { DomainError, type PlainDate, type ScheduleChange } from '@mestechko/domain';
+import { DomainError, type PlainDate, type ScheduleChange } from '@slotwise/domain';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import { isExclusionViolation } from '../../../platform/db/pg-errors.js';

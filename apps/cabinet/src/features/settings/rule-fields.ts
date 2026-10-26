@@ -1,5 +1,5 @@
-import type { BusinessRules } from '@mestechko/contracts/client';
-import { bookingRuleLimits, isValidSlotStep } from '@mestechko/domain';
+import type { BusinessRules } from '@slotwise/contracts/client';
+import { bookingRuleLimits, isValidSlotStep } from '@slotwise/domain';
 import { CalendarClock, CalendarSync, CreditCard, Hourglass, type LucideIcon } from 'lucide-react';
 
 export type RuleKey = keyof BusinessRules;

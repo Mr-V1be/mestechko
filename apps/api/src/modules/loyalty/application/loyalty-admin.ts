@@ -1,4 +1,4 @@
-import type { LoyaltyProgram, PassPlan } from '@mestechko/contracts';
+import type { LoyaltyProgram, PassPlan } from '@slotwise/contracts';
 import {
   localDateOf,
   passValidUntil,
@@ -6,7 +6,7 @@ import {
   validatePassPlan,
   type Clock,
   type CurrencyCode,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { notFound } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { CatalogReader } from '../../catalog/application/catalog-reader.js';

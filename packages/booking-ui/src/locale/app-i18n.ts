@@ -1,5 +1,5 @@
-import type { Locale } from '@mestechko/domain';
-import { createI18n, type LocaleResources } from '@mestechko/i18n';
+import type { Locale } from '@slotwise/domain';
+import { createI18n, type LocaleResources } from '@slotwise/i18n';
 import type { i18n } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 

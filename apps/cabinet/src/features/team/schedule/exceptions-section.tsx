@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { DayHours, Location, StaffDayException } from '@mestechko/contracts/client';
-import { Button, IconButton, ListGroup, ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { DayHours, Location, StaffDayException } from '@slotwise/contracts/client';
+import { Button, IconButton, ListGroup, ListItem } from '@slotwise/ui';
 import { CalendarPlus, CalendarX2, Clock, Undo2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Section } from '../member/section';

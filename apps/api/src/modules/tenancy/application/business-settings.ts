@@ -1,10 +1,10 @@
-import type { BusinessRules, BusinessSettings as SettingsView } from '@mestechko/contracts';
+import type { BusinessRules, BusinessSettings as SettingsView } from '@slotwise/contracts';
 import {
   resolveBookingRules,
   type BookingRules,
   type BookingRulesOverrides,
   type Clock,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { BusinessDirectory } from './business-directory.js';
 import type { BusinessContextResolver } from './business-context.js';
 

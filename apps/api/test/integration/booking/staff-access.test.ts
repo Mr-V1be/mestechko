@@ -1,5 +1,5 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
-import type { RoleId } from '@mestechko/domain';
+import type { RoleId } from '@slotwise/domain';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { ScryptPasswordHasher } from '../../../src/modules/identity/infrastructure/crypto-adapters.js';
 import { UuidV7Generator } from '../../../src/platform/system-clock.js';

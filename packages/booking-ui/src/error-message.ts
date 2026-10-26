@@ -1,4 +1,4 @@
-import { ApiError } from '@mestechko/contracts/client';
+import { ApiError } from '@slotwise/contracts/client';
 import type { TFunction } from 'i18next';
 
 /** A human message for any failure, in the interface's own words. */

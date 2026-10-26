@@ -1,4 +1,4 @@
-import { Button, EmptyIllustration, Skeleton, StatePanel } from '@mestechko/ui';
+import { Button, EmptyIllustration, Skeleton, StatePanel } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { useOverview } from '../../../platform/api/queries';

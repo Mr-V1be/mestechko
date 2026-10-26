@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { StaffAbsenceView } from '@mestechko/contracts/client';
-import { Badge, Button, IconButton, ListGroup, ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { StaffAbsenceView } from '@slotwise/contracts/client';
+import { Badge, Button, IconButton, ListGroup, ListItem } from '@slotwise/ui';
 import { CalendarPlus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { absenceIcons } from '../absence-label';

@@ -1,9 +1,4 @@
-import {
-  loyaltyKindIds,
-  Temporal,
-  type LoyaltyKind,
-  type LoyaltySettings,
-} from '@mestechko/domain';
+import { loyaltyKindIds, Temporal, type LoyaltyKind, type LoyaltySettings } from '@slotwise/domain';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import { isUniqueViolation } from '../../../platform/db/pg-errors.js';
 import { sql } from 'kysely';

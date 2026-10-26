@@ -1,4 +1,4 @@
-import { isLocale, localeIds, type Locale } from '@mestechko/domain';
+import { isLocale, localeIds, type Locale } from '@slotwise/domain';
 import i18next, { type BackendModule, type i18n } from 'i18next';
 import { sharedNamespaces, sharedResourceLoaders } from './resources.js';
 

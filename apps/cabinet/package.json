@@ -1,5 +1,5 @@
 {
-  "name": "@mestechko/cabinet",
+  "name": "@slotwise/cabinet",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,11 +10,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@mestechko/booking-ui": "workspace:*",
-    "@mestechko/contracts": "workspace:*",
-    "@mestechko/domain": "workspace:*",
-    "@mestechko/i18n": "workspace:*",
-    "@mestechko/ui": "workspace:*",
+    "@slotwise/booking-ui": "workspace:*",
+    "@slotwise/contracts": "workspace:*",
+    "@slotwise/domain": "workspace:*",
+    "@slotwise/i18n": "workspace:*",
+    "@slotwise/ui": "workspace:*",
     "@tanstack/react-query": "5.104.1",
     "clsx": "2.1.1",
     "i18next": "26.4.2",

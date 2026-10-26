@@ -1,5 +1,5 @@
-import type { MaxEmulatorButton, MaxEmulatorChat, MaxEmulatorMessage } from '@mestechko/contracts';
-import type { Clock } from '@mestechko/domain';
+import type { MaxEmulatorButton, MaxEmulatorChat, MaxEmulatorMessage } from '@slotwise/contracts';
+import type { Clock } from '@slotwise/domain';
 import { notFound } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';

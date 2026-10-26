@@ -9,7 +9,7 @@ import {
   type StaffAbsence,
   type StaffWorkCalendar,
   type WallInterval,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import type { DateWindow, WorkCalendarReader } from '../application/ports.js';
 

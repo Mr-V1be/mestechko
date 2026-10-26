@@ -1,4 +1,4 @@
-import { ledgerAccounts, ledgerReasonIds, messengerChannelIds } from '@mestechko/domain';
+import { ledgerAccounts, ledgerReasonIds, messengerChannelIds } from '@slotwise/domain';
 import { z } from 'zod';
 import {
   instantSchema,

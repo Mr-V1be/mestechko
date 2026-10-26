@@ -1,5 +1,5 @@
 {
-  "name": "@mestechko/contracts",
+  "name": "@slotwise/contracts",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,12 +9,12 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "@mestechko/source": "./src/index.ts",
+      "@slotwise/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./client": {
-      "@mestechko/source": "./src/client-entry.ts",
+      "@slotwise/source": "./src/client-entry.ts",
       "types": "./dist/client-entry.d.ts",
       "default": "./dist/client-entry.js"
     }
@@ -23,11 +23,11 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",
-    "generate": "node --conditions=@mestechko/source --import tsx scripts/generate-artifacts.ts",
-    "generate:check": "node --conditions=@mestechko/source --import tsx scripts/generate-artifacts.ts --check"
+    "generate": "node --conditions=@slotwise/source --import tsx scripts/generate-artifacts.ts",
+    "generate:check": "node --conditions=@slotwise/source --import tsx scripts/generate-artifacts.ts --check"
   },
   "dependencies": {
-    "@mestechko/domain": "workspace:*",
+    "@slotwise/domain": "workspace:*",
     "libphonenumber-js": "1.13.14",
     "zod": "4.6.5"
   },

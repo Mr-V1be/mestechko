@@ -1,5 +1,5 @@
-import type { BookingContact, ClientBooking, WaitlistEntry } from '@mestechko/contracts/client';
-import type { DayPart } from '@mestechko/domain';
+import type { BookingContact, ClientBooking, WaitlistEntry } from '@slotwise/contracts/client';
+import type { DayPart } from '@slotwise/domain';
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { useApi } from './api-context';
 import { queryKeys } from './queries';

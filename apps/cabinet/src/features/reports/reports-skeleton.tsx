@@ -1,5 +1,5 @@
-import { reportMetricIds } from '@mestechko/domain';
-import { Skeleton } from '@mestechko/ui';
+import { reportMetricIds } from '@slotwise/domain';
+import { Skeleton } from '@slotwise/ui';
 import styles from './reports.module.css';
 
 /** Tiles and chart cards in their final places while the figures load. */

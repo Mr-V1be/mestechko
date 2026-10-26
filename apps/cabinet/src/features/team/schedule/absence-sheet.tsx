@@ -1,6 +1,6 @@
-import type { StaffAbsenceView } from '@mestechko/contracts/client';
-import { absenceKinds, type AbsenceKind } from '@mestechko/domain';
-import { Button, Select, Sheet, TextField } from '@mestechko/ui';
+import type { StaffAbsenceView } from '@slotwise/contracts/client';
+import { absenceKinds, type AbsenceKind } from '@slotwise/domain';
+import { Button, Select, Sheet, TextField } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { errorMessage, fieldErrorsOf } from '../../common/error-message';

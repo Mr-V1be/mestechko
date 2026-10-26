@@ -6,7 +6,7 @@ import {
   getMe,
   type Me,
   type RouteInput,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { SessionUser } from '../../../platform/http/auth.guard.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';

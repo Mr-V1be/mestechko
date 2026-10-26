@@ -1,7 +1,7 @@
-import { useFormat, useLocale, type Formatters } from '@mestechko/booking-ui';
-import { locales } from '@mestechko/domain';
-import type { ScheduleColumn } from '@mestechko/contracts/client';
-import { Button, DateStrip, DeviceFrame, TimeGrid } from '@mestechko/ui';
+import { useFormat, useLocale, type Formatters } from '@slotwise/booking-ui';
+import { locales } from '@slotwise/domain';
+import type { ScheduleColumn } from '@slotwise/contracts/client';
+import { Button, DateStrip, DeviceFrame, TimeGrid } from '@slotwise/ui';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ColumnHeader } from '../schedule/schedule-columns';

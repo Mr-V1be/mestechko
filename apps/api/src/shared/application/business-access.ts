@@ -1,4 +1,4 @@
-import type { AccessScope, RoleId } from '@mestechko/domain';
+import type { AccessScope, RoleId } from '@slotwise/domain';
 
 /** Verified membership of the signed-in user in the business a request addresses. */
 export interface BusinessAccess {

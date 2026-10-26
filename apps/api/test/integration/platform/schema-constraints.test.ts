@@ -1,4 +1,4 @@
-import { bookingStatuses, bookingStatusIds, roleIds, type BookingStatus } from '@mestechko/domain';
+import { bookingStatuses, bookingStatusIds, roleIds, type BookingStatus } from '@slotwise/domain';
 import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { UuidV7Generator } from '../../../src/platform/system-clock.js';

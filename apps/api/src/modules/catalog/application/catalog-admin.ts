@@ -1,5 +1,5 @@
-import type { CabinetCatalog, CategoryAdmin, ServiceAdmin } from '@mestechko/contracts';
-import { incompatibleWith, type Clock, type IncompatiblePair } from '@mestechko/domain';
+import type { CabinetCatalog, CategoryAdmin, ServiceAdmin } from '@slotwise/contracts';
+import { incompatibleWith, type Clock, type IncompatiblePair } from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import { definedFields, type Patch } from '../../../shared/application/patch.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';

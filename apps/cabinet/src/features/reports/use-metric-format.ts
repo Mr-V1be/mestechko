@@ -1,10 +1,10 @@
-import { useFormat } from '@mestechko/booking-ui';
+import { useFormat } from '@slotwise/booking-ui';
 import {
   reportMetrics,
   type CurrencyCode,
   type MetricChange,
   type ReportMetric,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { useTranslation } from 'react-i18next';
 import type { AmountKind } from './metric-views';
 

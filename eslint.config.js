@@ -56,7 +56,7 @@ export default tseslint.config(
     rules: {
       'no-restricted-imports': [
         'error',
-        { patterns: [...frameworkImports, 'react', 'react-dom', 'zod', '@mestechko/*', 'node:*'] },
+        { patterns: [...frameworkImports, 'react', 'react-dom', 'zod', '@slotwise/*', 'node:*'] },
       ],
     },
   },
@@ -91,7 +91,7 @@ export default tseslint.config(
           patterns: [...frameworkImports, 'node:*'],
           // Browsers take the schema-free entry; schemas stay on the server.
           paths: [
-            { name: '@mestechko/contracts', message: 'Import from @mestechko/contracts/client.' },
+            { name: '@slotwise/contracts', message: 'Import from @slotwise/contracts/client.' },
           ],
         },
       ],

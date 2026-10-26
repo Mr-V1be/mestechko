@@ -1,5 +1,5 @@
-import type { CategoryAdmin, ServiceAdmin } from '@mestechko/contracts/client';
-import { Checkbox, ListGroup, ListItem } from '@mestechko/ui';
+import type { CategoryAdmin, ServiceAdmin } from '@slotwise/contracts/client';
+import { Checkbox, ListGroup, ListItem } from '@slotwise/ui';
 import { useId, type ReactNode } from 'react';
 
 export interface ServiceChecklistProps {

@@ -1,4 +1,4 @@
-import { ListGroup, ListItem } from '@mestechko/ui';
+import { ListGroup, ListItem } from '@slotwise/ui';
 import { ChevronRight, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router';

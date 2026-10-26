@@ -7,8 +7,8 @@ import {
   type ClientImportResult,
   type ServedFile,
   type UploadedFile,
-} from '@mestechko/contracts';
-import { localDateOf, type Clock, type Locale } from '@mestechko/domain';
+} from '@slotwise/contracts';
+import { localDateOf, type Clock, type Locale } from '@slotwise/domain';
 import { z } from 'zod';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';

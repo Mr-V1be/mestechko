@@ -1,5 +1,5 @@
 import type { Bot, Context } from 'grammy';
-import type { MessengerChannel } from '@mestechko/domain';
+import type { MessengerChannel } from '@slotwise/domain';
 import type { InboundEvent, InboundPerson } from '../../application/channel.js';
 
 const CHANNEL: MessengerChannel = 'telegram';

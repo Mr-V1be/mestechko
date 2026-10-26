@@ -1,4 +1,4 @@
-import { openBookingStatuses } from '@mestechko/domain';
+import { openBookingStatuses } from '@slotwise/domain';
 import { sql } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';

@@ -1,4 +1,4 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import type { MessengerChannel } from '@slotwise/domain';
 import type { AppConfig } from '../../../platform/config/app-config.js';
 import type { MessengerLinks } from '../application/notification-settings.js';
 

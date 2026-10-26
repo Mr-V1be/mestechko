@@ -1,6 +1,6 @@
-import { useLocale } from '@mestechko/booking-ui';
-import { offersMessenger } from '@mestechko/domain';
-import { breakpoints, EmptyIllustration, Skeleton, StatePanel, useMediaQuery } from '@mestechko/ui';
+import { useLocale } from '@slotwise/booking-ui';
+import { offersMessenger } from '@slotwise/domain';
+import { breakpoints, EmptyIllustration, Skeleton, StatePanel, useMediaQuery } from '@slotwise/ui';
 import { MessagesSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';

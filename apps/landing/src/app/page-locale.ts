@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 
 /**
  * Where each language's page of the site lives, under the site's base path. Every page

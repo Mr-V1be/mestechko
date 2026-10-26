@@ -1,4 +1,4 @@
-import { Temporal } from '@mestechko/domain';
+import { Temporal } from '@slotwise/domain';
 import { fixtureTimeZone } from './tenant-fixture.js';
 
 /** An instant of a local time `days` from today at the fixture's location, as ISO. */

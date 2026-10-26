@@ -1,5 +1,5 @@
-import { errorMessage, useFormat } from '@mestechko/booking-ui';
-import { IconButton, ListGroup, ListItem, useToast } from '@mestechko/ui';
+import { errorMessage, useFormat } from '@slotwise/booking-ui';
+import { IconButton, ListGroup, ListItem, useToast } from '@slotwise/ui';
 import { Hourglass, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLeaveWaitlist, useWaitlist } from '../../platform/api/lifecycle-queries';

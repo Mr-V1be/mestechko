@@ -1,6 +1,6 @@
-import type { Formatters } from '@mestechko/booking-ui';
-import type { ScheduleBooking } from '@mestechko/contracts/client';
-import type { BookingStatus } from '@mestechko/domain';
+import type { Formatters } from '@slotwise/booking-ui';
+import type { ScheduleBooking } from '@slotwise/contracts/client';
+import type { BookingStatus } from '@slotwise/domain';
 import type { ReactNode } from 'react';
 
 const MINUTES_PER_HOUR = 60;

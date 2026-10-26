@@ -1,5 +1,5 @@
 {
-  "name": "@mestechko/domain",
+  "name": "@slotwise/domain",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "@mestechko/source": "./src/index.ts",
+      "@slotwise/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }

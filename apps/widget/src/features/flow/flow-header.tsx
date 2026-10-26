@@ -1,6 +1,6 @@
-import { LanguageMenu } from '@mestechko/booking-ui';
-import type { PublicBusiness } from '@mestechko/contracts/client';
-import { IconButton, Select } from '@mestechko/ui';
+import { LanguageMenu } from '@slotwise/booking-ui';
+import type { PublicBusiness } from '@slotwise/contracts/client';
+import { IconButton, Select } from '@slotwise/ui';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { flowSteps, type FlowStep } from './flow-state';

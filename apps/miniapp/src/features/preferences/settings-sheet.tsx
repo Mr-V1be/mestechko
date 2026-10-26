@@ -1,6 +1,6 @@
-import { errorMessage, LanguageList, storedLocale, useLocale } from '@mestechko/booking-ui';
-import { Sheet, useToast } from '@mestechko/ui';
-import type { Locale } from '@mestechko/domain';
+import { errorMessage, LanguageList, storedLocale, useLocale } from '@slotwise/booking-ui';
+import { Sheet, useToast } from '@slotwise/ui';
+import type { Locale } from '@slotwise/domain';
 import { useEffect, useEffectEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePreferences, useSaveLocale } from '../../platform/api/preference-queries';

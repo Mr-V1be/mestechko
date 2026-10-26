@@ -1,5 +1,5 @@
-import type { AvailableDay } from '@mestechko/contracts';
-import { Temporal, type Clock } from '@mestechko/domain';
+import type { AvailableDay } from '@slotwise/contracts';
+import { Temporal, type Clock } from '@slotwise/domain';
 import { notFound } from '../../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';
 import type { ClientDirectory, CustomerIdentities } from '../../../clients/application/ports.js';

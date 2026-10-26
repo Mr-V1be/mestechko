@@ -1,5 +1,5 @@
 import { Controller, Get, Header, Inject, Query } from '@nestjs/common';
-import { isLocale, type Locale } from '@mestechko/domain';
+import { isLocale, type Locale } from '@slotwise/domain';
 import { RequestLocale } from '../../../platform/http/request-locale.js';
 import { TRANSLATIONS, type Translations } from '../../../shared/application/translations.js';
 import { renderReturnPage } from './payment-return-page.js';

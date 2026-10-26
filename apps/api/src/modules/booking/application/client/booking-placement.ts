@@ -9,7 +9,7 @@ import {
   type BookingSource,
   type Clock,
   type Money,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { CatalogReader } from '../../../catalog/application/catalog-reader.js';

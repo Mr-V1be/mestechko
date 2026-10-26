@@ -1,4 +1,4 @@
-import type { Clock } from '@mestechko/domain';
+import type { Clock } from '@slotwise/domain';
 import { z } from 'zod';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { EmulatedMessage, EmulatorStore } from './ports.js';

@@ -1,5 +1,5 @@
-import { useVocabulary } from '@mestechko/booking-ui';
-import type { Membership, VerticalSummary } from '@mestechko/contracts/client';
+import { useVocabulary } from '@slotwise/booking-ui';
+import type { Membership, VerticalSummary } from '@slotwise/contracts/client';
 import { useTranslation } from 'react-i18next';
 
 type Role = Membership['role'];

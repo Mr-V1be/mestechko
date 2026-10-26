@@ -16,7 +16,7 @@ COPY . .
 ARG APP
 RUN test -n "$APP" || (echo "Pass --build-arg APP=landing|cabinet|miniapp|widget" && exit 1)
 RUN --mount=type=cache,id=mestechko-pnpm,target=/pnpm/store \
-    pnpm install --offline --frozen-lockfile --filter "@mestechko/${APP}..."
+    pnpm install --offline --frozen-lockfile --filter "@slotwise/${APP}..."
 # Public addresses are part of the bundle: Vite reads them at build time.
 ARG VITE_API_BASE_URL=/api
 ARG VITE_DEMO_MODE=false
@@ -32,7 +32,7 @@ ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
     VITE_CABINET_URL=$VITE_CABINET_URL \
     VITE_MINIAPP_URL=$VITE_MINIAPP_URL \
     VITE_BOT_URL=$VITE_BOT_URL
-RUN pnpm --filter "@mestechko/${APP}" build && mv "apps/${APP}/dist" /site
+RUN pnpm --filter "@slotwise/${APP}" build && mv "apps/${APP}/dist" /site
 
 FROM caddy:2.11.4-alpine AS runtime
 RUN addgroup -S -g 10001 web && adduser -S -D -H -u 10001 -G web web \

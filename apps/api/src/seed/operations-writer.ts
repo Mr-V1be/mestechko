@@ -6,7 +6,7 @@ import {
   type LedgerReason,
   type LoyaltySettings,
   type PlainDate,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { Transaction } from 'kysely';
 import type { Database } from '../platform/db/database.js';
 import type { IdGenerator } from '../shared/application/ports.js';

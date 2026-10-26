@@ -1,7 +1,7 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { LedgerEntry } from '@mestechko/contracts/client';
-import { currencies, type CurrencyCode, type LedgerAccount } from '@mestechko/domain';
-import { Button, ListGroup, ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { LedgerEntry } from '@slotwise/contracts/client';
+import { currencies, type CurrencyCode, type LedgerAccount } from '@slotwise/domain';
+import { Button, ListGroup, ListItem } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { Banknote, Coins, Ticket, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';

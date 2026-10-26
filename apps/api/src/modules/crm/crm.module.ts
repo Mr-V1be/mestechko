@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { localeIds } from '@mestechko/domain';
+import { localeIds } from '@slotwise/domain';
 import {
   CLOCK,
   ID_GENERATOR,

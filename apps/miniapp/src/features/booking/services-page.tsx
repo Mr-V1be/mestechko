@@ -1,6 +1,6 @@
-import { useFormat, useVocabulary } from '@mestechko/booking-ui';
-import { incompatibleWith } from '@mestechko/domain';
-import { Checkbox, EmptyIllustration, ListGroup, ListItem, StatePanel } from '@mestechko/ui';
+import { useFormat, useVocabulary } from '@slotwise/booking-ui';
+import { incompatibleWith } from '@slotwise/domain';
+import { Checkbox, EmptyIllustration, ListGroup, ListItem, StatePanel } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useServices } from '../../platform/api/queries';

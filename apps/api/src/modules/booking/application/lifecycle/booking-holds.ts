@@ -1,4 +1,4 @@
-import { holdReasons, type Clock } from '@mestechko/domain';
+import { holdReasons, type Clock } from '@slotwise/domain';
 import { z } from 'zod';
 import { defineJob, type JobHandler } from '../../../../shared/application/job-queue.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';

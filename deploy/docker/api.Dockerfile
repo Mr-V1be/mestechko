@@ -15,11 +15,11 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
 RUN --mount=type=cache,id=mestechko-pnpm,target=/pnpm/store pnpm fetch
 COPY . .
 RUN --mount=type=cache,id=mestechko-pnpm,target=/pnpm/store \
-    pnpm install --offline --frozen-lockfile --filter "@mestechko/api..."
-RUN pnpm --filter "@mestechko/api..." build
+    pnpm install --offline --frozen-lockfile --filter "@slotwise/api..."
+RUN pnpm --filter "@slotwise/api..." build
 # A self-contained copy: compiled code and production dependencies only.
 RUN --mount=type=cache,id=mestechko-pnpm,target=/pnpm/store \
-    pnpm --filter @mestechko/api deploy --prod --legacy /out
+    pnpm --filter @slotwise/api deploy --prod --legacy /out
 
 FROM node:24.21.0-alpine AS runtime
 ENV NODE_ENV=production

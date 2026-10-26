@@ -1,5 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
-import { getMiniAppNotifications, type RouteResult } from '@mestechko/contracts';
+import { getMiniAppNotifications, type RouteResult } from '@slotwise/contracts';
 import { TelegramClient } from '../../../platform/http/auth.guard.js';
 import { ContractRoute } from '../../../platform/http/contract-route.js';
 import type { TelegramUser } from '../../../platform/http/principal.js';

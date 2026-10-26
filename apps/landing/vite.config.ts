@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react';
-import { appBasePath } from '@mestechko/ui/app-base';
-import { localeBootScript } from '@mestechko/ui/locale-boot';
-import { themeBootScript } from '@mestechko/ui/theme-boot';
+import { appBasePath } from '@slotwise/ui/app-base';
+import { localeBootScript } from '@slotwise/ui/locale-boot';
+import { themeBootScript } from '@slotwise/ui/theme-boot';
 import { defaultClientConditions, defineConfig, loadEnv, type Plugin } from 'vite';
 // The language registry itself, read at build time: the boot script runs before any module.
 import { fallbackLocale } from '../../packages/domain/src/locales/locales.ts';
@@ -32,8 +32,8 @@ export default defineConfig(({ mode }) => {
     envDir: ENV_DIR,
     base,
     plugins: [react(), headBoot(base)],
-    resolve: { conditions: ['@mestechko/source', ...defaultClientConditions] },
-    ssr: { noExternal: true, resolve: { conditions: ['@mestechko/source'] } },
+    resolve: { conditions: ['@slotwise/source', ...defaultClientConditions] },
+    ssr: { noExternal: true, resolve: { conditions: ['@slotwise/source'] } },
     server: { host: '127.0.0.1', port: 46250, strictPort: true },
     preview: { host: '127.0.0.1', port: 46251, strictPort: true },
     build: {

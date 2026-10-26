@@ -1,5 +1,5 @@
-import type { ClientNote } from '@mestechko/contracts/client';
-import { Button, ConfirmDialog, IconButton, ListGroup, TextField, useToast } from '@mestechko/ui';
+import type { ClientNote } from '@slotwise/contracts/client';
+import { Button, ConfirmDialog, IconButton, ListGroup, TextField, useToast } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { Plus, Trash2 } from 'lucide-react';
 import { useState, type SyntheticEvent } from 'react';

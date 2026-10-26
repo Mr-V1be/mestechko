@@ -1,6 +1,6 @@
-import type { BusinessReport } from '@mestechko/contracts/client';
-import { metricChange, metricValue } from '@mestechko/domain';
-import { StatTile } from '@mestechko/ui';
+import type { BusinessReport } from '@slotwise/contracts/client';
+import { metricChange, metricValue } from '@slotwise/domain';
+import { StatTile } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { metricViews } from './metric-views';
 import { useMetricFormat } from './use-metric-format';

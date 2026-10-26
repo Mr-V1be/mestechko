@@ -1,5 +1,5 @@
-import type { Me } from '@mestechko/contracts';
-import { roles, type VerticalRegistry } from '@mestechko/domain';
+import type { Me } from '@slotwise/contracts';
+import { roles, type VerticalRegistry } from '@slotwise/domain';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import { verticalSummaryOf } from '../../tenancy/application/vertical-summary.js';
 import type { MembershipDirectory } from '../../tenancy/application/business-directory.js';

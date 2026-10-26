@@ -1,4 +1,4 @@
-import { Temporal, type Clock } from '@mestechko/domain';
+import { Temporal, type Clock } from '@slotwise/domain';
 
 /** A clock the test moves: reminders become due without waiting a day. */
 export class MutableClock implements Clock {

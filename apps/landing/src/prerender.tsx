@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 import { StrictMode } from 'react';
 import { renderToString } from 'react-dom/server';
 import { App } from './app/app';

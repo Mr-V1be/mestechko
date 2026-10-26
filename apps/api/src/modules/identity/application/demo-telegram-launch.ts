@@ -1,5 +1,5 @@
 import { randomInt } from 'node:crypto';
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { BusinessDirectory } from '../../tenancy/application/business-directory.js';
 import type { Translations } from '../../../shared/application/translations.js';

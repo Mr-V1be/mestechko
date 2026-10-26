@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 import { createFrame, shadowHost } from './embed-frame';
 import type { LoaderConfig } from './loader-config';
 import { initialLoaderLocale, loaderTextsOf } from './loader-texts';

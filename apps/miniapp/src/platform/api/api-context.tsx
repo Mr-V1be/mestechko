@@ -1,4 +1,4 @@
-import { createApiClient, type ApiClient } from '@mestechko/contracts/client';
+import { createApiClient, type ApiClient } from '@slotwise/contracts/client';
 import { createContext, use, useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';

@@ -1,4 +1,4 @@
-import type { Location, PublicBusiness } from '@mestechko/contracts/client';
+import type { Location, PublicBusiness } from '@slotwise/contracts/client';
 import { createContext, use } from 'react';
 
 export const CurrentBusinessContext = createContext<PublicBusiness | null>(null);

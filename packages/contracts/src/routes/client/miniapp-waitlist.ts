@@ -1,4 +1,4 @@
-import { dayPartIds } from '@mestechko/domain';
+import { dayPartIds } from '@slotwise/domain';
 import { z } from 'zod';
 import { instantSchema, localDateSchema, uuidSchema } from '../../primitives.js';
 import { defineRoute } from '../../route.js';

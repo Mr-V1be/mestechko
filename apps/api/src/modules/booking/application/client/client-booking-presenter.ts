@@ -1,5 +1,5 @@
-import type { ClientBooking } from '@mestechko/contracts';
-import type { Clock } from '@mestechko/domain';
+import type { ClientBooking } from '@slotwise/contracts';
+import type { Clock } from '@slotwise/domain';
 import { notFound } from '../../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { Prepayments } from '../../../payments/application/prepayments.js';

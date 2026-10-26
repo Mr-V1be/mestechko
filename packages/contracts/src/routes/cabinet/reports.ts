@@ -1,4 +1,4 @@
-import { reportMetricIds } from '@mestechko/domain';
+import { reportMetricIds } from '@slotwise/domain';
 import { z } from 'zod';
 import { currencySchema, localDateSchema, uuidSchema } from '../../primitives.js';
 import { defineRoute } from '../../route.js';

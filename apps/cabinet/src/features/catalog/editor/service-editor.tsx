@@ -1,6 +1,6 @@
-import { useVocabulary } from '@mestechko/booking-ui';
-import type { CabinetCatalog, ServiceAdmin, VerticalSummary } from '@mestechko/contracts/client';
-import type { CurrencyCode } from '@mestechko/domain';
+import { useVocabulary } from '@slotwise/booking-ui';
+import type { CabinetCatalog, ServiceAdmin, VerticalSummary } from '@slotwise/contracts/client';
+import type { CurrencyCode } from '@slotwise/domain';
 import {
   Button,
   ConfirmDialog,
@@ -8,7 +8,7 @@ import {
   Sheet,
   StatePanel,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTeamMembers } from '../../../platform/api/catalog-queries';

@@ -1,5 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
-import { getBusinessReport, type RouteInput, type RouteResult } from '@mestechko/contracts';
+import { getBusinessReport, type RouteInput, type RouteResult } from '@slotwise/contracts';
 import { CurrentBusinessAccess } from '../../../platform/http/auth.guard.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import type { BusinessAccess } from '../../../shared/application/business-access.js';

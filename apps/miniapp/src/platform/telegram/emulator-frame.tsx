@@ -1,4 +1,4 @@
-import { DemoLinks } from '@mestechko/booking-ui';
+import { DemoLinks } from '@slotwise/booking-ui';
 import { appConfig } from '../../app/config';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Ellipsis } from 'lucide-react';
@@ -12,7 +12,7 @@ import {
   Sheet,
   useTheme,
   type ThemePreference,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { Check, ChevronRight, Settings } from 'lucide-react';
 import { useLayoutEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { emulatorChrome } from './emulator-chrome';

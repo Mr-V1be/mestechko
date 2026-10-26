@@ -1,6 +1,6 @@
-import { DocumentLocale } from '@mestechko/booking-ui';
-import { isRetryableError } from '@mestechko/contracts/client';
-import { ThemeProvider, ToastProvider } from '@mestechko/ui';
+import { DocumentLocale } from '@slotwise/booking-ui';
+import { isRetryableError } from '@slotwise/contracts/client';
+import { ThemeProvider, ToastProvider } from '@slotwise/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { i18n } from 'i18next';
 import { useState } from 'react';

@@ -1,4 +1,4 @@
-import { apiRoutes, type FileSpec } from '@mestechko/contracts';
+import { apiRoutes, type FileSpec } from '@slotwise/contracts';
 import type { FastifyInstance } from 'fastify';
 
 const uploads: FileSpec[] = Object.values(apiRoutes).flatMap((route) =>

@@ -1,4 +1,4 @@
-import { checkoutPresentationIds, type CheckoutPresentation } from '@mestechko/domain';
+import { checkoutPresentationIds, type CheckoutPresentation } from '@slotwise/domain';
 
 /**
  * What a booking attempt in this browser tab became: the booking, the token that proves

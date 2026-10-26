@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 
 /** Namespaces shared by every application. */
 export const sharedNamespaces = ['common', 'terms', 'booking', 'catalog'] as const;

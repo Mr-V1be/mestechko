@@ -1,5 +1,5 @@
-import { isNotFound, useVocabulary, VerticalIcon } from '@mestechko/booking-ui';
-import { Skeleton } from '@mestechko/ui';
+import { isNotFound, useVocabulary, VerticalIcon } from '@slotwise/booking-ui';
+import { Skeleton } from '@slotwise/ui';
 import { CalendarCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, useParams } from 'react-router';

@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { CabinetBookingDetails } from '@mestechko/contracts/client';
-import { Badge, ListGroup, ListItem, type BadgeTone } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { CabinetBookingDetails } from '@slotwise/contracts/client';
+import { Badge, ListGroup, ListItem, type BadgeTone } from '@slotwise/ui';
 import { BellRing, Hourglass, Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

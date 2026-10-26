@@ -1,4 +1,4 @@
-import { Button, SegmentedControl, useToast } from '@mestechko/ui';
+import { Button, SegmentedControl, useToast } from '@slotwise/ui';
 import { Code2, Copy, ExternalLink } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';

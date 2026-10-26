@@ -1,5 +1,5 @@
-import type { ServiceAdmin } from '@mestechko/contracts/client';
-import { ConfirmDialog, useToast } from '@mestechko/ui';
+import type { ServiceAdmin } from '@slotwise/contracts/client';
+import { ConfirmDialog, useToast } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateService } from '../../platform/api/catalog-queries';

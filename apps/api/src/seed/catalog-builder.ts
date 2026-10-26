@@ -11,7 +11,7 @@ import {
   type StaffAbsence,
   type StaffCandidate,
   type VerticalDefinition,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { IdGenerator } from '../shared/application/ports.js';
 import type { DemoBusiness, DemoDay, DemoPattern } from './definitions/types.js';
 

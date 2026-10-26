@@ -1,4 +1,4 @@
-import type { PlainDate, ProductionCalendar } from '@mestechko/domain';
+import type { PlainDate, ProductionCalendar } from '@slotwise/domain';
 import type { DemoDemand } from './definitions/types.js';
 
 const MINUTES_PER_HOUR = 60;

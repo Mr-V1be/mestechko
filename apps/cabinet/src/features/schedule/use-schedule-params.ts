@@ -1,4 +1,4 @@
-import { scheduleAxes, type ScheduleAxis } from '@mestechko/contracts/client';
+import { scheduleAxes, type ScheduleAxis } from '@slotwise/contracts/client';
 import { useLayoutEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
 import { todayIn } from './timeline-model';

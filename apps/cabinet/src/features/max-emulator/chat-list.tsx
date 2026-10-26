@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { MaxEmulatorChat } from '@mestechko/contracts/client';
-import { Avatar, ListGroup, ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { MaxEmulatorChat } from '@slotwise/contracts/client';
+import { Avatar, ListGroup, ListItem } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { RichText } from './rich-text';
 import styles from './max-emulator.module.css';

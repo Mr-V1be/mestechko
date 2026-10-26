@@ -6,7 +6,7 @@ import type {
   StaffAbsenceView,
   StaffAssignmentView,
   StaffDayException,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import {
   dayTemplate,
   formatWallTime,
@@ -18,7 +18,7 @@ import {
   type ScheduleChange,
   type SchedulePattern,
   type WallInterval,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { notFound } from '../../../shared/application/application-error.js';
 import type { StaffScheduleSnapshot } from '../../scheduling/application/ports.js';
 

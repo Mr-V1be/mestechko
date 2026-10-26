@@ -1,4 +1,4 @@
-import type { ClientBooking } from '@mestechko/contracts';
+import type { ClientBooking } from '@slotwise/contracts';
 import {
   bookingStatuses,
   canConfirmAttendance,
@@ -12,7 +12,7 @@ import {
   type BookingLifecycleEvent,
   type Clock,
   type MessengerChannel,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';

@@ -1,6 +1,6 @@
-import { apiAssetUrl, BookingStatusBadge, formatPhone, useFormat } from '@mestechko/booking-ui';
-import type { CabinetBookingDetails } from '@mestechko/contracts/client';
-import { Avatar, Badge, Button, ListGroup, ListItem, Sheet, Skeleton } from '@mestechko/ui';
+import { apiAssetUrl, BookingStatusBadge, formatPhone, useFormat } from '@slotwise/booking-ui';
+import type { CabinetBookingDetails } from '@slotwise/contracts/client';
+import { Avatar, Badge, Button, ListGroup, ListItem, Sheet, Skeleton } from '@slotwise/ui';
 import { CalendarClock, MapPin, MessageSquareText, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';

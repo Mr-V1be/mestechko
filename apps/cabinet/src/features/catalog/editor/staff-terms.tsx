@@ -1,5 +1,5 @@
-import { apiAssetUrl } from '@mestechko/booking-ui';
-import type { TeamMemberSummary } from '@mestechko/contracts/client';
+import { apiAssetUrl } from '@slotwise/booking-ui';
+import type { TeamMemberSummary } from '@slotwise/contracts/client';
 import {
   Avatar,
   Badge,
@@ -9,7 +9,7 @@ import {
   ListItem,
   NumberField,
   Skeleton,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { CircleAlert } from 'lucide-react';
 import { Fragment, useId } from 'react';
 import { useTranslation } from 'react-i18next';

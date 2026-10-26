@@ -1,11 +1,11 @@
-import { useFormat } from '@mestechko/booking-ui';
+import { useFormat } from '@slotwise/booking-ui';
 import {
   ApiError,
   normalizePhone,
   type getCabinetOverview,
   type RouteResult,
-} from '@mestechko/contracts/client';
-import { Button, Sheet, Skeleton, TextField, useToast } from '@mestechko/ui';
+} from '@slotwise/contracts/client';
+import { Button, Sheet, Skeleton, TextField, useToast } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';

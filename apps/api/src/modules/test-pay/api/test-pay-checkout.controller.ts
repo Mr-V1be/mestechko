@@ -9,7 +9,7 @@ import {
   Post,
   Redirect,
 } from '@nestjs/common';
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 import { APP_CONFIG, type AppConfig } from '../../../platform/config/app-config.js';
 import type { Clock } from '../../../shared/application/ports.js';
 import { CLOCK } from '../../../shared/application/ports.js';

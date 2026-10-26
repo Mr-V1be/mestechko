@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 
 /** Texts of one namespace in one language, as the server writes them. */
 export interface Translator {

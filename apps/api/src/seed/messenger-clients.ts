@@ -1,4 +1,4 @@
-import { planBookingNotifications } from '@mestechko/domain';
+import { planBookingNotifications } from '@slotwise/domain';
 import type { Transaction } from 'kysely';
 import type { Database } from '../platform/db/database.js';
 import type { IdGenerator } from '../shared/application/ports.js';

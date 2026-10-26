@@ -1,5 +1,5 @@
 import { metrics, type Counter } from '@opentelemetry/api';
-import type { BookingSource } from '@mestechko/domain';
+import type { BookingSource } from '@slotwise/domain';
 import type { BookingTelemetry } from '../application/ports.js';
 
 export class OtelBookingTelemetry implements BookingTelemetry {

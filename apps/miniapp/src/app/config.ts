@@ -1,4 +1,4 @@
-import type { DemoLinkTargets } from '@mestechko/booking-ui';
+import type { DemoLinkTargets } from '@slotwise/booking-ui';
 
 export interface AppConfig {
   /** Prefix of API requests; same-origin `/api` behind the proxy. */

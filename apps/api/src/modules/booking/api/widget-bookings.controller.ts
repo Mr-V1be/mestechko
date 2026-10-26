@@ -4,8 +4,8 @@ import {
   getWidgetBooking,
   type RouteInput,
   type RouteResult,
-} from '@mestechko/contracts';
-import type { Locale } from '@mestechko/domain';
+} from '@slotwise/contracts';
+import type { Locale } from '@slotwise/domain';
 import type { FastifyRequest } from 'fastify';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import { RequestLocale } from '../../../platform/http/request-locale.js';

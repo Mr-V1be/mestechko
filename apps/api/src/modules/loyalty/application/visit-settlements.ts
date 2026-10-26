@@ -6,7 +6,7 @@ import {
   type LoyaltySettings,
   type PlainDate,
   type VisitSettlement,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { LedgerBook } from './ledger-book.js';
 import type { ClientPassRecord, LedgerStore, LoyaltyStore } from './ports.js';

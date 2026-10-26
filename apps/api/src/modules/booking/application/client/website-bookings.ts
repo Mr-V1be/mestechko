@@ -1,5 +1,5 @@
-import type { WidgetBooking } from '@mestechko/contracts';
-import type { Clock, Locale, Money } from '@mestechko/domain';
+import type { WidgetBooking } from '@slotwise/contracts';
+import type { Clock, Locale, Money } from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { RateLimiter } from '../../../../shared/application/rate-limits.js';

@@ -1,4 +1,4 @@
-import { useVocabulary } from '@mestechko/booking-ui';
+import { useVocabulary } from '@slotwise/booking-ui';
 import {
   Button,
   EmptyIllustration,
@@ -7,7 +7,7 @@ import {
   Skeleton,
   StatePanel,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { FolderPlus, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

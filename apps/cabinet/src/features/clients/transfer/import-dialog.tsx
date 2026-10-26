@@ -1,5 +1,5 @@
-import type { ClientImportResult } from '@mestechko/contracts/client';
-import { Button, Dialog, FileButton, Spinner, StatTile, useToast } from '@mestechko/ui';
+import type { ClientImportResult } from '@slotwise/contracts/client';
+import { Button, Dialog, FileButton, Spinner, StatTile, useToast } from '@slotwise/ui';
 import { FileUp } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

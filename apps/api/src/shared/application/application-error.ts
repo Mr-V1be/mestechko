@@ -1,4 +1,4 @@
-import type { ApiErrorCode } from '@mestechko/contracts';
+import type { ApiErrorCode } from '@slotwise/contracts';
 
 /** Expected failure of a use case, expressed in the API's stable error vocabulary. */
 export class ApplicationError extends Error {

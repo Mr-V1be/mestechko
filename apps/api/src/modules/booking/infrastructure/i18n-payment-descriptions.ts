@@ -1,4 +1,4 @@
-import { formatInstant } from '@mestechko/i18n';
+import { formatInstant } from '@slotwise/i18n';
 import type { Translations } from '../../../shared/application/translations.js';
 import type { PaymentDescriptions } from '../application/ports.js';
 

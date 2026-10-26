@@ -1,4 +1,4 @@
-import type { Clock } from '@mestechko/domain';
+import type { Clock } from '@slotwise/domain';
 import { parse, sign, validate } from '@tma.js/init-data-node';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { TelegramUser } from '../../../shared/application/messenger-user.js';

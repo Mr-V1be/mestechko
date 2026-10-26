@@ -1,11 +1,11 @@
-import { apiAssetUrl, useVocabulary, type Formatters } from '@mestechko/booking-ui';
+import { apiAssetUrl, useVocabulary, type Formatters } from '@slotwise/booking-ui';
 import type {
   getSchedule,
   RouteResult,
   ScheduleColumn,
   VerticalSummary,
-} from '@mestechko/contracts/client';
-import { Avatar } from '@mestechko/ui';
+} from '@slotwise/contracts/client';
+import { Avatar } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { Armchair } from 'lucide-react';
 import { appConfig } from '../../app/config';

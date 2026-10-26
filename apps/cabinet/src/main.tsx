@@ -1,5 +1,5 @@
-import '@mestechko/ui/styles.css';
-import { resolveBrowserLocale } from '@mestechko/booking-ui';
+import '@slotwise/ui/styles.css';
+import { resolveBrowserLocale } from '@slotwise/booking-ui';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/app';

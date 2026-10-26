@@ -1,4 +1,4 @@
-import type { ClientBooking } from '@mestechko/contracts/client';
+import type { ClientBooking } from '@slotwise/contracts/client';
 
 /** How long a returning payer waits for the confirmation before hearing it is late. */
 export const RETURN_WAIT_MS = 30_000;

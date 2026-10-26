@@ -5,7 +5,7 @@ import type {
 } from '@nestjs/common';
 import type { Redis } from 'ioredis';
 import type { PinoLogger } from 'nestjs-pino';
-import type { MessengerChannel } from '@mestechko/domain';
+import type { MessengerChannel } from '@slotwise/domain';
 import type { AppConfig } from '../../../../platform/config/app-config.js';
 import type { InboundEvent, InboundPerson } from '../../application/channel.js';
 import type { BotConversation } from '../../application/conversation/bot-conversation.js';

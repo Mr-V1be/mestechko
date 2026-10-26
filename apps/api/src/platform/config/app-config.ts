@@ -1,4 +1,4 @@
-import { checkoutPresentationIds, type CheckoutPresentation } from '@mestechko/domain';
+import { checkoutPresentationIds, type CheckoutPresentation } from '@slotwise/domain';
 import { z } from 'zod';
 import { DEFAULT_HEARTBEAT_FILE } from '../observability/heartbeat-file.js';
 

@@ -1,5 +1,5 @@
-import { ApiError, type Membership } from '@mestechko/contracts/client';
-import { Button, EmptyIllustration, StatePanel } from '@mestechko/ui';
+import { ApiError, type Membership } from '@slotwise/contracts/client';
+import { Button, EmptyIllustration, StatePanel } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';

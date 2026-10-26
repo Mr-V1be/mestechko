@@ -1,4 +1,4 @@
-import { useTheme } from '@mestechko/ui';
+import { useTheme } from '@slotwise/ui';
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import type { Loop } from './media';
 import { ThemedImage } from './themed-image';

@@ -6,7 +6,7 @@ import {
   YearlyProductionCalendar,
   type Clock,
   type ProductionCalendar,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { sql, type Kysely } from 'kysely';
 import type { Database } from '../platform/db/database.js';
 import { KyselyUnitOfWork } from '../platform/db/kysely-unit-of-work.js';

@@ -1,4 +1,4 @@
-import { useFormat, useLocale } from '@mestechko/booking-ui';
+import { useFormat, useLocale } from '@slotwise/booking-ui';
 import {
   locales,
   pricingPlanIds,
@@ -7,8 +7,8 @@ import {
   type PlanFeature,
   type PricingPlan,
   type PricingPlanId,
-} from '@mestechko/domain';
-import { Badge, Button } from '@mestechko/ui';
+} from '@slotwise/domain';
+import { Badge, Button } from '@slotwise/ui';
 import { Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import page from '../../app/page.module.css';

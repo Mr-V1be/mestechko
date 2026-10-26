@@ -1,6 +1,6 @@
-import { errorMessage, useFormat } from '@mestechko/booking-ui';
-import type { ClientBooking } from '@mestechko/contracts/client';
-import { Button, Sheet, useToast } from '@mestechko/ui';
+import { errorMessage, useFormat } from '@slotwise/booking-ui';
+import type { ClientBooking } from '@slotwise/contracts/client';
+import { Button, Sheet, useToast } from '@slotwise/ui';
 import { CalendarClock, CircleCheck, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

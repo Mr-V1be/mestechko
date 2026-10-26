@@ -1,5 +1,5 @@
-import { createAppI18n, localeLoader } from '@mestechko/booking-ui';
-import type { Locale } from '@mestechko/domain';
+import { createAppI18n, localeLoader } from '@slotwise/booking-ui';
+import type { Locale } from '@slotwise/domain';
 import type { i18n } from 'i18next';
 
 /** Every file in `locales/<locale>` is a namespace named after it: `en/team.json` → `team:`. */

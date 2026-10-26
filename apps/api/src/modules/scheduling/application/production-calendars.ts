@@ -2,7 +2,7 @@ import {
   emptyProductionCalendar,
   YearlyProductionCalendar,
   type ProductionCalendar,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { JobQueue } from '../../../shared/application/job-queue.js';
 import { productionCalendarSyncJob, syncDeduplicationKey } from './production-calendar-jobs.js';
 import type { ProductionCalendarSource, ProductionCalendarStore, WarningLogger } from './ports.js';

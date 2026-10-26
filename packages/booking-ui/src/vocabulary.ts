@@ -1,4 +1,4 @@
-import type { VerticalSummary } from '@mestechko/contracts/client';
+import type { VerticalSummary } from '@slotwise/contracts/client';
 import { useTranslation } from 'react-i18next';
 
 /**

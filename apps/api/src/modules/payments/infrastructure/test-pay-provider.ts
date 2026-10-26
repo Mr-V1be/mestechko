@@ -1,5 +1,5 @@
 import { timingSafeEqual } from 'node:crypto';
-import type { CheckoutPresentation } from '@mestechko/domain';
+import type { CheckoutPresentation } from '@slotwise/domain';
 import { z } from 'zod';
 import {
   InvalidWebhookError,

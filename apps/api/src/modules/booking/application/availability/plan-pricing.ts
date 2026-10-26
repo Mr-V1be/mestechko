@@ -6,7 +6,7 @@ import {
   type BookingQuote,
   type CurrencyCode,
   type Money,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type {
   ServiceView,
   StaffServiceTerms,

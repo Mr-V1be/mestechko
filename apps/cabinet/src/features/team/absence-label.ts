@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { TeamMemberSummary } from '@mestechko/contracts/client';
-import type { AbsenceKind } from '@mestechko/domain';
+import { useFormat } from '@slotwise/booking-ui';
+import type { TeamMemberSummary } from '@slotwise/contracts/client';
+import type { AbsenceKind } from '@slotwise/domain';
 import { Coffee, Thermometer, TreePalm, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

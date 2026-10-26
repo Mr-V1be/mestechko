@@ -1,5 +1,5 @@
-import type { ClientFileFormat } from '@mestechko/contracts';
-import type { Locale } from '@mestechko/domain';
+import type { ClientFileFormat } from '@slotwise/contracts';
+import type { Locale } from '@slotwise/domain';
 
 export type SpreadsheetCell = string | number | null;
 

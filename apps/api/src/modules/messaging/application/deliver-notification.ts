@@ -1,4 +1,4 @@
-import { isNotificationStale, resolveLocale, type Clock, type Locale } from '@mestechko/domain';
+import { isNotificationStale, resolveLocale, type Clock, type Locale } from '@slotwise/domain';
 import type { JobHandler } from '../../../shared/application/job-queue.js';
 import type { ClientBookings } from '../../booking/application/client/client-bookings.js';
 import type { MessengerContacts } from '../../clients/application/ports.js';

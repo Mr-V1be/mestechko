@@ -1,6 +1,6 @@
 import { Catch, HttpException, type ArgumentsHost, type ExceptionFilter } from '@nestjs/common';
-import { apiErrors, type ApiErrorBody, type ApiErrorCode } from '@mestechko/contracts';
-import { DomainError } from '@mestechko/domain';
+import { apiErrors, type ApiErrorBody, type ApiErrorCode } from '@slotwise/contracts';
+import { DomainError } from '@slotwise/domain';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { ApplicationError } from '../../shared/application/application-error.js';
 

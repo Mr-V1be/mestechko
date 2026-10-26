@@ -1,6 +1,6 @@
-import { errorMessage, useFormat } from '@mestechko/booking-ui';
-import type { ClientBooking } from '@mestechko/contracts/client';
-import { Button, Callout, useToast } from '@mestechko/ui';
+import { errorMessage, useFormat } from '@slotwise/booking-ui';
+import type { ClientBooking } from '@slotwise/contracts/client';
+import { Button, Callout, useToast } from '@slotwise/ui';
 import { Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

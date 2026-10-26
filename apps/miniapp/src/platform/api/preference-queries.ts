@@ -1,5 +1,5 @@
-import type { ClientPreferences } from '@mestechko/contracts/client';
-import type { Locale } from '@mestechko/domain';
+import type { ClientPreferences } from '@slotwise/contracts/client';
+import type { Locale } from '@slotwise/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApi } from './api-context';
 

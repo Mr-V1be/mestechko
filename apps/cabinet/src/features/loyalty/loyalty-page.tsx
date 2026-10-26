@@ -1,4 +1,4 @@
-import type { PassPlan } from '@mestechko/contracts/client';
+import type { PassPlan } from '@slotwise/contracts/client';
 import {
   Button,
   EmptyIllustration,
@@ -7,7 +7,7 @@ import {
   Skeleton,
   StatePanel,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

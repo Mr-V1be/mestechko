@@ -1,4 +1,4 @@
-import { LockedIllustration, StatePanel } from '@mestechko/ui';
+import { LockedIllustration, StatePanel } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Outlet, ScrollRestoration } from 'react-router';
 import { useHost } from '../../platform/telegram/host-context';

@@ -1,4 +1,4 @@
-import { ApiError } from '@mestechko/contracts/client';
+import { ApiError } from '@slotwise/contracts/client';
 import type { TFunction } from 'i18next';
 
 /** Why the API refused, when it said: a domain rule or a booking conflict. */

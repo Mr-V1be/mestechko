@@ -1,4 +1,4 @@
-import '@mestechko/ui/styles.css';
+import '@slotwise/ui/styles.css';
 import './site.css';
 import { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';

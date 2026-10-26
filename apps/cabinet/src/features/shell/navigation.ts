@@ -1,4 +1,4 @@
-import type { AccessArea, MessengerChannel } from '@mestechko/domain';
+import type { AccessArea, MessengerChannel } from '@slotwise/domain';
 import {
   BookOpenText,
   CalendarDays,

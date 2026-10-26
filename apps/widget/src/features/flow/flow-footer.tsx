@@ -1,5 +1,5 @@
-import { useFormat } from '@mestechko/booking-ui';
-import { Button } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import { Button } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import type { DraftPrice } from './flow-state';
 import styles from './widget.module.css';

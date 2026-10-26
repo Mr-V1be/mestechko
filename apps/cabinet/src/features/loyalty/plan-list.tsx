@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { PassPlan } from '@mestechko/contracts/client';
-import { Badge, ListGroup, ListItem, Menu } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { PassPlan } from '@slotwise/contracts/client';
+import { Badge, ListGroup, ListItem, Menu } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { CircleOff, Pencil, PowerOff, Power, ShoppingBag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

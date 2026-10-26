@@ -1,4 +1,4 @@
-import type { ReportMetric } from '@mestechko/domain';
+import type { ReportMetric } from '@slotwise/domain';
 import { Gauge, Repeat, UserX, Wallet, type LucideIcon } from 'lucide-react';
 
 /** How the part and the whole of a share are counted: time in hours or visits. */

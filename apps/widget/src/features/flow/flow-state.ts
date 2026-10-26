@@ -1,4 +1,4 @@
-import type { CatalogService, Money, StaffOption } from '@mestechko/contracts/client';
+import type { CatalogService, Money, StaffOption } from '@slotwise/contracts/client';
 
 export const flowSteps = ['services', 'staff', 'time', 'contact'] as const;
 export type FlowStep = (typeof flowSteps)[number];

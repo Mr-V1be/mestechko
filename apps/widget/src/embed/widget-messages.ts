@@ -1,4 +1,4 @@
-import { isLocale, type Locale } from '@mestechko/domain';
+import { isLocale, type Locale } from '@slotwise/domain';
 
 /** Marks messages from the widget among everything else the embedding page receives. */
 export const WIDGET_MESSAGE_SOURCE = 'mestechko-widget';

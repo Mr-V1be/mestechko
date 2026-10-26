@@ -1,5 +1,5 @@
-import type { BusinessSettings } from '@mestechko/contracts/client';
-import { Button, ConfirmDialog, TextField, useToast } from '@mestechko/ui';
+import type { BusinessSettings } from '@slotwise/contracts/client';
+import { Button, ConfirmDialog, TextField, useToast } from '@slotwise/ui';
 import { Store, type LucideIcon } from 'lucide-react';
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

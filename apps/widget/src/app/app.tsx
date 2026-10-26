@@ -1,5 +1,5 @@
 import type { i18n } from 'i18next';
-import { EmptyIllustration, StatePanel } from '@mestechko/ui';
+import { EmptyIllustration, StatePanel } from '@slotwise/ui';
 import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rememberBooking, storedBooking, type StoredBooking } from '../embed/booking-tokens';

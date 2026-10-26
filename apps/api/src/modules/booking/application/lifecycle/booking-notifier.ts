@@ -8,7 +8,7 @@ import {
   type BookingSource,
   type MessengerChannel,
   type VisitState,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { MessengerContacts } from '../../../clients/application/ports.js';
 import type {
   NotificationOutbox,

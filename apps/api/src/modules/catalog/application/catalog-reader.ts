@@ -1,4 +1,4 @@
-import type { IncompatiblePair } from '@mestechko/domain';
+import type { IncompatiblePair } from '@slotwise/domain';
 
 export interface LocationView {
   readonly id: string;

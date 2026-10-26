@@ -1,4 +1,4 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import type { MessengerChannel } from '@slotwise/domain';
 
 /** A client card as the CRM shows it. */
 export interface ClientProfile {

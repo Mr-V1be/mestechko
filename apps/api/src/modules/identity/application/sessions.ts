@@ -1,5 +1,5 @@
 import type { RateLimiter } from '../../../shared/application/rate-limits.js';
-import type { Clock, RoleId } from '@mestechko/domain';
+import type { Clock, RoleId } from '@slotwise/domain';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type {

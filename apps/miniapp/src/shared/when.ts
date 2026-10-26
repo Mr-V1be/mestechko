@@ -1,6 +1,6 @@
-import type { Formatters } from '@mestechko/booking-ui';
+import type { Formatters } from '@slotwise/booking-ui';
 import type { TFunction } from 'i18next';
-import { addDays, localDateOf, todayIn } from '@mestechko/booking-ui';
+import { addDays, localDateOf, todayIn } from '@slotwise/booking-ui';
 
 /** "сегодня в 15:45", "завтра в 10:00" or "пн, 6 октября в 10:00" in the location's zone. */
 export function describeWhen(

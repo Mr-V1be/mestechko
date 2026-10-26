@@ -1,5 +1,5 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Temporal } from '@mestechko/domain';
+import { Temporal } from '@slotwise/domain';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { TmaTelegramLaunch } from '../../../src/modules/identity/infrastructure/tma-telegram-launch.js';
 import { createTestApp, TEST_DEMO_KEY } from '../support/test-app.js';

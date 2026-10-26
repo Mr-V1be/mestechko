@@ -1,11 +1,11 @@
-import type { ClientBooking } from '@mestechko/contracts';
+import type { ClientBooking } from '@slotwise/contracts';
 import {
   holdExpiry,
   waitlistOfferStatuses,
   waitlistStatuses,
   type Clock,
   type MessengerChannel,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import type { ClientBookingPresenter } from '../../booking/application/client/client-booking-presenter.js';

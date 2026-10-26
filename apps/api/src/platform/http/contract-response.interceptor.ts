@@ -4,7 +4,7 @@ import {
   type ExecutionContext,
   type NestInterceptor,
 } from '@nestjs/common';
-import { isFileSpec, type RouteSpec, type ServedFile } from '@mestechko/contracts';
+import { isFileSpec, type RouteSpec, type ServedFile } from '@slotwise/contracts';
 import type { FastifyReply } from 'fastify';
 import { map, type Observable } from 'rxjs';
 import { routeSpecOf } from './contract-route.js';

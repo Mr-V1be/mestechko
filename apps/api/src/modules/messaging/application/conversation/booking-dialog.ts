@@ -1,5 +1,5 @@
-import type { ClientBooking } from '@mestechko/contracts';
-import { localDateOf, type Clock, type MessengerChannel } from '@mestechko/domain';
+import type { ClientBooking } from '@slotwise/contracts';
+import { localDateOf, type Clock, type MessengerChannel } from '@slotwise/domain';
 import type { ClientBookings } from '../../../booking/application/client/client-bookings.js';
 import type { ClientBookingChanges } from '../../../booking/application/lifecycle/client-booking-changes.js';
 import type { RescheduleOptions } from '../../../booking/application/lifecycle/reschedule-options.js';

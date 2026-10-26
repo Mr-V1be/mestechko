@@ -4,7 +4,7 @@ import type {
   Membership,
   RouteResult,
   ScheduleAxis,
-} from '@mestechko/contracts/client';
+} from '@slotwise/contracts/client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { NewBookingStart } from '../booking-desk/create-booking-sheet';

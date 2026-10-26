@@ -1,4 +1,4 @@
-import { calendarYear, Temporal, type CalendarDayKind } from '@mestechko/domain';
+import { calendarYear, Temporal, type CalendarDayKind } from '@slotwise/domain';
 import { Queue } from 'bullmq';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {

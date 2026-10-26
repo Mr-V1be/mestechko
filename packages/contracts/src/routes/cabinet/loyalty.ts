@@ -1,4 +1,4 @@
-import { loyaltyKindIds } from '@mestechko/domain';
+import { loyaltyKindIds } from '@slotwise/domain';
 import { z } from 'zod';
 import { moneySchema, uuidSchema } from '../../primitives.js';
 import { defineRoute } from '../../route.js';

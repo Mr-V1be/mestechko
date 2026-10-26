@@ -1,4 +1,4 @@
-import { Temporal } from '@mestechko/domain';
+import { Temporal } from '@slotwise/domain';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {

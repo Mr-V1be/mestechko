@@ -1,4 +1,4 @@
-import { TagInput, type TagInputProps } from '@mestechko/ui';
+import { TagInput, type TagInputProps } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useClientTags } from '../../../platform/api/clients-queries';
 

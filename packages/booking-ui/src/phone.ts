@@ -1,4 +1,4 @@
-import { asDemoPhone, formatDemoPhone, phoneHintOf } from '@mestechko/contracts/client';
+import { asDemoPhone, formatDemoPhone, phoneHintOf } from '@slotwise/contracts/client';
 import { AsYouType, parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js/min';
 
 const DIGITS = /\D/g;

@@ -4,8 +4,8 @@ import {
   errorMessage,
   isNotFound,
   useFormat,
-} from '@mestechko/booking-ui';
-import type { ClientBooking } from '@mestechko/contracts/client';
+} from '@slotwise/booking-ui';
+import type { ClientBooking } from '@slotwise/contracts/client';
 import {
   Avatar,
   Button,
@@ -15,7 +15,7 @@ import {
   ListItem,
   StatePanel,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { CalendarClock, MapPin, MessageSquareText } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

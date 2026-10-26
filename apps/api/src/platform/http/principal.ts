@@ -1,4 +1,4 @@
-import type { AuthKind } from '@mestechko/contracts';
+import type { AuthKind } from '@slotwise/contracts';
 import type { FastifyRequest } from 'fastify';
 import type { BusinessAccess } from '../../shared/application/business-access.js';
 import type { TelegramClientUser } from '../../shared/application/messenger-user.js';

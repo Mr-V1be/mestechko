@@ -1,4 +1,4 @@
-import { normalizePhone, type BookingContact } from '@mestechko/contracts/client';
+import { normalizePhone, type BookingContact } from '@slotwise/contracts/client';
 import type { TFunction } from 'i18next';
 import { appConfig } from '../../app/config';
 

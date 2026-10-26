@@ -1,7 +1,7 @@
-import type { ServiceCategory } from '@mestechko/contracts/client';
-import { useFormat } from '@mestechko/booking-ui';
-import { incompatibleWith } from '@mestechko/domain';
-import { Checkbox, ListGroup, ListItem } from '@mestechko/ui';
+import type { ServiceCategory } from '@slotwise/contracts/client';
+import { useFormat } from '@slotwise/booking-ui';
+import { incompatibleWith } from '@slotwise/domain';
+import { Checkbox, ListGroup, ListItem } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 
 export interface ServicesFieldProps {

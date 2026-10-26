@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 import { describe, expect, it } from 'vitest';
 import { createI18n } from './create-i18n.js';
 

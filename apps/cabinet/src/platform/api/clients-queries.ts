@@ -1,4 +1,4 @@
-import type { ClientCard, ClientNote, clientSorts } from '@mestechko/contracts/client';
+import type { ClientCard, ClientNote, clientSorts } from '@slotwise/contracts/client';
 import {
   keepPreviousData,
   useInfiniteQuery,

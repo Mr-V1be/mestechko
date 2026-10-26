@@ -1,4 +1,4 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import type { MessengerChannel } from '@slotwise/domain';
 import type { MessengerContacts } from '../../clients/application/ports.js';
 
 /** Where a person allows a messenger's bot to write to them, if there is such a link. */

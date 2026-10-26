@@ -1,6 +1,6 @@
-import { useLocale } from '@mestechko/booking-ui';
-import { offersMessenger, type Locale, type MessengerChannel } from '@mestechko/domain';
-import { DeviceFrame, type DeviceKind } from '@mestechko/ui';
+import { useLocale } from '@slotwise/booking-ui';
+import { offersMessenger, type Locale, type MessengerChannel } from '@slotwise/domain';
+import { DeviceFrame, type DeviceKind } from '@slotwise/ui';
 import {
   BarChart3,
   BellRing,

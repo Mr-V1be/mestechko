@@ -6,7 +6,7 @@ import type {
   InstantInterval,
   Locale,
   Occupancy,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 
 /** Time blocked by existing bookings of the current tenant. */
 export interface OccupancyReader {

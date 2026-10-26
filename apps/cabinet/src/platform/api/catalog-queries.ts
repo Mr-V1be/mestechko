@@ -7,7 +7,7 @@ import type {
   setServiceStaff,
   updateService,
   updateServiceCategory,
-} from '@mestechko/contracts/client';
+} from '@slotwise/contracts/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useApi } from './api-context';
 import { useQueryCache } from './query-cache';

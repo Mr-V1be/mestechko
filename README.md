@@ -56,7 +56,7 @@ pnpm dev:landing       # сайт продукта
 | Тестовая касса (страница оплаты)        | открывается из Mini App и виджета при предоплате                        |
 | PostgreSQL / Redis                      | 127.0.0.1:46201 / 127.0.0.1:46202                                       |
 
-Сборка для продакшена: `pnpm build`, просмотр собранных фронтендов — `pnpm --filter @mestechko/cabinet preview` (46221), `pnpm --filter @mestechko/miniapp preview` (46231), `pnpm --filter @mestechko/widget preview` (46241) и `pnpm --filter @mestechko/landing preview` (46251). Продакшен-стек целиком (Docker, Caddy с TLS, бэкапы) — `docker-compose.prod.yml`, см. [docs/deploy.md](docs/deploy.md).
+Сборка для продакшена: `pnpm build`, просмотр собранных фронтендов — `pnpm --filter @slotwise/cabinet preview` (46221), `pnpm --filter @slotwise/miniapp preview` (46231), `pnpm --filter @slotwise/widget preview` (46241) и `pnpm --filter @slotwise/landing preview` (46251). Продакшен-стек целиком (Docker, Caddy с TLS, бэкапы) — `docker-compose.prod.yml`, см. [docs/deploy.md](docs/deploy.md).
 
 Остановить инфраструктуру: `pnpm infra:stop`.
 

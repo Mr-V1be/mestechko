@@ -1,4 +1,4 @@
-import { ApiError, type BusinessRules, type BusinessSettings } from '@mestechko/contracts/client';
+import { ApiError, type BusinessRules, type BusinessSettings } from '@slotwise/contracts/client';
 import type { SettingsChange } from '../../platform/api/settings-queries';
 import { reasonOf } from '../common/error-message';
 import { numberRuleFields, ruleKeys, type NumberRuleKey, type RuleKey } from './rule-fields';

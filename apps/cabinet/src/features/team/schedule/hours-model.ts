@@ -1,4 +1,4 @@
-import type { DayHours } from '@mestechko/contracts/client';
+import type { DayHours } from '@slotwise/contracts/client';
 
 /** Breaks a day may have; the API accepts no more. */
 export const MAX_BREAKS_PER_DAY = 4;

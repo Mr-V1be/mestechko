@@ -1,4 +1,4 @@
-import { Button } from '@mestechko/ui';
+import { Button } from '@slotwise/ui';
 import { openTelegramLink } from '@tma.js/sdk-react';
 import { BellRing } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

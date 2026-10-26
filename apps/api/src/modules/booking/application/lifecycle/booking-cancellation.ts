@@ -4,7 +4,7 @@ import {
   localDateOf,
   type BookingActor,
   type MessengerChannel,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError } from '../../../../shared/application/application-error.js';
 import type { IdGenerator } from '../../../../shared/application/ports.js';
 import type { Prepayments } from '../../../payments/application/prepayments.js';

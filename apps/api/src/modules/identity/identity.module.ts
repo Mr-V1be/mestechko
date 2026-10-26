@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import type { Clock, VerticalRegistry } from '@mestechko/domain';
+import type { Clock, VerticalRegistry } from '@slotwise/domain';
 import { APP_CONFIG, type AppConfig } from '../../platform/config/app-config.js';
 import { KyselyUnitOfWork } from '../../platform/db/kysely-unit-of-work.js';
-import type { AuthKind } from '@mestechko/contracts';
+import type { AuthKind } from '@slotwise/contracts';
 import {
   AUTHENTICATORS,
   type Authenticator,

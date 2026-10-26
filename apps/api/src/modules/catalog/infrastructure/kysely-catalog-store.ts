@@ -1,5 +1,5 @@
 import { sql } from 'kysely';
-import type { IncompatiblePair } from '@mestechko/domain';
+import type { IncompatiblePair } from '@slotwise/domain';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import type { StaffServiceTerms } from '../application/catalog-reader.js';
 import type {

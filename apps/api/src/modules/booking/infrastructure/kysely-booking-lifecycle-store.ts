@@ -3,7 +3,7 @@ import { ApplicationError } from '../../../shared/application/application-error.
 import { currencyCode } from '../../../platform/db/column-parsers.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import { isTimeConflict } from '../../../platform/db/pg-errors.js';
-import type { BookingStatus } from '@mestechko/domain';
+import type { BookingStatus } from '@slotwise/domain';
 import type {
   BookingLifecycleStore,
   BookingMove,

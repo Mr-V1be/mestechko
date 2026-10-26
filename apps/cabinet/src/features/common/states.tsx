@@ -1,4 +1,4 @@
-import { Button, ErrorIllustration, LockedIllustration, Skeleton, StatePanel } from '@mestechko/ui';
+import { Button, ErrorIllustration, LockedIllustration, Skeleton, StatePanel } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { errorMessage, isForbidden } from './error-message';
 import styles from './common.module.css';

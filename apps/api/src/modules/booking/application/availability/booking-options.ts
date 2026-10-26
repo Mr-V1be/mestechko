@@ -3,7 +3,7 @@ import type {
   BookingQuoteView,
   ServiceCategory,
   StaffOption,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import {
   earliestSlotByStaff,
   findAvailability,
@@ -16,7 +16,7 @@ import {
   type CurrencyCode,
   type IncompatiblePair,
   type Money,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { notFound } from '../../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';

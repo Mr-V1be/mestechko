@@ -1,4 +1,4 @@
-import type { Money } from '@mestechko/contracts/client';
+import type { Money } from '@slotwise/contracts/client';
 import {
   formatCurrencySymbol,
   formatDuration,
@@ -17,7 +17,7 @@ import {
   type InstantStyle,
   type LocalDateStyle,
   type NumberStyle,
-} from '@mestechko/i18n';
+} from '@slotwise/i18n';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

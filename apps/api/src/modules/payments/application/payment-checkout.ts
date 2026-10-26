@@ -1,4 +1,4 @@
-import { checkoutPresentations, type CheckoutPresentation, type Locale } from '@mestechko/domain';
+import { checkoutPresentations, type CheckoutPresentation, type Locale } from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import type { PaymentProvider, PaymentStore } from './ports.js';

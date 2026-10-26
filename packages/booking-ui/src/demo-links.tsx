@@ -1,4 +1,4 @@
-import { ListGroup, ListItem } from '@mestechko/ui';
+import { ListGroup, ListItem } from '@slotwise/ui';
 import { CalendarDays, ChevronRight, Globe, Send, Smartphone, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

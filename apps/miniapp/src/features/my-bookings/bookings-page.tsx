@@ -1,5 +1,5 @@
-import { BookingStatusBadge, useFormat } from '@mestechko/booking-ui';
-import { bookingScopes, type BookingScope, type ClientBooking } from '@mestechko/contracts/client';
+import { BookingStatusBadge, useFormat } from '@slotwise/booking-ui';
+import { bookingScopes, type BookingScope, type ClientBooking } from '@slotwise/contracts/client';
 import {
   Button,
   EmptyIllustration,
@@ -8,7 +8,7 @@ import {
   SegmentedControl,
   SpotIllustration,
   StatePanel,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { clsx } from 'clsx';
 import type { ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';

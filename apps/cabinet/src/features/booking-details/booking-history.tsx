@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { CabinetBookingDetails } from '@mestechko/contracts/client';
-import { ListGroup, ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { CabinetBookingDetails } from '@slotwise/contracts/client';
+import { ListGroup, ListItem } from '@slotwise/ui';
 import {
   BadgeCheck,
   CalendarClock,

@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
-import { appBasePath } from '@mestechko/ui/app-base';
-import { themeBootScript } from '@mestechko/ui/theme-boot';
+import { appBasePath } from '@slotwise/ui/app-base';
+import { themeBootScript } from '@slotwise/ui/theme-boot';
 import {
   defaultClientConditions,
   defineConfig,
@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => ({
   // Served under the path of its public address (VITE_MINIAPP_URL): `/` on a name of its own.
   base: appBasePath(loadEnv(mode, ENV_DIR, 'VITE_').VITE_MINIAPP_URL),
   plugins: [react(), themeBoot()],
-  resolve: { conditions: ['@mestechko/source', ...defaultClientConditions] },
+  resolve: { conditions: ['@slotwise/source', ...defaultClientConditions] },
   server: { host: '127.0.0.1', port: 46230, strictPort: true, proxy: apiProxy },
   preview: { host: '127.0.0.1', port: 46231, strictPort: true, proxy: apiProxy },
   build: { target: 'es2022', sourcemap: true },

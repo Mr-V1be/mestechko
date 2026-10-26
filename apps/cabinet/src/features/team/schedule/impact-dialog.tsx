@@ -1,5 +1,5 @@
-import { useFormat } from '@mestechko/booking-ui';
-import { ConfirmDialog, ListGroup, ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import { ConfirmDialog, ListGroup, ListItem } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import type { ScheduleChangeFlow } from './schedule-change';
 import styles from './schedule.module.css';

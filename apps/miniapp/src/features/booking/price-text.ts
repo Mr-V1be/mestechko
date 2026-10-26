@@ -1,4 +1,4 @@
-import type { Formatters } from '@mestechko/booking-ui';
+import type { Formatters } from '@slotwise/booking-ui';
 import type { TFunction } from 'i18next';
 import type { DraftPrice } from './booking-details';
 

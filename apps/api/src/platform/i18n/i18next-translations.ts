@@ -1,5 +1,5 @@
-import { fallbackLocale, localeIds, type Locale } from '@mestechko/domain';
-import { createI18n, type LocaleResources } from '@mestechko/i18n';
+import { fallbackLocale, localeIds, type Locale } from '@slotwise/domain';
+import { createI18n, type LocaleResources } from '@slotwise/i18n';
 import type { Translations, Translator } from '../../shared/application/translations.js';
 
 type I18n = Awaited<ReturnType<typeof createI18n>>;

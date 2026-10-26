@@ -3,7 +3,7 @@ import type {
   NotificationKind,
   PlannedNotification,
   VisitState,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 
 /** Who receives the messages of a booking, and through which messenger. */
 export interface NotificationRecipient {

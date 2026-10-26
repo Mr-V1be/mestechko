@@ -1,6 +1,6 @@
-import { useVocabulary, VerticalIcon } from '@mestechko/booking-ui';
-import type { VerticalSummary } from '@mestechko/contracts/client';
-import { verticalRegistry, type VerticalDefinition } from '@mestechko/domain';
+import { useVocabulary, VerticalIcon } from '@slotwise/booking-ui';
+import type { VerticalSummary } from '@slotwise/contracts/client';
+import { verticalRegistry, type VerticalDefinition } from '@slotwise/domain';
 import { useTranslation } from 'react-i18next';
 import page from '../../app/page.module.css';
 import styles from './verticals.module.css';

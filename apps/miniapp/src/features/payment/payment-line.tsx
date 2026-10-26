@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { ClientBooking } from '@mestechko/contracts/client';
-import { ListItem } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { ClientBooking } from '@slotwise/contracts/client';
+import { ListItem } from '@slotwise/ui';
 import { Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

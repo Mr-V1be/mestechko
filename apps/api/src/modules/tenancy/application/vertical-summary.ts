@@ -1,5 +1,5 @@
-import type { VerticalSummary } from '@mestechko/contracts';
-import type { VerticalDefinition } from '@mestechko/domain';
+import type { VerticalSummary } from '@slotwise/contracts';
+import type { VerticalDefinition } from '@slotwise/domain';
 
 /** Public view of a vertical: icon and vocabulary keys for the client apps. */
 export function verticalSummaryOf(vertical: VerticalDefinition): VerticalSummary {

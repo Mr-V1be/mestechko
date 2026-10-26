@@ -1,4 +1,4 @@
-import { isLocale, type Locale, type MessengerChannel } from '@mestechko/domain';
+import { isLocale, type Locale, type MessengerChannel } from '@slotwise/domain';
 import { sql } from 'kysely';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';

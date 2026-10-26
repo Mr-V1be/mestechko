@@ -1,4 +1,4 @@
-import type { Locale } from '@mestechko/domain';
+import type { Locale } from '@slotwise/domain';
 
 /** A screen of the product captured in both themes, as files under the site's `media/`. */
 export interface ThemedMedia {

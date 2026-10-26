@@ -1,4 +1,4 @@
-import { TextField } from '@mestechko/ui';
+import { TextField } from '@slotwise/ui';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';

@@ -53,15 +53,6 @@ importers:
       '@fastify/helmet':
         specifier: 13.1.1
         version: 13.1.1
-      '@mestechko/contracts':
-        specifier: workspace:*
-        version: link:../../packages/contracts
-      '@mestechko/domain':
-        specifier: workspace:*
-        version: link:../../packages/domain
-      '@mestechko/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
       '@nestjs/common':
         specifier: 12.1.2
         version: 12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -101,6 +92,15 @@ importers:
       '@opentelemetry/semantic-conventions':
         specifier: 1.43.0
         version: 1.43.0
+      '@slotwise/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@slotwise/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@slotwise/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@tma.js/init-data-node':
         specifier: 2.0.8
         version: 2.0.8(typescript@6.0.3)
@@ -183,19 +183,19 @@ importers:
 
   apps/cabinet:
     dependencies:
-      '@mestechko/booking-ui':
+      '@slotwise/booking-ui':
         specifier: workspace:*
         version: link:../../packages/booking-ui
-      '@mestechko/contracts':
+      '@slotwise/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@mestechko/domain':
+      '@slotwise/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@mestechko/i18n':
+      '@slotwise/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
-      '@mestechko/ui':
+      '@slotwise/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-query':
@@ -238,19 +238,19 @@ importers:
 
   apps/landing:
     dependencies:
-      '@mestechko/booking-ui':
+      '@slotwise/booking-ui':
         specifier: workspace:*
         version: link:../../packages/booking-ui
-      '@mestechko/contracts':
+      '@slotwise/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@mestechko/domain':
+      '@slotwise/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@mestechko/i18n':
+      '@slotwise/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
-      '@mestechko/ui':
+      '@slotwise/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       clsx:
@@ -290,19 +290,19 @@ importers:
 
   apps/miniapp:
     dependencies:
-      '@mestechko/booking-ui':
+      '@slotwise/booking-ui':
         specifier: workspace:*
         version: link:../../packages/booking-ui
-      '@mestechko/contracts':
+      '@slotwise/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@mestechko/domain':
+      '@slotwise/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@mestechko/i18n':
+      '@slotwise/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
-      '@mestechko/ui':
+      '@slotwise/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-query':
@@ -351,19 +351,19 @@ importers:
 
   apps/widget:
     dependencies:
-      '@mestechko/booking-ui':
+      '@slotwise/booking-ui':
         specifier: workspace:*
         version: link:../../packages/booking-ui
-      '@mestechko/contracts':
+      '@slotwise/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@mestechko/domain':
+      '@slotwise/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@mestechko/i18n':
+      '@slotwise/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
-      '@mestechko/ui':
+      '@slotwise/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-query':
@@ -409,16 +409,16 @@ importers:
 
   packages/booking-ui:
     dependencies:
-      '@mestechko/contracts':
+      '@slotwise/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@mestechko/domain':
+      '@slotwise/domain':
         specifier: workspace:*
         version: link:../domain
-      '@mestechko/i18n':
+      '@slotwise/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@mestechko/ui':
+      '@slotwise/ui':
         specifier: workspace:*
         version: link:../ui
       libphonenumber-js:
@@ -446,7 +446,7 @@ importers:
 
   packages/contracts:
     dependencies:
-      '@mestechko/domain':
+      '@slotwise/domain':
         specifier: workspace:*
         version: link:../domain
       libphonenumber-js:
@@ -475,7 +475,7 @@ importers:
 
   packages/i18n:
     dependencies:
-      '@mestechko/domain':
+      '@slotwise/domain':
         specifier: workspace:*
         version: link:../domain
       i18next:

@@ -1,4 +1,4 @@
-import type { RoleId } from '@mestechko/domain';
+import type { RoleId } from '@slotwise/domain';
 import type { Kysely } from 'kysely';
 import type { Database } from '../platform/db/database.js';
 import type { IdGenerator } from '../shared/application/ports.js';

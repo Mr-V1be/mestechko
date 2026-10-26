@@ -1,5 +1,5 @@
 import type { Provider } from '@nestjs/common';
-import type { Clock } from '@mestechko/domain';
+import type { Clock } from '@slotwise/domain';
 import { CLOCK, ID_GENERATOR, type IdGenerator } from '../../../shared/application/ports.js';
 import { RATE_LIMITER, type RateLimiter } from '../../../shared/application/rate-limits.js';
 import { UNIT_OF_WORK, type UnitOfWork } from '../../../shared/application/unit-of-work.js';

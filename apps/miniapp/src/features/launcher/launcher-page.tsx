@@ -6,8 +6,8 @@ import {
   useLocale,
   useVocabulary,
   VerticalIcon,
-} from '@mestechko/booking-ui';
-import type { DemoBusiness } from '@mestechko/contracts/client';
+} from '@slotwise/booking-ui';
+import type { DemoBusiness } from '@slotwise/contracts/client';
 import {
   Badge,
   ListGroup,
@@ -16,7 +16,7 @@ import {
   Spinner,
   SpotIllustration,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

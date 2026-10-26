@@ -1,4 +1,4 @@
-import { Temporal, type Clock } from '@mestechko/domain';
+import { Temporal, type Clock } from '@slotwise/domain';
 import { v7 as uuidv7 } from 'uuid';
 import type { IdGenerator } from '../shared/application/ports.js';
 

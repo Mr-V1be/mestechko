@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { TeamMember } from '@mestechko/contracts/client';
-import { Button, ListGroup, ListItem, Skeleton, StatePanel } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { TeamMember } from '@slotwise/contracts/client';
+import { Button, ListGroup, ListItem, Skeleton, StatePanel } from '@slotwise/ui';
 import { Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useServiceCatalog } from '../../../platform/api/team-queries';

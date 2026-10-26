@@ -1,5 +1,5 @@
-import type { ScheduleAxis, ScheduleBooking, ScheduleColumn } from '@mestechko/contracts';
-import { bookingStatuses, normalizeIntervals, type InstantInterval } from '@mestechko/domain';
+import type { ScheduleAxis, ScheduleBooking, ScheduleColumn } from '@slotwise/contracts';
+import { bookingStatuses, normalizeIntervals, type InstantInterval } from '@slotwise/domain';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { ResourceView, StaffView } from '../../../catalog/application/catalog-reader.js';
 import type { ScheduleItemView } from './ports.js';

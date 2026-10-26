@@ -3,7 +3,7 @@ import type {
   CatalogService,
   Money,
   StaffOption,
-} from '@mestechko/contracts/client';
+} from '@slotwise/contracts/client';
 import { useQuote, useServices, useStaffOptions } from '../../platform/api/queries';
 import { ANY_STAFF, type BookingSelection } from './selection';
 

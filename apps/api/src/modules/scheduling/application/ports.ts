@@ -5,7 +5,7 @@ import type {
   ScheduleChange,
   StaffAbsence,
   StaffWorkCalendar,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 
 export interface DateWindow {
   readonly from: PlainDate;

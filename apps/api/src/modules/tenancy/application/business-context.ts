@@ -3,7 +3,7 @@ import {
   type BookingRules,
   type VerticalDefinition,
   type VerticalRegistry,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { notFound } from '../../../shared/application/application-error.js';
 import type { BusinessDirectory, BusinessRecord } from './business-directory.js';
 

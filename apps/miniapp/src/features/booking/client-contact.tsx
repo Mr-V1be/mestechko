@@ -1,6 +1,6 @@
-import { formatPhone, formatPhoneInput, phoneHint } from '@mestechko/booking-ui';
-import { demoPhoneFor, normalizePhone, type BookingContact } from '@mestechko/contracts/client';
-import { TextField } from '@mestechko/ui';
+import { formatPhone, formatPhoneInput, phoneHint } from '@slotwise/booking-ui';
+import { demoPhoneFor, normalizePhone, type BookingContact } from '@slotwise/contracts/client';
+import { TextField } from '@slotwise/ui';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
 import type { TFunction } from 'i18next';
 import { useEffect } from 'react';

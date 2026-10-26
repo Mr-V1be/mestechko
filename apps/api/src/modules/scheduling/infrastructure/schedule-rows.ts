@@ -1,4 +1,4 @@
-import type { DayTemplate, SchedulePattern } from '@mestechko/domain';
+import type { DayTemplate, SchedulePattern } from '@slotwise/domain';
 
 export interface IntervalRow {
   readonly dayIndex: number;

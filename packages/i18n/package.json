@@ -1,5 +1,5 @@
 {
-  "name": "@mestechko/i18n",
+  "name": "@slotwise/i18n",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "@mestechko/source": "./src/index.ts",
+      "@slotwise/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
@@ -20,7 +20,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@mestechko/domain": "workspace:*",
+    "@slotwise/domain": "workspace:*",
     "i18next": "26.4.2"
   },
   "devDependencies": {

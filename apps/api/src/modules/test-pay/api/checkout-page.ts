@@ -1,5 +1,5 @@
-import type { Money } from '@mestechko/domain';
-import { formatMoney } from '@mestechko/i18n';
+import type { Money } from '@slotwise/domain';
+import { formatMoney } from '@slotwise/i18n';
 import type { Translator } from '../../../shared/application/translations.js';
 
 /** Texts of the payment page in the payer's language. */

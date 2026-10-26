@@ -1,4 +1,4 @@
-import type { ClientBooking } from '@mestechko/contracts';
+import type { ClientBooking } from '@slotwise/contracts';
 import {
   bookingActionIds,
   bookingActions,
@@ -6,7 +6,7 @@ import {
   clientChangeDeadline,
   type ClientBookingState,
   type ClientChangesRule,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { PaymentRecord } from '../../../payments/application/ports.js';
 import type { ClientBookingView } from '../ports.js';

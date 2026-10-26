@@ -1,5 +1,5 @@
-import { localeIds, type Locale } from '@mestechko/domain';
-import { ChoiceMenu, ListGroup, ListItem } from '@mestechko/ui';
+import { localeIds, type Locale } from '@slotwise/domain';
+import { ChoiceMenu, ListGroup, ListItem } from '@slotwise/ui';
 import { Check, Languages } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { languageCode, languageName } from './language-name';

@@ -1,10 +1,10 @@
-import type { VerticalSummary } from '@mestechko/contracts/client';
+import type { VerticalSummary } from '@slotwise/contracts/client';
 import {
   moneyFromMajor,
   type BookingStatus,
   type MarketCurrency,
   type Money,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 
 /**
  * Test data of the sign-in showcase: a morning in a demo salon. Names and services are

@@ -1,6 +1,6 @@
-import { formatPhone } from '@mestechko/booking-ui';
-import type { DeskClient } from '@mestechko/contracts/client';
-import { ListGroup, ListItem, SegmentedControl, TextField } from '@mestechko/ui';
+import { formatPhone } from '@slotwise/booking-ui';
+import type { DeskClient } from '@slotwise/contracts/client';
+import { ListGroup, ListItem, SegmentedControl, TextField } from '@slotwise/ui';
 import { Check, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

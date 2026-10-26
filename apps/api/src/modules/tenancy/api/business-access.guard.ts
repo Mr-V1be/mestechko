@@ -7,7 +7,7 @@ import {
   type CanActivate,
   type ExecutionContext,
 } from '@nestjs/common';
-import { accessScope, type AccessArea } from '@mestechko/domain';
+import { accessScope, type AccessArea } from '@slotwise/domain';
 import type { FastifyRequest } from 'fastify';
 import { ApplicationError } from '../../../shared/application/application-error.js';
 import { addLogContext } from '../../../platform/http/principal.js';

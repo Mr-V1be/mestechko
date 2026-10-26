@@ -1,7 +1,7 @@
-import { errorMessage, hasCode, useFormat } from '@mestechko/booking-ui';
-import { ApiError, type PublicBusiness, type WidgetBooking } from '@mestechko/contracts/client';
-import type { CheckoutPresentation } from '@mestechko/domain';
-import { Button, Skeleton, StatePanel, useToast } from '@mestechko/ui';
+import { errorMessage, hasCode, useFormat } from '@slotwise/booking-ui';
+import { ApiError, type PublicBusiness, type WidgetBooking } from '@slotwise/contracts/client';
+import type { CheckoutPresentation } from '@slotwise/domain';
+import { Button, Skeleton, StatePanel, useToast } from '@slotwise/ui';
 import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { attemptPath, type EmbedParams } from '../../embed/embed-params';

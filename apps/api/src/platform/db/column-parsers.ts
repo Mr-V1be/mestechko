@@ -1,4 +1,4 @@
-import { currencies, isLocale, type CurrencyCode, type Locale } from '@mestechko/domain';
+import { currencies, isLocale, type CurrencyCode, type Locale } from '@slotwise/domain';
 
 /** Currency columns are free text in SQL; this narrows them to the platform's registry. */
 export function currencyCode(value: string): CurrencyCode {

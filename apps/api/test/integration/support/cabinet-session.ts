@@ -1,4 +1,4 @@
-import type { RoleId } from '@mestechko/domain';
+import type { RoleId } from '@slotwise/domain';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import type { Kysely } from 'kysely';
 import { ScryptPasswordHasher } from '../../../src/modules/identity/infrastructure/crypto-adapters.js';

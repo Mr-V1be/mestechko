@@ -1,13 +1,13 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { LoyaltyProgram } from '@mestechko/contracts/client';
+import { useFormat } from '@slotwise/booking-ui';
+import type { LoyaltyProgram } from '@slotwise/contracts/client';
 import {
   MINOR_PER_POINT,
   pointsEarned,
   pointsRedeemable,
   type CurrencyCode,
   type LoyaltyKind,
-} from '@mestechko/domain';
-import { Button, ConfirmDialog, NumberField, Select, Switch, useToast } from '@mestechko/ui';
+} from '@slotwise/domain';
+import { Button, ConfirmDialog, NumberField, Select, Switch, useToast } from '@slotwise/ui';
 import { Coins, ReceiptText, Wallet } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

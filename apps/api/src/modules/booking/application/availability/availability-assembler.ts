@@ -7,7 +7,7 @@ import {
   type Temporal,
   type PlainDate,
   type ServiceSpec,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type {
   CatalogReader,

@@ -3,7 +3,7 @@ import {
   timeOccupyingStatuses,
   type HoldReason,
   type InstantInterval,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { sql } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { currencyCode } from '../../../platform/db/column-parsers.js';

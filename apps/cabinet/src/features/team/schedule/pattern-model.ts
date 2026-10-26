@@ -4,8 +4,8 @@ import type {
   ScheduleChange,
   SchedulePatternView,
   StaffAssignmentView,
-} from '@mestechko/contracts/client';
-import { scheduleTemplateIds, type ScheduleTemplate } from '@mestechko/domain';
+} from '@slotwise/contracts/client';
+import { scheduleTemplateIds, type ScheduleTemplate } from '@slotwise/domain';
 import { daysBetween, isoWeekdays, laterOf, nextCycleStart } from './dates';
 import { DEFAULT_HOURS, hoursAreValid, sameHours } from './hours-model';
 

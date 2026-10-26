@@ -1,5 +1,5 @@
-import type { ClientCard, ClientNote, ClientSummary } from '@mestechko/contracts';
-import type { Clock } from '@mestechko/domain';
+import type { ClientCard, ClientNote, ClientSummary } from '@slotwise/contracts';
+import type { Clock } from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import { definedFields, type Patch } from '../../../shared/application/patch.js';
 import type { IdGenerator } from '../../../shared/application/ports.js';

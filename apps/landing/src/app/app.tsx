@@ -1,5 +1,5 @@
-import { DocumentLocale } from '@mestechko/booking-ui';
-import { ThemeProvider } from '@mestechko/ui';
+import { DocumentLocale } from '@slotwise/booking-ui';
+import { ThemeProvider } from '@slotwise/ui';
 import type { i18n } from 'i18next';
 import { useState } from 'react';
 import { I18nextProvider } from 'react-i18next';

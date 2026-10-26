@@ -7,7 +7,7 @@ apps/miniapp ─┐                          ┌─ packages/ui (дизайн-с
 apps/cabinet ─┤                          │
 apps/widget ──┼─ packages/booking-ui ────┤
               │                          └─ packages/i18n (переводы, форматтеры)
-              └─ @mestechko/contracts/client (типы + лёгкий клиент, без схем)
+              └─ @slotwise/contracts/client (типы + лёгкий клиент, без схем)
 
 apps/api ── modules/<контекст>/{api → application → domain-порты ← infrastructure}
          └─ platform (конфигурация, БД, очереди, наблюдаемость, HTTP)

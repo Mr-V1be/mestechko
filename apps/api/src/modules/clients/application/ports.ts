@@ -1,4 +1,4 @@
-import type { Locale, MessengerChannel } from '@mestechko/domain';
+import type { Locale, MessengerChannel } from '@slotwise/domain';
 
 export interface ClientRecord {
   readonly id: string;

@@ -5,7 +5,7 @@
  * so the default is the fallback language. The avatar and name are left as the owner
  * set them. The token is read from the environment and never printed.
  */
-import { fallbackLocale, localeIds, type Locale } from '@mestechko/domain';
+import { fallbackLocale, localeIds, type Locale } from '@slotwise/domain';
 import { Api } from 'grammy';
 import { loadConfig } from '../platform/config/app-config.js';
 import { loadTranslations } from '../platform/i18n/i18next-translations.js';

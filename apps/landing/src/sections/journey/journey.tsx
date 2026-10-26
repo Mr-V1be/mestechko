@@ -1,4 +1,4 @@
-import { DeviceFrame, type DeviceKind } from '@mestechko/ui';
+import { DeviceFrame, type DeviceKind } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import {
   BellRing,

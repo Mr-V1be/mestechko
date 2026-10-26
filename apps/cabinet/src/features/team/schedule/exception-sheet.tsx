@@ -1,5 +1,5 @@
-import type { DayHours, Location } from '@mestechko/contracts/client';
-import { Button, SegmentedControl, Select, Sheet, TextField } from '@mestechko/ui';
+import type { DayHours, Location } from '@slotwise/contracts/client';
+import { Button, SegmentedControl, Select, Sheet, TextField } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { errorMessage, fieldErrorsOf } from '../../common/error-message';

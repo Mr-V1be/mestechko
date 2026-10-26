@@ -1,4 +1,4 @@
-import type { Locale, MessengerChannel } from '@mestechko/domain';
+import type { Locale, MessengerChannel } from '@slotwise/domain';
 import type { ClientIdentity } from '../../../booking/application/client/client-bookings.js';
 import type { ChangeOrigin } from '../../../booking/application/lifecycle/client-booking-changes.js';
 import type { BusinessContext } from '../../../tenancy/application/business-context.js';

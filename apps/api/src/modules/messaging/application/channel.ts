@@ -1,4 +1,4 @@
-import type { MessengerChannel } from '@mestechko/domain';
+import type { MessengerChannel } from '@slotwise/domain';
 
 /** How a button reads: neutral, the safe choice, or a destructive one. */
 export type ButtonTone = 'default' | 'positive' | 'negative';

@@ -3,7 +3,7 @@ import type {
   PublicBusiness,
   getCabinetOverview,
   RouteResult,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import type { UnitOfWork } from '../../../shared/application/unit-of-work.js';
 import type { AvatarUrls } from '../../../shared/application/avatar-urls.js';
 import { verticalSummaryOf } from '../../tenancy/application/vertical-summary.js';

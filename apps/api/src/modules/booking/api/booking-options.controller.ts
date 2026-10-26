@@ -6,7 +6,7 @@ import {
   listPublicStaff,
   type RouteInput,
   type RouteResult,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import { BookingOptions } from '../application/availability/booking-options.js';
 

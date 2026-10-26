@@ -7,7 +7,7 @@ import {
   startMaxEmulatorChat,
   type RouteInput,
   type RouteResult,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import { APP_CONFIG, type AppConfig } from '../../../platform/config/app-config.js';
 import { CurrentBusinessAccess } from '../../../platform/http/auth.guard.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';

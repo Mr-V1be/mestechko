@@ -127,21 +127,21 @@ export async function withScratchStack(
     step(
       'Scratch database',
       'pnpm',
-      ['--filter', '@mestechko/api', 'db:recreate', '--database', SCRATCH_DATABASE],
+      ['--filter', '@slotwise/api', 'db:recreate', '--database', SCRATCH_DATABASE],
       process.env,
     );
-    step('Application role', 'pnpm', ['--filter', '@mestechko/api', 'db:provision']);
-    step('Migrations', 'pnpm', ['--filter', '@mestechko/api', 'db:migrate']);
-    step('Demo data', 'pnpm', ['--filter', '@mestechko/api', 'db:seed']);
+    step('Application role', 'pnpm', ['--filter', '@slotwise/api', 'db:provision']);
+    step('Migrations', 'pnpm', ['--filter', '@slotwise/api', 'db:migrate']);
+    step('Demo data', 'pnpm', ['--filter', '@slotwise/api', 'db:seed']);
     if (options.build) {
       for (const app of options.apps) {
-        step(`Build ${app}`, 'pnpm', ['--filter', `@mestechko/${app}`, 'build']);
+        step(`Build ${app}`, 'pnpm', ['--filter', `@slotwise/${app}`, 'build']);
       }
     }
     start(
       'API with workers and bots',
       process.execPath,
-      ['--conditions=@mestechko/source', '--import', 'tsx', 'src/main.ts'],
+      ['--conditions=@slotwise/source', '--import', 'tsx', 'src/main.ts'],
       `${root}apps/api`,
     );
     for (const app of options.apps) {

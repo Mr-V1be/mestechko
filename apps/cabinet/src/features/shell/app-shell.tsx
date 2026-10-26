@@ -1,6 +1,6 @@
-import { DemoLinks, LanguageList, useLocale, VerticalIcon } from '@mestechko/booking-ui';
-import { offersMessenger, type Locale } from '@mestechko/domain';
-import type { Membership } from '@mestechko/contracts/client';
+import { DemoLinks, LanguageList, useLocale, VerticalIcon } from '@slotwise/booking-ui';
+import { offersMessenger, type Locale } from '@slotwise/domain';
+import type { Membership } from '@slotwise/contracts/client';
 import {
   Avatar,
   Badge,
@@ -14,7 +14,7 @@ import {
   Sheet,
   themePreferences,
   useTheme,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { Check, Ellipsis, LogOut } from 'lucide-react';
 import { useEffect, useState } from 'react';

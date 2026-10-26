@@ -1,5 +1,5 @@
-import type { BookingStatus } from '@mestechko/domain';
-import { Badge, type BadgeTone } from '@mestechko/ui';
+import type { BookingStatus } from '@slotwise/domain';
+import { Badge, type BadgeTone } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 
 /** How each booking status reads at a glance. */

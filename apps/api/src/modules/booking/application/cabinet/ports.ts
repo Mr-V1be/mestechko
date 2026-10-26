@@ -6,7 +6,7 @@ import type {
   CurrencyCode,
   InstantInterval,
   MessengerChannel,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { BookingHold, Page } from '../ports.js';
 
 /** One booked service as the cabinet schedule draws it. */

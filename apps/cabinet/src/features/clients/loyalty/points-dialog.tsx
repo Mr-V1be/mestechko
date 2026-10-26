@@ -1,4 +1,4 @@
-import { Button, Dialog, NumberField, SegmentedControl, TextField, useToast } from '@mestechko/ui';
+import { Button, Dialog, NumberField, SegmentedControl, TextField, useToast } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAdjustClientPoints } from '../../../platform/api/clients-queries';

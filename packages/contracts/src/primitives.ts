@@ -7,7 +7,7 @@ import {
   localeIds,
   roleIds,
   type CurrencyCode,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { isValidPhoneNumber } from 'libphonenumber-js/min';
 import { z } from 'zod';
 import { isDemoPhone } from './demo-phones.js';

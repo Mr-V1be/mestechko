@@ -1,4 +1,4 @@
-import type { Clock } from '@mestechko/domain';
+import type { Clock } from '@slotwise/domain';
 import type { AppConfig } from '../../../platform/config/app-config.js';
 import type { PaymentProvider } from '../application/ports.js';
 import { TestPayProvider } from './test-pay-provider.js';

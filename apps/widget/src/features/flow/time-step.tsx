@@ -1,5 +1,5 @@
-import { addDays, localDateOf, SlotPicker, todayIn, WEEK_DAYS } from '@mestechko/booking-ui';
-import { Button, StatePanel } from '@mestechko/ui';
+import { addDays, localDateOf, SlotPicker, todayIn, WEEK_DAYS } from '@slotwise/booking-ui';
+import { Button, StatePanel } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useAvailability } from '../../platform/api/queries';
 

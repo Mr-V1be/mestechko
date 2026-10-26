@@ -1,4 +1,4 @@
-import { checkoutPresentationIds, holdReasonIds, paymentStatusIds } from '@mestechko/domain';
+import { checkoutPresentationIds, holdReasonIds, paymentStatusIds } from '@slotwise/domain';
 import { z } from 'zod';
 import { bookingStatusSchema, instantSchema, moneySchema, uuidSchema } from '../../primitives.js';
 import { defineRoute } from '../../route.js';

@@ -1,5 +1,5 @@
-import { clientSorts } from '@mestechko/contracts/client';
-import { SegmentedControl, Select, TextField } from '@mestechko/ui';
+import { clientSorts } from '@slotwise/contracts/client';
+import { SegmentedControl, Select, TextField } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useClientTags, type ClientSort } from '../../platform/api/clients-queries';
 import styles from './clients.module.css';

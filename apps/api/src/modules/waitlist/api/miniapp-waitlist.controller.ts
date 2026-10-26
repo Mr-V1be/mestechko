@@ -8,7 +8,7 @@ import {
   type RouteInput,
   type RouteResult,
   type WaitlistEntry,
-} from '@mestechko/contracts';
+} from '@slotwise/contracts';
 import { TelegramClient } from '../../../platform/http/auth.guard.js';
 import { clientContactOf } from '../../clients/application/client-contact-policy.js';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';

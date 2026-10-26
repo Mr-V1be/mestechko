@@ -1,5 +1,5 @@
-import { formatPhone } from '@mestechko/booking-ui';
-import type { ClientSummary } from '@mestechko/contracts/client';
+import { formatPhone } from '@slotwise/booking-ui';
+import type { ClientSummary } from '@slotwise/contracts/client';
 import {
   Avatar,
   Badge,
@@ -8,7 +8,7 @@ import {
   ListItem,
   Skeleton,
   type DataColumn,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import { useClientDates } from './client-dates';
 import styles from './clients.module.css';

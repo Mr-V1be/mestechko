@@ -3,7 +3,7 @@ import {
   isDarkColor,
   type ExternalPalette,
   type ResolvedTheme,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 
 /** Telegram theme colors in the SDK's camel-cased form. */
 export interface TelegramThemeColors {

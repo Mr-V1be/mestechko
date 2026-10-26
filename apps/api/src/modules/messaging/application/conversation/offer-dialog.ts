@@ -1,4 +1,4 @@
-import type { Locale, MessengerChannel } from '@mestechko/domain';
+import type { Locale, MessengerChannel } from '@slotwise/domain';
 import type { WaitlistOffers } from '../../../waitlist/application/waitlist-offers.js';
 import type { BusinessContextResolver } from '../../../tenancy/application/business-context.js';
 import type { BotAction } from '../action-data.js';

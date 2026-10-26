@@ -1,4 +1,4 @@
-import type { BookingRulesOverrides, CurrencyCode, Locale, RoleId } from '@mestechko/domain';
+import type { BookingRulesOverrides, CurrencyCode, Locale, RoleId } from '@slotwise/domain';
 
 export interface BusinessRecord {
   readonly id: string;

@@ -1,7 +1,7 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { BusinessRules } from '@mestechko/contracts/client';
-import { staffAssignmentStrategyIds, type StaffAssignmentStrategyId } from '@mestechko/domain';
-import { Button, NumberField, Select } from '@mestechko/ui';
+import { useFormat } from '@slotwise/booking-ui';
+import type { BusinessRules } from '@slotwise/contracts/client';
+import { staffAssignmentStrategyIds, type StaffAssignmentStrategyId } from '@slotwise/domain';
+import { Button, NumberField, Select } from '@slotwise/ui';
 import { RotateCcw } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

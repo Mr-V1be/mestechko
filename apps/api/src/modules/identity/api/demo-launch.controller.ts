@@ -1,6 +1,6 @@
 import { Controller, Inject } from '@nestjs/common';
-import type { Locale } from '@mestechko/domain';
-import { createTelegramLaunch, type RouteInput, type RouteResult } from '@mestechko/contracts';
+import type { Locale } from '@slotwise/domain';
+import { createTelegramLaunch, type RouteInput, type RouteResult } from '@slotwise/contracts';
 import { ContractInput, ContractRoute } from '../../../platform/http/contract-route.js';
 import { RequestLocale } from '../../../platform/http/request-locale.js';
 import { CreateDemoTelegramLaunch } from '../application/demo-telegram-launch.js';

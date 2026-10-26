@@ -1,6 +1,6 @@
-import { formatPhone, formatPhoneInput, phoneHint, useFormat } from '@mestechko/booking-ui';
-import { demoPhoneRangeOf, type BookingQuoteView } from '@mestechko/contracts/client';
-import { Checkbox, ListGroup, ListItem, Skeleton, TextField } from '@mestechko/ui';
+import { formatPhone, formatPhoneInput, phoneHint, useFormat } from '@slotwise/booking-ui';
+import { demoPhoneRangeOf, type BookingQuoteView } from '@slotwise/contracts/client';
+import { Checkbox, ListGroup, ListItem, Skeleton, TextField } from '@slotwise/ui';
 import { CalendarClock, UserRound, Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ContactDraft, ContactErrors } from './contact-check';

@@ -5,7 +5,7 @@ import type {
   BookingStatus,
   CurrencyCode,
   MessengerChannel,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { BookingHold, NewBookingItem } from '../ports.js';
 
 /** A booking as its lifecycle rules see it, locked for the current transaction. */

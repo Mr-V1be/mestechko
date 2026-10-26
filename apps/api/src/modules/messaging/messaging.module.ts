@@ -1,5 +1,5 @@
 import { Module, type Provider } from '@nestjs/common';
-import type { Clock } from '@mestechko/domain';
+import type { Clock } from '@slotwise/domain';
 import { Api } from 'grammy';
 import type { Redis } from 'ioredis';
 import { PinoLogger } from 'nestjs-pino';

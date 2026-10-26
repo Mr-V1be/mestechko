@@ -1,4 +1,4 @@
-import { resolveLocale, type Locale } from '@mestechko/domain';
+import { resolveLocale, type Locale } from '@slotwise/domain';
 import { loader as en } from '../locales/en.json';
 import { loader as ru } from '../locales/ru.json';
 

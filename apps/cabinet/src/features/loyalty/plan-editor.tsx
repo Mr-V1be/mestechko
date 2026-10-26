@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { CategoryAdmin, PassPlan } from '@mestechko/contracts/client';
-import type { CurrencyCode } from '@mestechko/domain';
+import { useFormat } from '@slotwise/booking-ui';
+import type { CategoryAdmin, PassPlan } from '@slotwise/contracts/client';
+import type { CurrencyCode } from '@slotwise/domain';
 import {
   Button,
   ConfirmDialog,
@@ -12,7 +12,7 @@ import {
   Switch,
   TextField,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { CircleAlert, Lock } from 'lucide-react';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

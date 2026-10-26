@@ -1,6 +1,6 @@
-import { apiAssetUrl, useFormat, useVocabulary } from '@mestechko/booking-ui';
-import type { Money } from '@mestechko/contracts/client';
-import { Avatar, Button, EmptyIllustration, ListGroup, ListItem, StatePanel } from '@mestechko/ui';
+import { apiAssetUrl, useFormat, useVocabulary } from '@slotwise/booking-ui';
+import type { Money } from '@slotwise/contracts/client';
+import { Avatar, Button, EmptyIllustration, ListGroup, ListItem, StatePanel } from '@slotwise/ui';
 import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router';

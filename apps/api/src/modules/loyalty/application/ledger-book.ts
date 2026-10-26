@@ -4,7 +4,7 @@ import {
   validateLedgerEntry,
   type CurrencyCode,
   type LedgerReason,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import type { IdGenerator } from '../../../shared/application/ports.js';
 import type { LedgerStore } from './ports.js';
 

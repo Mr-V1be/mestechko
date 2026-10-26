@@ -1,6 +1,6 @@
-import { useFormat } from '@mestechko/booking-ui';
-import type { PassPlan } from '@mestechko/contracts/client';
-import { passValidUntil, Temporal } from '@mestechko/domain';
+import { useFormat } from '@slotwise/booking-ui';
+import type { PassPlan } from '@slotwise/contracts/client';
+import { passValidUntil, Temporal } from '@slotwise/domain';
 import {
   Button,
   Dialog,
@@ -9,7 +9,7 @@ import {
   Skeleton,
   StatePanel,
   useToast,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';

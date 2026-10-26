@@ -1,5 +1,5 @@
-import type { AvailableDay } from '@mestechko/contracts/client';
-import { dayPartIds, dayPartOfMinute } from '@mestechko/domain';
+import type { AvailableDay } from '@slotwise/contracts/client';
+import { dayPartIds, dayPartOfMinute } from '@slotwise/domain';
 import {
   Button,
   DateStrip,
@@ -10,7 +10,7 @@ import {
   TimeGrid,
   type DateStripDay,
   type TimeGridGroup,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

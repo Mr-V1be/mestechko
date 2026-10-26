@@ -1,5 +1,5 @@
-import colorTokens from '@mestechko/ui/tokens/color.css?inline';
-import scaleTokens from '@mestechko/ui/tokens/scale.css?inline';
+import colorTokens from '@slotwise/ui/tokens/color.css?inline';
+import scaleTokens from '@slotwise/ui/tokens/scale.css?inline';
 import loaderStyles from './loader.css?inline';
 
 /**

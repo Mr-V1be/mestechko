@@ -1,4 +1,4 @@
-import type { BookingContact, Money, WidgetBooking } from '@mestechko/contracts/client';
+import type { BookingContact, Money, WidgetBooking } from '@slotwise/contracts/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApi } from './api-context';
 

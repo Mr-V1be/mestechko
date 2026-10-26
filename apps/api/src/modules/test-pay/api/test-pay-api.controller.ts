@@ -11,7 +11,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { timingSafeEqual } from 'node:crypto';
-import { fallbackLocale, localeIds } from '@mestechko/domain';
+import { fallbackLocale, localeIds } from '@slotwise/domain';
 import { z } from 'zod';
 import { APP_CONFIG, type AppConfig } from '../../../platform/config/app-config.js';
 import { TestPayEmulator, TestPayRefusal } from '../application/test-pay-emulator.js';

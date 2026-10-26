@@ -1,4 +1,4 @@
-import { checkoutPresentations, type CheckoutPresentation } from '@mestechko/domain';
+import { checkoutPresentations, type CheckoutPresentation } from '@slotwise/domain';
 
 /**
  * How each kind of payment page opens from the widget: in place of the form (it sends

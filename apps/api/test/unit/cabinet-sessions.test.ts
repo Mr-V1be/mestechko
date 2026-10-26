@@ -1,4 +1,4 @@
-import { Temporal } from '@mestechko/domain';
+import { Temporal } from '@slotwise/domain';
 import { describe, expect, it } from 'vitest';
 import { ApplicationError } from '../../src/shared/application/application-error.js';
 import type { RateLimiter } from '../../src/shared/application/rate-limits.js';

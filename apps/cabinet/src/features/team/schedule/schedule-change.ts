@@ -1,5 +1,5 @@
-import { ApiError, type AffectedVisit, type ScheduleChange } from '@mestechko/contracts/client';
-import { useToast } from '@mestechko/ui';
+import { ApiError, type AffectedVisit, type ScheduleChange } from '@slotwise/contracts/client';
+import { useToast } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {

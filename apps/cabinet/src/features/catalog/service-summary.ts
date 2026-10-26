@@ -1,4 +1,4 @@
-import type { Money, ServiceAdmin } from '@mestechko/contracts/client';
+import type { Money, ServiceAdmin } from '@slotwise/contracts/client';
 
 /** The lowest and highest of what clients may see, when staff terms differ. */
 export interface Span<T> {

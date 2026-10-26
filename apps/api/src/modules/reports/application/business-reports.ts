@@ -1,4 +1,4 @@
-import type { BusinessReport, ReportFacts } from '@mestechko/contracts';
+import type { BusinessReport, ReportFacts } from '@slotwise/contracts';
 import {
   addFacts,
   comparableMetrics,
@@ -13,7 +13,7 @@ import {
   type PeriodFacts,
   type PlainDate,
   type StaffWorkCalendar,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../shared/application/application-error.js';
 import type { CatalogReader, LocationView } from '../../catalog/application/catalog-reader.js';
 import type { WorkCalendarReader } from '../../scheduling/application/ports.js';

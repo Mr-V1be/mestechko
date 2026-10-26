@@ -1,6 +1,6 @@
-import { apiAssetUrl, useFormat, useVocabulary } from '@mestechko/booking-ui';
-import type { StaffOption, VerticalSummary } from '@mestechko/contracts/client';
-import { Avatar, ListGroup, ListItem } from '@mestechko/ui';
+import { apiAssetUrl, useFormat, useVocabulary } from '@slotwise/booking-ui';
+import type { StaffOption, VerticalSummary } from '@slotwise/contracts/client';
+import { Avatar, ListGroup, ListItem } from '@slotwise/ui';
 import { ChevronRight, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../app/config';

@@ -1,4 +1,4 @@
-import { absenceKinds, scheduleTemplateIds } from '@mestechko/domain';
+import { absenceKinds, scheduleTemplateIds } from '@slotwise/domain';
 import { z } from 'zod';
 import {
   bookingStatusSchema,

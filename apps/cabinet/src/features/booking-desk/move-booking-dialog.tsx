@@ -1,10 +1,10 @@
-import { useFormat } from '@mestechko/booking-ui';
+import { useFormat } from '@slotwise/booking-ui';
 import {
   ApiError,
   type CabinetBookingDetails,
   type CabinetStaff,
-} from '@mestechko/contracts/client';
-import { Button, Dialog, useToast } from '@mestechko/ui';
+} from '@slotwise/contracts/client';
+import { Button, Dialog, useToast } from '@slotwise/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBookableServices } from '../../platform/api/desk-queries';

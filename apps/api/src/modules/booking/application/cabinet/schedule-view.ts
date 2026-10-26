@@ -1,4 +1,4 @@
-import type { getSchedule, RouteResult, ScheduleAxis } from '@mestechko/contracts';
+import type { getSchedule, RouteResult, ScheduleAxis } from '@slotwise/contracts';
 import {
   datesBetween,
   localDayBounds,
@@ -10,7 +10,7 @@ import {
   type PlainDate,
   type ProductionCalendar,
   type StaffWorkCalendar,
-} from '@mestechko/domain';
+} from '@slotwise/domain';
 import { ApplicationError, notFound } from '../../../../shared/application/application-error.js';
 import type { AvatarUrls } from '../../../../shared/application/avatar-urls.js';
 import type { UnitOfWork } from '../../../../shared/application/unit-of-work.js';

@@ -1,5 +1,5 @@
-import { errorMessage } from '@mestechko/booking-ui';
-import { Button, EmptyIllustration, ErrorIllustration, Skeleton, StatePanel } from '@mestechko/ui';
+import { errorMessage } from '@slotwise/booking-ui';
+import { Button, EmptyIllustration, ErrorIllustration, Skeleton, StatePanel } from '@slotwise/ui';
 import { useTranslation } from 'react-i18next';
 import styles from './layout.module.css';
 

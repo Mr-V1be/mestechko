@@ -1,6 +1,6 @@
-import { apiAssetUrl } from '@mestechko/booking-ui';
-import type { TeamMemberSummary } from '@mestechko/contracts/client';
-import { Avatar, Badge, ListGroup, ListItem, Skeleton } from '@mestechko/ui';
+import { apiAssetUrl } from '@slotwise/booking-ui';
+import type { TeamMemberSummary } from '@slotwise/contracts/client';
+import { Avatar, Badge, ListGroup, ListItem, Skeleton } from '@slotwise/ui';
 import { clsx } from 'clsx';
 import { ChevronRight } from 'lucide-react';
 import type { ReactNode } from 'react';

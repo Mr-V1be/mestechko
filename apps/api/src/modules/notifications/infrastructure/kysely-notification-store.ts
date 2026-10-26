@@ -1,4 +1,4 @@
-import type { NotificationKind, VisitState } from '@mestechko/domain';
+import type { NotificationKind, VisitState } from '@slotwise/domain';
 import type { Selectable } from 'kysely';
 import type { Notifications } from '../../../platform/db/generated/database.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';

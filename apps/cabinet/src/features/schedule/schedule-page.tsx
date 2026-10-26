@@ -1,5 +1,5 @@
-import { useFormat, useVocabulary } from '@mestechko/booking-ui';
-import { scheduleAxes, type Membership, type ScheduleAxis } from '@mestechko/contracts/client';
+import { useFormat, useVocabulary } from '@slotwise/booking-ui';
+import { scheduleAxes, type Membership, type ScheduleAxis } from '@slotwise/contracts/client';
 import {
   Button,
   EmptyIllustration,
@@ -10,7 +10,7 @@ import {
   StatePanel,
   breakpoints,
   useMediaQuery,
-} from '@mestechko/ui';
+} from '@slotwise/ui';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

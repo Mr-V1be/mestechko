@@ -1,5 +1,5 @@
 import { sql } from 'kysely';
-import { ledgerReasons, type LedgerAccount } from '@mestechko/domain';
+import { ledgerReasons, type LedgerAccount } from '@slotwise/domain';
 import { currencyCode } from '../../../platform/db/column-parsers.js';
 import type { KyselyUnitOfWork } from '../../../platform/db/kysely-unit-of-work.js';
 import { isUniqueViolation } from '../../../platform/db/pg-errors.js';

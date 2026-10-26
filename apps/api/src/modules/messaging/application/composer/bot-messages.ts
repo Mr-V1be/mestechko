@@ -1,4 +1,4 @@
-import type { ClientBooking } from '@mestechko/contracts';
+import type { ClientBooking } from '@slotwise/contracts';
 import {
   bookingActionIds,
   notificationKinds,
@@ -6,8 +6,8 @@ import {
   type Locale,
   type NotificationKind,
   type VerticalDefinition,
-} from '@mestechko/domain';
-import { formatInstant, formatLocalDate, formatMoney } from '@mestechko/i18n';
+} from '@slotwise/domain';
+import { formatInstant, formatLocalDate, formatMoney } from '@slotwise/i18n';
 import type { Translations, Translator } from '../../../../shared/application/translations.js';
 import { encodeAction } from '../action-data.js';
 import type { ButtonTone, OutboundButton, OutboundMessage } from '../channel.js';
