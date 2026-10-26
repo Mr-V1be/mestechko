@@ -84,9 +84,9 @@
 
 ```sh
 # Ограничения ресурсов, как в таблице выше (необязательно)
-docker update --cpus 1 mestechko-prod-api-1 mestechko-prod-postgres-1
-docker update --cpus 0.5 mestechko-prod-edge-1
-docker update --cpus 0.25 mestechko-prod-redis-1
+docker update --cpus 1 slotwise-prod-api-1 slotwise-prod-postgres-1
+docker update --cpus 0.5 slotwise-prod-edge-1
+docker update --cpus 0.25 slotwise-prod-redis-1
 
 # Чистые демо-данные
 docker compose --env-file .env.production -f docker-compose.prod.yml --profile demo \
@@ -98,10 +98,10 @@ docker run --rm --network host -v "$PWD/tooling/load:/scripts:ro" \
 
 # Двойные брони: ответ должен быть пустым
 docker compose --env-file .env.production -f docker-compose.prod.yml exec -T postgres \
-  psql -U mestechko -d mestechko < tooling/load/double-bookings.sql
+  psql -U slotwise -d slotwise < tooling/load/double-bookings.sql
 ```
 
 Другие параметры сценария: `BASE_URL` (по умолчанию
-`https://miniapp.mestechko.localhost:46291/api`), `BUSINESS` (`siren`), `DURATION` (`60s`),
+`https://miniapp.slotwise.localhost:46291/api`), `BUSINESS` (`siren`), `DURATION` (`60s`),
 `WINDOWS` (`10`). Для адресов `*.localhost` k6 сам направляет запросы на 127.0.0.1 и
 принимает сертификат локального центра Caddy.

@@ -1,12 +1,12 @@
-# «Местечко» — онлайн-запись в Telegram и MAX для малого бизнеса услуг
+# Slotwise — онлайн-запись в Telegram и MAX для малого бизнеса услуг
 
 **TypeScript · React 19 · Vite 8 · NestJS 12 (Fastify) · PostgreSQL 18 · Redis 8 · BullMQ ·
 Kysely · Zod · grammY · Telegram Mini Apps · Base UI · Docker · Caddy · Playwright · k6**
 
-[![Фильм о продукте, 1920×1080](video/mestechko-1920x1080-poster.webp)](video/mestechko-1920x1080.mp4)
+[![Фильм о продукте, 1920×1080](video/slotwise-1920x1080-poster.webp)](video/slotwise-1920x1080.mp4)
 
-Фильм без звука, около минуты: [1920×1080](video/mestechko-1920x1080.mp4) ·
-[1080×1920](video/mestechko-1080x1920.mp4). Клиент записывается в Mini App → запись
+Фильм без звука, около минуты: [1920×1080](video/slotwise-1920x1080.mp4) ·
+[1080×1920](video/slotwise-1080x1920.mp4). Клиент записывается в Mini App → запись
 появляется в расписании кабинета → бот напоминает о визите → администратор переносит визит
 перетаскиванием.
 
@@ -82,7 +82,7 @@ Kysely · Zod · grammY · Telegram Mini Apps · Base UI · Docker · Caddy · P
 
 ## Архитектура
 
-![Архитектура «Местечка»](architecture.svg)
+![Архитектура Slotwise](architecture.svg)
 
 Монорепозиторий pnpm. Домен (`packages/domain`) — чистый TypeScript без фреймворков и базы:
 движок доступности, графики, календарь, вертикали, правила записи. API — модульный монолит
