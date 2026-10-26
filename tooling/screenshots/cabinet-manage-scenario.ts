@@ -5,8 +5,8 @@ import { firstOnScreen } from './schedule-days.ts';
 const SETTLE_MS = 600;
 /** Visits to look through for one the desk can close (it began, nobody marked it yet). */
 const MAX_VISITS_TO_TRY = 10;
-/** Pages of columns a wide board may have, to look through for such a visit. */
-const MAX_COLUMN_PAGES = 4;
+/** Pages of columns (a phone: specialists) to look through for such a visit. */
+const MAX_COLUMN_PAGES = 8;
 
 async function signInAsOwner(page: Page, base: string): Promise<string> {
   // The front-desk scenario ends signed in as a staff member.
@@ -55,6 +55,33 @@ async function openClosableOnScreen(page: Page): Promise<boolean> {
 }
 
 /**
+ * Brings the board's next columns on screen: the next page of a wide board, the next
+ * specialist on a phone, which shows one at a time. `false` when there are no more.
+ */
+async function showNextColumns(page: Page, step: number): Promise<boolean> {
+  const next = page.getByRole('button', { name: 'Следующие колонки' });
+  if ((await next.isVisible()) && (await next.isEnabled())) {
+    await next.click();
+    await page.waitForTimeout(SETTLE_MS);
+    return true;
+  }
+  const specialist = page.getByRole('combobox', { name: 'Чьё расписание' });
+  if (!(await specialist.isVisible())) {
+    return false;
+  }
+  await specialist.click();
+  const options = page.getByRole('option');
+  await options.first().waitFor();
+  if (step >= (await options.count())) {
+    await page.keyboard.press('Escape');
+    return false;
+  }
+  await options.nth(step).click();
+  await page.waitForTimeout(SETTLE_MS);
+  return true;
+}
+
+/**
  * A visit that already began and waits for the desk: today's first, else yesterday's,
  * looking through every page of columns.
  */
@@ -67,12 +94,9 @@ async function openVisitToClose(page: Page, business: string): Promise<boolean> 
       if (await openClosableOnScreen(page)) {
         return true;
       }
-      const next = page.getByRole('button', { name: 'Следующие колонки' });
-      if (!(await next.isVisible()) || !(await next.isEnabled())) {
+      if (!(await showNextColumns(page, columns + 1))) {
         break;
       }
-      await next.click();
-      await page.waitForTimeout(SETTLE_MS);
     }
   }
   return false;
