@@ -11,7 +11,7 @@ const MAX_DAYS_AHEAD = 4;
  * How long a day gets to show its visits. The schedule loads them after the click, and the
  * page's load state says nothing about requests made after it loaded.
  */
-const DAY_SETTLE_MS = 3_000;
+const DAY_SETTLE_MS = 5_000;
 const POLL_MS = 250;
 
 /**

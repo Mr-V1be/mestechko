@@ -5,6 +5,8 @@ import { firstOnScreen } from './schedule-days.ts';
 const SETTLE_MS = 600;
 /** Visits to look through for one the desk can close (it began, nobody marked it yet). */
 const MAX_VISITS_TO_TRY = 10;
+/** Pages of columns a wide board may have, to look through for such a visit. */
+const MAX_COLUMN_PAGES = 4;
 
 async function signInAsOwner(page: Page, base: string): Promise<string> {
   // The front-desk scenario ends signed in as a staff member.
@@ -17,34 +19,60 @@ async function signInAsOwner(page: Page, base: string): Promise<string> {
 
 const visitBlocks = (page: Page) => page.locator('[data-column-key] button');
 
-/** A visit that already began and waits for the desk: today's first, else yesterday's. */
+/**
+ * Visits within the screen, earliest start first: those are the ones that began. A narrow
+ * board pages through its columns, and the visits of the other pages are in the document
+ * but cannot be clicked.
+ */
+function visitsOnScreen(page: Page): Promise<number[]> {
+  return visitBlocks(page).evaluateAll((blocks) =>
+    blocks
+      .flatMap((block, index) => {
+        const rect = block.getBoundingClientRect();
+        const start = /\d\d:\d\d/.exec(block.textContent ?? '')?.[0] ?? '';
+        return rect.left >= 0 && rect.right <= window.innerWidth ? [{ index, start }] : [];
+      })
+      .sort((a, b) => a.start.localeCompare(b.start))
+      .map((visit) => visit.index),
+  );
+}
+
+/** Opens the first visit on screen the desk can close; `false` when there is none. */
+async function openClosableOnScreen(page: Page): Promise<boolean> {
+  for (const index of (await visitsOnScreen(page)).slice(0, MAX_VISITS_TO_TRY)) {
+    await visitBlocks(page).nth(index).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.waitFor();
+    // The visit loads after the sheet opens; its actions show once the placeholder is gone.
+    await dialog.locator('[class*="skeleton"]').first().waitFor({ state: 'detached' });
+    if (await dialog.getByRole('button', { name: 'Визит состоялся' }).isVisible()) {
+      return true;
+    }
+    await dialog.getByRole('button', { name: 'Закрыть' }).click();
+    await dialog.waitFor({ state: 'detached' });
+  }
+  return false;
+}
+
+/**
+ * A visit that already began and waits for the desk: today's first, else yesterday's,
+ * looking through every page of columns.
+ */
 async function openVisitToClose(page: Page, business: string): Promise<boolean> {
   const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
   for (const query of ['', `?date=${yesterday}`]) {
     await page.goto(`${business}/schedule${query}`);
     await page.waitForLoadState('networkidle');
-    // A narrow board pages through its columns: visits of the other pages are in the
-    // document but cannot be clicked. The earliest start first: those are the ones that began.
-    const onScreen = await visitBlocks(page).evaluateAll((blocks) =>
-      blocks
-        .flatMap((block, index) => {
-          const rect = block.getBoundingClientRect();
-          const start = /\d\d:\d\d/.exec(block.textContent ?? '')?.[0] ?? '';
-          return rect.left >= 0 && rect.right <= window.innerWidth ? [{ index, start }] : [];
-        })
-        .sort((a, b) => a.start.localeCompare(b.start))
-        .map((visit) => visit.index),
-    );
-    for (const index of onScreen.slice(0, MAX_VISITS_TO_TRY)) {
-      await visitBlocks(page).nth(index).click();
-      const dialog = page.getByRole('dialog');
-      await dialog.waitFor();
-      await page.waitForLoadState('networkidle');
-      if (await dialog.getByRole('button', { name: 'Визит состоялся' }).isVisible()) {
+    for (let columns = 0; columns < MAX_COLUMN_PAGES; columns += 1) {
+      if (await openClosableOnScreen(page)) {
         return true;
       }
-      await dialog.getByRole('button', { name: 'Закрыть' }).click();
-      await dialog.waitFor({ state: 'detached' });
+      const next = page.getByRole('button', { name: 'Следующие колонки' });
+      if (!(await next.isVisible()) || !(await next.isEnabled())) {
+        break;
+      }
+      await next.click();
+      await page.waitForTimeout(SETTLE_MS);
     }
   }
   return false;
